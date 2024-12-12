@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { User } from "@supabase/supabase-js";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Calendar } from "@/components/ui/calendar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQuery } from "@tanstack/react-query";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
-import { Play, Pause, Upload } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { Upload } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import ProfileSection from "@/components/dashboard/ProfileSection";
+import AudioPlayer from "@/components/dashboard/AudioPlayer";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -18,8 +19,6 @@ const Dashboard = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [note, setNote] = useState("");
   const { toast } = useToast();
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [selectedVoice, setSelectedVoice] = useState("default");
   const [selectedContent, setSelectedContent] = useState("");
 
   const { data: userSkills } = useQuery({
@@ -169,28 +168,7 @@ const Dashboard = () => {
         className="max-w-7xl mx-auto"
       >
         <div className="glass-panel p-6 mb-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Avatar>
-                <AvatarImage src={user.user_metadata.avatar_url} />
-                <AvatarFallback>{user.email?.charAt(0).toUpperCase()}</AvatarFallback>
-              </Avatar>
-              <div>
-                <h2 className="text-xl font-semibold">
-                  Welcome, {user.user_metadata.full_name || user.email}
-                </h2>
-                <p className="text-sm text-gray-400">{user.email}</p>
-              </div>
-            </div>
-            <div className="flex gap-4">
-              <Button variant="outline" onClick={() => navigate("/main")}>
-                Explore Skills
-              </Button>
-              <Button variant="outline" onClick={handleSignOut}>
-                Sign Out
-              </Button>
-            </div>
-          </div>
+          <ProfileSection user={user} onSignOut={handleSignOut} />
         </div>
 
         <Tabs defaultValue="skills" className="space-y-4">
@@ -210,7 +188,7 @@ const Dashboard = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   className="glass-panel p-4"
                 >
-                  <h3 className="text-lg font-semibold mb-2">
+                  <h3 className="text-lg font-semibold">
                     {userSkill.skills.title}
                   </h3>
                   <p className="text-sm text-gray-400 mb-2">
@@ -277,35 +255,22 @@ const Dashboard = () => {
           <TabsContent value="audio" className="space-y-4">
             <div className="glass-panel p-4">
               <div className="space-y-4">
-                <div className="flex gap-4">
-                  <select
-                    value={selectedVoice}
-                    onChange={(e) => setSelectedVoice(e.target.value)}
-                    className="bg-transparent border rounded p-2"
-                  >
-                    <option value="default">Default Voice</option>
-                    <option value="voice1">Voice 1</option>
-                    <option value="voice2">Voice 2</option>
-                  </select>
-                  <select
-                    value={selectedContent}
-                    onChange={(e) => setSelectedContent(e.target.value)}
-                    className="bg-transparent border rounded p-2 flex-1"
-                  >
-                    <option value="">Select content to play</option>
-                    {userNotes?.map((note) => (
-                      <option key={note.id} value={note.content}>
-                        {note.content.substring(0, 50)}...
-                      </option>
-                    ))}
-                  </select>
-                  <Button
-                    size="icon"
-                    onClick={() => setIsPlaying(!isPlaying)}
-                  >
-                    {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-                  </Button>
-                </div>
+                <select
+                  value={selectedContent}
+                  onChange={(e) => setSelectedContent(e.target.value)}
+                  className="bg-transparent border rounded p-2 w-full"
+                >
+                  <option value="">Select content to play</option>
+                  {userNotes?.map((note) => (
+                    <option key={note.id} value={note.content}>
+                      {note.content.substring(0, 50)}...
+                    </option>
+                  ))}
+                </select>
+                <AudioPlayer 
+                  selectedContent={selectedContent}
+                  userNotes={userNotes}
+                />
               </div>
             </div>
           </TabsContent>
