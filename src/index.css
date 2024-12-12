@@ -29,8 +29,12 @@
 
 @layer utilities {
   .glass-panel {
-    @apply bg-futuristic-gray/30 backdrop-blur-md rounded-lg border-2 border-transparent hover:border-futuristic-blue/50 animate-snake-border;
+    @apply bg-futuristic-gray/30 backdrop-blur-md rounded-lg border-2 border-transparent transition-all duration-300;
     position: relative;
+  }
+
+  .glass-panel:hover {
+    @apply border-futuristic-blue/30 animate-snake-border;
   }
 
   .glass-panel::before {
