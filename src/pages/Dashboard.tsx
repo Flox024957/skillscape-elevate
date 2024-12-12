@@ -158,6 +158,10 @@ const Dashboard = () => {
     }
   };
 
+  const handleContentSelect = (content: string) => {
+    setSelectedContent(content);
+  };
+
   if (!user) return null;
 
   return (
@@ -270,6 +274,7 @@ const Dashboard = () => {
                 <AudioPlayer 
                   selectedContent={selectedContent}
                   userNotes={userNotes}
+                  onContentSelect={handleContentSelect}
                 />
               </div>
             </div>

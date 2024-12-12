@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Button } from "@/components/ui/button";
-import { Play, Pause, Volume2 } from "lucide-react";
+import { Play, Pause, Volume2, Shuffle } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -13,9 +13,10 @@ import { useToast } from "@/hooks/use-toast";
 interface AudioPlayerProps {
   selectedContent: string;
   userNotes?: any[];
+  onContentSelect: (content: string) => void;
 }
 
-const AudioPlayer = ({ selectedContent, userNotes }: AudioPlayerProps) => {
+const AudioPlayer = ({ selectedContent, userNotes, onContentSelect }: AudioPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedVoice, setSelectedVoice] = useState("");
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
@@ -85,6 +86,21 @@ const AudioPlayer = ({ selectedContent, userNotes }: AudioPlayerProps) => {
     setIsPlaying(true);
   };
 
+  const handleRandomPlay = () => {
+    if (!userNotes || userNotes.length === 0) {
+      toast({
+        title: "No notes available",
+        description: "Please add some notes first",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const randomIndex = Math.floor(Math.random() * userNotes.length);
+    const randomNote = userNotes[randomIndex];
+    onContentSelect(randomNote.content);
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex gap-4">
@@ -109,6 +125,14 @@ const AudioPlayer = ({ selectedContent, userNotes }: AudioPlayerProps) => {
           className="w-10 h-10"
         >
           {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+        </Button>
+        <Button
+          size="icon"
+          onClick={handleRandomPlay}
+          className="w-10 h-10"
+          variant="outline"
+        >
+          <Shuffle className="w-4 h-4" />
         </Button>
       </div>
     </div>
