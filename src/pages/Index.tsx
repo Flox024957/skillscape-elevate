@@ -2,6 +2,8 @@ import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const categories = [
   { id: 1, name: "Mindfulness", image: "/placeholder.svg" },
@@ -18,6 +20,22 @@ const categories = [
 const Index = () => {
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        navigate("/dashboard");
+      }
+    });
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        navigate("/dashboard");
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-flap-black to-flap-black/95">
       <div className="container px-4 py-8">
@@ -30,19 +48,18 @@ const Index = () => {
           <h1 className="text-4xl font-bold mb-4 text-flap-white">
             Welcome to <span className="text-flap-neon">FLAP</span>
           </h1>
-          <p className="text-flap-white/80 max-w-2xl mx-auto">
+          <p className="text-flap-white/80 max-w-2xl mx-auto mb-8">
             Explore skills, set goals, and track your personal development journey
           </p>
+          <div className="flex gap-4 justify-center">
+            <Button
+              onClick={() => navigate("/auth")}
+              className="glass-panel hover:bg-flap-neon/20 transition-colors duration-300"
+            >
+              Get Started
+            </Button>
+          </div>
         </motion.div>
-
-        <div className="mb-8">
-          <Button
-            onClick={() => navigate("/dashboard")}
-            className="w-full sm:w-auto glass-panel hover:bg-flap-neon/20 transition-colors duration-300"
-          >
-            Go to Dashboard
-          </Button>
-        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {categories.map((category, index) => (
