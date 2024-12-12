@@ -5,6 +5,11 @@ import { Plus } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import { Database } from "@/integrations/supabase/types";
+
+type Skill = Database['public']['Tables']['skills']['Row'] & {
+  categories: Database['public']['Tables']['categories']['Row'] | null;
+};
 
 const SkillDetailPage = () => {
   const { id } = useParams();
@@ -20,7 +25,7 @@ const SkillDetailPage = () => {
         .eq('id', id)
         .single();
       if (error) throw error;
-      return data;
+      return data as Skill;
     },
   });
 
@@ -52,6 +57,9 @@ const SkillDetailPage = () => {
   if (isLoading) {
     return <div>Loading...</div>;
   }
+
+  // Ensure examples is an array, default to empty array if not
+  const examples = Array.isArray(skill?.examples) ? skill.examples : [];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-flap-black to-flap-black/95">
@@ -145,7 +153,7 @@ const SkillDetailPage = () => {
           >
             <h3 className="text-xl font-semibold mb-4">Examples</h3>
             <div className="space-y-4">
-              {(skill?.examples || []).map((example: string, index: number) => (
+              {examples.map((example: string, index: number) => (
                 <div key={index} className="flex justify-between items-start">
                   <p className="text-gray-400">{example}</p>
                   <Button
