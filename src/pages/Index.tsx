@@ -37,7 +37,7 @@ const Index = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-cyber-black cyber-grid">
+    <div className="min-h-screen bg-futuristic-black bg-futuristic-grid bg-[size:50px_50px]">
       <div className="container px-4 py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -45,16 +45,16 @@ const Index = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 text-white">
-            Welcome to <span className="neon-text">FLAP</span>
+          <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-futuristic-blue to-futuristic-violet">
+            Welcome to <span className="font-black">FLAP</span>
           </h1>
-          <p className="text-cyber-lightGray max-w-2xl mx-auto mb-8 text-lg">
+          <p className="text-gray-400 max-w-2xl mx-auto mb-8 text-lg">
             Explore skills, set goals, and track your personal development journey
           </p>
           <div className="flex gap-4 justify-center">
             <Button
               onClick={() => navigate("/auth")}
-              className="cyber-button neon-glow"
+              className="bg-gradient-to-r from-futuristic-blue to-futuristic-violet hover:opacity-90 text-white px-8 py-6 text-lg rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(0,163,255,0.5)]"
             >
               Get Started
             </Button>
@@ -68,22 +68,24 @@ const Index = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3, delay: index * 0.1 }}
-              className="group relative"
+              className="group"
             >
-              <div className="damaged-panel p-6 hover-lift cursor-pointer">
+              <div className="relative bg-futuristic-gray/30 backdrop-blur-md rounded-lg p-6 border-2 border-transparent hover:border-futuristic-blue/50 animate-neon-flow transition-all duration-300 hover:transform hover:-translate-y-1">
                 <div className="aspect-square relative mb-4 overflow-hidden rounded-lg">
                   <img
                     src={category.image}
                     alt={category.name}
-                    className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110"
+                    className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-radial from-transparent to-cyber-black/50" />
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-futuristic-black/50" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2 text-neon-purple">{category.name}</h3>
+                <h3 className="text-xl font-semibold mb-2 text-white group-hover:text-futuristic-blue transition-colors">
+                  {category.name}
+                </h3>
                 <Button
                   size="icon"
                   variant="ghost"
-                  className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-neon-green"
+                  className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-futuristic-violet hover:text-futuristic-blue hover:bg-futuristic-violet/10"
                 >
                   <Plus className="w-5 h-5" />
                 </Button>

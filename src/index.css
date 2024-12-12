@@ -29,34 +29,15 @@
 
 @layer utilities {
   .glass-panel {
-    @apply bg-cyber-black/30 backdrop-blur-md border border-neon-purple/10 rounded-lg shadow-lg;
+    @apply bg-futuristic-gray/30 backdrop-blur-md rounded-lg border-2 border-transparent hover:border-futuristic-blue/50 animate-neon-flow;
   }
 
-  .neon-border {
-    @apply border border-neon-purple/50 shadow-[0_0_10px_rgba(176,38,255,0.3)];
-  }
-
-  .neon-text {
-    @apply text-neon-purple animate-text-flicker;
-  }
-
-  .cyber-grid {
-    @apply bg-cyber-grid bg-[length:50px_50px];
+  .futuristic-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-futuristic-blue to-futuristic-violet;
   }
 
   .hover-lift {
-    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
-  }
-
-  .neon-glow {
-    @apply animate-neon-pulse;
-  }
-
-  .damaged-panel {
-    @apply bg-cyber-black/80 backdrop-blur-sm border border-neon-purple/20 
-           before:content-[''] before:absolute before:inset-0 
-           before:bg-gradient-to-b before:from-transparent before:to-neon-purple/5 
-           before:opacity-50 before:pointer-events-none;
+    @apply transition-all duration-300 hover:-translate-y-1;
   }
 }
 
@@ -65,33 +46,33 @@
     @apply border-border;
   }
   body {
-    @apply bg-cyber-black text-white;
+    @apply bg-futuristic-black text-white;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
-/* Ajout de la police Cyberpunk */
+/* Ajout de la police futuriste */
 @font-face {
-  font-family: 'Cyberpunk';
-  src: url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap');
+  font-family: 'Futuristic';
+  src: url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 }
 
 /* Styles spécifiques pour les composants */
-.cyber-button {
-  @apply px-6 py-2 bg-cyber-gray border border-neon-purple/30
-         hover:border-neon-purple/60 hover:shadow-[0_0_15px_rgba(176,38,255,0.3)]
-         transition-all duration-300 rounded font-semibold text-white
+.futuristic-button {
+  @apply bg-gradient-to-r from-futuristic-blue to-futuristic-violet 
+         hover:opacity-90 text-white px-6 py-3 rounded-lg
+         transition-all duration-300 shadow-[0_0_20px_rgba(0,163,255,0.5)]
          disabled:opacity-50 disabled:cursor-not-allowed;
 }
 
-.cyber-input {
-  @apply bg-cyber-darkGray border border-neon-purple/20
-         focus:border-neon-purple/50 focus:ring-1 focus:ring-neon-purple/30
-         rounded px-4 py-2 text-white placeholder-cyber-lightGray/50;
+.futuristic-input {
+  @apply bg-futuristic-gray/30 backdrop-blur-md border-2 border-futuristic-blue/20
+         focus:border-futuristic-violet/50 focus:ring-1 focus:ring-futuristic-violet/30
+         rounded-lg px-4 py-2 text-white placeholder-gray-400;
 }
 
-.cyber-card {
-  @apply glass-panel hover:neon-glow cursor-pointer;
+.futuristic-card {
+  @apply glass-panel hover-lift cursor-pointer;
 }
 
 /* Responsive Design */
@@ -100,13 +81,13 @@
     @apply p-4;
   }
   
-  .cyber-button {
-    @apply px-4 py-1.5 text-sm;
+  .futuristic-button {
+    @apply px-4 py-2 text-sm;
   }
 }
 
 @media (max-width: 640px) {
-  .cyber-grid {
-    @apply bg-[length:30px_30px];
+  .bg-futuristic-grid {
+    @apply bg-[size:30px_30px];
   }
 }
