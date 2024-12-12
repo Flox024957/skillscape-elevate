@@ -61,15 +61,32 @@ export default {
         },
       },
       keyframes: {
-        "neon-border-flow": {
-          "0%, 100%": {
+        "snake-border": {
+          "0%": {
+            "clip-path": "inset(0 98% 98% 0)",
             "border-color": "rgb(0, 163, 255)",
-            "box-shadow": "0 0 20px rgba(0, 163, 255, 0.5), inset 0 0 20px rgba(0, 163, 255, 0.5)",
+            "box-shadow": "0 0 20px rgba(0, 163, 255, 0.5)",
+          },
+          "25%": {
+            "clip-path": "inset(0 0 98% 0)",
+            "border-color": "rgb(157, 78, 221)",
+            "box-shadow": "0 0 20px rgba(157, 78, 221, 0.5)",
           },
           "50%": {
+            "clip-path": "inset(0 0 0 98%)",
+            "border-color": "rgb(0, 163, 255)",
+            "box-shadow": "0 0 20px rgba(0, 163, 255, 0.5)",
+          },
+          "75%": {
+            "clip-path": "inset(98% 0 0 0)",
             "border-color": "rgb(157, 78, 221)",
-            "box-shadow": "0 0 20px rgba(157, 78, 221, 0.5), inset 0 0 20px rgba(157, 78, 221, 0.5)",
-          }
+            "box-shadow": "0 0 20px rgba(157, 78, 221, 0.5)",
+          },
+          "100%": {
+            "clip-path": "inset(0 98% 98% 0)",
+            "border-color": "rgb(0, 163, 255)",
+            "box-shadow": "0 0 20px rgba(0, 163, 255, 0.5)",
+          },
         },
         "fade-in": {
           "0%": { opacity: "0", transform: "translateY(10px)" },
@@ -77,7 +94,7 @@ export default {
         },
       },
       animation: {
-        "neon-flow": "neon-border-flow 3s ease-in-out infinite",
+        "snake-border": "snake-border 4s linear infinite",
         "fade-in": "fade-in 0.3s ease-out",
       },
       backgroundImage: {

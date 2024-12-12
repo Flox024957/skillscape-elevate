@@ -29,7 +29,14 @@
 
 @layer utilities {
   .glass-panel {
-    @apply bg-futuristic-gray/30 backdrop-blur-md rounded-lg border-2 border-transparent hover:border-futuristic-blue/50 animate-neon-flow;
+    @apply bg-futuristic-gray/30 backdrop-blur-md rounded-lg border-2 border-transparent hover:border-futuristic-blue/50 animate-snake-border;
+    position: relative;
+  }
+
+  .glass-panel::before {
+    content: '';
+    @apply absolute inset-0 border-2 border-transparent rounded-lg;
+    z-index: 1;
   }
 
   .futuristic-text {
