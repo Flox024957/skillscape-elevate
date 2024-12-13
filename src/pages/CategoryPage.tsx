@@ -17,7 +17,7 @@ const CategoryPage = () => {
   const { categoryId } = useParams();
   const navigate = useNavigate();
 
-  const { data: category, isError: isCategoryError } = useQuery({
+  const { data: category, isError: isCategoryError, isLoading: isCategoryLoading } = useQuery({
     queryKey: ['category', categoryId],
     queryFn: async () => {
       if (!categoryId || !isValidUUID(categoryId)) {
@@ -36,7 +36,7 @@ const CategoryPage = () => {
     enabled: Boolean(categoryId) && isValidUUID(categoryId),
   });
 
-  const { data: skills = [], isError: isSkillsError } = useQuery({
+  const { data: skills = [], isError: isSkillsError, isLoading: isSkillsLoading } = useQuery({
     queryKey: ['categorySkills', categoryId],
     queryFn: async () => {
       if (!categoryId || !isValidUUID(categoryId)) {
@@ -50,10 +50,9 @@ const CategoryPage = () => {
 
       if (error) throw error;
       
-      // Convert exemples to array if it's not already
       return (data || []).map(skill => ({
         ...skill,
-        exemples: Array.isArray(skill.exemples) ? skill.exemples : [skill.exemples]
+        exemples: Array.isArray(skill.exemples) ? skill.exemples : []
       })) as Skill[];
     },
     enabled: Boolean(categoryId) && isValidUUID(categoryId),
@@ -67,7 +66,7 @@ const CategoryPage = () => {
     return <CategoryError />;
   }
 
-  if (!category) {
+  if (isCategoryLoading || isSkillsLoading || !category) {
     return <CategoryLoading />;
   }
 
