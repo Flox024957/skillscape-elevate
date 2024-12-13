@@ -32,7 +32,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-futuristic-black text-white;
+    @apply bg-futuristic-black text-white bg-[url('/lovable-uploads/6c08c918-f67c-4978-8b8f-2e60e4d84e3a.png')] bg-fixed bg-cover bg-center bg-no-repeat;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }

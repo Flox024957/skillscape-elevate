@@ -40,9 +40,9 @@ export const colors = {
     gray: "#1A1F35",
   },
   neon: {
-    purple: "#8B5CF6",
-    pink: "#D946EF",
-    orange: "#F97316",
-    blue: "#0EA5E9",
+    blue: "#00E5FF",
+    purple: "#FF00FF",
+    orange: "#FF9900",
+    pink: "#FF1493",
   },
 };

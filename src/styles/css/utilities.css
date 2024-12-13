@@ -2,32 +2,30 @@
   .glass-panel {
     @apply bg-futuristic-gray/30 backdrop-blur-md rounded-lg border-2 border-transparent transition-all duration-1000;
     position: relative;
-    z-index: 1; /* Ensure the panel itself doesn't block interactions */
+    z-index: 1;
     box-shadow: 0 0 10mm rgba(157, 78, 221, 0.2);
   }
 
   .glass-panel:hover {
-    @apply border-futuristic-blue/30;
+    @apply border-neon-blue/30;
   }
 
   .glass-panel::before {
     content: '';
     @apply absolute inset-0 border-2 border-transparent rounded-lg;
-    z-index: -1; /* Move the decorative effect behind */
+    z-index: -1;
   }
 
   .futuristic-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-futuristic-blue via-neon-orange to-neon-purple;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-neon-blue via-neon-purple to-neon-orange animate-neon-text;
     background-size: 300% 300%;
-    animation: gradient 900s ease-in-out infinite;
     position: relative;
-    z-index: 2; /* Ensure text stays clickable */
-    text-shadow: 0 0 10mm rgba(0, 163, 255, 0.5);
+    z-index: 2;
   }
 
   .hover-lift {
     @apply transition-all duration-300 hover:-translate-y-1;
     position: relative;
-    z-index: 2; /* Ensure hover effects work */
+    z-index: 2;
   }
 }

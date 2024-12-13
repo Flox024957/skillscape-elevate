@@ -4,26 +4,37 @@
 }
 
 .futuristic-button {
-  @apply bg-gradient-to-r from-futuristic-blue via-neon-orange to-neon-purple 
+  @apply bg-gradient-to-r from-neon-blue via-neon-purple to-neon-orange 
          hover:opacity-90 text-white px-6 py-3 rounded-lg
-         transition-all duration-1000 shadow-[0_0_10mm_rgba(0,163,255,0.5)]
+         transition-all duration-1000 animate-neon-pulse
          disabled:opacity-50 disabled:cursor-not-allowed;
   background-size: 300% 300%;
-  animation: gradient 900s ease-in-out infinite;
   position: relative;
-  z-index: 3; /* Ensure buttons stay on top */
+  z-index: 3;
 }
 
 .futuristic-input {
-  @apply bg-futuristic-gray/30 backdrop-blur-md border-2 border-futuristic-blue/20
-         focus:border-futuristic-violet/50 focus:ring-1 focus:ring-futuristic-violet/30
-         rounded-lg px-4 py-2 text-white placeholder-gray-400;
+  @apply bg-futuristic-gray/30 backdrop-blur-md border-2 border-neon-blue/20
+         focus:border-neon-purple/50 focus:ring-1 focus:ring-neon-purple/30
+         rounded-lg px-4 py-2 text-white placeholder-gray-400
+         transition-all duration-300;
   position: relative;
-  z-index: 3; /* Ensure inputs stay on top */
+  z-index: 3;
 }
 
 .futuristic-card {
   @apply glass-panel hover-lift cursor-pointer;
   position: relative;
-  z-index: 2; /* Ensure cards stay clickable */
+  z-index: 2;
+}
+
+.neon-text {
+  @apply animate-neon-text;
+}
+
+.glass-panel {
+  @apply bg-futuristic-gray/30 backdrop-blur-md rounded-lg border-2 
+         border-transparent transition-all duration-1000 animate-neon-pulse;
+  position: relative;
+  z-index: 1;
 }
