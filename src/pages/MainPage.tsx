@@ -89,7 +89,7 @@ const MainPage = () => {
             >
               <div className="relative rounded-xl overflow-hidden backdrop-blur-lg border border-primary/20 hover:border-primary/40 transition-all duration-300 hover:scale-105 bg-background/40">
                 <div className="aspect-square relative">
-                  <Canvas className="absolute inset-0">
+                  <Canvas>
                     <PerspectiveCamera makeDefault position={[0, 0, 5]} />
                     <OrbitControls 
                       enableZoom={false}

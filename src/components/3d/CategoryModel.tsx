@@ -28,15 +28,15 @@ export const CategoryModel = ({ onClick, modelType }: CategoryModelProps) => {
   const getGeometry = () => {
     switch (modelType) {
       case 'collaboration':
-        return <torusKnotBufferGeometry args={[1, 0.3, 128, 16]} />;
+        return <torusKnotGeometry args={[1, 0.3, 128, 16]} />;
       case 'infrastructure':
-        return <octahedronBufferGeometry args={[1.2]} />;
+        return <octahedronGeometry args={[1.2]} />;
       case 'workspace':
-        return <dodecahedronBufferGeometry args={[1.2]} />;
+        return <dodecahedronGeometry args={[1.2]} />;
       case 'data':
-        return <icosahedronBufferGeometry args={[1.2]} />;
+        return <icosahedronGeometry args={[1.2]} />;
       default:
-        return <sphereBufferGeometry args={[1, 32, 32]} />;
+        return <sphereGeometry args={[1, 32, 32]} />;
     }
   };
 
