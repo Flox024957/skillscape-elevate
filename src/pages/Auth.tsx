@@ -3,18 +3,40 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const Auth = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN") {
         navigate("/dashboard");
+      } else if (event === "USER_UPDATED") {
+        console.log("User updated:", session);
+      } else if (event === "SIGNED_OUT") {
+        console.log("Signed out");
+      } else if (event === "PASSWORD_RECOVERY") {
+        console.log("Password recovery requested");
+      } else if (event === "ERROR") {
+        // Handle any auth errors
+        toast.error("An authentication error occurred. Please try again.");
       }
     });
 
-    return () => subscription.unsubscribe();
+    // Listen specifically for auth errors
+    window.addEventListener('supabase.auth.error', (e: any) => {
+      if (e.detail?.error?.message?.includes('already registered')) {
+        toast.error("This email is already registered. Please sign in instead.");
+      } else {
+        toast.error("An error occurred during authentication.");
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, [navigate]);
 
   const redirectURL = window.location.origin + '/auth';
@@ -70,6 +92,13 @@ const Auth = () => {
               },
             }}
             redirectTo={redirectURL}
+            onError={(error) => {
+              if (error.message.includes('already registered')) {
+                toast.error("This email is already registered. Please sign in instead.");
+              } else {
+                toast.error(error.message);
+              }
+            }}
           />
         </div>
       </div>
