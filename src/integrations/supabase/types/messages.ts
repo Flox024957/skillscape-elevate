@@ -5,4 +5,8 @@ export type Message = {
   content: string;
   read: boolean | null;
   created_at: string;
+  profiles?: {
+    pseudo: string;
+    image_profile: string;
+  };
 };

@@ -5,17 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-
-interface Message {
-  id: string;
-  content: string;
-  created_at: string;
-  sender_id: string;
-  profiles: {
-    pseudo: string;
-    image_profile: string;
-  };
-}
+import { Message } from '@/integrations/supabase/types/messages';
 
 interface ChatSectionProps {
   userId: string;
@@ -114,7 +104,10 @@ export const ChatSection = ({ userId }: ChatSectionProps) => {
             >
               {msg.sender_id !== userId && (
                 <Avatar className="h-8 w-8">
-                  <img src={msg.profiles?.image_profile || '/placeholder.svg'} alt={msg.profiles?.pseudo} />
+                  <img 
+                    src={msg.profiles?.image_profile || '/placeholder.svg'} 
+                    alt={msg.profiles?.pseudo || 'User'} 
+                  />
                 </Avatar>
               )}
               <div className={`glass-panel p-3 max-w-[80%] ${
