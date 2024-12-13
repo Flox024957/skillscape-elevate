@@ -17,6 +17,8 @@ const Auth = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
+  const redirectURL = window.location.origin + '/auth';
+
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="relative w-full max-w-md">
@@ -41,8 +43,7 @@ const Auth = () => {
                 }
               }
             }}
-            providers={["google", "facebook"]}
-            redirectTo={window.location.origin}
+            redirectTo={redirectURL}
           />
         </div>
       </div>
