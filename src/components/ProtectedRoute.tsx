@@ -1,4 +1,6 @@
+import React from 'react';
+
 export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  // Temporarily bypass auth checks
+  // Always render children without any auth checks
   return <>{children}</>;
 };
