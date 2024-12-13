@@ -1,8 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
-import { Database } from "@/integrations/supabase/types";
-import { Skill, transformSkill } from "@/types/skills";
+import { ArrowLeft, PlusCircle } from "lucide-react";
+import { Skill } from "@/types/skills";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -39,9 +38,20 @@ export const SkillDetailContent = ({
             Retour
           </Button>
           
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-            {skill.titre}
-          </h1>
+          <div className="flex items-center justify-between">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+              {skill.titre}
+            </h1>
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => onAddToDashboard("skill", skill.id)}
+              className="group relative flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-orange-500 p-[2px] transition-all duration-300 hover:shadow-[0_0_20px_rgba(139,92,246,0.5)]"
+            >
+              <div className="absolute inset-[1px] rounded-full bg-black/90 group-hover:bg-black/70 transition-colors" />
+              <PlusCircle className="w-6 h-6 text-white relative z-10 group-hover:text-primary transition-colors" />
+            </motion.button>
+          </div>
         </div>
 
         {/* Main Content */}
