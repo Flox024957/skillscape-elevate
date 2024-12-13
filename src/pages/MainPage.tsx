@@ -6,10 +6,10 @@ import { supabase } from "@/integrations/supabase/client";
 
 const getCategoryImage = (index: number) => {
   const images = [
-    '/collaboration.svg',  // Illustration pour la collaboration
-    '/infrastructure.svg', // Illustration pour l'infrastructure
-    '/workspace.svg',      // Illustration pour l'espace de travail
-    '/data.svg'           // Illustration pour les données
+    'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80', // Collaboration - people working together
+    'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80', // Infrastructure - tech/servers
+    'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80', // Workspace - modern office
+    'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80'  // Data - abstract visualization
   ];
   return images[index % images.length];
 };
