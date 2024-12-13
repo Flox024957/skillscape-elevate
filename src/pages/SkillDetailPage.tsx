@@ -3,11 +3,11 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { Database } from "@/integrations/supabase/types";
 import { SkillSection } from "@/components/skill-detail/SkillSection";
 import { ExamplesSection } from "@/components/skill-detail/ExamplesSection";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 
 type Skill = Database['public']['Tables']['skills']['Row'] & {
   categories: Database['public']['Tables']['categories']['Row'] | null;
@@ -16,7 +16,6 @@ type Skill = Database['public']['Tables']['skills']['Row'] & {
 const SkillDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   const { data: skill, isLoading } = useQuery({
     queryKey: ['skill', id],
@@ -35,11 +34,7 @@ const SkillDetailPage = () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        toast({
-          title: "Error",
-          description: "You must be logged in to add content to your dashboard",
-          variant: "destructive",
-        });
+        toast.error("Vous devez être connecté pour ajouter du contenu à votre tableau de bord");
         return;
       }
 
@@ -52,33 +47,22 @@ const SkillDetailPage = () => {
 
       if (error) {
         console.error('Error adding to dashboard:', error);
-        toast({
-          title: "Error",
-          description: "Could not add content to dashboard",
-          variant: "destructive",
-        });
+        toast.error("Impossible d'ajouter le contenu au tableau de bord");
       } else {
-        toast({
-          title: "Success",
-          description: `${type} added to your dashboard`,
-        });
+        toast.success(`${type} ajouté à votre tableau de bord`);
       }
     } catch (error) {
       console.error('Error in addToDashboard:', error);
-      toast({
-        title: "Error",
-        description: "An unexpected error occurred",
-        variant: "destructive",
-      });
+      toast.error("Une erreur inattendue s'est produite");
     }
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>Chargement...</div>;
   }
 
   if (!skill) {
-    return <div>Skill not found</div>;
+    return <div>Compétence non trouvée</div>;
   }
 
   const examples = Array.isArray(skill.examples) ? skill.examples : [];
@@ -94,7 +78,7 @@ const SkillDetailPage = () => {
               onClick={() => navigate(`/category/${skill.category_id}`)}
               className="mb-4"
             >
-              ← Back to {skill.categories?.name}
+              ← Retour à {skill.categories?.name}
             </Button>
             <h1 className="text-3xl font-bold text-white">
               {skill.title}
@@ -104,7 +88,7 @@ const SkillDetailPage = () => {
             onClick={() => navigate("/dashboard")}
             className="glass-panel hover:bg-futuristic-blue/20"
           >
-            Dashboard
+            Tableau de bord
           </Button>
         </div>
 
@@ -114,7 +98,7 @@ const SkillDetailPage = () => {
             animate={{ opacity: 1, y: 0 }}
           >
             <SkillSection
-              title="Summary"
+              title="Résumé"
               content={skill.summary}
               type="Summary"
               onAdd={addToDashboard}
@@ -126,7 +110,7 @@ const SkillDetailPage = () => {
             animate={{ opacity: 1, y: 0 }}
           >
             <SkillSection
-              title="Explanation"
+              title="Explication"
               content={skill.explanation}
               type="Explanation"
               onAdd={addToDashboard}
@@ -138,7 +122,7 @@ const SkillDetailPage = () => {
             animate={{ opacity: 1, y: 0 }}
           >
             <SkillSection
-              title="Concrete Action"
+              title="Action Concrète"
               content={skill.concrete_action}
               type="Action"
               onAdd={addToDashboard}
