@@ -1,7 +1,6 @@
 import { CollapsibleContent } from "@/components/ui/collapsible";
 import SkillSection from "./SkillSection";
 import ExamplesSection from "./ExamplesSection";
-import { Json } from "@/integrations/supabase/types";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface SkillContentProps {
@@ -10,8 +9,8 @@ interface SkillContentProps {
   summary: string | null;
   explanation: string | null;
   concreteAction: string | null;
-  examples: Json[] | null;
-  onAdd: (skillId: string, title: string, content: string | Json[] | null) => void;
+  examples: any[] | null;
+  onAdd: (skillId: string, title: string, content: string | any[] | null) => void;
 }
 
 const SkillContent = ({
@@ -27,7 +26,7 @@ const SkillContent = ({
 
   return (
     <CollapsibleContent className={`p-4 pt-0 space-y-4 ${isMobile ? 'text-sm' : ''}`}>
-      {(!selectedSections || selectedSections.includes('Summary')) && (
+      {(!selectedSections || selectedSections.includes('Résumé')) && (
         <SkillSection
           skillId={skillId}
           title="Résumé"
@@ -35,7 +34,7 @@ const SkillContent = ({
           onAdd={onAdd}
         />
       )}
-      {(!selectedSections || selectedSections.includes('Explanation')) && (
+      {(!selectedSections || selectedSections.includes('Explication')) && (
         <SkillSection
           skillId={skillId}
           title="Explication"
@@ -43,7 +42,7 @@ const SkillContent = ({
           onAdd={onAdd}
         />
       )}
-      {(!selectedSections || selectedSections.includes('Concrete Action')) && (
+      {(!selectedSections || selectedSections.includes('Action Concrète')) && (
         <SkillSection
           skillId={skillId}
           title="Action Concrète"
@@ -51,7 +50,7 @@ const SkillContent = ({
           onAdd={onAdd}
         />
       )}
-      {(!selectedSections || selectedSections.includes('Examples')) && (
+      {(!selectedSections || selectedSections.includes('Exemples')) && (
         <ExamplesSection
           skillId={skillId}
           examples={examples}

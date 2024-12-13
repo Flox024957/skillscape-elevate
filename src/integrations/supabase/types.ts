@@ -262,36 +262,36 @@ export type Database = {
       }
       skills: {
         Row: {
+          action_concrete: string | null
           category_id: string | null
-          concrete_action: string | null
           created_at: string
-          examples: Json | null
-          explanation: string | null
+          exemples: Json | null
+          explication: string | null
           id: string
-          summary: string | null
-          title: string
+          resume: string | null
+          titre: string
           updated_at: string
         }
         Insert: {
+          action_concrete?: string | null
           category_id?: string | null
-          concrete_action?: string | null
           created_at?: string
-          examples?: Json | null
-          explanation?: string | null
+          exemples?: Json | null
+          explication?: string | null
           id?: string
-          summary?: string | null
-          title: string
+          resume?: string | null
+          titre: string
           updated_at?: string
         }
         Update: {
+          action_concrete?: string | null
           category_id?: string | null
-          concrete_action?: string | null
           created_at?: string
-          examples?: Json | null
-          explanation?: string | null
+          exemples?: Json | null
+          explication?: string | null
           id?: string
-          summary?: string | null
-          title?: string
+          resume?: string | null
+          titre?: string
           updated_at?: string
         }
         Relationships: [
@@ -456,33 +456,33 @@ export type Database = {
       user_skills: {
         Row: {
           created_at: string | null
+          est_maitrisee: boolean | null
           id: string
-          is_mastered: boolean | null
-          mastered_at: string | null
+          maitrisee_le: string | null
           notes: string | null
-          selected_sections: string[] | null
+          sections_selectionnees: string[] | null
           skill_id: string | null
           updated_at: string | null
           user_id: string | null
         }
         Insert: {
           created_at?: string | null
+          est_maitrisee?: boolean | null
           id?: string
-          is_mastered?: boolean | null
-          mastered_at?: string | null
+          maitrisee_le?: string | null
           notes?: string | null
-          selected_sections?: string[] | null
+          sections_selectionnees?: string[] | null
           skill_id?: string | null
           updated_at?: string | null
           user_id?: string | null
         }
         Update: {
           created_at?: string | null
+          est_maitrisee?: boolean | null
           id?: string
-          is_mastered?: boolean | null
-          mastered_at?: string | null
+          maitrisee_le?: string | null
           notes?: string | null
-          selected_sections?: string[] | null
+          sections_selectionnees?: string[] | null
           skill_id?: string | null
           updated_at?: string | null
           user_id?: string | null

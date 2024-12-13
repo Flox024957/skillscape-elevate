@@ -18,7 +18,7 @@ export const SkillDetailContent = ({
   onNavigateBack,
   onAddToDashboard 
 }: SkillDetailContentProps) => {
-  const examples = Array.isArray(skill.examples) ? skill.examples : [];
+  const exemples = Array.isArray(skill.exemples) ? skill.exemples : [];
 
   return (
     <div className="container max-w-4xl px-4 py-8">
@@ -33,7 +33,7 @@ export const SkillDetailContent = ({
 
       <div className="space-y-8">
         <div>
-          <h1 className="text-4xl font-bold mb-4">{skill.title}</h1>
+          <h1 className="text-4xl font-bold mb-4">{skill.titre}</h1>
           {skill.categories?.name && (
             <div className="text-muted-foreground">
               Catégorie: {skill.categories.name}
@@ -41,39 +41,39 @@ export const SkillDetailContent = ({
           )}
         </div>
 
-        {skill.summary && (
+        {skill.resume && (
           <Alert>
             <AlertDescription className="text-lg">
-              {skill.summary}
+              {skill.resume}
             </AlertDescription>
           </Alert>
         )}
 
-        {skill.explanation && (
+        {skill.explication && (
           <section className="space-y-4">
             <h2 className="text-2xl font-semibold">Explication</h2>
             <p className="text-muted-foreground leading-relaxed">
-              {skill.explanation}
+              {skill.explication}
             </p>
           </section>
         )}
 
-        {skill.concrete_action && (
+        {skill.action_concrete && (
           <section className="space-y-4">
             <h2 className="text-2xl font-semibold">Action Concrète</h2>
             <p className="text-muted-foreground leading-relaxed">
-              {skill.concrete_action}
+              {skill.action_concrete}
             </p>
           </section>
         )}
 
-        {examples.length > 0 && (
+        {exemples.length > 0 && (
           <section className="space-y-4">
             <h2 className="text-2xl font-semibold">Exemples</h2>
             <div className="space-y-3">
-              {examples.map((example, index) => (
+              {exemples.map((exemple, index) => (
                 <p key={index} className="text-muted-foreground leading-relaxed">
-                  {String(example)}
+                  {String(exemple)}
                 </p>
               ))}
             </div>
