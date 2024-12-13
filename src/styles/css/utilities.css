@@ -2,6 +2,7 @@
   .glass-panel {
     @apply bg-futuristic-gray/30 backdrop-blur-md rounded-lg border-2 border-transparent transition-all duration-1000;
     position: relative;
+    z-index: 1; /* Ensure the panel itself doesn't block interactions */
   }
 
   .glass-panel:hover {
@@ -11,16 +12,20 @@
   .glass-panel::before {
     content: '';
     @apply absolute inset-0 border-2 border-transparent rounded-lg;
-    z-index: 1;
+    z-index: -1; /* Move the decorative effect behind */
   }
 
   .futuristic-text {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-futuristic-blue to-futuristic-violet;
     background-size: 200% 200%;
     animation: gradient 48s ease infinite;
+    position: relative;
+    z-index: 2; /* Ensure text stays clickable */
   }
 
   .hover-lift {
     @apply transition-all duration-300 hover:-translate-y-1;
+    position: relative;
+    z-index: 2; /* Ensure hover effects work */
   }
 }

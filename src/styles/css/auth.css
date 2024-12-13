@@ -1,5 +1,7 @@
 .auth-container {
   font-family: ui-rounded, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  position: relative;
+  z-index: 2; /* Ensure auth container stays on top */
 }
 
 .auth-input::placeholder {

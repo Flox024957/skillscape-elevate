@@ -10,14 +10,20 @@
          disabled:opacity-50 disabled:cursor-not-allowed;
   background-size: 200% 200%;
   animation: gradient 48s ease infinite;
+  position: relative;
+  z-index: 3; /* Ensure buttons stay on top */
 }
 
 .futuristic-input {
   @apply bg-futuristic-gray/30 backdrop-blur-md border-2 border-futuristic-blue/20
          focus:border-futuristic-violet/50 focus:ring-1 focus:ring-futuristic-violet/30
          rounded-lg px-4 py-2 text-white placeholder-gray-400;
+  position: relative;
+  z-index: 3; /* Ensure inputs stay on top */
 }
 
 .futuristic-card {
   @apply glass-panel hover-lift cursor-pointer;
+  position: relative;
+  z-index: 2; /* Ensure cards stay clickable */
 }
