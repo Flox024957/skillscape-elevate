@@ -52,8 +52,8 @@ const FriendItem = memo(({ friend, variant, onClick }: { friend: Friend, variant
           <h3 className="font-medium">{friend.pseudo}</h3>
         </div>
       </button>
-      <Button variant="ghost" size="sm">
-        Message
+      <Button variant="ghost" size="sm" onClick={() => navigate(`/profile/${friend.id}`)}>
+        Voir le profil
       </Button>
     </div>
   );
