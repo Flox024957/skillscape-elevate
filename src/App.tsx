@@ -36,15 +36,15 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
-        <Sonner />
         <BrowserRouter>
-          <div className="min-h-screen bg-background relative">
+          <div className="min-h-screen bg-background">
             {isAuthenticated && <Navbar />}
             <main className={cn(
-              "w-full",
-              isAuthenticated && "pt-16 pb-16 md:pb-0 md:pt-16"
+              "relative w-full",
+              isAuthenticated && "pt-16"
             )}>
+              <Toaster />
+              <Sonner />
               <AppRoutes isAuthenticated={isAuthenticated} />
             </main>
           </div>

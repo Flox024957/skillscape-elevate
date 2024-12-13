@@ -7,15 +7,25 @@ const MainPage = () => {
   const { data: categories, isLoading } = useQuery({
     queryKey: ['categories'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      console.log('Fetching categories...');
+      const { data: categoriesData, error: categoriesError } = await supabase
         .from('categories')
-        .select('*');
+        .select(`
+          *,
+          skills (
+            id,
+            title,
+            summary
+          )
+        `);
       
-      if (error) {
-        console.error('Error fetching categories:', error);
-        throw error;
+      if (categoriesError) {
+        console.error('Error fetching categories:', categoriesError);
+        throw categoriesError;
       }
-      return data;
+      
+      console.log('Categories fetched:', categoriesData);
+      return categoriesData;
     },
   });
 

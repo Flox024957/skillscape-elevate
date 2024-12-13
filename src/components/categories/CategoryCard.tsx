@@ -5,6 +5,12 @@ import { cn } from "@/lib/utils";
 import { CategoryImage } from "./CategoryImage";
 import { CategoryContent } from "./CategoryContent";
 
+interface Skill {
+  id: string;
+  title: string;
+  summary?: string;
+}
+
 interface CategoryCardProps {
   id: string;
   name: string;
@@ -12,9 +18,18 @@ interface CategoryCardProps {
   imageUrl: string;
   imagePosition: string;
   index: number;
+  skills?: Skill[];
 }
 
-export const CategoryCard = ({ id, name, description, imageUrl, imagePosition, index }: CategoryCardProps) => {
+export const CategoryCard = ({ 
+  id, 
+  name, 
+  description, 
+  imageUrl, 
+  imagePosition, 
+  index,
+  skills 
+}: CategoryCardProps) => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
 
@@ -45,6 +60,7 @@ export const CategoryCard = ({ id, name, description, imageUrl, imagePosition, i
       <CategoryContent 
         name={name}
         description={description}
+        skillsCount={skills?.length || 0}
         isMobile={isMobile}
       />
       <div className="absolute inset-0 border border-primary/0 rounded-xl opacity-0 
