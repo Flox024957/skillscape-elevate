@@ -33,14 +33,14 @@ export const SearchBar = () => {
       const { data, error } = await supabase
         .from('profiles')
         .select('id, pseudo, image_profile, current_job')
-        .ilike('pseudo', `${searchQuery}%`) // Changé pour chercher les profils qui commencent par la recherche
+        .ilike('pseudo', `%${searchQuery}%`) // Modifié pour chercher le texte n'importe où dans le pseudo
         .limit(5);
 
       if (error) throw error;
       return data as SearchResult[];
     },
     enabled: searchQuery.length > 0,
-    staleTime: 1000, // Cache les résultats pendant 1 seconde
+    staleTime: 1000,
     refetchOnWindowFocus: false,
   });
 
