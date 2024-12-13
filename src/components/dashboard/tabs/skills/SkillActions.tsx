@@ -17,7 +17,7 @@ const SkillActions = ({ skillId, onAdd, isMastered }: SkillActionsProps) => {
   const deleteSkillMutation = useMutation({
     mutationFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Utilisateur non authentifié");
+      if (!user) throw new Error("User not authenticated");
 
       const { error: deleteError } = await supabase
         .from('user_skills')
@@ -30,14 +30,14 @@ const SkillActions = ({ skillId, onAdd, isMastered }: SkillActionsProps) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userSkills'] });
       toast({
-        title: "Succès",
-        description: "Compétence supprimée avec succès",
+        title: "Success",
+        description: "Skill deleted successfully",
       });
     },
     onError: (error) => {
       toast({
-        title: "Erreur",
-        description: error instanceof Error ? error.message : "Impossible de supprimer la compétence",
+        title: "Error",
+        description: error instanceof Error ? error.message : "Unable to delete skill",
         variant: "destructive",
       });
     },
@@ -46,13 +46,13 @@ const SkillActions = ({ skillId, onAdd, isMastered }: SkillActionsProps) => {
   const markAsMasteredMutation = useMutation({
     mutationFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Utilisateur non authentifié");
+      if (!user) throw new Error("User not authenticated");
 
       const { error: updateError } = await supabase
         .from('user_skills')
         .update({
-          est_maitrisee: true,
-          maitrisee_le: new Date().toISOString(),
+          is_mastered: true,
+          mastered_at: new Date().toISOString(),
         })
         .eq('user_id', user.id)
         .eq('skill_id', skillId);
@@ -63,14 +63,14 @@ const SkillActions = ({ skillId, onAdd, isMastered }: SkillActionsProps) => {
       queryClient.invalidateQueries({ queryKey: ['userSkills'] });
       queryClient.invalidateQueries({ queryKey: ['masteredSkills'] });
       toast({
-        title: "Succès",
-        description: "Compétence marquée comme maîtrisée",
+        title: "Success",
+        description: "Skill marked as mastered",
       });
     },
     onError: (error) => {
       toast({
-        title: "Erreur",
-        description: error instanceof Error ? error.message : "Impossible de marquer la compétence comme maîtrisée",
+        title: "Error",
+        description: error instanceof Error ? error.message : "Unable to mark skill as mastered",
         variant: "destructive",
       });
     },

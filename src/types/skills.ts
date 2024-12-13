@@ -2,28 +2,28 @@ import { Json } from "@/integrations/supabase/types";
 
 export interface Skill {
   id: string;
-  titre: string;
-  resume: string | null;
-  explication: string | null;
-  action_concrete: string | null;
-  exemples: Json[] | null;
+  title: string;
+  summary: string | null;
+  explanation: string | null;
+  concrete_action: string | null;
+  examples: Json[] | null;
   category_id: string | null;
 }
 
 export interface UserSkill {
   skill_id: string;
-  sections_selectionnees: string[] | null;
-  est_maitrisee: boolean;
-  maitrisee_le: string | null;
+  selected_sections: string[] | null;
+  is_mastered: boolean;
+  mastered_at: string | null;
   skills: Skill;
 }
 
 export interface MasteredSkill {
   skill_id: string;
-  maitrisee_le: string;
+  mastered_at: string;
   skills: {
     id: string;
-    titre: string;
-    resume: string | null;
+    title: string;
+    summary: string | null;
   };
 }

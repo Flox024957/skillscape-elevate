@@ -45,20 +45,20 @@ const SkillsTab = () => {
         .from('user_skills')
         .select(`
           skill_id,
-          sections_selectionnees,
-          est_maitrisee,
-          maitrisee_le,
+          selected_sections,
+          is_mastered,
+          mastered_at,
           skills (
             id,
-            titre,
-            resume,
-            explication,
-            action_concrete,
-            exemples
+            title,
+            summary,
+            explanation,
+            concrete_action,
+            examples
           )
         `)
         .eq('user_id', user.id)
-        .eq('est_maitrisee', false);
+        .eq('is_mastered', false);
       
       if (error) throw error;
       
@@ -79,8 +79,8 @@ const SkillsTab = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         toast({
-          title: "Erreur",
-          description: "Vous devez être connecté pour effectuer cette action",
+          title: "Error",
+          description: "You must be logged in to perform this action",
           variant: "destructive",
         });
         return;
@@ -89,10 +89,10 @@ const SkillsTab = () => {
       if (!content) return;
 
       const existingSkill = userSkills.find(skill => skill.skill_id === skillId);
-      let sections_selectionnees = existingSkill?.sections_selectionnees || [];
+      let selected_sections = existingSkill?.selected_sections || [];
 
-      if (!sections_selectionnees.includes(sectionTitle)) {
-        sections_selectionnees = [...sections_selectionnees, sectionTitle];
+      if (!selected_sections.includes(sectionTitle)) {
+        selected_sections = [...selected_sections, sectionTitle];
       }
 
       const { error } = await supabase
@@ -100,23 +100,23 @@ const SkillsTab = () => {
         .upsert({
           user_id: user.id,
           skill_id: skillId,
-          sections_selectionnees,
+          selected_sections,
         });
 
       if (error) {
-        console.error('Erreur lors de la mise à jour des sections:', error);
+        console.error('Error updating sections:', error);
         toast({
-          title: "Erreur",
-          description: "Impossible de mettre à jour les sections",
+          title: "Error",
+          description: "Unable to update sections",
           variant: "destructive",
         });
         return;
       }
     } catch (error) {
-      console.error('Erreur:', error);
+      console.error('Error:', error);
       toast({
-        title: "Erreur",
-        description: "Une erreur est survenue",
+        title: "Error",
+        description: "An error occurred",
         variant: "destructive",
       });
     }
@@ -149,19 +149,19 @@ const SkillsTab = () => {
                 className="bg-card rounded-lg border border-border overflow-hidden flex-1"
               >
                 <SkillHeader
-                  title={userSkill.skills.titre}
-                  selectedSections={userSkill.sections_selectionnees}
+                  title={userSkill.skills.title}
+                  selectedSections={userSkill.selected_sections}
                   skillId={userSkill.skill_id}
                   onAdd={handleAddSkillSection}
-                  isMastered={userSkill.est_maitrisee}
+                  isMastered={userSkill.is_mastered}
                 />
                 <SkillContent
                   skillId={userSkill.skill_id}
-                  selectedSections={userSkill.sections_selectionnees}
-                  summary={userSkill.skills.resume}
-                  explanation={userSkill.skills.explication}
-                  concreteAction={userSkill.skills.action_concrete}
-                  examples={userSkill.skills.exemples}
+                  selectedSections={userSkill.selected_sections}
+                  summary={userSkill.skills.summary}
+                  explanation={userSkill.skills.explanation}
+                  concreteAction={userSkill.skills.concrete_action}
+                  examples={userSkill.skills.examples}
                   onAdd={handleAddSkillSection}
                 />
               </Collapsible>

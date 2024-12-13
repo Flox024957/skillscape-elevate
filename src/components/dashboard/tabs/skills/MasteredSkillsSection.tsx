@@ -19,15 +19,15 @@ const MasteredSkillsSection = () => {
         .from('user_skills')
         .select(`
           skill_id,
-          maitrisee_le,
+          mastered_at,
           skills (
             id,
-            titre,
-            resume
+            title,
+            summary
           )
         `)
         .eq('user_id', user.id)
-        .eq('est_maitrisee', true);
+        .eq('is_mastered', true);
 
       if (error) throw error;
       return data || [];
@@ -37,13 +37,13 @@ const MasteredSkillsSection = () => {
   const removeMasteredSkillMutation = useMutation({
     mutationFn: async (skillId: string) => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Utilisateur non authentifié");
+      if (!user) throw new Error("User not authenticated");
 
       const { error } = await supabase
         .from('user_skills')
         .update({ 
-          est_maitrisee: false, 
-          maitrisee_le: null 
+          is_mastered: false, 
+          mastered_at: null 
         })
         .eq('user_id', user.id)
         .eq('skill_id', skillId);
@@ -54,14 +54,14 @@ const MasteredSkillsSection = () => {
       queryClient.invalidateQueries({ queryKey: ['masteredSkills'] });
       queryClient.invalidateQueries({ queryKey: ['userSkills'] });
       toast({
-        title: "Succès",
-        description: "Compétence retirée des compétences maîtrisées",
+        title: "Success",
+        description: "Skill removed from mastered skills",
       });
     },
     onError: () => {
       toast({
-        title: "Erreur",
-        description: "Impossible de retirer la compétence",
+        title: "Error",
+        description: "Unable to remove skill",
         variant: "destructive",
       });
     },
@@ -70,7 +70,7 @@ const MasteredSkillsSection = () => {
   if (!masteredSkills.length) {
     return (
       <div className="text-center text-muted-foreground p-4">
-        Aucune compétence maîtrisée pour le moment
+        No mastered skills yet
       </div>
     );
   }
@@ -81,12 +81,12 @@ const MasteredSkillsSection = () => {
         <div key={skill.skill_id} className="bg-card/50 p-4 rounded-lg border border-border">
           <div className="flex justify-between items-start">
             <div>
-              <h3 className="font-medium">{skill.skills.titre}</h3>
-              {skill.skills.resume && (
-                <p className="text-sm text-muted-foreground mt-1">{skill.skills.resume}</p>
+              <h3 className="font-medium">{skill.skills.title}</h3>
+              {skill.skills.summary && (
+                <p className="text-sm text-muted-foreground mt-1">{skill.skills.summary}</p>
               )}
               <p className="text-xs text-muted-foreground mt-2">
-                Maîtrisée le {new Date(skill.maitrisee_le).toLocaleDateString()}
+                Mastered on {new Date(skill.mastered_at).toLocaleDateString()}
               </p>
             </div>
             <Button
