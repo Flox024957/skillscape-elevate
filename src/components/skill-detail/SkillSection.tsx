@@ -12,19 +12,19 @@ export const SkillSection = ({ title, content, type, onAdd }: SkillSectionProps)
   if (!content) return null;
   
   return (
-    <div className="glass-panel p-6">
-      <div className="flex justify-between items-start">
-        <div className="flex-1 mr-4">
+    <div className="bg-card p-6 rounded-lg border border-border">
+      <div className="flex justify-between items-start gap-4">
+        <div className="flex-1">
           <h3 className="text-xl font-semibold mb-2">{title}</h3>
-          <p className="text-gray-400">{content}</p>
+          <p className="text-muted-foreground">{content}</p>
         </div>
         <Button
           size="icon"
-          variant="ghost"
+          variant="outline"
           onClick={() => onAdd(type, content)}
-          className="hover:bg-futuristic-blue/20"
+          className="shrink-0"
         >
-          <Plus className="w-5 h-5" />
+          <Plus className="h-4 w-4" />
         </Button>
       </div>
     </div>

@@ -1,5 +1,4 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -62,7 +61,7 @@ const SkillDetailPage = () => {
   const examples = Array.isArray(skill.examples) ? skill.examples : [];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-futuristic-black to-futuristic-black/95">
+    <div className="min-h-screen bg-background">
       <Toaster />
       <div className="container px-4 py-8">
         <div className="flex justify-between items-center mb-8">
@@ -74,13 +73,10 @@ const SkillDetailPage = () => {
             >
               ← Back to {skill.categories?.name}
             </Button>
-            <h1 className="text-3xl font-bold text-white">
-              {skill.title}
-            </h1>
+            <h1 className="text-3xl font-bold">{skill.title}</h1>
           </div>
           <Button
             onClick={() => navigate("/dashboard")}
-            className="glass-panel hover:bg-futuristic-blue/20"
           >
             Dashboard
           </Button>
