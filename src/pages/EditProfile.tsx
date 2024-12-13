@@ -31,7 +31,13 @@ const EditProfile = () => {
   const form = useForm<ProfileFormValues>({
     defaultValues: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return {};
+      if (!user) return {
+        pseudo: '',
+        description: '',
+        current_job: '',
+        dream_job: '',
+        image_profile: ''
+      };
 
       const { data: profile } = await supabase
         .from('profiles')
@@ -39,7 +45,13 @@ const EditProfile = () => {
         .eq('id', user.id)
         .single();
 
-      return profile || {};
+      return profile || {
+        pseudo: '',
+        description: '',
+        current_job: '',
+        dream_job: '',
+        image_profile: ''
+      };
     }
   });
 

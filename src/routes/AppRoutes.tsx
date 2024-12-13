@@ -12,24 +12,7 @@ import EditProfile from "@/pages/EditProfile";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
-export const AppRoutes = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setIsAuthenticated(!!session);
-    };
-
-    checkAuth();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsAuthenticated(!!session);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
+const AppRoutes = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
   return (
     <Routes>
       <Route path="/auth" element={<Auth />} />
@@ -100,3 +83,5 @@ export const AppRoutes = () => {
     </Routes>
   );
 };
+
+export { AppRoutes };
