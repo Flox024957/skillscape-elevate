@@ -16,6 +16,7 @@ export const useSkillQuery = (id: string | undefined) => {
 
       // Clean the ID if it comes from a route parameter
       const cleanId = id.replace('skill/', '');
+      console.log('Fetching skill with cleaned ID:', cleanId);
       
       const { data: skillData, error: skillError } = await supabase
         .from('skills')
