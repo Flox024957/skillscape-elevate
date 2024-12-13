@@ -4,12 +4,12 @@
 }
 
 .futuristic-button {
-  @apply bg-gradient-to-r from-futuristic-blue to-futuristic-violet 
+  @apply bg-gradient-to-r from-futuristic-blue via-neon-orange to-neon-purple 
          hover:opacity-90 text-white px-6 py-3 rounded-lg
          transition-all duration-1000 shadow-[0_0_10mm_rgba(0,163,255,0.5)]
          disabled:opacity-50 disabled:cursor-not-allowed;
-  background-size: 200% 200%;
-  animation: gradient 240s ease infinite;
+  background-size: 300% 300%;
+  animation: gradient 240s ease-in-out infinite;
   position: relative;
   z-index: 3; /* Ensure buttons stay on top */
 }

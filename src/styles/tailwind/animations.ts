@@ -2,26 +2,20 @@ export const animations = {
   keyframes: {
     "neon-border": {
       "0%, 100%": {
-        "box-shadow": "0 0 10mm theme('colors.neon.purple'), 0 0 10mm theme('colors.neon.purple'), 0 0 10mm theme('colors.neon.purple')",
-        "border-color": "theme('colors.neon.purple')"
-      },
-      "25%": {
-        "box-shadow": "0 0 10mm theme('colors.neon.pink'), 0 0 10mm theme('colors.neon.pink'), 0 0 10mm theme('colors.neon.pink')",
-        "border-color": "theme('colors.neon.pink')"
-      },
-      "50%": {
-        "box-shadow": "0 0 10mm theme('colors.neon.orange'), 0 0 10mm theme('colors.neon.orange'), 0 0 10mm theme('colors.neon.orange')",
-        "border-color": "theme('colors.neon.orange')"
-      },
-      "75%": {
         "box-shadow": "0 0 10mm theme('colors.neon.blue'), 0 0 10mm theme('colors.neon.blue'), 0 0 10mm theme('colors.neon.blue')",
-        "border-color": "theme('colors.neon.blue')"
+        "border-color": "theme('colors.neon.blue')",
+        "opacity": "1"
+      },
+      "33%": {
+        "box-shadow": "0 0 10mm theme('colors.neon.orange'), 0 0 10mm theme('colors.neon.orange'), 0 0 10mm theme('colors.neon.orange')",
+        "border-color": "theme('colors.neon.orange')",
+        "opacity": "1"
+      },
+      "66%": {
+        "box-shadow": "0 0 10mm theme('colors.neon.purple'), 0 0 10mm theme('colors.neon.purple'), 0 0 10mm theme('colors.neon.purple')",
+        "border-color": "theme('colors.neon.purple')",
+        "opacity": "1"
       }
-    },
-    gradient: {
-      "0%": { "background-position": "0% 50%" },
-      "50%": { "background-position": "100% 50%" },
-      "100%": { "background-position": "0% 50%" },
     },
     "fade-in": {
       "0%": { opacity: "0", transform: "translateY(10px)" },
@@ -29,8 +23,8 @@ export const animations = {
     },
   },
   animation: {
-    "neon-pulse": "neon-border 240s linear infinite",
-    "snake-border": "neon-border 240s linear infinite",
+    "neon-pulse": "neon-border 240s ease-in-out infinite",
+    "snake-border": "neon-border 240s ease-in-out infinite",
     "fade-in": "fade-in 0.3s ease-out",
   },
 };
