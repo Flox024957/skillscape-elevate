@@ -16,13 +16,22 @@ interface Skill {
   category_id: string;
 }
 
+const isValidUUID = (uuid: string) => {
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  return uuidRegex.test(uuid);
+};
+
 const CategoryPage = () => {
   const { categoryId } = useParams();
   const navigate = useNavigate();
 
-  const { data: category } = useQuery({
+  const { data: category, isError: isCategoryError } = useQuery({
     queryKey: ['category', categoryId],
     queryFn: async () => {
+      if (!categoryId || !isValidUUID(categoryId)) {
+        throw new Error('Invalid category ID');
+      }
+
       const { data, error } = await supabase
         .from('categories')
         .select('*')
@@ -32,11 +41,16 @@ const CategoryPage = () => {
       if (error) throw error;
       return data;
     },
+    enabled: Boolean(categoryId) && isValidUUID(categoryId),
   });
 
-  const { data: skills = [] } = useQuery({
+  const { data: skills = [], isError: isSkillsError } = useQuery({
     queryKey: ['categorySkills', categoryId],
     queryFn: async () => {
+      if (!categoryId || !isValidUUID(categoryId)) {
+        throw new Error('Invalid category ID');
+      }
+
       const { data, error } = await supabase
         .from('skills')
         .select('*')
@@ -45,6 +59,7 @@ const CategoryPage = () => {
       if (error) throw error;
       return data;
     },
+    enabled: Boolean(categoryId) && isValidUUID(categoryId),
   });
 
   const handleSkillClick = (skillId: string) => {
@@ -88,6 +103,19 @@ const CategoryPage = () => {
       toast.error("Une erreur est survenue lors de l'ajout de la compétence");
     }
   };
+
+  if (isCategoryError || isSkillsError) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <p className="text-xl text-red-500">Une erreur est survenue</p>
+          <Button variant="outline" onClick={() => navigate('/')}>
+            Retour à l'accueil
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   if (!category) {
     return (
