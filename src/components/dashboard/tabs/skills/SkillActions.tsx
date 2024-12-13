@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Plus, Check } from "lucide-react";
+import { Trash, Check } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -13,6 +13,35 @@ interface SkillActionsProps {
 const SkillActions = ({ skillId, onAdd, isMastered }: SkillActionsProps) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  const deleteSkillMutation = useMutation({
+    mutationFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Utilisateur non authentifié");
+
+      const { error: deleteError } = await supabase
+        .from('user_skills')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('skill_id', skillId);
+
+      if (deleteError) throw deleteError;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['userSkills'] });
+      toast({
+        title: "Succès",
+        description: "Compétence supprimée avec succès",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erreur",
+        description: error instanceof Error ? error.message : "Impossible de supprimer la compétence",
+        variant: "destructive",
+      });
+    },
+  });
 
   const markAsMasteredMutation = useMutation({
     mutationFn: async () => {
@@ -76,11 +105,11 @@ const SkillActions = ({ skillId, onAdd, isMastered }: SkillActionsProps) => {
         variant="ghost"
         onClick={(e) => {
           e.stopPropagation(); // Prevent collapsible from toggling
-          onAdd(skillId, "title", "content");
+          deleteSkillMutation.mutate();
         }}
-        className="hover:bg-accent"
+        className="hover:bg-destructive/10 hover:text-destructive"
       >
-        <Plus className="h-4 w-4" />
+        <Trash className="h-4 w-4" />
       </Button>
       {!isMastered && (
         <Button
