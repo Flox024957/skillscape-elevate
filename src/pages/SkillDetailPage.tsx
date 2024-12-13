@@ -20,7 +20,6 @@ const SkillDetailPage = () => {
     queryKey: ['skill', id],
     queryFn: async () => {
       if (!id) {
-        console.error('No skill ID provided');
         throw new Error('No skill ID provided');
       }
       
@@ -51,6 +50,8 @@ const SkillDetailPage = () => {
       console.log('Skill data received:', data);
       return data as Skill;
     },
+    enabled: !!id,
+    retry: false
   });
 
   const addToDashboard = async (type: string, content: string) => {
@@ -70,11 +71,15 @@ const SkillDetailPage = () => {
         }]);
 
       if (error) {
-        console.error('Error adding to dashboard:', error);
-        toast.error("Impossible d'ajouter la compétence au tableau de bord");
-      } else {
-        toast.success("Compétence ajoutée au tableau de bord");
+        if (error.code === '23505') {
+          toast.error("Cette compétence est déjà dans votre tableau de bord");
+        } else {
+          toast.error("Impossible d'ajouter la compétence au tableau de bord");
+        }
+        return;
       }
+
+      toast.success("Compétence ajoutée au tableau de bord");
     } catch (error) {
       console.error('Error adding to dashboard:', error);
       toast.error("Une erreur est survenue");
