@@ -16,9 +16,12 @@ const SkillDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { data: skill, isLoading } = useQuery({
+  const { data: skill, isLoading, error } = useQuery({
     queryKey: ['skill', id],
     queryFn: async () => {
+      if (!id) {
+        throw new Error('Skill ID is required');
+      }
       const { data, error } = await supabase
         .from('skills')
         .select('*, categories(*)')
@@ -27,6 +30,7 @@ const SkillDetailPage = () => {
       if (error) throw error;
       return data as Skill;
     },
+    enabled: !!id, // Only run the query if we have an ID
   });
 
   const addToDashboard = async (type: string, content: string) => {
@@ -51,11 +55,26 @@ const SkillDetailPage = () => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container px-4 py-8">
+          <div>Loading...</div>
+        </div>
+      </div>
+    );
   }
 
-  if (!skill) {
-    return <div>Skill not found</div>;
+  if (error || !skill) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container px-4 py-8">
+          <div>
+            <h2 className="text-xl font-semibold mb-4">Error loading skill</h2>
+            <Button onClick={() => navigate(-1)}>Go Back</Button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   const examples = Array.isArray(skill.examples) ? skill.examples : [];
