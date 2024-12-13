@@ -23,10 +23,11 @@ const SkillDetailPage = () => {
       console.log('Fetching skill with ID:', id);
       
       if (!id) {
+        console.error('No skill ID provided');
         throw new Error('No skill ID provided');
       }
       
-      const { data, error } = await supabase
+      const { data: skillData, error } = await supabase
         .from('skills')
         .select(`
           *,
@@ -44,50 +45,17 @@ const SkillDetailPage = () => {
         throw error;
       }
 
-      if (!data) {
+      if (!skillData) {
         console.error('No data found for skill ID:', id);
         throw new Error('Skill not found');
       }
 
-      console.log('Skill data received:', data);
-      return data as Skill;
+      console.log('Skill data received:', skillData);
+      return skillData as Skill;
     },
-    enabled: !!id,
-    retry: false,
+    retry: 1,
     staleTime: 1000 * 60 * 5 // Cache for 5 minutes
   });
-
-  const addToDashboard = async (type: string, content: string) => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast.error("Vous devez être connecté pour ajouter une compétence");
-        return;
-      }
-
-      const { error } = await supabase
-        .from('user_skills')
-        .insert([{
-          user_id: user.id,
-          skill_id: id,
-          selected_sections: [type]
-        }]);
-
-      if (error) {
-        if (error.code === '23505') {
-          toast.error("Cette compétence est déjà dans votre tableau de bord");
-        } else {
-          toast.error("Impossible d'ajouter la compétence au tableau de bord");
-        }
-        return;
-      }
-
-      toast.success("Compétence ajoutée au tableau de bord");
-    } catch (error) {
-      console.error('Error adding to dashboard:', error);
-      toast.error("Une erreur est survenue");
-    }
-  };
 
   if (isLoading) {
     return (
@@ -133,9 +101,7 @@ const SkillDetailPage = () => {
             </Button>
             <h1 className="text-3xl font-bold">{skill.title}</h1>
           </div>
-          <Button
-            onClick={() => navigate("/dashboard")}
-          >
+          <Button onClick={() => navigate("/dashboard")}>
             Tableau de bord
           </Button>
         </div>
@@ -172,6 +138,65 @@ const SkillDetailPage = () => {
       </div>
     </div>
   );
+
+  async function addToDashboard(type: string, content: string) {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("Vous devez être connecté pour ajouter une compétence");
+        return;
+      }
+
+      const { error: existingError, data: existingSkill } = await supabase
+        .from('user_skills')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('skill_id', id)
+        .single();
+
+      if (existingSkill) {
+        // Update selected sections if skill already exists
+        const newSections = existingSkill.selected_sections || [];
+        if (!newSections.includes(type)) {
+          newSections.push(type);
+          const { error: updateError } = await supabase
+            .from('user_skills')
+            .update({ selected_sections: newSections })
+            .eq('user_id', user.id)
+            .eq('skill_id', id);
+
+          if (updateError) {
+            console.error('Error updating sections:', updateError);
+            toast.error("Impossible de mettre à jour les sections");
+            return;
+          }
+          toast.success("Section ajoutée au tableau de bord");
+        } else {
+          toast.info("Cette section est déjà dans votre tableau de bord");
+        }
+        return;
+      }
+
+      const { error } = await supabase
+        .from('user_skills')
+        .insert([{
+          user_id: user.id,
+          skill_id: id,
+          selected_sections: [type]
+        }]);
+
+      if (error) {
+        console.error('Error adding skill:', error);
+        toast.error("Impossible d'ajouter la compétence au tableau de bord");
+        return;
+      }
+
+      toast.success("Compétence ajoutée au tableau de bord");
+    } catch (error) {
+      console.error('Error adding to dashboard:', error);
+      toast.error("Une erreur est survenue");
+    }
+  }
 };
 
 export default SkillDetailPage;
