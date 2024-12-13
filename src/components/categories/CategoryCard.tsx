@@ -1,6 +1,9 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
+import { CategoryImage } from "./CategoryImage";
+import { CategoryContent } from "./CategoryContent";
 
 interface CategoryCardProps {
   id: string;
@@ -34,35 +37,16 @@ export const CategoryCard = ({ id, name, description, imageUrl, imagePosition, i
       )}
       onClick={handleClick}
     >
-      <motion.div
-        className={`absolute inset-0 bg-[url('${imageUrl}')] bg-cover ${imagePosition} 
-                    transition-all duration-700 ease-out opacity-80 group-hover:opacity-100 
-                    group-hover:scale-105`}
-        whileHover={{ scale: 1.05 }}
-        id={`category-${id}`}
+      <CategoryImage 
+        id={id}
+        imageUrl={imageUrl}
+        imagePosition={imagePosition}
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 
-                      to-transparent opacity-90 group-hover:opacity-70 transition-all duration-500" />
-      
-      <div className="absolute inset-0 flex flex-col justify-end p-4 md:p-6 transform 
-                      translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-        <h3 className={cn(
-          "font-bold mb-2 md:mb-3 text-white group-hover:text-primary",
-          "transition-all duration-300 transform group-hover:scale-105",
-          isMobile ? "text-lg" : "text-xl"
-        )}>
-          {name}
-        </h3>
-        <p className={cn(
-          "text-white/70 line-clamp-2 transform translate-y-4",
-          "opacity-0 group-hover:opacity-100 group-hover:translate-y-0",
-          "transition-all duration-500",
-          isMobile ? "text-xs" : "text-sm"
-        )}>
-          {description}
-        </p>
-      </div>
-
+      <CategoryContent 
+        name={name}
+        description={description}
+        isMobile={isMobile}
+      />
       <div className="absolute inset-0 border border-primary/0 rounded-xl opacity-0 
                       group-hover:opacity-100 group-hover:border-primary/30 transition-all 
                       duration-500 shadow-[0_0_15px_rgba(139,92,246,0.3)] pointer-events-none" />
