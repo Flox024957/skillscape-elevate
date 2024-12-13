@@ -61,7 +61,7 @@ const MainPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background bg-[url('/lovable-uploads/e9c7503e-7d72-442d-88b3-fb71c139dd55.png')] bg-cover bg-center bg-no-repeat bg-fixed">
+    <div className="min-h-screen bg-background bg-[url('/lovable-uploads/a4696846-0f8d-48d5-95a4-fd2587c79699.png')] bg-cover bg-center bg-no-repeat bg-fixed">
       <div className="container px-4 py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
