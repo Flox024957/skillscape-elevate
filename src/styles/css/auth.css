@@ -41,7 +41,7 @@
   border-color: rgba(0, 0, 255, 0.9);
   box-shadow: 
     0 0 35px rgba(0, 0, 255, 0.6),
-    0 0 55k rgba(0, 0, 255, 0.4),
+    0 0 55px rgba(0, 0, 255, 0.4),
     0 0 75px rgba(0, 0, 255, 0.2),
     inset 0 0 3px rgba(0, 0, 255, 1);
 }
@@ -58,7 +58,7 @@
     0 0 30px rgba(0, 0, 255, 0.6),
     0 0 60px rgba(0, 0, 255, 0.4),
     0 0 90px rgba(0, 0, 255, 0.3),
-    0 0 120k rgba(0, 0, 255, 0.2),
+    0 0 120px rgba(0, 0, 255, 0.2),
     inset 0 0 2px rgba(0, 0, 255, 1);
   transform-style: preserve-3d;
   transform: perspective(1000px) translateZ(0);
@@ -78,15 +78,15 @@
 }
 
 .gradient-text span.welcome {
-  background: linear-gradient(135deg, #0000FF, #0000cc);
+  background: linear-gradient(135deg, #0000FF, #0000FF);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   text-shadow: 
-    0 0 2px rgba(0, 247, 255, 1),
-    0 0 15px rgba(0, 247, 255, 0.8),
-    0 0 30px rgba(0, 247, 255, 0.6),
-    0 0 45px rgba(0, 247, 255, 0.4);
+    0 0 2px rgba(0, 0, 255, 1),
+    0 0 15px rgba(0, 0, 255, 0.8),
+    0 0 30px rgba(0, 0, 255, 0.6),
+    0 0 45px rgba(0, 0, 255, 0.4);
 }
 
 .gradient-text span.flap {
