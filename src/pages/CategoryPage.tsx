@@ -79,7 +79,7 @@ const CategoryPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-flap-black to-flap-black/95">
+    <div className="min-h-screen bg-gradient-to-b from-futuristic-black to-futuristic-black/95">
       <div className="container px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <div>
@@ -90,13 +90,13 @@ const CategoryPage = () => {
             >
               ← Back
             </Button>
-            <h1 className="text-3xl font-bold text-flap-white">
+            <h1 className="text-3xl font-bold text-white">
               {category.name}
             </h1>
           </div>
           <Button
             onClick={() => navigate("/dashboard")}
-            className="glass-panel hover:bg-flap-neon/20"
+            className="glass-panel hover:bg-futuristic-blue/20"
           >
             Dashboard
           </Button>
@@ -108,14 +108,12 @@ const CategoryPage = () => {
               key={skill.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="glass-panel p-6 relative group"
+              className="glass-panel p-6 relative group cursor-pointer"
+              onClick={() => navigate(`/skill/${skill.id}`)}
             >
               <div className="flex justify-between items-start">
                 <div className="flex-1">
-                  <h3 
-                    className="text-xl font-semibold mb-2 cursor-pointer hover:text-flap-neon"
-                    onClick={() => navigate(`/skill/${skill.id}`)}
-                  >
+                  <h3 className="text-xl font-semibold mb-2 hover:text-futuristic-blue transition-colors">
                     {skill.title}
                   </h3>
                   <p className="text-gray-400">{skill.summary}</p>
@@ -123,7 +121,10 @@ const CategoryPage = () => {
                 <Button
                   size="icon"
                   variant="ghost"
-                  onClick={() => addToDashboard(skill.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    addToDashboard(skill.id);
+                  }}
                   className="opacity-0 group-hover:opacity-100 transition-opacity"
                 >
                   <Plus className="w-5 h-5" />

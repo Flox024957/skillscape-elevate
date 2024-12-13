@@ -58,28 +58,32 @@ const SkillDetailPage = () => {
     return <div>Loading...</div>;
   }
 
+  if (!skill) {
+    return <div>Skill not found</div>;
+  }
+
   // Ensure examples is an array, default to empty array if not
-  const examples = Array.isArray(skill?.examples) ? skill.examples : [];
+  const examples = Array.isArray(skill.examples) ? skill.examples : [];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-flap-black to-flap-black/95">
+    <div className="min-h-screen bg-gradient-to-b from-futuristic-black to-futuristic-black/95">
       <div className="container px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <div>
             <Button
               variant="ghost"
-              onClick={() => navigate(`/category/${skill?.category_id}`)}
+              onClick={() => navigate(`/category/${skill.category_id}`)}
               className="mb-4"
             >
-              ← Back to {skill?.categories?.name}
+              ← Back to {skill.categories?.name}
             </Button>
-            <h1 className="text-3xl font-bold text-flap-white">
-              {skill?.title}
+            <h1 className="text-3xl font-bold text-white">
+              {skill.title}
             </h1>
           </div>
           <Button
             onClick={() => navigate("/dashboard")}
-            className="glass-panel hover:bg-flap-neon/20"
+            className="glass-panel hover:bg-futuristic-blue/20"
           >
             Dashboard
           </Button>
@@ -94,12 +98,12 @@ const SkillDetailPage = () => {
             <div className="flex justify-between items-start">
               <div>
                 <h3 className="text-xl font-semibold mb-2">Summary</h3>
-                <p className="text-gray-400">{skill?.summary}</p>
+                <p className="text-gray-400">{skill.summary}</p>
               </div>
               <Button
                 size="icon"
                 variant="ghost"
-                onClick={() => addToDashboard('Summary', skill?.summary || '')}
+                onClick={() => addToDashboard('Summary', skill.summary || '')}
               >
                 <Plus className="w-5 h-5" />
               </Button>
@@ -114,12 +118,12 @@ const SkillDetailPage = () => {
             <div className="flex justify-between items-start">
               <div>
                 <h3 className="text-xl font-semibold mb-2">Explanation</h3>
-                <p className="text-gray-400">{skill?.explanation}</p>
+                <p className="text-gray-400">{skill.explanation}</p>
               </div>
               <Button
                 size="icon"
                 variant="ghost"
-                onClick={() => addToDashboard('Explanation', skill?.explanation || '')}
+                onClick={() => addToDashboard('Explanation', skill.explanation || '')}
               >
                 <Plus className="w-5 h-5" />
               </Button>
@@ -134,12 +138,12 @@ const SkillDetailPage = () => {
             <div className="flex justify-between items-start">
               <div>
                 <h3 className="text-xl font-semibold mb-2">Concrete Action</h3>
-                <p className="text-gray-400">{skill?.concrete_action}</p>
+                <p className="text-gray-400">{skill.concrete_action}</p>
               </div>
               <Button
                 size="icon"
                 variant="ghost"
-                onClick={() => addToDashboard('Action', skill?.concrete_action || '')}
+                onClick={() => addToDashboard('Action', skill.concrete_action || '')}
               >
                 <Plus className="w-5 h-5" />
               </Button>
