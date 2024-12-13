@@ -24,12 +24,15 @@
 }
 
 .glass-panel {
-  background: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(8px);
   border-radius: 16px;
   position: relative;
   isolation: isolate;
-  border: none;
+  border: 2px solid rgba(138, 43, 226, 0.6);
+  box-shadow: 
+    0 0 15px rgba(138, 43, 226, 0.6),
+    0 0 30px rgba(138, 43, 226, 0.4);
   overflow: hidden;
 }
 
@@ -37,18 +40,10 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(138, 43, 226, 0.6);
+  background: transparent;
   border-radius: 16px;
   transform-origin: center;
   animation: rotatePanel 8s linear infinite;
-  mask: 
-    linear-gradient(#fff 0 0) content-box, 
-    linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  padding: 2px;
-  box-shadow: 
-    0 0 15px rgba(138, 43, 226, 0.6),
-    0 0 30px rgba(138, 43, 226, 0.4);
 }
 
 .glass-panel::after {
