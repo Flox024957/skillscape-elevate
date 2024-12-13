@@ -70,22 +70,6 @@ const MainPage = () => {
           <h1 className="text-4xl md:text-6xl font-bold mb-4 text-white neon-text">
             FLAP
           </h1>
-          
-          <div className="flex flex-col gap-6 items-center mb-12">
-            <motion.button
-              onClick={() => navigate("/dashboard")}
-              className="relative group px-12 py-6 rounded-xl overflow-hidden"
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.2 }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-primary via-[#8B5CF6] to-primary bg-[length:200%_100%] animate-[gradient_3s_linear_infinite]" />
-              <div className="absolute inset-0 opacity-50 group-hover:opacity-75 blur-xl bg-gradient-to-r from-primary via-[#8B5CF6] to-primary bg-[length:200%_100%] animate-[gradient_3s_linear_infinite]" />
-              <div className="absolute inset-0.5 rounded-xl bg-background/40 backdrop-blur-sm" />
-              <span className="relative text-xl font-bold text-white group-hover:text-primary transition-colors duration-300">
-                Dashboard
-              </span>
-            </motion.button>
-          </div>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-12 max-w-[2000px] mx-auto">
@@ -95,7 +79,7 @@ const MainPage = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3, delay: index * 0.1 }}
-              className="group cursor-pointer relative aspect-square w-full min-h-[500px] overflow-hidden rounded-full neon-frame"
+              className="group cursor-pointer relative aspect-square w-full min-h-[278px] overflow-hidden rounded-full neon-frame"
               onClick={() => {
                 const element = document.querySelector(`#category-${category.id}`);
                 element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -108,11 +92,11 @@ const MainPage = () => {
                 id={`category-${category.id}`}
               />
               <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px] hover:bg-black/10 hover:backdrop-blur-0 transition-all duration-300" />
-              <div className="absolute bottom-0 left-0 right-0 p-12 bg-gradient-to-t from-black/60 to-transparent">
-                <h3 className="text-4xl font-bold mb-4 text-white group-hover:text-primary transition-colors duration-300 text-shadow-neon">
+              <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black/60 to-transparent">
+                <h3 className="text-3xl font-bold mb-3 text-white group-hover:text-primary transition-colors duration-300 text-shadow-neon">
                   {category.name}
                 </h3>
-                <p className="text-white/90 text-xl line-clamp-2 group-hover:text-white transition-colors duration-300">
+                <p className="text-white/90 text-lg line-clamp-2 group-hover:text-white transition-colors duration-300">
                   {category.description}
                 </p>
               </div>
