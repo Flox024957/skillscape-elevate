@@ -3,19 +3,14 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
+import { CategoryModel } from "@/components/3d/CategoryModel";
 
-// Updated category images that better match modern illustrations
-const categoryImages = [
-  "photo-1551434678-e076c223a692", // Modern team collaboration
-  "photo-1550751827-4bd374c3f58b", // Tech infrastructure
-  "photo-1552664730-d307ca884978", // Modern workspace
-  "photo-1550745165-9bc0b252726f", // Data visualization
-  "photo-1550751827-4bd374c3f58b", // Modern tech
-  "photo-1551434678-e076c223a692", // Team collaboration
-  "photo-1550751827-4bd374c3f58b", // Infrastructure
-  "photo-1552664730-d307ca884978", // Workspace
-  "photo-1550745165-9bc0b252726f"  // Data
-];
+const getModelType = (index: number) => {
+  const types = ['collaboration', 'infrastructure', 'workspace', 'data'] as const;
+  return types[index % types.length];
+};
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -93,13 +88,22 @@ const MainPage = () => {
             >
               <div className="relative rounded-xl overflow-hidden backdrop-blur-lg border border-primary/20 hover:border-primary/40 transition-all duration-300 hover:scale-105 bg-background/40">
                 <div className="aspect-square relative">
-                  <img
-                    src={`https://images.unsplash.com/${categoryImages[index]}?auto=format&fit=crop&w=800&q=80`}
-                    alt={category.name}
-                    className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <Canvas className="absolute inset-0">
+                    <PerspectiveCamera makeDefault position={[0, 0, 5]} />
+                    <OrbitControls 
+                      enableZoom={false}
+                      enablePan={false}
+                      minPolarAngle={Math.PI / 3}
+                      maxPolarAngle={Math.PI / 1.5}
+                    />
+                    <ambientLight intensity={0.5} />
+                    <pointLight position={[10, 10, 10]} intensity={1} />
+                    <CategoryModel
+                      modelType={getModelType(index)}
+                      onClick={() => navigate(`/category/${category.id}`)}
+                    />
+                  </Canvas>
+                  <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-background/90 to-transparent">
                     <h3 className="text-2xl font-bold mb-2 text-white group-hover:text-primary transition-colors">
                       {category.name}
                     </h3>
