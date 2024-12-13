@@ -5,12 +5,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import Index from "./pages/Index";
-import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import MainPage from "./pages/MainPage";
 import CategoryPage from "./pages/CategoryPage";
 import SkillDetailPage from "./pages/SkillDetailPage";
-import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -23,7 +21,6 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<MainPage />} />
-            <Route path="/auth" element={<Auth />} />
             <Route path="/main" element={<MainPage />} />
             <Route path="/category/:id" element={<CategoryPage />} />
             <Route path="/skill/:id" element={<SkillDetailPage />} />
