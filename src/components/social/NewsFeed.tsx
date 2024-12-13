@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from "@/integrations/supabase/client";
 import { Post } from '@/components/social/Post';
+import { memo } from 'react';
 
 interface PostType {
   id: string;
@@ -30,6 +31,8 @@ interface PostType {
 interface NewsFeedProps {
   userId: string;
 }
+
+const MemoizedPost = memo(Post);
 
 export const NewsFeed = ({ userId }: NewsFeedProps) => {
   const { data: posts, isLoading } = useQuery({
@@ -61,11 +64,12 @@ export const NewsFeed = ({ userId }: NewsFeedProps) => {
       if (error) throw error;
       return data as PostType[];
     },
+    staleTime: 30000, // Cache pendant 30 secondes
   });
 
   if (isLoading) {
     return (
-      <div className="p-4 text-center neon-text">
+      <div className="p-4 text-center neon-text animate-pulse">
         Chargement des publications...
       </div>
     );
@@ -81,8 +85,8 @@ export const NewsFeed = ({ userId }: NewsFeedProps) => {
 
   return (
     <div className="space-y-4 p-4">
-      {posts?.map((post) => (
-        <Post key={post.id} post={post} currentUserId={userId} />
+      {posts.map((post) => (
+        <MemoizedPost key={post.id} post={post} currentUserId={userId} />
       ))}
     </div>
   );
