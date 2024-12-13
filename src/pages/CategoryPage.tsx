@@ -20,7 +20,7 @@ const CategoryPage = () => {
       if (!id) throw new Error('Category ID is required');
       const { data, error } = await supabase
         .from('categories')
-        .select()
+        .select('*')
         .eq('id', id)
         .single();
       
@@ -30,7 +30,6 @@ const CategoryPage = () => {
       }
       return data;
     },
-    enabled: !!id,
   });
 
   const { data: skills, isLoading: skillsLoading } = useQuery({
@@ -39,7 +38,7 @@ const CategoryPage = () => {
       if (!id) throw new Error('Category ID is required');
       const { data, error } = await supabase
         .from('skills')
-        .select()
+        .select('*')
         .eq('category_id', id);
       
       if (error) {
@@ -48,7 +47,6 @@ const CategoryPage = () => {
       }
       return data;
     },
-    enabled: !!id,
   });
 
   const addToDashboard = async (skillId: string) => {
@@ -95,8 +93,14 @@ const CategoryPage = () => {
 
   if (!category) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-destructive">Catégorie non trouvée</div>
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
+        <div className="text-destructive text-lg">Catégorie non trouvée</div>
+        <Button
+          variant="outline"
+          onClick={() => navigate("/main")}
+        >
+          Retour à l'accueil
+        </Button>
       </div>
     );
   }
@@ -176,6 +180,12 @@ const CategoryPage = () => {
               </div>
             </motion.div>
           ))}
+          
+          {skills?.length === 0 && (
+            <div className="text-center text-muted-foreground py-8">
+              Aucune compétence n'est disponible dans cette catégorie pour le moment.
+            </div>
+          )}
         </div>
       </div>
     </div>
