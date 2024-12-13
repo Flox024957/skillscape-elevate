@@ -262,35 +262,35 @@ export type Database = {
       }
       skills: {
         Row: {
-          action_concrete: string | null
+          action_concrete: string
           category_id: string | null
           created_at: string
-          exemples: Json | null
-          explication: string | null
+          description: string
+          exemples: Json
           id: string
-          resume: string | null
+          resume: string
           titre: string
           updated_at: string
         }
         Insert: {
-          action_concrete?: string | null
+          action_concrete: string
           category_id?: string | null
           created_at?: string
-          exemples?: Json | null
-          explication?: string | null
+          description: string
+          exemples?: Json
           id?: string
-          resume?: string | null
+          resume: string
           titre: string
           updated_at?: string
         }
         Update: {
-          action_concrete?: string | null
+          action_concrete?: string
           category_id?: string | null
           created_at?: string
-          exemples?: Json | null
-          explication?: string | null
+          description?: string
+          exemples?: Json
           id?: string
-          resume?: string | null
+          resume?: string
           titre?: string
           updated_at?: string
         }
