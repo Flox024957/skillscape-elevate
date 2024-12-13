@@ -29,12 +29,21 @@
 
 .auth-input {
   @apply bg-futuristic-gray/50 backdrop-blur-md text-white rounded-xl px-6 py-4 w-full transition-all duration-300 mb-4;
-  border: 3px solid rgba(139, 92, 246, 0.4);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  box-shadow: 
+    0 0 25px rgba(139, 92, 246, 0.3),
+    0 0 35px rgba(139, 92, 246, 0.2),
+    0 0 45px rgba(139, 92, 246, 0.1),
+    inset 0 0 15px rgba(139, 92, 246, 0.15);
 }
 
 .auth-input:focus, .auth-input:hover {
   border-color: rgba(139, 92, 246, 0.7);
-  box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+  box-shadow: 
+    0 0 35px rgba(139, 92, 246, 0.4),
+    0 0 45px rgba(139, 92, 246, 0.3),
+    0 0 55px rgba(139, 92, 246, 0.2),
+    inset 0 0 20px rgba(139, 92, 246, 0.2);
 }
 
 .auth-input::placeholder {
