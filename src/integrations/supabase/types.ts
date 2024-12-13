@@ -460,6 +460,7 @@ export type Database = {
           is_mastered: boolean | null
           mastered_at: string | null
           notes: string | null
+          selected_sections: string[] | null
           skill_id: string | null
           updated_at: string | null
           user_id: string | null
@@ -470,6 +471,7 @@ export type Database = {
           is_mastered?: boolean | null
           mastered_at?: string | null
           notes?: string | null
+          selected_sections?: string[] | null
           skill_id?: string | null
           updated_at?: string | null
           user_id?: string | null
@@ -480,6 +482,7 @@ export type Database = {
           is_mastered?: boolean | null
           mastered_at?: string | null
           notes?: string | null
+          selected_sections?: string[] | null
           skill_id?: string | null
           updated_at?: string | null
           user_id?: string | null
