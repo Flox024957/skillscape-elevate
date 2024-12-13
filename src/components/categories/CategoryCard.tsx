@@ -19,7 +19,7 @@ interface CategoryCardProps {
   imageUrl: string;
   imagePosition: string;
   index: number;
-  skills?: Skill[];
+  skills: Skill[];
 }
 
 export const CategoryCard = ({ 
