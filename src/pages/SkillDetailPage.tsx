@@ -16,8 +16,6 @@ const SkillDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  console.log('Current skill ID:', id);
-
   const { data: skill, isLoading, error } = useQuery({
     queryKey: ['skill', id],
     queryFn: async () => {
@@ -45,7 +43,6 @@ const SkillDetailPage = () => {
       return data as Skill;
     },
     enabled: !!id,
-    retry: 1
   });
 
   const addToDashboard = async (type: string, content: string) => {
@@ -101,7 +98,6 @@ const SkillDetailPage = () => {
     );
   }
 
-  console.log('Rendering skill:', skill);
   const examples = Array.isArray(skill.examples) ? skill.examples : [];
 
   return (
