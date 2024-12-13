@@ -20,6 +20,8 @@ const SkillDetailPage = () => {
   const { data: skill, isLoading } = useQuery({
     queryKey: ['skill', id],
     queryFn: async () => {
+      console.log('Fetching skill with ID:', id);
+      
       if (!id) {
         throw new Error('No skill ID provided');
       }
@@ -30,14 +32,15 @@ const SkillDetailPage = () => {
           *,
           categories (
             id,
-            name
+            name,
+            description
           )
         `)
         .eq('id', id)
         .single();
 
       if (error) {
-        console.error('Supabase error:', error);
+        console.error('Error fetching skill:', error);
         throw error;
       }
 
@@ -46,6 +49,7 @@ const SkillDetailPage = () => {
         throw new Error('Skill not found');
       }
 
+      console.log('Skill data received:', data);
       return data as Skill;
     },
     enabled: !!id,
