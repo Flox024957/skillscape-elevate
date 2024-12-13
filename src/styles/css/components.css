@@ -4,18 +4,17 @@
 }
 
 .futuristic-button {
-  @apply bg-gradient-to-r from-neon-blue via-neon-purple to-neon-orange 
-         hover:opacity-90 text-white px-6 py-3 rounded-lg
-         transition-all duration-1000 animate-neon-pulse
+  @apply bg-neon-blue hover:opacity-90 text-white px-6 py-3 rounded-lg
+         transition-all duration-300
          disabled:opacity-50 disabled:cursor-not-allowed;
-  background-size: 300% 300%;
   position: relative;
   z-index: 3;
+  box-shadow: 0 0 15px rgba(0, 163, 255, 0.4);
 }
 
 .futuristic-input {
   @apply bg-futuristic-gray/30 backdrop-blur-md border-2 border-neon-blue/20
-         focus:border-neon-purple/50 focus:ring-1 focus:ring-neon-purple/30
+         focus:border-neon-blue/50 focus:ring-1 focus:ring-neon-blue/30
          rounded-lg px-4 py-2 text-white placeholder-gray-400
          transition-all duration-300;
   position: relative;
@@ -29,12 +28,14 @@
 }
 
 .neon-text {
-  @apply animate-neon-text;
+  color: #00A3FF;
+  text-shadow: 0 0 10px rgba(0, 163, 255, 0.5);
 }
 
 .glass-panel {
   @apply bg-futuristic-gray/30 backdrop-blur-md rounded-lg border-2 
-         border-transparent transition-all duration-1000 animate-neon-pulse;
+         border-transparent transition-all duration-300;
   position: relative;
   z-index: 1;
+  box-shadow: 0 0 15px rgba(0, 163, 255, 0.3);
 }

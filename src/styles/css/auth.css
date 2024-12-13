@@ -31,6 +31,15 @@
   overflow: hidden;
 }
 
+.glass-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  transform: rotate(0deg);
+  animation: rotatePanel 12s linear infinite;
+}
+
 .glass-panel::after {
   content: '';
   position: absolute;
@@ -43,21 +52,15 @@
 }
 
 .futuristic-text {
-  background: linear-gradient(
-    to right,
-    #00A3FF,
-    #9D4EDD,
-    #00A3FF
-  );
-  background-size: 200% auto;
-  color: transparent;
-  background-clip: text;
-  -webkit-background-clip: text;
-  animation: textGradient 3s linear infinite;
+  color: #00A3FF;
+  text-shadow: 0 0 10px rgba(0, 163, 255, 0.5);
 }
 
-@keyframes textGradient {
+@keyframes rotatePanel {
+  from {
+    transform: rotate(0deg);
+  }
   to {
-    background-position: 200% center;
+    transform: rotate(360deg);
   }
 }

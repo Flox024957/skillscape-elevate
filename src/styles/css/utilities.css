@@ -3,7 +3,7 @@
     @apply bg-futuristic-gray/30 backdrop-blur-md rounded-lg border-2 border-transparent transition-all duration-1000;
     position: relative;
     z-index: 1;
-    box-shadow: 0 0 10mm rgba(157, 78, 221, 0.2);
+    box-shadow: 0 0 10mm rgba(0, 163, 255, 0.2);
   }
 
   .glass-panel:hover {
@@ -18,9 +18,9 @@
 
   .neon-frame {
     position: relative;
-    border: 2px solid rgba(138, 43, 226, 0.6);
+    border: 2px solid rgba(0, 163, 255, 0.6);
     border-radius: 16px;
-    box-shadow: 0 0 15px rgba(138, 43, 226, 0.6);
+    box-shadow: 0 0 15px rgba(0, 163, 255, 0.6);
     overflow: hidden;
   }
 
@@ -31,7 +31,7 @@
     background: conic-gradient(
       from 0deg at 50% 50%,
       transparent 0%,
-      rgba(138, 43, 226, 0.8) 5%,
+      rgba(0, 163, 255, 0.8) 5%,
       transparent 15%
     );
     border-radius: 16px;
@@ -39,8 +39,8 @@
   }
 
   .futuristic-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-neon-blue via-neon-purple to-neon-orange;
-    background-size: 300% 300%;
+    @apply text-neon-blue;
+    text-shadow: 0 0 10px rgba(0, 163, 255, 0.5);
     position: relative;
     z-index: 2;
   }
