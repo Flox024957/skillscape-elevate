@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
 
 interface Skill {
   id: string;
@@ -23,11 +24,11 @@ interface Category {
 }
 
 const CategoryPage = () => {
-  const { categoryId } = useParams();
+  const { categoryId } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
 
-  const { data: category, isLoading } = useQuery({
+  const { data: category, isLoading, error } = useQuery({
     queryKey: ['category', categoryId],
     queryFn: async () => {
       console.log('Fetching category with ID:', categoryId);
@@ -56,11 +57,13 @@ const CategoryPage = () => {
 
       if (error) {
         console.error('Error fetching category:', error);
+        toast.error("Erreur lors du chargement de la catégorie");
         throw error;
       }
 
       if (!data) {
         console.error('No category found with ID:', categoryId);
+        toast.error("Catégorie non trouvée");
         throw new Error('Category not found');
       }
 
@@ -83,7 +86,7 @@ const CategoryPage = () => {
         <div className="space-y-4">
           <Skeleton className="h-12 w-2/3 mx-auto" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map((n) => (
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
               <Skeleton key={n} className="h-48 w-full rounded-lg" />
             ))}
           </div>
@@ -92,18 +95,17 @@ const CategoryPage = () => {
     );
   }
 
-  if (!category) {
+  if (error || !category) {
     return (
-      <div className="container mx-auto p-4">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-foreground">Catégorie non trouvée</h2>
-          <p className="text-muted-foreground mt-2">La catégorie que vous recherchez n'existe pas.</p>
-          <Button 
-            onClick={() => navigate('/main')} 
-            className="mt-4"
-          >
-            Retour à l'accueil
-          </Button>
+      <div className="min-h-screen bg-background">
+        <div className="container px-4 py-8">
+          <div className="flex flex-col items-start gap-4">
+            <h2 className="text-2xl font-semibold">Catégorie non trouvée</h2>
+            <p className="text-muted-foreground">
+              La catégorie que vous recherchez n'existe pas ou a été supprimée.
+            </p>
+            <Button onClick={() => navigate('/main')}>Retour à l'accueil</Button>
+          </div>
         </div>
       </div>
     );

@@ -4,6 +4,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { CategoryImage } from "./CategoryImage";
 import { CategoryContent } from "./CategoryContent";
+import { toast } from "sonner";
 
 interface Skill {
   id: string;
@@ -34,8 +35,13 @@ export const CategoryCard = ({
   const isMobile = useIsMobile();
 
   const handleClick = () => {
-    console.log('Navigating to category:', id);
-    navigate(`/category/${id}`);
+    try {
+      console.log('Navigating to category:', id);
+      navigate(`/category/${id}`);
+    } catch (error) {
+      console.error('Navigation error:', error);
+      toast.error("Erreur lors de la navigation");
+    }
   };
 
   return (
