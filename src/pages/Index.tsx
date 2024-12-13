@@ -42,12 +42,13 @@ const Index = () => {
     <div className="min-h-screen bg-futuristic-black">
       <div className="container px-4 py-8">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-purple-500 via-orange-400 to-purple-500 bg-clip-text text-transparent animate-gradient relative">
+          <h1 className="text-4xl md:text-6xl font-bold mb-4 relative">
             Welcome to{" "}
-            <span className="font-black relative">
+            <span className="font-black relative inline-block">
               FLAP
-              <span className="absolute inset-0 blur-[2px] bg-gradient-to-r from-purple-500 via-orange-400 to-purple-500 bg-clip-text text-transparent animate-gradient opacity-75"></span>
-              <span className="absolute inset-0 blur-[4px] bg-gradient-to-r from-purple-500 via-orange-400 to-purple-500 bg-clip-text text-transparent animate-gradient opacity-50"></span>
+              <span className="absolute inset-0 blur-[30px] bg-gradient-to-r from-purple-500 via-orange-400 to-purple-500 opacity-75"></span>
+              <span className="absolute inset-0 blur-[15px] bg-gradient-to-r from-purple-500 via-orange-400 to-purple-500 opacity-50"></span>
+              <span className="relative z-10 bg-gradient-to-r from-purple-500 via-orange-400 to-purple-500 bg-clip-text text-transparent animate-gradient"></span>
             </span>
           </h1>
           <p className="text-gray-400 max-w-2xl mx-auto mb-8 text-lg">
@@ -56,14 +57,14 @@ const Index = () => {
           <div className="flex flex-col gap-6 items-center">
             <Button
               onClick={() => navigate("/auth")}
-              className="bg-futuristic-blue text-white px-8 py-6 text-lg rounded-lg"
+              className="bg-futuristic-blue/60 hover:bg-futuristic-blue/80 text-white px-8 py-6 text-lg rounded-lg backdrop-blur-sm transition-colors"
             >
               Get Started
             </Button>
             
             <Button
               onClick={() => navigate("/dashboard")}
-              className="bg-futuristic-black text-white border border-futuristic-blue px-12 py-6 rounded-xl"
+              className="bg-futuristic-black/60 hover:bg-futuristic-black/80 text-white border border-futuristic-blue/60 px-12 py-6 rounded-xl backdrop-blur-sm transition-colors"
             >
               <span className="text-xl font-bold">
                 Tableau de bord
