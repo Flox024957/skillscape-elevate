@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { SkillDetailContent } from "@/components/skill-detail/SkillDetailContent";
+import { Skill } from "@/types/skills";
 
 const SkillDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -54,7 +55,7 @@ const SkillDetailPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <SkillDetailContent 
-        skill={skill}
+        skill={skill as Skill}
         onNavigateBack={handleNavigateBack}
         onAddToDashboard={handleAddToDashboard}
       />

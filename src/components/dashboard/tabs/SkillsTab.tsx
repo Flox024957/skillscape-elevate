@@ -22,6 +22,7 @@ import SkillHeader from "./skills/SkillHeader";
 import SkillContent from "./skills/SkillContent";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { UserSkill } from "@/types/skills";
+import { Json } from "@/integrations/supabase/types";
 
 const SkillsTab = () => {
   const [openSections, setOpenSections] = useState<string[]>([]);
@@ -45,7 +46,7 @@ const SkillsTab = () => {
         .from('user_skills')
         .select(`
           skill_id,
-          selected_sections,
+          sections_selectionnees,
           skills (
             id,
             titre,
@@ -100,10 +101,10 @@ const SkillsTab = () => {
       if (!content) return;
 
       const existingSkill = userSkills.find(skill => skill.skill_id === skillId);
-      let selectedSections = existingSkill?.selected_sections || [];
+      let sections_selectionnees = existingSkill?.sections_selectionnees || [];
 
-      if (!selectedSections.includes(sectionTitle)) {
-        selectedSections = [...selectedSections, sectionTitle];
+      if (!sections_selectionnees.includes(sectionTitle)) {
+        sections_selectionnees = [...sections_selectionnees, sectionTitle];
       }
 
       const { error } = await supabase
@@ -111,7 +112,7 @@ const SkillsTab = () => {
         .upsert({
           user_id: user.id,
           skill_id: skillId,
-          selected_sections: selectedSections,
+          sections_selectionnees,
         });
 
       if (error) {
@@ -161,14 +162,14 @@ const SkillsTab = () => {
               >
                 <SkillHeader
                   title={userSkill.skills.titre}
-                  selectedSections={userSkill.selected_sections}
+                  selectedSections={userSkill.sections_selectionnees}
                   skillId={userSkill.skill_id}
                   onAdd={handleAddSkillSection}
                   isMastered={userSkill.is_mastered}
                 />
                 <SkillContent
                   skillId={userSkill.skill_id}
-                  selectedSections={userSkill.selected_sections}
+                  selectedSections={userSkill.sections_selectionnees}
                   summary={userSkill.skills.resume}
                   explanation={userSkill.skills.explication}
                   concreteAction={userSkill.skills.action_concrete}
