@@ -96,7 +96,7 @@ export default {
         },
       },
       animation: {
-        "neon-pulse": "neon-border 4s linear infinite",
+        "neon-pulse": "neon-border 6s linear infinite",
         "snake-border": "snake-border 6s linear infinite",
         "fade-in": "fade-in 0.3s ease-out",
       },
