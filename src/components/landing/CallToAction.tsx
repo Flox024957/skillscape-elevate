@@ -13,15 +13,15 @@ const CallToAction = () => {
       }}
       className="text-center relative overflow-hidden
                rounded-2xl p-12
-               bg-background/40 backdrop-blur-lg
+               bg-background/10 backdrop-blur-sm
                border border-[#8B5CF6]/30
                shadow-[0_0_40px_rgba(139,92,246,0.4)]"
     >
       <div className="absolute inset-0 bg-gradient-to-r from-[#0EA5E9]/5 via-[#8B5CF6]/5 to-[#F97316]/5"></div>
-      <h2 className="text-3xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#0EA5E9] via-[#8B5CF6] to-[#F97316]">
+      <h2 className="text-3xl font-bold mb-4 text-white/90 drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">
         Prêt à Transformer Votre Carrière ?
       </h2>
-      <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+      <p className="text-lg text-white/70 mb-8 max-w-2xl mx-auto">
         Rejoignez une communauté de professionnels motivés et commencez votre voyage vers l'excellence dès aujourd'hui.
       </p>
       <Button
