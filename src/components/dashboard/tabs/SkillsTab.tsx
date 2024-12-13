@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Plus, ChevronDown, Trash2, GripVertical } from "lucide-react";
+import { ChevronDown, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   Collapsible,
@@ -23,40 +23,11 @@ import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
-  useSortable,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-
-interface SortableSkillItemProps {
-  id: string;
-  children: React.ReactNode;
-}
-
-const SortableSkillItem = ({ id, children }: SortableSkillItemProps) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({ id });
-
-  const style = transform ? {
-    transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-    transition,
-  } : undefined;
-
-  return (
-    <div ref={setNodeRef} style={style} {...attributes} className="mb-4">
-      <div className="flex items-center gap-2">
-        <button {...listeners} className="cursor-grab hover:cursor-grabbing p-2">
-          <GripVertical className="h-4 w-4 text-muted-foreground" />
-        </button>
-        {children}
-      </div>
-    </div>
-  );
-};
+import SortableSkillItem from "./skills/SortableSkillItem";
+import SkillSection from "./skills/SkillSection";
+import ExamplesSection from "./skills/ExamplesSection";
 
 const SkillsTab = () => {
   const { toast } = useToast();
@@ -70,7 +41,7 @@ const SkillsTab = () => {
     })
   );
 
-  const { data: userSkills, refetch } = useQuery({
+  const { data: userSkills } = useQuery({
     queryKey: ['userSkills'],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -185,58 +156,6 @@ const SkillsTab = () => {
     );
   };
 
-  const renderSkillSection = (skillId: string, title: string, content: string | null) => {
-    if (!content) return null;
-    
-    return (
-      <div className="bg-card/50 p-4 rounded-lg border border-border mb-2">
-        <div className="flex justify-between items-start">
-          <div className="flex-1">
-            <h4 className="font-medium text-sm text-muted-foreground mb-1">{title}</h4>
-            <p className="text-sm">{content}</p>
-          </div>
-          <Button
-            size="icon"
-            variant="ghost"
-            onClick={() => handleAddSkillSection(skillId, title, content)}
-            className="hover:bg-accent ml-2"
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-    );
-  };
-
-  const renderExamples = (skillId: string, examples: Json[] | null) => {
-    if (!examples || examples.length === 0) return null;
-    
-    return (
-      <div className="bg-card/50 p-4 rounded-lg border border-border mb-2">
-        <div className="flex justify-between items-start">
-          <div className="flex-1">
-            <h4 className="font-medium text-sm text-muted-foreground mb-2">Examples</h4>
-            <div className="space-y-2">
-              {examples.map((example, index) => (
-                <p key={index} className="text-sm pl-4 border-l-2 border-border">
-                  {String(example)}
-                </p>
-              ))}
-            </div>
-          </div>
-          <Button
-            size="icon"
-            variant="ghost"
-            onClick={() => handleAddSkillSection(skillId, "Examples", examples)}
-            className="hover:bg-accent ml-2"
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <DndContext
       sensors={sensors}
@@ -281,10 +200,29 @@ const SkillsTab = () => {
                 </CollapsibleTrigger>
                 
                 <CollapsibleContent className="p-4 pt-0 space-y-4">
-                  {renderSkillSection(userSkill.skill_id, "Summary", userSkill.skills.summary)}
-                  {renderSkillSection(userSkill.skill_id, "Explanation", userSkill.skills.explanation)}
-                  {renderSkillSection(userSkill.skill_id, "Concrete Action", userSkill.skills.concrete_action)}
-                  {renderExamples(userSkill.skill_id, userSkill.skills.examples as Json[])}
+                  <SkillSection
+                    skillId={userSkill.skill_id}
+                    title="Summary"
+                    content={userSkill.skills.summary}
+                    onAdd={handleAddSkillSection}
+                  />
+                  <SkillSection
+                    skillId={userSkill.skill_id}
+                    title="Explanation"
+                    content={userSkill.skills.explanation}
+                    onAdd={handleAddSkillSection}
+                  />
+                  <SkillSection
+                    skillId={userSkill.skill_id}
+                    title="Concrete Action"
+                    content={userSkill.skills.concrete_action}
+                    onAdd={handleAddSkillSection}
+                  />
+                  <ExamplesSection
+                    skillId={userSkill.skill_id}
+                    examples={userSkill.skills.examples as Json[]}
+                    onAdd={handleAddSkillSection}
+                  />
                 </CollapsibleContent>
               </Collapsible>
             </SortableSkillItem>
