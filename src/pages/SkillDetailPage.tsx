@@ -23,8 +23,6 @@ const SkillDetailPage = () => {
         throw new Error('No skill ID provided');
       }
       
-      console.log('Fetching skill with ID:', id);
-      
       const { data, error } = await supabase
         .from('skills')
         .select(`
@@ -47,7 +45,6 @@ const SkillDetailPage = () => {
         throw new Error('Skill not found');
       }
 
-      console.log('Skill data received:', data);
       return data as Skill;
     },
     enabled: !!id,
@@ -161,7 +158,7 @@ const SkillDetailPage = () => {
           {examples.length > 0 && (
             <ExamplesSection
               examples={examples}
-              onAdd={(type) => addToDashboard(type, JSON.stringify(examples))}
+              onAdd={addToDashboard}
             />
           )}
         </div>
