@@ -17,6 +17,8 @@ interface FriendsListProps {
 }
 
 const FriendItem = memo(({ friend, variant, onClick }: { friend: Friend, variant: 'full' | 'compact', onClick: () => void }) => {
+  const navigate = useNavigate();
+
   if (variant === 'compact') {
     return (
       <button 
