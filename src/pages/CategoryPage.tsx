@@ -6,6 +6,7 @@ import { CategoryError } from "@/components/categories/detail/CategoryError";
 import { CategoryLoading } from "@/components/categories/detail/CategoryLoading";
 import { CategoryHeader } from "@/components/categories/detail/CategoryHeader";
 import { SkillsList } from "@/components/categories/detail/SkillsList";
+import { Skill } from "@/types/skills";
 
 const isValidUUID = (uuid: string) => {
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -48,7 +49,12 @@ const CategoryPage = () => {
         .eq('category_id', categoryId);
 
       if (error) throw error;
-      return data;
+      
+      // Convert exemples to array if it's not already
+      return (data || []).map(skill => ({
+        ...skill,
+        exemples: Array.isArray(skill.exemples) ? skill.exemples : [skill.exemples]
+      })) as Skill[];
     },
     enabled: Boolean(categoryId) && isValidUUID(categoryId),
   });

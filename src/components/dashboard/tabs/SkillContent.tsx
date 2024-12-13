@@ -1,6 +1,6 @@
 import { CollapsibleContent } from "@/components/ui/collapsible";
-import SkillSection from "./SkillSection";
-import ExamplesSection from "./ExamplesSection";
+import SkillSection from "@/components/dashboard/tabs/skills/SkillSection";
+import ExamplesSection from "@/components/dashboard/tabs/skills/ExamplesSection";
 import { Json } from "@/integrations/supabase/types";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -10,8 +10,8 @@ interface SkillContentProps {
   summary: string | null;
   explanation: string | null;
   concreteAction: string | null;
-  examples: Json;
-  onAdd: (skillId: string, title: string, content: string | Json | null) => void;
+  examples: Json[] | null;
+  onAdd: (skillId: string, title: string, content: string | Json[] | null) => void;
 }
 
 const SkillContent = ({
