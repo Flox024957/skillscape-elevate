@@ -40,6 +40,7 @@ export const useSkillQuery = (id: string | undefined) => {
       }
 
       if (!skillData) {
+        console.error('No skill found with ID:', id);
         throw new Error('Skill not found');
       }
 
