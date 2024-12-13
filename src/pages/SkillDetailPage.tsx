@@ -27,14 +27,7 @@ const SkillDetailPage = () => {
       
       const { data, error } = await supabase
         .from('skills')
-        .select(`
-          *,
-          categories (
-            id,
-            name,
-            description
-          )
-        `)
+        .select('*, categories(*)')
         .eq('id', id)
         .single();
 
