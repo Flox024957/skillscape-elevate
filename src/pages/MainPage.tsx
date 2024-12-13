@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -71,17 +70,8 @@ const MainPage = () => {
           <h1 className="text-4xl md:text-6xl font-bold mb-4 text-white neon-text">
             FLAP
           </h1>
-          <p className="text-white/90 max-w-2xl mx-auto mb-8 text-lg">
-            Journal de bord
-          </p>
+          
           <div className="flex flex-col gap-6 items-center mb-12">
-            <Button
-              onClick={() => navigate("/auth")}
-              className="bg-primary/90 hover:bg-primary/95 text-white px-8 py-6 text-lg rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(139,92,246,0.5)] hover:shadow-[0_0_30px_rgba(139,92,246,0.7)]"
-            >
-              Get Started
-            </Button>
-            
             <motion.button
               onClick={() => navigate("/dashboard")}
               className="relative group px-12 py-6 rounded-xl overflow-hidden"
@@ -105,7 +95,7 @@ const MainPage = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3, delay: index * 0.1 }}
-              className="group cursor-pointer relative h-[400px] overflow-hidden rounded-xl neon-frame"
+              className="group cursor-pointer relative aspect-square overflow-hidden rounded-full neon-frame"
               onClick={() => {
                 const element = document.querySelector(`#category-${category.id}`);
                 element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
