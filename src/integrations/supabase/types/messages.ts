@@ -10,3 +10,13 @@ export type Message = {
     image_profile: string | null;
   } | null;
 };
+
+export type ChatConversation = {
+  friend: {
+    id: string;
+    pseudo: string;
+    image_profile: string;
+  };
+  lastMessage?: Message;
+  unreadCount: number;
+};
