@@ -36,6 +36,7 @@ const CategoryPage = () => {
     queryKey: ['categorySkills', id],
     queryFn: async () => {
       if (!id) throw new Error('Category ID is required');
+      console.log('Fetching skills for category:', id);
       const { data, error } = await supabase
         .from('skills')
         .select('*')
@@ -45,6 +46,7 @@ const CategoryPage = () => {
         console.error('Skills fetch error:', error);
         throw error;
       }
+      console.log('Skills fetched:', data);
       return data;
     },
   });

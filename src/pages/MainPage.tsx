@@ -1,55 +1,24 @@
 import { motion } from "framer-motion";
 import { CategoriesGrid } from "@/components/categories/CategoriesGrid";
-
-const categories = [
-  {
-    id: "1",
-    name: "Mindfulness",
-    description: "Développez votre conscience et votre présence au quotidien"
-  },
-  {
-    id: "2",
-    name: "Productivity",
-    description: "Optimisez votre temps et atteignez vos objectifs"
-  },
-  {
-    id: "3",
-    name: "Leadership",
-    description: "Développez vos compétences en leadership"
-  },
-  {
-    id: "4",
-    name: "Communication",
-    description: "Améliorez vos compétences en communication"
-  },
-  {
-    id: "5",
-    name: "Creativity",
-    description: "Libérez votre potentiel créatif"
-  },
-  {
-    id: "6",
-    name: "Emotional Intelligence",
-    description: "Développez votre intelligence émotionnelle"
-  },
-  {
-    id: "7",
-    name: "Decision Making",
-    description: "Prenez de meilleures décisions"
-  },
-  {
-    id: "8",
-    name: "Time Management",
-    description: "Gérez votre temps efficacement"
-  },
-  {
-    id: "9",
-    name: "Goal Setting",
-    description: "Fixez et atteignez vos objectifs"
-  }
-];
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const MainPage = () => {
+  const { data: categories, isLoading } = useQuery({
+    queryKey: ['categories'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*');
+      
+      if (error) {
+        console.error('Error fetching categories:', error);
+        throw error;
+      }
+      return data;
+    },
+  });
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-black to-purple-900/20">
       <div 
@@ -73,7 +42,11 @@ const MainPage = () => {
             </p>
           </div>
 
-          <CategoriesGrid categories={categories} />
+          {isLoading ? (
+            <div className="text-center text-gray-300">Chargement des catégories...</div>
+          ) : (
+            <CategoriesGrid categories={categories || []} />
+          )}
         </motion.div>
       </div>
     </div>
