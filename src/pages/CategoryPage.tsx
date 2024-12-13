@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Skill {
   id: string;
@@ -34,12 +35,6 @@ const CategoryPage = () => {
       
       if (!categoryId) {
         throw new Error('Category ID is required');
-      }
-
-      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-      if (!uuidRegex.test(categoryId)) {
-        console.error('Invalid UUID format for category ID:', categoryId);
-        throw new Error('Invalid category ID format');
       }
 
       const { data: categoryData, error: categoryError } = await supabase
@@ -73,7 +68,8 @@ const CategoryPage = () => {
       console.log('Category data received:', categoryData);
       return categoryData as Category;
     },
-    retry: false,
+    retry: 1,
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   });
 
   const addSkillToDashboard = async (skillId: string) => {
@@ -130,8 +126,13 @@ const CategoryPage = () => {
   if (isLoading) {
     return (
       <div className="container mx-auto p-4">
-        <div className="text-center">
-          <p>Chargement de la catégorie...</p>
+        <div className="space-y-4">
+          <Skeleton className="h-12 w-2/3 mx-auto" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map((n) => (
+              <Skeleton key={n} className="h-48 w-full rounded-lg" />
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -181,14 +182,14 @@ const CategoryPage = () => {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 whileHover={{ scale: 1.02 }}
-                className="glass-panel p-6 relative group cursor-pointer"
+                className="bg-card/80 backdrop-blur-sm p-6 rounded-lg border border-border shadow-lg relative group cursor-pointer"
                 onClick={() => navigate(`/skill/${skill.id}`)}
               >
                 <h3 className="text-xl font-semibold mb-3 text-foreground">
                   {skill.title}
                 </h3>
                 {skill.summary && (
-                  <p className="text-sm text-muted-foreground mb-4">
+                  <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
                     {skill.summary}
                   </p>
                 )}
