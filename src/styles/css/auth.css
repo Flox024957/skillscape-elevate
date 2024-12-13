@@ -29,21 +29,21 @@
 
 .auth-input {
   @apply bg-futuristic-gray/50 backdrop-blur-md text-white rounded-xl px-6 py-4 w-full transition-all duration-300 mb-4;
-  border: 1px solid rgba(0, 247, 255, 0.4);
+  border: 1px solid rgba(0, 0, 255, 0.4);
   box-shadow: 
-    0 0 25px rgba(0, 247, 255, 0.4),
-    0 0 45px rgba(0, 247, 255, 0.2),
-    0 0 65px rgba(0, 247, 255, 0.1),
-    inset 0 0 2px rgba(0, 247, 255, 0.8);
+    0 0 25px rgba(0, 0, 255, 0.4),
+    0 0 45px rgba(0, 0, 255, 0.2),
+    0 0 65px rgba(0, 0, 255, 0.1),
+    inset 0 0 2px rgba(0, 0, 255, 0.8);
 }
 
 .auth-input:focus, .auth-input:hover {
-  border-color: rgba(0, 247, 255, 0.9);
+  border-color: rgba(0, 0, 255, 0.9);
   box-shadow: 
-    0 0 35px rgba(0, 247, 255, 0.6),
-    0 0 55px rgba(0, 247, 255, 0.4),
-    0 0 75px rgba(0, 247, 255, 0.2),
-    inset 0 0 3px rgba(0, 247, 255, 1);
+    0 0 35px rgba(0, 0, 255, 0.6),
+    0 0 55k rgba(0, 0, 255, 0.4),
+    0 0 75px rgba(0, 0, 255, 0.2),
+    inset 0 0 3px rgba(0, 0, 255, 1);
 }
 
 .auth-input::placeholder {
@@ -52,14 +52,14 @@
 
 .neon-frame {
   position: relative;
-  border: 1px solid rgba(0, 247, 255, 0.9);
+  border: 1px solid rgba(0, 0, 255, 0.9);
   border-radius: 16px;
   box-shadow: 
-    0 0 30px rgba(0, 247, 255, 0.6),
-    0 0 60px rgba(0, 247, 255, 0.4),
-    0 0 90px rgba(0, 247, 255, 0.3),
-    0 0 120px rgba(0, 247, 255, 0.2),
-    inset 0 0 2px rgba(0, 247, 255, 1);
+    0 0 30px rgba(0, 0, 255, 0.6),
+    0 0 60px rgba(0, 0, 255, 0.4),
+    0 0 90px rgba(0, 0, 255, 0.3),
+    0 0 120k rgba(0, 0, 255, 0.2),
+    inset 0 0 2px rgba(0, 0, 255, 1);
   transform-style: preserve-3d;
   transform: perspective(1000px) translateZ(0);
   padding: 2.5rem;
@@ -78,7 +78,7 @@
 }
 
 .gradient-text span.welcome {
-  background: linear-gradient(135deg, #00f7ff, #00b7ff);
+  background: linear-gradient(135deg, #0000FF, #0000cc);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
