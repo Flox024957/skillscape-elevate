@@ -59,14 +59,14 @@ const Index = () => {
           <div className="flex flex-col gap-6 items-center">
             <Button
               onClick={() => navigate("/auth")}
-              className="bg-futuristic-blue/75 hover:bg-futuristic-blue/85 text-white px-8 py-6 text-lg rounded-lg backdrop-blur-sm transition-colors"
+              className="bg-black/75 hover:bg-black/85 text-white px-8 py-6 text-lg rounded-lg backdrop-blur-sm transition-colors border border-orange-500/50 shadow-[0_0_15px_rgba(249,115,22,0.3)] hover:shadow-[0_0_20px_rgba(249,115,22,0.4)]"
             >
               Get Started
             </Button>
             
             <Button
               onClick={() => navigate("/dashboard")}
-              className="bg-futuristic-black/75 hover:bg-futuristic-black/85 text-white border border-futuristic-blue/75 px-12 py-6 rounded-xl backdrop-blur-sm transition-colors"
+              className="bg-black/75 hover:bg-black/85 text-white border border-purple-500/50 px-12 py-6 rounded-xl backdrop-blur-sm transition-colors shadow-[0_0_15px_rgba(168,85,247,0.3)] hover:shadow-[0_0_20px_rgba(168,85,247,0.4)]"
             >
               <span className="text-xl font-bold">
                 Tableau de bord
