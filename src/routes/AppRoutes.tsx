@@ -1,26 +1,37 @@
-import { Routes, Route } from "react-router-dom";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Auth from "@/pages/Auth";
-import MainPage from "@/pages/MainPage";
 import Dashboard from "@/pages/Dashboard";
 import Social from "@/pages/Social";
+import MainPage from "@/pages/MainPage";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
-const AppRoutes = () => {
+interface AppRoutesProps {
+  isAuthenticated: boolean;
+}
+
+const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
   return (
     <Routes>
-      <Route path="/auth" element={<Auth />} />
       <Route
-        path="/main"
+        path="/"
         element={
-          <ProtectedRoute>
+          isAuthenticated ? (
+            <Navigate to="/dashboard" replace />
+          ) : (
             <MainPage />
-          </ProtectedRoute>
+          )
+        }
+      />
+      <Route
+        path="/auth"
+        element={
+          isAuthenticated ? <Navigate to="/dashboard" replace /> : <Auth />
         }
       />
       <Route
         path="/dashboard"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
             <Dashboard />
           </ProtectedRoute>
         }
@@ -28,7 +39,7 @@ const AppRoutes = () => {
       <Route
         path="/social"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
             <Social />
           </ProtectedRoute>
         }
