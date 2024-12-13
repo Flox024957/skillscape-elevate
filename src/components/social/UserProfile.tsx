@@ -7,6 +7,7 @@ import { ProfileHeader } from './profile/ProfileHeader';
 import { ProfileInfo } from './profile/ProfileInfo';
 import { FriendshipButton } from './profile/FriendshipButton';
 import { useFriendshipStatus } from './profile/useFriendshipStatus';
+import { NewsFeed } from './NewsFeed';
 
 interface UserProfileProps {
   userId: string;
@@ -61,7 +62,7 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <Card>
         <CardHeader>
           <ProfileHeader 
@@ -93,6 +94,16 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
       </Card>
       
       <UserSkills userId={userId} />
+      
+      {/* Ajout du fil d'actualité personnel */}
+      <Card>
+        <CardHeader>
+          <h3 className="text-lg font-semibold">Publications</h3>
+        </CardHeader>
+        <CardContent>
+          <NewsFeed userId={userId} />
+        </CardContent>
+      </Card>
     </div>
   );
 };

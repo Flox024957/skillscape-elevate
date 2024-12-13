@@ -29,10 +29,11 @@ const FriendItem = memo(({ friend, variant, onClick }: { friend: Friend, variant
           <img 
             src={friend.image_profile || '/placeholder.svg'} 
             alt={friend.pseudo}
+            className="object-cover w-full h-full"
             loading="lazy"
           />
         </Avatar>
-        <span className="text-sm">{friend.pseudo}</span>
+        <span className="text-sm truncate">{friend.pseudo}</span>
       </button>
     );
   }
@@ -47,6 +48,7 @@ const FriendItem = memo(({ friend, variant, onClick }: { friend: Friend, variant
           <img 
             src={friend.image_profile || '/placeholder.svg'} 
             alt={friend.pseudo}
+            className="object-cover w-full h-full"
             loading="lazy"
           />
         </Avatar>
@@ -82,13 +84,21 @@ export const FriendsList = ({ userId, variant = 'full' }: FriendsListProps) => {
         .eq('status', 'accepted');
 
       if (error) throw error;
-      return acceptedFriends.map(f => f.friend);
+      
+      // Filtrer les amis null et transformer la structure
+      return acceptedFriends
+        .map(f => f.friend)
+        .filter(friend => friend !== null) as Friend[];
     },
     staleTime: 30000,
   });
 
   if (isLoading) {
     return <div className="animate-pulse">Chargement des amis...</div>;
+  }
+
+  if (!friends?.length) {
+    return <div className="text-center text-muted-foreground">Aucun ami pour le moment</div>;
   }
 
   const handleFriendClick = (friendId: string) => {
@@ -98,7 +108,7 @@ export const FriendsList = ({ userId, variant = 'full' }: FriendsListProps) => {
   if (variant === 'compact') {
     return (
       <div className="space-y-2">
-        {friends?.map((friend) => (
+        {friends.map((friend) => (
           <FriendItem 
             key={friend.id} 
             friend={friend} 
@@ -112,7 +122,7 @@ export const FriendsList = ({ userId, variant = 'full' }: FriendsListProps) => {
 
   return (
     <div className="space-y-4">
-      {friends?.map((friend) => (
+      {friends.map((friend) => (
         <FriendItem 
           key={friend.id} 
           friend={friend} 
