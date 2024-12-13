@@ -68,7 +68,7 @@ const MainPage = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 text-white">
+          <h1 className="text-4xl md:text-6xl font-bold mb-4 text-white neon-text">
             FLAP
           </h1>
           <p className="text-white/90 max-w-2xl mx-auto mb-8 text-lg">
@@ -77,7 +77,7 @@ const MainPage = () => {
           <div className="flex flex-col gap-6 items-center mb-12">
             <Button
               onClick={() => navigate("/auth")}
-              className="bg-primary/90 hover:bg-primary/95 text-white px-8 py-6 text-lg rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(139,92,246,0.5)]"
+              className="bg-primary/90 hover:bg-primary/95 text-white px-8 py-6 text-lg rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(139,92,246,0.5)] hover:shadow-[0_0_30px_rgba(139,92,246,0.7)]"
             >
               Get Started
             </Button>
@@ -90,8 +90,8 @@ const MainPage = () => {
             >
               <div className="absolute inset-0 bg-gradient-to-r from-primary via-[#8B5CF6] to-primary bg-[length:200%_100%] animate-[gradient_3s_linear_infinite]" />
               <div className="absolute inset-0 opacity-50 group-hover:opacity-75 blur-xl bg-gradient-to-r from-primary via-[#8B5CF6] to-primary bg-[length:200%_100%] animate-[gradient_3s_linear_infinite]" />
-              <div className="absolute inset-0.5 rounded-xl bg-background" />
-              <span className="relative text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-[#8B5CF6] animate-pulse">
+              <div className="absolute inset-0.5 rounded-xl bg-background/40 backdrop-blur-sm" />
+              <span className="relative text-xl font-bold text-white group-hover:text-primary transition-colors duration-300">
                 Dashboard
               </span>
             </motion.button>
@@ -105,7 +105,7 @@ const MainPage = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3, delay: index * 0.1 }}
-              className="group cursor-pointer relative h-[400px] overflow-hidden rounded-xl"
+              className="group cursor-pointer relative h-[400px] overflow-hidden rounded-xl neon-frame"
               onClick={() => {
                 const element = document.querySelector(`#category-${category.id}`);
                 element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -117,12 +117,12 @@ const MainPage = () => {
                 whileHover={{ scale: 1.1 }}
                 id={`category-${category.id}`}
               />
-              <div className="absolute inset-0 bg-black/30 hover:bg-black/10 transition-colors duration-300" />
-              <div className="absolute bottom-0 left-0 right-0 p-6">
-                <h3 className="text-2xl font-bold mb-2 text-white group-hover:text-primary transition-colors">
+              <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px] hover:bg-black/10 hover:backdrop-blur-0 transition-all duration-300" />
+              <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/60 to-transparent">
+                <h3 className="text-2xl font-bold mb-2 text-white group-hover:text-primary transition-colors duration-300 text-shadow-neon">
                   {category.name}
                 </h3>
-                <p className="text-white/75 line-clamp-2 group-hover:text-white/90 transition-colors">
+                <p className="text-white/90 line-clamp-2 group-hover:text-white transition-colors duration-300">
                   {category.description}
                 </p>
               </div>
