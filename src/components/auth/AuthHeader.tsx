@@ -1,8 +1,23 @@
+import { motion } from "framer-motion";
+
 export const AuthHeader = () => {
   return (
-    <h1 className="text-4xl font-semibold text-center mb-12 gradient-text">
-      <span className="welcome">Welcome to </span>
-      <span className="flap">FLAP</span>
-    </h1>
+    <motion.h1 
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="text-4xl font-semibold text-center mb-12"
+    >
+      <span className="welcome bg-clip-text text-transparent bg-gradient-to-r from-primary/80 to-primary">
+        Welcome to{" "}
+      </span>
+      <motion.span 
+        className="flap text-primary font-bold"
+        whileHover={{ scale: 1.05 }}
+        transition={{ type: "spring", stiffness: 300 }}
+      >
+        FLAP
+      </motion.span>
+    </motion.h1>
   );
 };

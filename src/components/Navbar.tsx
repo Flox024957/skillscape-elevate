@@ -9,6 +9,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { motion } from "framer-motion";
 
 const navItems = [
   { 
@@ -58,7 +59,10 @@ const Navbar = () => {
   };
 
   return (
-    <nav 
+    <motion.nav 
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ type: "spring", stiffness: 100 }}
       className="fixed top-0 left-0 right-0 bg-background/95 backdrop-blur-md border-b border-border z-50"
       role="navigation"
       aria-label="Navigation principale"
@@ -84,11 +88,16 @@ const Navbar = () => {
                       aria-label={item.ariaLabel}
                       aria-current={location.pathname === item.path ? "page" : undefined}
                     >
-                      <item.icon className={cn(
-                        "w-5 h-5", 
-                        isMobile && "w-4 h-4",
-                        location.pathname === item.path && "animate-pulse"
-                      )} />
+                      <motion.div
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <item.icon className={cn(
+                          "w-5 h-5", 
+                          isMobile && "w-4 h-4",
+                          location.pathname === item.path && "animate-pulse"
+                        )} />
+                      </motion.div>
                       <span className={cn(
                         "text-xs md:text-sm font-medium", 
                         isMobile && "text-[10px]",
@@ -110,7 +119,7 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-    </nav>
+    </motion.nav>
   );
 };
 
