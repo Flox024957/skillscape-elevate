@@ -36,34 +36,28 @@ const Index = () => {
   }, [navigate]);
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-background to-background/95">
+    <div className="relative min-h-screen overflow-hidden bg-[#0A0F1A]">
       {/* Enhanced animated background effects */}
       <div className="absolute inset-0 z-0">
         {/* Primary orbs with enhanced animations */}
-        <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-[#0EA5E9]/30 rounded-full 
+        <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-[#0EA5E9]/20 rounded-full 
                       filter blur-[180px] animate-[float-slow_30s_ease-in-out_infinite] transform-gpu"></div>
-        <div className="absolute bottom-0 right-0 w-[800px] h-[800px] bg-[#F97316]/30 rounded-full 
+        <div className="absolute bottom-0 right-0 w-[800px] h-[800px] bg-[#F97316]/20 rounded-full 
                       filter blur-[180px] animate-[float-medium_25s_ease-in-out_infinite] transform-gpu delay-1000"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
-                      w-[1000px] h-[1000px] bg-[#8B5CF6]/30 rounded-full 
+                      w-[1000px] h-[1000px] bg-[#8B5CF6]/20 rounded-full 
                       filter blur-[200px] animate-[float-fast_20s_ease-in-out_infinite] transform-gpu delay-500"></div>
         
         {/* Secondary orbs for depth */}
-        <div className="absolute top-1/4 right-1/4 w-[600px] h-[600px] bg-[#0EA5E9]/20 rounded-full 
+        <div className="absolute top-1/4 right-1/4 w-[600px] h-[600px] bg-[#0EA5E9]/15 rounded-full 
                       filter blur-[150px] animate-[pulse-slow_15s_ease-in-out_infinite] transform-gpu delay-700"></div>
-        <div className="absolute bottom-1/4 left-1/4 w-[600px] h-[600px] bg-[#F97316]/20 rounded-full 
+        <div className="absolute bottom-1/4 left-1/4 w-[600px] h-[600px] bg-[#F97316]/15 rounded-full 
                       filter blur-[150px] animate-[pulse-medium_12s_ease-in-out_infinite] transform-gpu delay-1500"></div>
-        
-        {/* Accent orbs */}
-        <div className="absolute top-1/3 left-2/3 w-[400px] h-[400px] bg-[#8B5CF6]/15 rounded-full 
-                      filter blur-[120px] animate-[pulse-fast_10s_ease-in-out_infinite] transform-gpu delay-300"></div>
-        <div className="absolute bottom-1/3 right-2/3 w-[400px] h-[400px] bg-[#0EA5E9]/15 rounded-full 
-                      filter blur-[120px] animate-[float-slow_18s_ease-in-out_infinite] transform-gpu delay-1200"></div>
       </div>
 
       {/* Enhanced neon border effect */}
-      <div className="absolute inset-0 border border-[#8B5CF6]/30 
-                    shadow-[inset_0_0_150px_rgba(139,92,246,0.6),0_0_70px_rgba(139,92,246,0.4)] 
+      <div className="absolute inset-0 border-2 border-[#8B5CF6]/50 
+                    shadow-[inset_0_0_150px_rgba(139,92,246,0.8),0_0_100px_rgba(139,92,246,0.6)] 
                     pointer-events-none"></div>
 
       <div className="container relative z-10 px-4 py-12 mx-auto">
