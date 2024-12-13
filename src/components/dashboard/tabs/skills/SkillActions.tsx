@@ -19,6 +19,18 @@ const SkillActions = ({ skillId, onAdd, isMastered }: SkillActionsProps) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Utilisateur non authentifié");
 
+      // First check if the skill is already mastered
+      const { data: existingMastery } = await supabase
+        .from('user_mastered_skills')
+        .select('skill_id')
+        .eq('user_id', user.id)
+        .eq('skill_id', skillId)
+        .single();
+
+      if (existingMastery) {
+        throw new Error("Cette compétence est déjà marquée comme maîtrisée");
+      }
+
       const { error } = await supabase
         .from('user_mastered_skills')
         .insert([{
@@ -36,10 +48,10 @@ const SkillActions = ({ skillId, onAdd, isMastered }: SkillActionsProps) => {
         description: "Compétence marquée comme maîtrisée",
       });
     },
-    onError: () => {
+    onError: (error) => {
       toast({
         title: "Erreur",
-        description: "Impossible de marquer la compétence comme maîtrisée",
+        description: error instanceof Error ? error.message : "Impossible de marquer la compétence comme maîtrisée",
         variant: "destructive",
       });
     },
