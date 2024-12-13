@@ -9,7 +9,11 @@
          disabled:opacity-50 disabled:cursor-not-allowed;
   position: relative;
   z-index: 3;
-  box-shadow: 0 0 15px rgba(0, 163, 255, 0.4);
+  box-shadow: 
+    0 0 15px rgba(0, 163, 255, 0.4),
+    0 0 30px rgba(0, 163, 255, 0.2),
+    inset 0 0 10px rgba(255, 255, 255, 0.2);
+  transform-style: preserve-3d;
 }
 
 .futuristic-input {
@@ -19,6 +23,9 @@
          transition-all duration-300;
   position: relative;
   z-index: 3;
+  box-shadow: 
+    0 2px 10px rgba(0, 163, 255, 0.1),
+    inset 0 1px 2px rgba(255, 255, 255, 0.1);
 }
 
 .futuristic-card {
@@ -29,7 +36,10 @@
 
 .neon-text {
   color: #00A3FF;
-  text-shadow: 0 0 10px rgba(0, 163, 255, 0.5);
+  text-shadow: 
+    0 0 10px rgba(0, 163, 255, 0.5),
+    0 0 20px rgba(0, 163, 255, 0.3),
+    0 0 30px rgba(0, 163, 255, 0.2);
 }
 
 .glass-panel {
@@ -37,5 +47,9 @@
          border-transparent transition-all duration-300;
   position: relative;
   z-index: 1;
-  box-shadow: 0 0 15px rgba(0, 163, 255, 0.3);
+  box-shadow: 
+    0 0 15px rgba(0, 163, 255, 0.3),
+    0 5px 15px rgba(0, 0, 0, 0.2),
+    inset 0 1px 2px rgba(255, 255, 255, 0.1);
+  transform-style: preserve-3d;
 }
