@@ -39,7 +39,7 @@
   }
 
   .futuristic-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-neon-blue via-neon-purple to-neon-orange animate-neon-text;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-neon-blue via-neon-purple to-neon-orange;
     background-size: 300% 300%;
     position: relative;
     z-index: 2;
