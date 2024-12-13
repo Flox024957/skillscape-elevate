@@ -88,6 +88,11 @@ export default {
             "box-shadow": "0 0 10px rgba(0, 163, 255, 0.2)",
           },
         },
+        gradient: {
+          "0%": { "background-position": "0% 50%" },
+          "50%": { "background-position": "100% 50%" },
+          "100%": { "background-position": "0% 50%" },
+        },
         "fade-in": {
           "0%": { opacity: "0", transform: "translateY(10px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
