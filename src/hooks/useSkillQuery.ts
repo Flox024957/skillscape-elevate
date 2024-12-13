@@ -39,7 +39,6 @@ export const useSkillQuery = (id: string | undefined) => {
       return skillData as Skill;
     },
     enabled: !!id,
-    retry: false,
-    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    retry: 1,
   });
 };

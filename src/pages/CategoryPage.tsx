@@ -55,20 +55,17 @@ const CategoryPage = () => {
 
       if (error) {
         console.error('Error fetching category:', error);
-        toast.error("Erreur lors du chargement de la catégorie");
         throw error;
       }
 
       if (!data) {
-        console.error('No category found with ID:', id);
-        toast.error("Catégorie non trouvée");
         throw new Error('Category not found');
       }
 
       return data as Category;
     },
     enabled: !!id,
-    retry: false,
+    retry: 1,
   });
 
   const handleSkillClick = (skillId: string) => {
@@ -90,7 +87,7 @@ const CategoryPage = () => {
     );
   }
 
-  if (error || !category) {
+  if (error) {
     return (
       <div className="min-h-screen bg-background">
         <div className="container px-4 py-8">
@@ -117,9 +114,9 @@ const CategoryPage = () => {
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent 
                          bg-gradient-to-r from-purple-400 to-pink-600">
-              {category.name}
+              {category?.name}
             </h1>
-            {category.description && (
+            {category?.description && (
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 {category.description}
               </p>
@@ -127,7 +124,7 @@ const CategoryPage = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {category.skills?.map((skill) => (
+            {category?.skills?.map((skill) => (
               <motion.div
                 key={skill.id}
                 initial={{ opacity: 0, scale: 0.9 }}

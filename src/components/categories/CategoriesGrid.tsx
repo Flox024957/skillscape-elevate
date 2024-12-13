@@ -19,7 +19,6 @@ interface CategoriesGridProps {
 }
 
 export const CategoriesGrid = ({ categories }: CategoriesGridProps) => {
-  // Limiter à 9 catégories
   const displayedCategories = categories?.slice(0, 9);
 
   return (
