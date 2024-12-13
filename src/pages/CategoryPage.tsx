@@ -1,26 +1,24 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { Card } from "@/components/ui/card";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Toaster } from "@/components/ui/sonner";
 
 interface Skill {
   id: string;
   title: string;
-  summary: string;
-  explanation: string;
-  examples: any[];
-  concrete_action: string;
+  summary?: string;
+  explanation?: string;
+  examples?: any[];
+  concrete_action?: string;
 }
 
 interface Category {
   id: string;
   name: string;
-  description: string;
+  description?: string;
   skills: Skill[];
 }
 
@@ -38,7 +36,6 @@ const CategoryPage = () => {
         throw new Error('Category ID is required');
       }
 
-      // Validate that categoryId is a valid UUID
       const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
       if (!uuidRegex.test(categoryId)) {
         console.error('Invalid UUID format for category ID:', categoryId);
@@ -79,6 +76,37 @@ const CategoryPage = () => {
     retry: false,
   });
 
+  const addSkillToDashboard = async (skillId: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("Vous devez être connecté pour ajouter une compétence");
+        return;
+      }
+
+      const { error } = await supabase
+        .from('user_skills')
+        .upsert({
+          user_id: user.id,
+          skill_id: skillId,
+        });
+
+      if (error) {
+        if (error.code === '23505') {
+          toast.error("Cette compétence est déjà dans votre tableau de bord");
+        } else {
+          toast.error("Erreur lors de l'ajout de la compétence");
+        }
+        return;
+      }
+
+      toast.success("Compétence ajoutée au tableau de bord");
+    } catch (error) {
+      console.error('Error adding skill:', error);
+      toast.error("Une erreur est survenue");
+    }
+  };
+
   if (error) {
     return (
       <div className="container mx-auto p-4">
@@ -102,9 +130,8 @@ const CategoryPage = () => {
   if (isLoading) {
     return (
       <div className="container mx-auto p-4">
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-muted rounded w-1/4"></div>
-          <div className="h-32 bg-muted rounded"></div>
+        <div className="text-center">
+          <p>Chargement de la catégorie...</p>
         </div>
       </div>
     );
@@ -128,45 +155,58 @@ const CategoryPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Toaster />
-      <div className="container mx-auto p-4">
-        <Card className="bg-background border-border">
-          <div className="p-6">
-            <h1 className="text-3xl font-bold text-foreground mb-4">{category.name}</h1>
-            <p className="text-muted-foreground mb-8">{category.description}</p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {category.skills?.map((skill) => (
-                <Card 
-                  key={skill.id} 
-                  className="p-4 hover:border-primary/50 transition-colors cursor-pointer group relative"
-                  onClick={() => navigate(`/skill/${skill.id}`)}
-                >
-                  <div className="flex justify-between items-start gap-4">
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-foreground mb-2">{skill.title}</h3>
-                      {skill.summary && (
-                        <p className="text-sm text-muted-foreground">{skill.summary}</p>
-                      )}
-                    </div>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        addSkillToDashboard(skill.id);
-                      }}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <Plus className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </Card>
-              ))}
-            </div>
+    <div className="min-h-screen bg-gradient-to-b from-background to-purple-900/20">
+      <div className="container mx-auto px-4 py-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-8"
+        >
+          <div className="text-center mb-12">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent 
+                         bg-gradient-to-r from-purple-400 to-pink-600">
+              {category.name}
+            </h1>
+            {category.description && (
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                {category.description}
+              </p>
+            )}
           </div>
-        </Card>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {category.skills?.map((skill) => (
+              <motion.div
+                key={skill.id}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                whileHover={{ scale: 1.02 }}
+                className="glass-panel p-6 relative group cursor-pointer"
+                onClick={() => navigate(`/skill/${skill.id}`)}
+              >
+                <h3 className="text-xl font-semibold mb-3 text-foreground">
+                  {skill.title}
+                </h3>
+                {skill.summary && (
+                  <p className="text-sm text-muted-foreground mb-4">
+                    {skill.summary}
+                  </p>
+                )}
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="w-full mt-4"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    addSkillToDashboard(skill.id);
+                  }}
+                >
+                  Ajouter au tableau de bord
+                </Button>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
       </div>
     </div>
   );
