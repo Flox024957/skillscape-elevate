@@ -1,3 +1,9 @@
+import { AuthUser } from './auth';
+import { Profile } from './profiles';
+import { Post, PostLike, PostComment } from './posts';
+import { Message } from './messages';
+import { Friendship } from './friendships';
+
 export * from './auth';
 export * from './profiles';
 export * from './posts';
