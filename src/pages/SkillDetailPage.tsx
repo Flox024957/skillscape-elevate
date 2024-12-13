@@ -20,11 +20,14 @@ const SkillDetailPage = () => {
         return;
       }
 
+      // Clean the ID if it comes from a route parameter
+      const cleanId = id.replace('skill/', '');
+
       const { error: existingError, data: existingSkill } = await supabase
         .from('user_skills')
         .select('*')
         .eq('user_id', user.id)
-        .eq('skill_id', id)
+        .eq('skill_id', cleanId)
         .single();
 
       if (existingSkill) {
@@ -35,7 +38,7 @@ const SkillDetailPage = () => {
             .from('user_skills')
             .update({ selected_sections: newSections })
             .eq('user_id', user.id)
-            .eq('skill_id', id);
+            .eq('skill_id', cleanId);
 
           if (updateError) {
             console.error('Error updating sections:', updateError);
@@ -53,7 +56,7 @@ const SkillDetailPage = () => {
         .from('user_skills')
         .insert([{
           user_id: user.id,
-          skill_id: id,
+          skill_id: cleanId,
           selected_sections: [type]
         }]);
 
@@ -74,8 +77,11 @@ const SkillDetailPage = () => {
     return (
       <div className="min-h-screen bg-background">
         <div className="container px-4 py-8">
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Erreur lors du chargement de la compétence</h2>
+          <div className="flex flex-col items-start gap-4">
+            <h2 className="text-xl font-semibold">Compétence non trouvée</h2>
+            <p className="text-muted-foreground">
+              La compétence que vous recherchez n'existe pas ou a été supprimée.
+            </p>
             <Button onClick={() => navigate(-1)}>Retour</Button>
           </div>
         </div>
@@ -101,8 +107,11 @@ const SkillDetailPage = () => {
     return (
       <div className="min-h-screen bg-background">
         <div className="container px-4 py-8">
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Compétence non trouvée</h2>
+          <div className="flex flex-col items-start gap-4">
+            <h2 className="text-xl font-semibold">Compétence non trouvée</h2>
+            <p className="text-muted-foreground">
+              La compétence que vous recherchez n'existe pas ou a été supprimée.
+            </p>
             <Button onClick={() => navigate(-1)}>Retour</Button>
           </div>
         </div>
