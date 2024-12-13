@@ -8,7 +8,7 @@ import { useSkillQuery } from "@/hooks/useSkillQuery";
 import { SkillDetailContent } from "@/components/skill-detail/SkillDetailContent";
 
 const SkillDetailPage = () => {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { data: skill, isLoading, error } = useSkillQuery(id);
 
@@ -71,7 +71,6 @@ const SkillDetailPage = () => {
   };
 
   if (error) {
-    console.error('Query error:', error);
     return (
       <div className="min-h-screen bg-background">
         <div className="container px-4 py-8">
