@@ -34,55 +34,5 @@
   body {
     @apply bg-futuristic-black text-white;
     font-feature-settings: "rlig" 1, "calt" 1;
-    background: 
-      radial-gradient(circle at 50% 50%, rgba(0, 163, 255, 0.1) 0%, transparent 50%),
-      linear-gradient(0deg, #070B1A 0%, #0B1026 100%);
-    position: relative;
-    overflow-x: hidden;
-  }
-
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: 
-      linear-gradient(45deg, transparent 45%, rgba(0, 163, 255, 0.1) 50%, transparent 55%);
-    animation: scanline 6s linear infinite;
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  body::after {
-    content: '';
-    position: fixed;
-    top: -50%;
-    left: -50%;
-    right: -50%;
-    bottom: -50%;
-    background: radial-gradient(circle at 50% 50%, rgba(0, 163, 255, 0.15) 0%, transparent 60%);
-    animation: pulse 4s ease-in-out infinite;
-    pointer-events: none;
-    z-index: 0;
-  }
-}
-
-@keyframes scanline {
-  0% {
-    transform: translateY(-100%);
-  }
-  100% {
-    transform: translateY(100%);
-  }
-}
-
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
   }
 }

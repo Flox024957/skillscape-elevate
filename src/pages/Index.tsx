@@ -1,5 +1,3 @@
-import { motion } from "framer-motion";
-import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
@@ -41,15 +39,10 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-futuristic-black bg-futuristic-grid bg-[size:50px_50px]">
+    <div className="min-h-screen bg-futuristic-black">
       <div className="container px-4 py-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12"
-        >
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-futuristic-blue to-futuristic-violet">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-6xl font-bold mb-4 text-white">
             Welcome to <span className="font-black">FLAP</span>
           </h1>
           <p className="text-gray-400 max-w-2xl mx-auto mb-8 text-lg">
@@ -58,66 +51,40 @@ const Index = () => {
           <div className="flex flex-col gap-6 items-center">
             <Button
               onClick={() => navigate("/auth")}
-              className="bg-gradient-to-r from-futuristic-blue to-futuristic-violet hover:opacity-90 text-white px-8 py-6 text-lg rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(0,163,255,0.5)]"
+              className="bg-futuristic-blue text-white px-8 py-6 text-lg rounded-lg"
             >
               Get Started
             </Button>
             
-            {/* Nouveau bouton lumineux pour le tableau de bord */}
-            <motion.button
+            <Button
               onClick={() => navigate("/dashboard")}
-              className="relative group px-12 py-6 rounded-xl overflow-hidden"
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.2 }}
+              className="bg-futuristic-black text-white border border-futuristic-blue px-12 py-6 rounded-xl"
             >
-              {/* Fond animé */}
-              <div className="absolute inset-0 bg-gradient-to-r from-futuristic-blue via-futuristic-violet to-futuristic-blue bg-[length:200%_100%] animate-[gradient_3s_linear_infinite]" />
-              
-              {/* Effet de lueur */}
-              <div className="absolute inset-0 opacity-50 group-hover:opacity-75 blur-xl bg-gradient-to-r from-futuristic-blue via-futuristic-violet to-futuristic-blue bg-[length:200%_100%] animate-[gradient_3s_linear_infinite]" />
-              
-              {/* Bordure lumineuse */}
-              <div className="absolute inset-0.5 rounded-xl bg-futuristic-black" />
-              
-              {/* Texte avec effet de lueur */}
-              <span className="relative text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-futuristic-blue to-futuristic-violet animate-pulse">
+              <span className="text-xl font-bold">
                 Tableau de bord
               </span>
-            </motion.button>
+            </Button>
           </div>
-        </motion.div>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {categories.map((category, index) => (
-            <motion.div
+          {categories.map((category) => (
+            <div
               key={category.id}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
               onClick={() => handleCategoryClick(category.id)}
-              className="group cursor-pointer transform transition-all duration-300 hover:-translate-y-2"
+              className="cursor-pointer bg-futuristic-gray/30 rounded-lg p-6 border border-futuristic-blue/50"
             >
-              <div className="relative bg-futuristic-gray/30 backdrop-blur-md rounded-lg p-6 border-2 border-transparent hover:border-futuristic-blue/50 transition-all duration-300">
-                <div className="aspect-square relative mb-4 overflow-hidden rounded-lg">
-                  <img
-                    src={category.image}
-                    alt={category.name}
-                    className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-futuristic-black/50" />
-                </div>
-                <h3 className="text-xl font-semibold mb-2 text-white group-hover:text-futuristic-blue transition-colors">
-                  {category.name}
-                </h3>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-futuristic-violet hover:text-futuristic-blue hover:bg-futuristic-violet/10"
-                >
-                  <Plus className="w-5 h-5" />
-                </Button>
+              <div className="aspect-square relative mb-4 overflow-hidden rounded-lg">
+                <img
+                  src={category.image}
+                  alt={category.name}
+                  className="object-cover w-full h-full"
+                />
               </div>
-            </motion.div>
+              <h3 className="text-xl font-semibold text-white">
+                {category.name}
+              </h3>
+            </div>
           ))}
         </div>
       </div>

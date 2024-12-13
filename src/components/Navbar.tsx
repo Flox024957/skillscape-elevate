@@ -2,7 +2,6 @@ import { Home, LayoutGrid, Headphones, Trophy } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -16,11 +15,7 @@ const Navbar = () => {
   ];
 
   return (
-    <motion.nav 
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      className="fixed top-0 left-0 right-0 bg-background/80 backdrop-blur-md border-b z-50"
-    >
+    <nav className="fixed top-0 left-0 right-0 bg-background/80 backdrop-blur-md border-b z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center space-x-4">
@@ -41,7 +36,7 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-    </motion.nav>
+    </nav>
   );
 };
 
