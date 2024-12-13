@@ -9,6 +9,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { useState } from "react";
+import { Json } from "@/integrations/supabase/types";
 
 const SkillsTab = () => {
   const { toast } = useToast();
@@ -40,7 +41,7 @@ const SkillsTab = () => {
     },
   });
 
-  const handleAddSkill = async (skillId: string) => {
+  const handleAddSkillSection = async (skillId: string, sectionTitle: string, content: string | Json[] | null) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       toast({
@@ -51,22 +52,26 @@ const SkillsTab = () => {
       return;
     }
 
+    if (!content) return;
+
     const { error } = await supabase
-      .from('user_skills')
-      .insert([{ user_id: user.id, skill_id: skillId }]);
+      .from('user_notes')
+      .insert([{
+        user_id: user.id,
+        content: `${sectionTitle} - ${Array.isArray(content) ? content.join('\n') : content}`,
+      }]);
 
     if (error) {
       toast({
         title: "Error",
-        description: "Could not add skill to dashboard",
+        description: "Could not add section to dashboard",
         variant: "destructive",
       });
     } else {
       toast({
         title: "Success",
-        description: "Added to profile",
+        description: `Added ${sectionTitle.toLowerCase()} to dashboard`,
       });
-      refetch();
     }
   };
 
@@ -78,29 +83,53 @@ const SkillsTab = () => {
     );
   };
 
-  const renderSkillSection = (title: string, content: string | null) => {
+  const renderSkillSection = (skillId: string, title: string, content: string | null) => {
     if (!content) return null;
     
     return (
       <div className="bg-card/50 p-4 rounded-lg border border-border mb-2">
-        <h4 className="font-medium text-sm text-muted-foreground mb-1">{title}</h4>
-        <p className="text-sm">{content}</p>
+        <div className="flex justify-between items-start">
+          <div className="flex-1">
+            <h4 className="font-medium text-sm text-muted-foreground mb-1">{title}</h4>
+            <p className="text-sm">{content}</p>
+          </div>
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={() => handleAddSkillSection(skillId, title, content)}
+            className="hover:bg-accent ml-2"
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
     );
   };
 
-  const renderExamples = (examples: any[] | null) => {
+  const renderExamples = (skillId: string, examples: Json[] | null) => {
     if (!examples || examples.length === 0) return null;
     
     return (
       <div className="bg-card/50 p-4 rounded-lg border border-border mb-2">
-        <h4 className="font-medium text-sm text-muted-foreground mb-2">Examples</h4>
-        <div className="space-y-2">
-          {examples.map((example, index) => (
-            <p key={index} className="text-sm pl-4 border-l-2 border-border">
-              {String(example)}
-            </p>
-          ))}
+        <div className="flex justify-between items-start">
+          <div className="flex-1">
+            <h4 className="font-medium text-sm text-muted-foreground mb-2">Examples</h4>
+            <div className="space-y-2">
+              {examples.map((example, index) => (
+                <p key={index} className="text-sm pl-4 border-l-2 border-border">
+                  {String(example)}
+                </p>
+              ))}
+            </div>
+          </div>
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={() => handleAddSkillSection(skillId, "Examples", examples)}
+            className="hover:bg-accent ml-2"
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
         </div>
       </div>
     );
@@ -124,27 +153,14 @@ const SkillsTab = () => {
                 {userSkill.skills.summary}
               </p>
             </div>
-            <div className="flex items-center gap-2">
-              <Button
-                size="icon"
-                variant="ghost"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleAddSkill(userSkill.skill_id);
-                }}
-                className="hover:bg-accent"
-              >
-                <Plus className="h-4 w-4" />
-              </Button>
-              <ChevronDown className="h-4 w-4 transition-transform duration-200" />
-            </div>
+            <ChevronDown className="h-4 w-4 transition-transform duration-200" />
           </CollapsibleTrigger>
           
           <CollapsibleContent className="p-4 pt-0 space-y-4">
-            {renderSkillSection("Summary", userSkill.skills.summary)}
-            {renderSkillSection("Explanation", userSkill.skills.explanation)}
-            {renderSkillSection("Concrete Action", userSkill.skills.concrete_action)}
-            {renderExamples(userSkill.skills.examples)}
+            {renderSkillSection(userSkill.skill_id, "Summary", userSkill.skills.summary)}
+            {renderSkillSection(userSkill.skill_id, "Explanation", userSkill.skills.explanation)}
+            {renderSkillSection(userSkill.skill_id, "Concrete Action", userSkill.skills.concrete_action)}
+            {renderExamples(userSkill.skill_id, userSkill.skills.examples as Json[])}
           </CollapsibleContent>
         </Collapsible>
       ))}
