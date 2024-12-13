@@ -16,6 +16,8 @@ const SkillDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  console.log('Current skill ID:', id);
+
   const { data: skill, isLoading, error } = useQuery({
     queryKey: ['skill', id],
     queryFn: async () => {
@@ -27,7 +29,12 @@ const SkillDetailPage = () => {
       const { data, error } = await supabase
         .from('skills')
         .select(`
-          *,
+          id,
+          title,
+          summary,
+          explanation,
+          examples,
+          concrete_action,
           categories (
             id,
             name,
@@ -88,6 +95,7 @@ const SkillDetailPage = () => {
   }
 
   if (error || !skill) {
+    console.error('Error or no skill data:', error);
     return (
       <div className="min-h-screen bg-background">
         <div className="container px-4 py-8">
@@ -100,6 +108,7 @@ const SkillDetailPage = () => {
     );
   }
 
+  console.log('Rendering skill:', skill);
   const examples = Array.isArray(skill.examples) ? skill.examples : [];
 
   return (
@@ -110,7 +119,7 @@ const SkillDetailPage = () => {
           <div>
             <Button
               variant="ghost"
-              onClick={() => navigate(`/category/${skill.category_id}`)}
+              onClick={() => navigate(`/category/${skill.categories?.id}`)}
               className="mb-4"
             >
               ← Retour à {skill.categories?.name}
@@ -146,10 +155,12 @@ const SkillDetailPage = () => {
             onAdd={addToDashboard}
           />
 
-          <ExamplesSection
-            examples={examples}
-            onAdd={addToDashboard}
-          />
+          {examples.length > 0 && (
+            <ExamplesSection
+              examples={examples}
+              onAdd={addToDashboard}
+            />
+          )}
         </div>
       </div>
     </div>
