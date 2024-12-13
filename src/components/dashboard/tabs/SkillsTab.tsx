@@ -55,7 +55,7 @@ const SkillsTab = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return [];
       
-      const { data: skills, error } = await supabase
+      const { data, error } = await supabase
         .from('user_skills')
         .select(`
           skill_id,
@@ -75,11 +75,13 @@ const SkillsTab = () => {
       
       if (error) throw error;
       
-      return (skills || []).map(skill => ({
-        ...skill,
+      return (data || []).map(skill => ({
+        skill_id: skill.skill_id,
+        selected_sections: skill.selected_sections,
+        is_mastered: skill.is_mastered,
         skills: {
           ...skill.skills,
-          examples: Array.isArray(skill.skills.examples) ? skill.skills.examples : []
+          examples: Array.isArray(skill.skills?.examples) ? skill.skills.examples : []
         }
       }));
     },
