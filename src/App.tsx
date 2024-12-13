@@ -42,7 +42,7 @@ const App = () => {
           {isAuthenticated && <Navbar />}
           <div className={cn(
             "min-h-screen bg-background",
-            isAuthenticated && "pt-16 pb-16 md:pb-0"
+            isAuthenticated && "pt-16 pb-16 md:pb-0 md:pt-16"
           )}>
             <AppRoutes isAuthenticated={isAuthenticated} />
           </div>
