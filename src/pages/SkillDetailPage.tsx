@@ -1,115 +1,73 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Toaster } from "@/components/ui/sonner";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useSkillQuery } from "@/hooks/useSkillQuery";
-import { SkillDetailContent } from "@/components/skill-detail/SkillDetailContent";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+
+interface Skill {
+  id: string;
+  title: string;
+  summary?: string;
+  explanation?: string;
+  examples?: any[];
+  concrete_action?: string;
+  category_id: string;
+}
 
 const SkillDetailPage = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
   const navigate = useNavigate();
-  const { data: skill, isLoading, error } = useSkillQuery(id);
 
-  const handleAddToDashboard = async (type: string, content: string) => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user || !id) {
-        toast.error("Vous devez être connecté pour ajouter une compétence");
-        return;
-      }
-
-      const { error: existingError, data: existingSkill } = await supabase
-        .from('user_skills')
+  const { data: skill, isLoading, error } = useQuery({
+    queryKey: ['skill', id],
+    queryFn: async () => {
+      console.log('Fetching skill with ID:', id);
+      
+      const { data, error } = await supabase
+        .from('skills')
         .select('*')
-        .eq('user_id', user.id)
-        .eq('skill_id', id)
+        .eq('id', id)
         .single();
 
-      if (existingSkill) {
-        const newSections = existingSkill.selected_sections || [];
-        if (!newSections.includes(type)) {
-          newSections.push(type);
-          const { error: updateError } = await supabase
-            .from('user_skills')
-            .update({ selected_sections: newSections })
-            .eq('user_id', user.id)
-            .eq('skill_id', id);
-
-          if (updateError) {
-            console.error('Error updating sections:', updateError);
-            toast.error("Impossible de mettre à jour les sections");
-            return;
-          }
-          toast.success("Section ajoutée au tableau de bord");
-        } else {
-          toast.info("Cette section est déjà dans votre tableau de bord");
-        }
-        return;
-      }
-
-      const { error } = await supabase
-        .from('user_skills')
-        .insert([{
-          user_id: user.id,
-          skill_id: id,
-          selected_sections: [type]
-        }]);
-
       if (error) {
-        console.error('Error adding skill:', error);
-        toast.error("Impossible d'ajouter la compétence au tableau de bord");
-        return;
+        console.error('Error fetching skill:', error);
+        toast.error("La compétence n'a pas pu être chargée");
+        throw error;
       }
 
-      toast.success("Compétence ajoutée au tableau de bord");
-    } catch (error) {
-      console.error('Error adding to dashboard:', error);
-      toast.error("Une erreur est survenue");
-    }
-  };
+      if (!data) {
+        console.error('No skill found with ID:', id);
+        toast.error("La compétence n'existe pas");
+        throw new Error('Skill not found');
+      }
 
-  if (error) {
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="container px-4 py-8">
-          <div className="flex flex-col items-start gap-4">
-            <h2 className="text-2xl font-semibold">Compétence non trouvée</h2>
-            <p className="text-muted-foreground">
-              La compétence que vous recherchez n'existe pas ou a été supprimée.
-            </p>
-            <Button onClick={() => navigate(-1)}>Retour</Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+      console.log('Skill data:', data);
+      return data as Skill;
+    },
+  });
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background">
-        <div className="container px-4 py-8">
-          <div className="space-y-6">
-            <Skeleton className="h-8 w-1/3" />
-            <Skeleton className="h-32 w-full" />
-            <Skeleton className="h-32 w-full" />
-          </div>
-        </div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary"></div>
       </div>
     );
   }
 
-  if (!skill) {
+  if (error || !skill) {
     return (
       <div className="min-h-screen bg-background">
         <div className="container px-4 py-8">
-          <div className="flex flex-col items-start gap-4">
-            <h2 className="text-xl font-semibold">Compétence non trouvée</h2>
-            <p className="text-muted-foreground">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-red-500 mb-4">
               La compétence que vous recherchez n'existe pas ou a été supprimée.
-            </p>
-            <Button onClick={() => navigate(-1)}>Retour</Button>
+            </h1>
+            <Button onClick={() => navigate('/')} variant="outline">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Retour à l'accueil
+            </Button>
           </div>
         </div>
       </div>
@@ -118,12 +76,61 @@ const SkillDetailPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Toaster />
-      <SkillDetailContent
-        skill={skill}
-        onNavigateBack={() => navigate(`/category/${skill.categories?.id}`)}
-        onAddToDashboard={handleAddToDashboard}
-      />
+      <div className="container px-4 py-8">
+        <Button 
+          onClick={() => navigate(`/category/${skill.category_id}`)} 
+          variant="ghost" 
+          className="mb-6"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Retour à la catégorie
+        </Button>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-4xl mx-auto"
+        >
+          <h1 className="text-4xl font-bold mb-6 bg-clip-text text-transparent 
+                       bg-gradient-to-r from-purple-400 to-pink-600">
+            {skill.title}
+          </h1>
+
+          {skill.summary && (
+            <div className="mb-8">
+              <h2 className="text-2xl font-semibold mb-3">Résumé</h2>
+              <p className="text-muted-foreground">{skill.summary}</p>
+            </div>
+          )}
+
+          {skill.explanation && (
+            <div className="mb-8">
+              <h2 className="text-2xl font-semibold mb-3">Explication</h2>
+              <p className="text-muted-foreground">{skill.explanation}</p>
+            </div>
+          )}
+
+          {skill.examples && skill.examples.length > 0 && (
+            <div className="mb-8">
+              <h2 className="text-2xl font-semibold mb-3">Exemples</h2>
+              <ul className="list-disc list-inside space-y-2">
+                {skill.examples.map((example, index) => (
+                  <li key={index} className="text-muted-foreground">
+                    {example}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {skill.concrete_action && (
+            <div className="mb-8">
+              <h2 className="text-2xl font-semibold mb-3">Action Concrète</h2>
+              <p className="text-muted-foreground">{skill.concrete_action}</p>
+            </div>
+          )}
+        </motion.div>
+      </div>
     </div>
   );
 };
