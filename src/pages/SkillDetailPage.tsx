@@ -16,7 +16,7 @@ const SkillDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { data: skill, isLoading, error } = useQuery({
+  const { data: skill, isLoading } = useQuery({
     queryKey: ['skill', id],
     queryFn: async () => {
       if (!id) {
@@ -26,7 +26,7 @@ const SkillDetailPage = () => {
       
       console.log('Fetching skill with ID:', id);
       
-      const { data, error: queryError } = await supabase
+      const { data, error } = await supabase
         .from('skills')
         .select(`
           *,
@@ -38,9 +38,9 @@ const SkillDetailPage = () => {
         .eq('id', id)
         .single();
 
-      if (queryError) {
-        console.error('Supabase error:', queryError);
-        throw queryError;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
       }
 
       if (!data) {
@@ -51,7 +51,6 @@ const SkillDetailPage = () => {
       console.log('Skill data received:', data);
       return data as Skill;
     },
-    enabled: !!id,
   });
 
   const addToDashboard = async (type: string, content: string) => {
@@ -63,17 +62,18 @@ const SkillDetailPage = () => {
       }
 
       const { error } = await supabase
-        .from('user_notes')
+        .from('user_skills')
         .insert([{
           user_id: user.id,
-          content: `${type}: ${content}`,
+          skill_id: id,
+          selected_sections: [type]
         }]);
 
       if (error) {
         console.error('Error adding to dashboard:', error);
-        toast.error("Impossible d'ajouter le contenu au tableau de bord");
+        toast.error("Impossible d'ajouter la compétence au tableau de bord");
       } else {
-        toast.success("Ajouté au profil");
+        toast.success("Compétence ajoutée au tableau de bord");
       }
     } catch (error) {
       console.error('Error adding to dashboard:', error);
@@ -94,13 +94,12 @@ const SkillDetailPage = () => {
     );
   }
 
-  if (error || !skill) {
-    console.error('Error or no skill data:', error);
+  if (!skill) {
     return (
       <div className="min-h-screen bg-background">
         <div className="container px-4 py-8">
           <div>
-            <h2 className="text-xl font-semibold mb-4">Erreur lors du chargement de la compétence</h2>
+            <h2 className="text-xl font-semibold mb-4">Compétence non trouvée</h2>
             <Button onClick={() => navigate(-1)}>Retour</Button>
           </div>
         </div>
@@ -157,7 +156,7 @@ const SkillDetailPage = () => {
           {examples.length > 0 && (
             <ExamplesSection
               examples={examples}
-              onAdd={addToDashboard}
+              onAdd={(type) => addToDashboard(type, JSON.stringify(examples))}
             />
           )}
         </div>
