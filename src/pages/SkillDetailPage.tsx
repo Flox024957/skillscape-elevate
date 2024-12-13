@@ -21,20 +21,14 @@ const SkillDetailPage = () => {
   const { data: skill, isLoading, error } = useQuery({
     queryKey: ['skill', id],
     queryFn: async () => {
-      if (!id) {
-        throw new Error('Skill ID is required');
-      }
+      if (!id) throw new Error('No skill ID provided');
+      
       console.log('Fetching skill with ID:', id);
       
       const { data, error } = await supabase
         .from('skills')
         .select(`
-          id,
-          title,
-          summary,
-          explanation,
-          examples,
-          concrete_action,
+          *,
           categories (
             id,
             name,
@@ -45,14 +39,20 @@ const SkillDetailPage = () => {
         .single();
 
       if (error) {
-        console.error('Error fetching skill:', error);
+        console.error('Supabase error:', error);
         throw error;
+      }
+
+      if (!data) {
+        console.error('No data found for skill ID:', id);
+        throw new Error('Skill not found');
       }
 
       console.log('Skill data received:', data);
       return data as Skill;
     },
     enabled: !!id,
+    retry: 1
   });
 
   const addToDashboard = async (type: string, content: string) => {
