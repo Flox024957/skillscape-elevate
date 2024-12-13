@@ -29,3 +29,10 @@ export interface MasteredSkill {
     resume: string | null;
   };
 }
+
+export interface Category {
+  id: string;
+  name: string;
+  description: string;
+  skills: Skill[];
+}

@@ -5,28 +5,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-
-interface Skill {
-  id: string;
-  titre: string;
-  resume?: string;
-  explication?: string;
-  exemples?: any[];
-  action_concrete?: string;
-}
-
-interface Category {
-  id: string;
-  name: string;
-  description: string;
-  skills: Skill[];
-}
+import { Category, Skill } from "@/types/skills";
 
 const CategoryPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const { data: category, isLoading, error } = useQuery({
+  const { data: category, isLoading, error } = useQuery<Category>({
     queryKey: ['category', id],
     queryFn: async () => {
       if (!id) {
@@ -61,7 +46,7 @@ const CategoryPage = () => {
         throw new Error('Category not found');
       }
 
-      return categoryData as Category;
+      return categoryData;
     },
   });
 
@@ -120,7 +105,7 @@ const CategoryPage = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {category.skills?.map((skill) => (
+          {category.skills?.map((skill: Skill) => (
             <motion.div
               key={skill.id}
               initial={{ opacity: 0, scale: 0.9 }}
