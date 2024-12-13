@@ -53,11 +53,11 @@ const App = () => {
             <AnimatePresence>
               <Routes>
                 <Route path="/auth" element={
-                  isAuthenticated ? <Navigate to="/dashboard" /> : <Auth />
+                  isAuthenticated ? <Navigate to="/main" /> : <Auth />
                 } />
                 <Route path="/" element={
                   <ProtectedRoute>
-                    <Dashboard />
+                    <MainPage />
                   </ProtectedRoute>
                 } />
                 <Route path="/main" element={
