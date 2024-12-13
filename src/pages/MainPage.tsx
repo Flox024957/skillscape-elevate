@@ -14,8 +14,8 @@ const MainPage = () => {
           *,
           skills (
             id,
-            title,
-            summary
+            titre,
+            resume
           )
         `)
         .order('name');
@@ -25,8 +25,18 @@ const MainPage = () => {
         throw categoriesError;
       }
       
-      console.log('Categories fetched:', categoriesData);
-      return categoriesData;
+      // Transform the data to match the expected interface
+      const transformedCategories = categoriesData?.map(category => ({
+        ...category,
+        skills: category.skills?.map(skill => ({
+          id: skill.id,
+          title: skill.titre,
+          summary: skill.resume
+        }))
+      }));
+      
+      console.log('Categories fetched:', transformedCategories);
+      return transformedCategories;
     },
   });
 
