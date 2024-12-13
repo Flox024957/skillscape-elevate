@@ -25,7 +25,7 @@ const SkillActions = ({ skillId, onAdd, isMastered }: SkillActionsProps) => {
         .select('skill_id')
         .eq('user_id', user.id)
         .eq('skill_id', skillId)
-        .maybeSingle(); // Use maybeSingle() instead of single()
+        .maybeSingle();
 
       if (checkError) throw checkError;
       
@@ -43,7 +43,7 @@ const SkillActions = ({ skillId, onAdd, isMastered }: SkillActionsProps) => {
 
       if (insertError) throw insertError;
 
-      // Remove from user_skills if it exists
+      // Remove from user_skills
       const { error: deleteError } = await supabase
         .from('user_skills')
         .delete()
@@ -57,7 +57,7 @@ const SkillActions = ({ skillId, onAdd, isMastered }: SkillActionsProps) => {
       queryClient.invalidateQueries({ queryKey: ['masteredSkills'] });
       toast({
         title: "Succès",
-        description: "Compétence marquée comme maîtrisée",
+        description: "Compétence marquée comme maîtrisée et déplacée dans la section appropriée",
       });
     },
     onError: (error) => {
