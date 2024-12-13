@@ -60,13 +60,7 @@ export const ChatSection = ({ userId }: ChatSectionProps) => {
     const fetchMessages = async () => {
       const { data, error } = await supabase
         .from('messages')
-        .select(`
-          *,
-          profiles:sender_id (
-            pseudo,
-            image_profile
-          )
-        `)
+        .select('*, sender:profiles!messages_sender_id_fkey (pseudo, image_profile)')
         .or(`and(sender_id.eq.${userId},receiver_id.eq.${selectedFriend}),and(sender_id.eq.${selectedFriend},receiver_id.eq.${userId})`)
         .order('created_at', { ascending: true });
 
@@ -75,7 +69,13 @@ export const ChatSection = ({ userId }: ChatSectionProps) => {
         return;
       }
 
-      setMessages(data || []);
+      // Transform the data to match our Message type
+      const formattedMessages = data.map(msg => ({
+        ...msg,
+        profiles: msg.sender
+      }));
+
+      setMessages(formattedMessages);
     };
 
     fetchMessages();
@@ -149,7 +149,7 @@ export const ChatSection = ({ userId }: ChatSectionProps) => {
                 )}
               >
                 <Avatar>
-                  <AvatarImage src={conv.friend.image_profile} />
+                  <AvatarImage src={conv.friend.image_profile || undefined} />
                   <AvatarFallback>{conv.friend.pseudo?.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div className="text-left">

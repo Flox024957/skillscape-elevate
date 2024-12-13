@@ -8,7 +8,7 @@ export type Message = {
   profiles?: {
     pseudo: string | null;
     image_profile: string | null;
-  } | null;
+  };
 };
 
 export type ChatConversation = {

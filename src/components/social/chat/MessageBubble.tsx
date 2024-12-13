@@ -12,7 +12,7 @@ export const MessageBubble = ({ message, isCurrentUser }: MessageBubbleProps) =>
       {!isCurrentUser && (
         <Avatar className="h-8 w-8">
           <AvatarImage 
-            src={message.profiles?.image_profile || '/placeholder.svg'} 
+            src={message.profiles?.image_profile || undefined} 
             alt={message.profiles?.pseudo || 'User'} 
           />
           <AvatarFallback>
