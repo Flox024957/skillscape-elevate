@@ -18,4 +18,8 @@ export type ChatConversation = {
     image_profile: string | null;
   };
   unreadCount: number;
+  lastMessage?: {
+    content: string;
+    created_at: string;
+  };
 };
