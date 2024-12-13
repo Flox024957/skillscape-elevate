@@ -1,38 +1,64 @@
-import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
 
-interface CategoryContentProps {
-  name: string;
-  description: string;
-  skillsCount: number;
-  isMobile: boolean;
+interface Skill {
+  id: string;
+  title: string;
+  summary: string;
+  explanation: string;
+  examples: any[];
+  concrete_action: string;
 }
 
-export const CategoryContent = ({ name, description, skillsCount, isMobile }: CategoryContentProps) => {
+interface Category {
+  id: string;
+  name: string;
+  description: string;
+  skills: Skill[];
+}
+
+interface CategoryContentProps {
+  category: Category;
+}
+
+export const CategoryContent = ({ category }: CategoryContentProps) => {
+  const navigate = useNavigate();
+
   return (
-    <div className="absolute inset-0 flex flex-col justify-end p-4 md:p-6 transform 
-                    translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-      <h3 className={cn(
-        "font-bold mb-2 md:mb-3 text-white group-hover:text-primary",
-        "transition-all duration-300 transform group-hover:scale-105",
-        isMobile ? "text-lg" : "text-xl"
-      )}>
-        {name}
-      </h3>
-      <p className={cn(
-        "text-white/70 line-clamp-2 transform translate-y-4",
-        "opacity-0 group-hover:opacity-100 group-hover:translate-y-0",
-        "transition-all duration-500",
-        isMobile ? "text-xs" : "text-sm"
-      )}>
-        {description}
-      </p>
-      <div className={cn(
-        "mt-2 text-primary/80 transform translate-y-4",
-        "opacity-0 group-hover:opacity-100 group-hover:translate-y-0",
-        "transition-all duration-500 delay-100",
-        isMobile ? "text-xs" : "text-sm"
-      )}>
-        {skillsCount} compétence{skillsCount > 1 ? 's' : ''}
+    <div className="container mx-auto p-4">
+      <Button 
+        variant="ghost" 
+        onClick={() => navigate(-1)}
+        className="mb-4"
+      >
+        ← Retour
+      </Button>
+
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold">{category.name}</h1>
+          {category.description && (
+            <p className="text-muted-foreground mt-2">{category.description}</p>
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {category.skills?.map((skill) => (
+            <Card 
+              key={skill.id}
+              className="cursor-pointer hover:shadow-lg transition-shadow"
+              onClick={() => navigate(`/skill/${skill.id}`)}
+            >
+              <CardHeader>
+                <CardTitle className="text-xl">{skill.title}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">{skill.summary}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
   );
