@@ -24,16 +24,16 @@ interface Category {
 }
 
 const CategoryPage = () => {
-  const { categoryId } = useParams<{ id: string }>();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
 
   const { data: category, isLoading, error } = useQuery({
-    queryKey: ['category', categoryId],
+    queryKey: ['category', id],
     queryFn: async () => {
-      console.log('Fetching category with ID:', categoryId);
+      console.log('Fetching category with ID:', id);
       
-      if (!categoryId) {
+      if (!id) {
         throw new Error('Category ID is required');
       }
 
@@ -52,7 +52,7 @@ const CategoryPage = () => {
             concrete_action
           )
         `)
-        .eq('id', categoryId)
+        .eq('id', id)
         .single();
 
       if (error) {
@@ -62,7 +62,7 @@ const CategoryPage = () => {
       }
 
       if (!data) {
-        console.error('No category found with ID:', categoryId);
+        console.error('No category found with ID:', id);
         toast.error("Catégorie non trouvée");
         throw new Error('Category not found');
       }
@@ -70,7 +70,7 @@ const CategoryPage = () => {
       console.log('Category data received:', data);
       return data as Category;
     },
-    enabled: !!categoryId,
+    enabled: !!id,
     retry: false,
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   });
