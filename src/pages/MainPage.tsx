@@ -105,25 +105,26 @@ const MainPage = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3, delay: index * 0.1 }}
-              onClick={() => navigate(`/category/${category.id}`)}
-              className="group cursor-pointer"
+              className="group cursor-pointer relative h-[400px] overflow-hidden rounded-xl"
+              onClick={() => {
+                const element = document.querySelector(`#category-${category.id}`);
+                element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => navigate(`/category/${category.id}`), 500);
+              }}
             >
-              <div className="relative rounded-xl overflow-hidden backdrop-blur-lg border border-primary/20 hover:border-primary/40 transition-all duration-300 hover:scale-105 bg-background/40 aspect-[3/4]">
-                <div className="w-full h-full relative">
-                  <motion.div
-                    className={`w-full h-full bg-[url('${getCategoryImage(category.name)}')] bg-cover ${getImagePosition(category.name)}`}
-                    whileHover={{ scale: 1.1 }}
-                    transition={{ duration: 0.3 }}
-                  />
-                  <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-background/90 to-transparent">
-                    <h3 className="text-2xl font-bold mb-2 text-white group-hover:text-primary transition-colors">
-                      {category.name}
-                    </h3>
-                    <p className="text-white/75 line-clamp-2">
-                      {category.description}
-                    </p>
-                  </div>
-                </div>
+              <motion.div
+                className={`absolute inset-0 bg-[url('${getCategoryImage(category.name)}')] bg-cover ${getImagePosition(category.name)} transition-transform duration-500 ease-out`}
+                whileHover={{ scale: 1.1 }}
+                id={`category-${category.id}`}
+              />
+              <div className="absolute inset-0 bg-black/30 hover:bg-black/10 transition-colors duration-300" />
+              <div className="absolute bottom-0 left-0 right-0 p-6">
+                <h3 className="text-2xl font-bold mb-2 text-white group-hover:text-primary transition-colors">
+                  {category.name}
+                </h3>
+                <p className="text-white/75 line-clamp-2 group-hover:text-white/90 transition-colors">
+                  {category.description}
+                </p>
               </div>
             </motion.div>
           ))}
