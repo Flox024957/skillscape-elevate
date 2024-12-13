@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Database } from "@/integrations/supabase/types";
 
 type Skill = Database['public']['Tables']['skills']['Row'] & {
@@ -30,26 +30,43 @@ const SkillDetailPage = () => {
   });
 
   const addToDashboard = async (type: string, content: string) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Error",
+          description: "You must be logged in to add content to your dashboard",
+          variant: "destructive",
+        });
+        return;
+      }
 
-    const { error } = await supabase
-      .from('user_notes')
-      .insert([{
-        user_id: user.id,
-        content: `${type}: ${content}`,
-      }]);
+      const { error } = await supabase
+        .from('user_notes')
+        .insert([{
+          user_id: user.id,
+          content: `${type}: ${content}`,
+        }]);
 
-    if (error) {
+      if (error) {
+        console.error('Error adding to dashboard:', error);
+        toast({
+          title: "Error",
+          description: "Could not add content to dashboard",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Success",
+          description: `${type} added to your dashboard`,
+        });
+      }
+    } catch (error) {
+      console.error('Error in addToDashboard:', error);
       toast({
         title: "Error",
-        description: "Could not add content to dashboard",
+        description: "An unexpected error occurred",
         variant: "destructive",
-      });
-    } else {
-      toast({
-        title: "Success",
-        description: "Content added to dashboard",
       });
     }
   };
@@ -96,7 +113,7 @@ const SkillDetailPage = () => {
             className="glass-panel p-6"
           >
             <div className="flex justify-between items-start">
-              <div>
+              <div className="flex-1 mr-4">
                 <h3 className="text-xl font-semibold mb-2">Summary</h3>
                 <p className="text-gray-400">{skill.summary}</p>
               </div>
@@ -104,6 +121,7 @@ const SkillDetailPage = () => {
                 size="icon"
                 variant="ghost"
                 onClick={() => addToDashboard('Summary', skill.summary || '')}
+                className="hover:bg-futuristic-blue/20"
               >
                 <Plus className="w-5 h-5" />
               </Button>
@@ -116,7 +134,7 @@ const SkillDetailPage = () => {
             className="glass-panel p-6"
           >
             <div className="flex justify-between items-start">
-              <div>
+              <div className="flex-1 mr-4">
                 <h3 className="text-xl font-semibold mb-2">Explanation</h3>
                 <p className="text-gray-400">{skill.explanation}</p>
               </div>
@@ -124,6 +142,7 @@ const SkillDetailPage = () => {
                 size="icon"
                 variant="ghost"
                 onClick={() => addToDashboard('Explanation', skill.explanation || '')}
+                className="hover:bg-futuristic-blue/20"
               >
                 <Plus className="w-5 h-5" />
               </Button>
@@ -136,7 +155,7 @@ const SkillDetailPage = () => {
             className="glass-panel p-6"
           >
             <div className="flex justify-between items-start">
-              <div>
+              <div className="flex-1 mr-4">
                 <h3 className="text-xl font-semibold mb-2">Concrete Action</h3>
                 <p className="text-gray-400">{skill.concrete_action}</p>
               </div>
@@ -144,6 +163,7 @@ const SkillDetailPage = () => {
                 size="icon"
                 variant="ghost"
                 onClick={() => addToDashboard('Action', skill.concrete_action || '')}
+                className="hover:bg-futuristic-blue/20"
               >
                 <Plus className="w-5 h-5" />
               </Button>
@@ -159,11 +179,12 @@ const SkillDetailPage = () => {
             <div className="space-y-4">
               {examples.map((example: string, index: number) => (
                 <div key={index} className="flex justify-between items-start">
-                  <p className="text-gray-400">{example}</p>
+                  <p className="text-gray-400 flex-1 mr-4">{example}</p>
                   <Button
                     size="icon"
                     variant="ghost"
                     onClick={() => addToDashboard('Example', example)}
+                    className="hover:bg-futuristic-blue/20"
                   >
                     <Plus className="w-5 h-5" />
                   </Button>
