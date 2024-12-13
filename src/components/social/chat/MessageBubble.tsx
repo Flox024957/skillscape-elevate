@@ -1,5 +1,6 @@
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Message } from "@/integrations/supabase/types/messages";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
 
 interface MessageBubbleProps {
   message: Message;
@@ -8,7 +9,7 @@ interface MessageBubbleProps {
 
 export const MessageBubble = ({ message, isCurrentUser }: MessageBubbleProps) => {
   return (
-    <div className={`flex gap-3 ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>
+    <div className={cn("flex items-start gap-2", isCurrentUser && "flex-row-reverse")}>
       {!isCurrentUser && (
         <Avatar className="h-8 w-8">
           <AvatarImage 
@@ -20,12 +21,15 @@ export const MessageBubble = ({ message, isCurrentUser }: MessageBubbleProps) =>
           </AvatarFallback>
         </Avatar>
       )}
-      <div 
-        className={`glass-panel p-3 max-w-[80%] ${
-          isCurrentUser ? 'bg-primary/20' : 'bg-muted/20'
-        }`}
+      <div
+        className={cn(
+          "px-4 py-2 rounded-lg max-w-[70%]",
+          isCurrentUser
+            ? "bg-primary text-primary-foreground"
+            : "bg-muted"
+        )}
       >
-        <p className="text-sm">{message.content}</p>
+        {message.content}
       </div>
     </div>
   );
