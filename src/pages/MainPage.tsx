@@ -4,16 +4,17 @@ import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
+// Updated category images that better match modern illustrations
 const categoryImages = [
-  "photo-1649972904349-6e44c42644a7",
-  "photo-1488590528505-98d2b5aba04b",
-  "photo-1518770660439-4636190af475",
-  "photo-1461749280684-dccba630e2f6",
-  "photo-1486312338219-ce68d2c6f44d",
-  "photo-1581091226825-a6a2a5aee158",
-  "photo-1485827404703-89b55fcc595e",
-  "photo-1526374965328-7f61d4dc18c5",
-  "photo-1531297484001-80022131f5a1"
+  "photo-1551434678-e076c223a692", // Modern team collaboration
+  "photo-1550751827-4bd374c3f58b", // Tech infrastructure
+  "photo-1552664730-d307ca884978", // Modern workspace
+  "photo-1550745165-9bc0b252726f", // Data visualization
+  "photo-1550751827-4bd374c3f58b", // Modern tech
+  "photo-1551434678-e076c223a692", // Team collaboration
+  "photo-1550751827-4bd374c3f58b", // Infrastructure
+  "photo-1552664730-d307ca884978", // Workspace
+  "photo-1550745165-9bc0b252726f"  // Data
 ];
 
 const MainPage = () => {
