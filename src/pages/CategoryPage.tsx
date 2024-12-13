@@ -28,7 +28,9 @@ const CategoryPage = () => {
             resume,
             explication,
             exemples,
-            action_concrete
+            action_concrete,
+            created_at,
+            updated_at
           )
         `)
         .eq('id', id)
@@ -46,7 +48,7 @@ const CategoryPage = () => {
         throw new Error('Category not found');
       }
 
-      return categoryData;
+      return categoryData as Category;
     },
   });
 

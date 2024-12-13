@@ -12,27 +12,10 @@ export interface Skill {
   updated_at: string;
 }
 
-export interface UserSkill {
-  skill_id: string;
-  sections_selectionnees: string[] | null;
-  est_maitrisee: boolean;
-  maitrisee_le: string | null;
-  skills: Skill;
-}
-
-export interface MasteredSkill {
-  skill_id: string;
-  maitrisee_le: string;
-  skills: {
-    id: string;
-    titre: string;
-    resume: string | null;
-  };
-}
-
 export interface Category {
   id: string;
   name: string;
-  description: string;
+  description: string | null;
+  created_at: string;
   skills: Skill[];
 }

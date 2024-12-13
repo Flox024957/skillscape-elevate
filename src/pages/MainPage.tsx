@@ -15,7 +15,12 @@ const MainPage = () => {
           skills (
             id,
             titre,
-            resume
+            resume,
+            explication,
+            exemples,
+            action_concrete,
+            created_at,
+            updated_at
           )
         `)
         .order('name');
@@ -25,7 +30,7 @@ const MainPage = () => {
         throw categoriesError;
       }
       
-      return categoriesData;
+      return categoriesData as Category[];
     },
   });
 
