@@ -17,7 +17,8 @@ const MainPage = () => {
             title,
             summary
           )
-        `);
+        `)
+        .order('name');
       
       if (categoriesError) {
         console.error('Error fetching categories:', categoriesError);

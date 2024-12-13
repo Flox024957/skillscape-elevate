@@ -1,10 +1,17 @@
 import { CategoryCard } from "./CategoryCard";
 import { getCategoryImage, getImagePosition } from "@/utils/categoryUtils";
 
+interface Skill {
+  id: string;
+  title: string;
+  summary?: string;
+}
+
 interface Category {
   id: string;
   name: string;
   description: string;
+  skills: Skill[];
 }
 
 interface CategoriesGridProps {
@@ -26,6 +33,7 @@ export const CategoriesGrid = ({ categories }: CategoriesGridProps) => {
           imageUrl={getCategoryImage(category.name)}
           imagePosition={getImagePosition(category.name)}
           index={index}
+          skills={category.skills}
         />
       ))}
     </div>
