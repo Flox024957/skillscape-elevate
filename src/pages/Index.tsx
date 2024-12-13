@@ -42,8 +42,13 @@ const Index = () => {
     <div className="min-h-screen bg-futuristic-black">
       <div className="container px-4 py-8">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 text-white">
-            Welcome to <span className="font-black">FLAP</span>
+          <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-purple-500 via-orange-400 to-purple-500 bg-clip-text text-transparent animate-gradient relative">
+            Welcome to{" "}
+            <span className="font-black relative">
+              FLAP
+              <span className="absolute inset-0 blur-[2px] bg-gradient-to-r from-purple-500 via-orange-400 to-purple-500 bg-clip-text text-transparent animate-gradient opacity-75"></span>
+              <span className="absolute inset-0 blur-[4px] bg-gradient-to-r from-purple-500 via-orange-400 to-purple-500 bg-clip-text text-transparent animate-gradient opacity-50"></span>
+            </span>
           </h1>
           <p className="text-gray-400 max-w-2xl mx-auto mb-8 text-lg">
             Explore skills, set goals, and track your personal development journey
