@@ -4,12 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 const CategoryPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   const { data: category, isLoading: categoryLoading } = useQuery({
     queryKey: ['category', id],
@@ -31,7 +34,7 @@ const CategoryPage = () => {
   });
 
   const { data: skills, isLoading: skillsLoading } = useQuery({
-    queryKey: ['skills', id],
+    queryKey: ['categorySkills', id],
     queryFn: async () => {
       if (!id) throw new Error('Category ID is required');
       const { data, error } = await supabase
@@ -50,36 +53,56 @@ const CategoryPage = () => {
 
   const addToDashboard = async (skillId: string) => {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    if (!user) {
+      toast({
+        title: "Erreur",
+        description: "Vous devez être connecté pour ajouter une compétence",
+        variant: "destructive",
+      });
+      return;
+    }
 
     const { error } = await supabase
       .from('user_skills')
-      .insert([{ user_id: user.id, skill_id: skillId }]);
+      .insert([{ 
+        user_id: user.id, 
+        skill_id: skillId,
+        selected_sections: [] 
+      }]);
 
     if (error) {
+      console.error('Error adding skill:', error);
       toast({
-        title: "Error",
-        description: "Could not add skill to dashboard",
+        title: "Erreur",
+        description: "Impossible d'ajouter la compétence",
         variant: "destructive",
       });
     } else {
       toast({
-        title: "Success",
-        description: "Skill added to dashboard",
+        title: "Succès",
+        description: "Compétence ajoutée au tableau de bord",
       });
     }
   };
 
   if (categoryLoading || skillsLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-pulse">Chargement...</div>
+      </div>
+    );
   }
 
   if (!category) {
-    return <div>Category not found</div>;
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-destructive">Catégorie non trouvée</div>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-futuristic-black to-futuristic-black/95">
+    <div className="min-h-screen bg-background">
       <div className="container px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <div>
@@ -88,15 +111,23 @@ const CategoryPage = () => {
               onClick={() => navigate("/main")}
               className="mb-4"
             >
-              ← Back
+              ← Retour
             </Button>
-            <h1 className="text-3xl font-bold text-white">
+            <h1 className={cn(
+              "font-bold text-foreground",
+              isMobile ? "text-2xl" : "text-3xl"
+            )}>
               {category.name}
             </h1>
+            {category.description && (
+              <p className="text-muted-foreground mt-2">
+                {category.description}
+              </p>
+            )}
           </div>
           <Button
             onClick={() => navigate("/dashboard")}
-            className="glass-panel hover:bg-futuristic-blue/20"
+            variant="outline"
           >
             Dashboard
           </Button>
@@ -108,15 +139,28 @@ const CategoryPage = () => {
               key={skill.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="glass-panel p-6 relative group cursor-pointer"
+              className={cn(
+                "bg-card/50 p-6 rounded-lg border border-border relative group",
+                "hover:bg-card/80 transition-all duration-300"
+              )}
               onClick={() => navigate(`/skill/${skill.id}`)}
             >
-              <div className="flex justify-between items-start">
+              <div className="flex justify-between items-start gap-4">
                 <div className="flex-1">
-                  <h3 className="text-xl font-semibold mb-2 hover:text-futuristic-blue transition-colors">
+                  <h3 className={cn(
+                    "font-semibold text-foreground group-hover:text-primary transition-colors",
+                    isMobile ? "text-lg" : "text-xl"
+                  )}>
                     {skill.title}
                   </h3>
-                  <p className="text-gray-400">{skill.summary}</p>
+                  {skill.summary && (
+                    <p className={cn(
+                      "text-muted-foreground mt-2",
+                      isMobile ? "text-sm" : "text-base"
+                    )}>
+                      {skill.summary}
+                    </p>
+                  )}
                 </div>
                 <Button
                   size="icon"
