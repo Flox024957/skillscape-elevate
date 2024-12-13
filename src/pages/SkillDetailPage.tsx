@@ -19,19 +19,28 @@ const SkillDetailPage = () => {
   const { data: skill, isLoading, error } = useQuery({
     queryKey: ['skill', id],
     queryFn: async () => {
-      if (!id) throw new Error('No skill ID provided');
+      if (!id) {
+        console.error('No skill ID provided');
+        throw new Error('No skill ID provided');
+      }
       
       console.log('Fetching skill with ID:', id);
       
-      const { data, error } = await supabase
+      const { data, error: queryError } = await supabase
         .from('skills')
-        .select('*, categories(*)')
+        .select(`
+          *,
+          categories (
+            id,
+            name
+          )
+        `)
         .eq('id', id)
         .single();
 
-      if (error) {
-        console.error('Supabase error:', error);
-        throw error;
+      if (queryError) {
+        console.error('Supabase error:', queryError);
+        throw queryError;
       }
 
       if (!data) {
@@ -61,6 +70,7 @@ const SkillDetailPage = () => {
         }]);
 
       if (error) {
+        console.error('Error adding to dashboard:', error);
         toast.error("Impossible d'ajouter le contenu au tableau de bord");
       } else {
         toast.success("Ajouté au profil");
