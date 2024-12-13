@@ -54,7 +54,7 @@ const SkillsTab = () => {
     })
   );
 
-  const { data: userSkills } = useQuery<UserSkill[]>({
+  const { data: userSkills = [] } = useQuery<UserSkill[]>({
     queryKey: ['userSkills'],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -77,7 +77,15 @@ const SkillsTab = () => {
         .eq('user_id', user.id);
       
       if (error) throw error;
-      return data;
+      
+      // Ensure examples is always an array
+      return (data || []).map(item => ({
+        ...item,
+        skills: {
+          ...item.skills,
+          examples: Array.isArray(item.skills.examples) ? item.skills.examples : []
+        }
+      }));
     },
   });
 
@@ -118,10 +126,10 @@ const SkillsTab = () => {
     const { active, over } = event;
     
     if (over && active.id !== over.id) {
-      const oldIndex = userSkills?.findIndex(item => item.skill_id === active.id);
-      const newIndex = userSkills?.findIndex(item => item.skill_id === over.id);
+      const oldIndex = userSkills.findIndex(item => item.skill_id === active.id);
+      const newIndex = userSkills.findIndex(item => item.skill_id === over.id);
       
-      if (oldIndex !== undefined && newIndex !== undefined && userSkills) {
+      if (oldIndex !== -1 && newIndex !== -1) {
         const newOrder = arrayMove(userSkills, oldIndex, newIndex);
         queryClient.setQueryData(['userSkills'], newOrder);
       }
@@ -142,7 +150,7 @@ const SkillsTab = () => {
     if (!content) return;
 
     // Check if the skill is already in the dashboard
-    const existingSkill = userSkills?.find(skill => skill.skill_id === skillId);
+    const existingSkill = userSkills.find(skill => skill.skill_id === skillId);
     let selectedSections = existingSkill?.selected_sections || [];
 
     // Add the new section if it's not already included
@@ -209,10 +217,10 @@ const SkillsTab = () => {
     >
       <div className="space-y-4">
         <SortableContext
-          items={userSkills?.map(skill => skill.skill_id) || []}
+          items={userSkills.map(skill => skill.skill_id)}
           strategy={verticalListSortingStrategy}
         >
-          {userSkills?.map((userSkill) => (
+          {userSkills.map((userSkill) => (
             <SortableSkillItem key={userSkill.skill_id} id={userSkill.skill_id}>
               <Collapsible
                 open={openSections.includes(userSkill.skill_id)}
