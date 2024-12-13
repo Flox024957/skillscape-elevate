@@ -11,7 +11,7 @@ interface SkillContentProps {
   explanation: string | null;
   concreteAction: string | null;
   examples: Json[] | null;
-  onAdd: (skillId: string, title: string, content: string | null) => void;
+  onAdd: (skillId: string, title: string, content: string | Json[] | null) => void;
 }
 
 const SkillContent = ({

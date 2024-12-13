@@ -6,7 +6,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 interface ExamplesSectionProps {
   skillId: string;
   examples: Json[] | null;
-  onAdd: (skillId: string, title: string, examples: Json[] | null) => void;
+  onAdd: (skillId: string, title: string, content: string | Json[] | null) => void;
 }
 
 const ExamplesSection = ({ skillId, examples, onAdd }: ExamplesSectionProps) => {

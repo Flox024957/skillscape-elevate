@@ -1,12 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Json } from "@/integrations/supabase/types";
 
 interface SkillSectionProps {
   skillId: string;
   title: string;
   content: string | null;
-  onAdd: (skillId: string, title: string, content: string | null) => void;
+  onAdd: (skillId: string, title: string, content: string | Json[] | null) => void;
 }
 
 const SkillSection = ({ skillId, title, content, onAdd }: SkillSectionProps) => {
