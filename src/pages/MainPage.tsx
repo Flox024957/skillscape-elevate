@@ -44,7 +44,7 @@ const MainPage = () => {
           <p className="text-gray-400 max-w-2xl mx-auto mb-8 text-lg">
             Explore skills, set goals, and track your personal development journey
           </p>
-          <div className="flex flex-col gap-6 items-center">
+          <div className="flex flex-col gap-6 items-center mb-12">
             <Button
               onClick={() => navigate("/auth")}
               className="bg-gradient-to-r from-futuristic-blue to-futuristic-violet hover:opacity-90 text-white px-8 py-6 text-lg rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(0,163,255,0.5)]"
@@ -68,7 +68,7 @@ const MainPage = () => {
           </div>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {categories?.map((category, index) => (
             <motion.div
               key={category.id}
@@ -76,21 +76,25 @@ const MainPage = () => {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3, delay: index * 0.1 }}
               onClick={() => navigate(`/category/${category.id}`)}
-              className="group cursor-pointer transform transition-all duration-300 hover:-translate-y-2"
+              className="group cursor-pointer"
             >
-              <div className="relative bg-futuristic-gray/30 backdrop-blur-md rounded-lg p-6 border-2 border-transparent hover:border-futuristic-blue/50 transition-all duration-300">
-                <div className="aspect-square relative mb-4 overflow-hidden rounded-lg">
+              <div className="relative rounded-xl overflow-hidden border-2 animate-neon-pulse transition-all duration-300 hover:scale-105">
+                <div className="aspect-square relative">
                   <img
-                    src={`https://source.unsplash.com/random/800x800/?tech,${index}`}
+                    src={`https://source.unsplash.com/800x800/?${category.name.toLowerCase()},skill`}
                     alt={category.name}
                     className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-futuristic-black/80 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-futuristic-black/90 to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-6">
+                    <h3 className="text-2xl font-bold mb-2 text-white group-hover:text-futuristic-blue transition-colors">
+                      {category.name}
+                    </h3>
+                    <p className="text-gray-300 line-clamp-2">
+                      {category.description}
+                    </p>
+                  </div>
                 </div>
-                <h3 className="text-xl font-semibold mb-2 text-white group-hover:text-futuristic-blue transition-colors">
-                  {category.name}
-                </h3>
-                <p className="text-gray-400">{category.description}</p>
               </div>
             </motion.div>
           ))}

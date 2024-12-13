@@ -59,34 +59,31 @@ export default {
           black: "#070B1A",
           gray: "#1A1F35",
         },
+        neon: {
+          purple: "#8B5CF6",
+          pink: "#D946EF",
+          orange: "#F97316",
+          blue: "#0EA5E9",
+        },
       },
       keyframes: {
-        "snake-border": {
-          "0%": {
-            "clip-path": "inset(0 98% 98% 0)",
-            "border-color": "rgba(0, 163, 255, 0.3)",
-            "box-shadow": "0 0 10px rgba(0, 163, 255, 0.2)",
+        "neon-border": {
+          "0%, 100%": {
+            "box-shadow": "0 0 5px theme('colors.neon.purple'), 0 0 10px theme('colors.neon.purple')",
+            "border-color": "theme('colors.neon.purple')"
           },
           "25%": {
-            "clip-path": "inset(0 0 98% 0)",
-            "border-color": "rgba(157, 78, 221, 0.3)",
-            "box-shadow": "0 0 10px rgba(157, 78, 221, 0.2)",
+            "box-shadow": "0 0 5px theme('colors.neon.pink'), 0 0 10px theme('colors.neon.pink')",
+            "border-color": "theme('colors.neon.pink')"
           },
           "50%": {
-            "clip-path": "inset(0 0 0 98%)",
-            "border-color": "rgba(0, 163, 255, 0.3)",
-            "box-shadow": "0 0 10px rgba(0, 163, 255, 0.2)",
+            "box-shadow": "0 0 5px theme('colors.neon.orange'), 0 0 10px theme('colors.neon.orange')",
+            "border-color": "theme('colors.neon.orange')"
           },
           "75%": {
-            "clip-path": "inset(98% 0 0 0)",
-            "border-color": "rgba(157, 78, 221, 0.3)",
-            "box-shadow": "0 0 10px rgba(157, 78, 221, 0.2)",
-          },
-          "100%": {
-            "clip-path": "inset(0 98% 98% 0)",
-            "border-color": "rgba(0, 163, 255, 0.3)",
-            "box-shadow": "0 0 10px rgba(0, 163, 255, 0.2)",
-          },
+            "box-shadow": "0 0 5px theme('colors.neon.blue'), 0 0 10px theme('colors.neon.blue')",
+            "border-color": "theme('colors.neon.blue')"
+          }
         },
         gradient: {
           "0%": { "background-position": "0% 50%" },
@@ -99,6 +96,7 @@ export default {
         },
       },
       animation: {
+        "neon-pulse": "neon-border 4s linear infinite",
         "snake-border": "snake-border 6s linear infinite",
         "fade-in": "fade-in 0.3s ease-out",
       },
