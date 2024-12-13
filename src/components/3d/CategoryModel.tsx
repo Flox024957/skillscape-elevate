@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useSpring, animated } from '@react-spring/three';
 import { Mesh } from 'three';
+import * as THREE from 'three';
 
 interface CategoryModelProps {
   onClick: () => void;
@@ -27,15 +28,15 @@ export const CategoryModel = ({ onClick, modelType }: CategoryModelProps) => {
   const getGeometry = () => {
     switch (modelType) {
       case 'collaboration':
-        return <torusKnotGeometry args={[1, 0.3, 128, 16]} />;
+        return <torusKnotBufferGeometry args={[1, 0.3, 128, 16]} />;
       case 'infrastructure':
-        return <octahedronGeometry args={[1.2]} />;
+        return <octahedronBufferGeometry args={[1.2]} />;
       case 'workspace':
-        return <dodecahedronGeometry args={[1.2]} />;
+        return <dodecahedronBufferGeometry args={[1.2]} />;
       case 'data':
-        return <icosahedronGeometry args={[1.2]} />;
+        return <icosahedronBufferGeometry args={[1.2]} />;
       default:
-        return <sphereGeometry args={[1, 32, 32]} />;
+        return <sphereBufferGeometry args={[1, 32, 32]} />;
     }
   };
 
@@ -43,13 +44,22 @@ export const CategoryModel = ({ onClick, modelType }: CategoryModelProps) => {
     <animated.mesh
       ref={meshRef}
       scale={scale}
-      onClick={onClick}
-      onPointerOver={() => setHovered(true)}
-      onPointerOut={() => setHovered(false)}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
+      onPointerOver={(e) => {
+        e.stopPropagation();
+        setHovered(true);
+      }}
+      onPointerOut={(e) => {
+        e.stopPropagation();
+        setHovered(false);
+      }}
     >
       {getGeometry()}
       <meshStandardMaterial
-        color={hovered ? "#8B5CF6" : "#171AED"}
+        color={hovered ? new THREE.Color("#8B5CF6") : new THREE.Color("#171AED")}
         metalness={0.8}
         roughness={0.2}
       />

@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
 import { CategoryModel } from "@/components/3d/CategoryModel";
+import { Suspense } from "react";
 
 const getModelType = (index: number) => {
   const types = ['collaboration', 'infrastructure', 'workspace', 'data'] as const;
@@ -98,10 +99,12 @@ const MainPage = () => {
                     />
                     <ambientLight intensity={0.5} />
                     <pointLight position={[10, 10, 10]} intensity={1} />
-                    <CategoryModel
-                      modelType={getModelType(index)}
-                      onClick={() => navigate(`/category/${category.id}`)}
-                    />
+                    <Suspense fallback={null}>
+                      <CategoryModel
+                        modelType={getModelType(index)}
+                        onClick={() => navigate(`/category/${category.id}`)}
+                      />
+                    </Suspense>
                   </Canvas>
                   <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-background/90 to-transparent">
                     <h3 className="text-2xl font-bold mb-2 text-white group-hover:text-primary transition-colors">
