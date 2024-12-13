@@ -14,22 +14,37 @@ const HeroSection = () => {
       className="text-center mb-20 perspective-1000"
     >
       <motion.h1 
-        className="text-6xl md:text-8xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-[#0EA5E9] via-[#8B5CF6] to-[#F97316]
+        initial={{ opacity: 0, filter: "brightness(0.3)" }}
+        animate={{ 
+          opacity: 1, 
+          filter: "brightness(1)",
+          textShadow: [
+            "0 0 0px rgba(255,255,255,0)",
+            "0 0 20px rgba(255,255,255,0.8)",
+            "0 0 40px rgba(255,255,255,0.8)",
+            "0 0 60px rgba(255,255,255,0.8)"
+          ]
+        }}
+        transition={{ 
+          duration: 1.5,
+          times: [0, 0.4, 0.7, 1],
+          ease: "easeInOut"
+        }}
+        className="text-6xl md:text-8xl font-bold mb-6 text-white
                    transform hover:scale-105 transition-transform duration-300 cursor-default
-                   drop-shadow-[0_0_25px_rgba(139,92,246,0.8)]"
-        whileHover={{ scale: 1.05 }}
-        transition={{ type: "spring", stiffness: 300 }}
+                   drop-shadow-[0_0_30px_rgba(255,255,255,0.8)]"
       >
         FLAP
       </motion.h1>
       <motion.p 
-        className="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-[#33C3F0] to-[#9b87f5]
-                   drop-shadow-[0_0_20px_rgba(139,92,246,0.6)]"
+        className="text-4xl md:text-5xl font-bold mb-6 text-white
+                   drop-shadow-[0_0_20px_rgba(255,255,255,0.6)]"
         whileHover={{ scale: 1.02 }}
       >
         Élevez Votre Potentiel Professionnel
       </motion.p>
-      <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8 leading-relaxed">
+      <p className="text-xl text-gray-100 max-w-2xl mx-auto mb-8 leading-relaxed
+                    drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">
         Développez vos compétences, fixez des objectifs ambitieux et suivez votre progression vers l'excellence professionnelle
       </p>
       <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">

@@ -13,8 +13,8 @@ const FeatureCard = ({ title, description, icon, color }: FeatureCardProps) => {
       whileHover={{ scale: 1.05, rotateY: 5 }}
       className="group p-8 rounded-2xl relative overflow-hidden
                bg-background/30 backdrop-blur-sm
-               border border-[#8B5CF6]/30 hover:border-[#8B5CF6]/60
-               shadow-[0_0_30px_rgba(139,92,246,0.4)] hover:shadow-[0_0_40px_rgba(139,92,246,0.6)]
+               border border-[#F97316] hover:border-[#F97316]
+               shadow-[0_0_40px_rgba(249,115,22,0.6)] hover:shadow-[0_0_60px_rgba(249,115,22,0.8)]
                transform transition-all duration-300
                perspective-1000"
     >
@@ -23,11 +23,11 @@ const FeatureCard = ({ title, description, icon, color }: FeatureCardProps) => {
       <div className="text-4xl mb-4 transform group-hover:scale-110 transition-transform duration-300">
         {icon}
       </div>
-      <h3 className="text-xl font-semibold mb-3 bg-clip-text text-transparent bg-gradient-to-r group-hover:scale-105 transition-transform duration-300"
-          style={{ backgroundImage: `linear-gradient(to right, ${color})` }}>
+      <h3 className="text-xl font-semibold mb-3 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]
+                     group-hover:scale-105 transition-transform duration-300">
         {title}
       </h3>
-      <p className="text-muted-foreground leading-relaxed">
+      <p className="text-gray-100 leading-relaxed drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">
         {description}
       </p>
     </motion.div>
