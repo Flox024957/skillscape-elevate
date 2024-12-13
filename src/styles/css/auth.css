@@ -4,7 +4,7 @@
 
 .auth-button {
   @apply bg-black/90 text-white font-medium py-3 px-4 rounded-xl;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, rgba(139, 92, 246, 0.05) 100%);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, rgba(14, 165, 233, 0.05) 100%);
   border: 1px solid rgba(249, 115, 22, 0.6);
   box-shadow: 
     0 0 15px rgba(249, 115, 22, 0.3),
@@ -14,12 +14,12 @@
 }
 
 .auth-button:hover {
-  background: linear-gradient(90deg, rgba(139, 92, 246, 0.8) 0%, rgba(139, 92, 246, 0.6) 100%);
+  background: linear-gradient(90deg, rgba(14, 165, 233, 0.8) 0%, rgba(14, 165, 233, 0.6) 100%);
   border: 1px solid rgba(249, 115, 22, 0.8);
   box-shadow: 
-    0 0 20px rgba(139, 92, 246, 0.4),
-    0 0 15px rgba(139, 92, 246, 0.3),
-    inset 0 0 12px rgba(139, 92, 246, 0.2);
+    0 0 20px rgba(14, 165, 233, 0.4),
+    0 0 15px rgba(14, 165, 233, 0.3),
+    inset 0 0 12px rgba(14, 165, 233, 0.2);
 }
 
 .auth-button:disabled {
@@ -29,21 +29,21 @@
 
 .auth-input {
   @apply bg-futuristic-gray/50 backdrop-blur-md text-white rounded-xl px-6 py-4 w-full transition-all duration-300 mb-4;
-  border: 1px solid rgba(139, 92, 246, 0.4);
+  border: 1px solid rgba(14, 165, 233, 0.4);
   box-shadow: 
-    0 0 25px rgba(139, 92, 246, 0.3),
-    0 0 35px rgba(139, 92, 246, 0.2),
-    0 0 45px rgba(139, 92, 246, 0.1),
-    inset 0 0 15px rgba(139, 92, 246, 0.15);
+    0 0 25px rgba(14, 165, 233, 0.3),
+    0 0 35px rgba(14, 165, 233, 0.2),
+    0 0 45px rgba(14, 165, 233, 0.1),
+    inset 0 0 15px rgba(14, 165, 233, 0.15);
 }
 
 .auth-input:focus, .auth-input:hover {
-  border-color: rgba(139, 92, 246, 0.7);
+  border-color: rgba(14, 165, 233, 0.7);
   box-shadow: 
-    0 0 35px rgba(139, 92, 246, 0.4),
-    0 0 45px rgba(139, 92, 246, 0.3),
-    0 0 55px rgba(139, 92, 246, 0.2),
-    inset 0 0 20px rgba(139, 92, 246, 0.2);
+    0 0 35px rgba(14, 165, 233, 0.4),
+    0 0 45px rgba(14, 165, 233, 0.3),
+    0 0 55px rgba(14, 165, 233, 0.2),
+    inset 0 0 20px rgba(14, 165, 233, 0.2);
 }
 
 .auth-input::placeholder {
@@ -77,13 +77,13 @@
 }
 
 .gradient-text span.welcome {
-  background: linear-gradient(135deg, #8B5CF6, #9B59B6);
+  background: linear-gradient(135deg, #0EA5E9, #0EA5E9);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   text-shadow: 
-    0 0 15px rgba(139, 92, 246, 0.5),
-    0 0 30px rgba(139, 92, 246, 0.3);
+    0 0 15px rgba(14, 165, 233, 0.5),
+    0 0 30px rgba(14, 165, 233, 0.3);
 }
 
 .gradient-text span.flap {
@@ -98,15 +98,15 @@
 @keyframes neonPulse {
   0%, 100% {
     text-shadow: 
-      0 0 15px rgba(139, 92, 246, 0.6),
-      0 0 30px rgba(139, 92, 246, 0.4),
-      0 0 45px rgba(139, 92, 246, 0.2);
+      0 0 15px rgba(14, 165, 233, 0.6),
+      0 0 30px rgba(14, 165, 233, 0.4),
+      0 0 45px rgba(14, 165, 233, 0.2);
   }
   50% {
     text-shadow: 
-      0 0 20px rgba(139, 92, 246, 0.7),
-      0 0 35px rgba(139, 92, 246, 0.5),
-      0 0 50px rgba(139, 92, 246, 0.3);
+      0 0 20px rgba(14, 165, 233, 0.7),
+      0 0 35px rgba(14, 165, 233, 0.5),
+      0 0 50px rgba(14, 165, 233, 0.3);
   }
 }
 
