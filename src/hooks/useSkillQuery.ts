@@ -13,7 +13,7 @@ export const useSkillQuery = (id: string | undefined) => {
       if (!id) {
         throw new Error('No skill ID provided');
       }
-      
+
       const { data: skillData, error: skillError } = await supabase
         .from('skills')
         .select(`
@@ -28,7 +28,7 @@ export const useSkillQuery = (id: string | undefined) => {
         .single();
 
       if (skillError) {
-        console.error('Supabase error:', skillError);
+        console.error('Error fetching skill:', skillError);
         throw skillError;
       }
 
@@ -38,7 +38,7 @@ export const useSkillQuery = (id: string | undefined) => {
 
       return skillData as Skill;
     },
-    enabled: !!id,
+    enabled: Boolean(id),
     retry: 1,
   });
 };
