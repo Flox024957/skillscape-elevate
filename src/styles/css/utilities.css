@@ -19,7 +19,7 @@
   .futuristic-text {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-futuristic-blue via-neon-orange to-neon-purple;
     background-size: 300% 300%;
-    animation: gradient 240s ease-in-out infinite;
+    animation: gradient 12s ease-in-out infinite;
     position: relative;
     z-index: 2; /* Ensure text stays clickable */
     text-shadow: 0 0 10mm rgba(0, 163, 255, 0.5);
