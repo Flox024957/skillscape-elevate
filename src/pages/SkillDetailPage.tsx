@@ -17,45 +17,69 @@ const SkillDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { data: skill, isLoading } = useQuery({
+  const { data: skill, isLoading, error } = useQuery({
     queryKey: ['skill', id],
     queryFn: async () => {
-      console.log('Fetching skill with ID:', id);
+      console.log('Attempting to fetch skill with ID:', id);
       
       if (!id) {
         console.error('No skill ID provided');
         throw new Error('No skill ID provided');
       }
-      
-      const { data: skillData, error } = await supabase
+
+      // First, try to fetch directly from skills table
+      const { data: skillData, error: skillError } = await supabase
         .from('skills')
-        .select(`
-          *,
-          categories (
-            id,
-            name,
-            description
-          )
-        `)
+        .select('*')
         .eq('id', id)
         .single();
 
-      if (error) {
-        console.error('Error fetching skill:', error);
-        throw error;
+      if (skillError) {
+        console.error('Error fetching skill:', skillError);
+        throw skillError;
       }
 
       if (!skillData) {
-        console.error('No data found for skill ID:', id);
+        console.error('No skill data found for ID:', id);
         throw new Error('Skill not found');
       }
 
+      // Then fetch the category data separately
+      const { data: categoryData, error: categoryError } = await supabase
+        .from('categories')
+        .select('*')
+        .eq('id', skillData.category_id)
+        .single();
+
+      if (categoryError) {
+        console.error('Error fetching category:', categoryError);
+      }
+
       console.log('Skill data received:', skillData);
-      return skillData as Skill;
+      console.log('Category data received:', categoryData);
+
+      return {
+        ...skillData,
+        categories: categoryData || null
+      } as Skill;
     },
     retry: 1,
     staleTime: 1000 * 60 * 5 // Cache for 5 minutes
   });
+
+  if (error) {
+    console.error('Query error:', error);
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container px-4 py-8">
+          <div>
+            <h2 className="text-xl font-semibold mb-4">Erreur lors du chargement de la compétence</h2>
+            <Button onClick={() => navigate(-1)}>Retour</Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -155,7 +179,6 @@ const SkillDetailPage = () => {
         .single();
 
       if (existingSkill) {
-        // Update selected sections if skill already exists
         const newSections = existingSkill.selected_sections || [];
         if (!newSections.includes(type)) {
           newSections.push(type);
