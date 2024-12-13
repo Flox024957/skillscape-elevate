@@ -36,6 +36,7 @@ export const CategoryCard = ({
 
   const handleClick = () => {
     try {
+      console.log('Navigating to category:', id);
       navigate(`/category/${id}`);
     } catch (error) {
       console.error('Navigation error:', error);

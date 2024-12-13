@@ -24,6 +24,8 @@ export const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
       <Route path="/main" element={<MainPage />} />
       <Route path="/audio" element={<AudioPage />} />
       <Route path="/challenges" element={<ChallengesPage />} />
+      <Route path="/category/:id" element={<CategoryPage />} />
+      <Route path="/skill/:skillId" element={<SkillDetailPage />} />
       <Route
         path="/dashboard"
         element={
@@ -49,8 +51,6 @@ export const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
         }
       />
       <Route path="/profile/:userId" element={<PublicProfile />} />
-      <Route path="/category/:categoryId" element={<CategoryPage />} />
-      <Route path="/skill/:skillId" element={<SkillDetailPage />} />
     </Routes>
   );
 };

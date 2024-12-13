@@ -23,7 +23,7 @@ interface Category {
 }
 
 const CategoryPage = () => {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
   const { data: category, isLoading, error } = useQuery({
@@ -31,7 +31,11 @@ const CategoryPage = () => {
     queryFn: async () => {
       console.log('Fetching category with ID:', id);
       
-      const { data, error } = await supabase
+      if (!id) {
+        throw new Error('Category ID is undefined');
+      }
+
+      const { data: categoryData, error: categoryError } = await supabase
         .from('categories')
         .select(`
           *,
@@ -47,20 +51,20 @@ const CategoryPage = () => {
         .eq('id', id)
         .single();
 
-      if (error) {
-        console.error('Error fetching category:', error);
+      if (categoryError) {
+        console.error('Error fetching category:', categoryError);
         toast.error("La catégorie n'a pas pu être chargée");
-        throw error;
+        throw categoryError;
       }
 
-      if (!data) {
+      if (!categoryData) {
         console.error('No category found with ID:', id);
         toast.error("La catégorie n'existe pas");
         throw new Error('Category not found');
       }
 
-      console.log('Category data:', data);
-      return data as Category;
+      console.log('Category data:', categoryData);
+      return categoryData as Category;
     },
   });
 
@@ -84,7 +88,7 @@ const CategoryPage = () => {
             <h1 className="text-2xl font-bold text-red-500 mb-4">
               La catégorie que vous recherchez n'existe pas ou a été supprimée.
             </h1>
-            <Button onClick={() => navigate('/')} variant="outline">
+            <Button onClick={() => navigate('/main')} variant="outline">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Retour à l'accueil
             </Button>
@@ -98,7 +102,7 @@ const CategoryPage = () => {
     <div className="min-h-screen bg-background">
       <div className="container px-4 py-8">
         <Button 
-          onClick={() => navigate('/')} 
+          onClick={() => navigate('/main')} 
           variant="ghost" 
           className="mb-6"
         >
