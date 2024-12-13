@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { SkillSection } from "./SkillSection";
-import { ExamplesSection } from "./ExamplesSection";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Database } from "@/integrations/supabase/types";
+import { ArrowLeft } from "lucide-react";
 
 type Skill = Database['public']['Tables']['skills']['Row'] & {
   categories: Database['public']['Tables']['categories']['Row'] | null;
@@ -21,47 +21,63 @@ export const SkillDetailContent = ({
   const examples = Array.isArray(skill.examples) ? skill.examples : [];
 
   return (
-    <div className="container px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <Button
-            variant="ghost"
-            onClick={onNavigateBack}
-            className="mb-4"
-          >
-            ← Retour à {skill.categories?.name}
-          </Button>
-          <h1 className="text-3xl font-bold">{skill.title}</h1>
-        </div>
-      </div>
+    <div className="container max-w-4xl px-4 py-8">
+      <Button
+        variant="ghost"
+        onClick={onNavigateBack}
+        className="mb-6 hover:bg-secondary"
+      >
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        Retour à {skill.categories?.name || 'la liste'}
+      </Button>
 
       <div className="space-y-8">
-        <SkillSection
-          title="Résumé"
-          content={skill.summary}
-          type="Summary"
-          onAdd={onAddToDashboard}
-        />
+        <div>
+          <h1 className="text-4xl font-bold mb-4">{skill.title}</h1>
+          {skill.categories?.name && (
+            <div className="text-muted-foreground">
+              Catégorie: {skill.categories.name}
+            </div>
+          )}
+        </div>
 
-        <SkillSection
-          title="Explication"
-          content={skill.explanation}
-          type="Explanation"
-          onAdd={onAddToDashboard}
-        />
+        {skill.summary && (
+          <Alert>
+            <AlertDescription className="text-lg">
+              {skill.summary}
+            </AlertDescription>
+          </Alert>
+        )}
 
-        <SkillSection
-          title="Action Concrète"
-          content={skill.concrete_action}
-          type="Action"
-          onAdd={onAddToDashboard}
-        />
+        {skill.explanation && (
+          <section className="space-y-4">
+            <h2 className="text-2xl font-semibold">Explication</h2>
+            <p className="text-muted-foreground leading-relaxed">
+              {skill.explanation}
+            </p>
+          </section>
+        )}
+
+        {skill.concrete_action && (
+          <section className="space-y-4">
+            <h2 className="text-2xl font-semibold">Action Concrète</h2>
+            <p className="text-muted-foreground leading-relaxed">
+              {skill.concrete_action}
+            </p>
+          </section>
+        )}
 
         {examples.length > 0 && (
-          <ExamplesSection
-            examples={examples}
-            onAdd={onAddToDashboard}
-          />
+          <section className="space-y-4">
+            <h2 className="text-2xl font-semibold">Exemples</h2>
+            <div className="space-y-3">
+              {examples.map((example, index) => (
+                <p key={index} className="text-muted-foreground leading-relaxed">
+                  {String(example)}
+                </p>
+              ))}
+            </div>
+          </section>
         )}
       </div>
     </div>
