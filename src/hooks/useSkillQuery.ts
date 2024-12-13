@@ -10,7 +10,10 @@ export const useSkillQuery = (id: string | undefined) => {
   return useQuery({
     queryKey: ['skill', id],
     queryFn: async () => {
+      console.log('Fetching skill with ID:', id);
+
       if (!id) {
+        console.error('No skill ID provided');
         throw new Error('No skill ID provided');
       }
 
@@ -27,19 +30,26 @@ export const useSkillQuery = (id: string | undefined) => {
         .eq('id', id)
         .single();
 
+      console.log('Supabase response:', { skillData, skillError });
+
       if (skillError) {
-        console.error('Error fetching skill:', skillError);
+        console.error('Supabase error:', skillError);
         throw skillError;
       }
 
       if (!skillData) {
+        console.error('No skill found for ID:', id);
         throw new Error('Skill not found');
       }
 
+      console.log('Successfully fetched skill:', skillData);
       return skillData as Skill;
     },
     enabled: Boolean(id),
     retry: 1,
-    staleTime: 1000 * 60 * 5 // Cache for 5 minutes
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    onError: (error) => {
+      console.error('Query error:', error);
+    }
   });
 };
