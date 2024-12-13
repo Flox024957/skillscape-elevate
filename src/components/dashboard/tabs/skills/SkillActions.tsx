@@ -20,25 +20,37 @@ const SkillActions = ({ skillId, onAdd, isMastered }: SkillActionsProps) => {
       if (!user) throw new Error("Utilisateur non authentifié");
 
       // First check if the skill is already mastered
-      const { data: existingMastery } = await supabase
+      const { data: existingMastery, error: checkError } = await supabase
         .from('user_mastered_skills')
         .select('skill_id')
         .eq('user_id', user.id)
         .eq('skill_id', skillId)
-        .single();
+        .maybeSingle(); // Use maybeSingle() instead of single()
 
+      if (checkError) throw checkError;
+      
       if (existingMastery) {
         throw new Error("Cette compétence est déjà marquée comme maîtrisée");
       }
 
-      const { error } = await supabase
+      // Insert the mastered skill
+      const { error: insertError } = await supabase
         .from('user_mastered_skills')
         .insert([{
           user_id: user.id,
           skill_id: skillId,
         }]);
 
-      if (error) throw error;
+      if (insertError) throw insertError;
+
+      // Remove from user_skills if it exists
+      const { error: deleteError } = await supabase
+        .from('user_skills')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('skill_id', skillId);
+
+      if (deleteError) throw deleteError;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userSkills'] });
@@ -62,7 +74,10 @@ const SkillActions = ({ skillId, onAdd, isMastered }: SkillActionsProps) => {
       <Button
         size="icon"
         variant="ghost"
-        onClick={() => onAdd(skillId, "title", "content")}
+        onClick={(e) => {
+          e.stopPropagation(); // Prevent collapsible from toggling
+          onAdd(skillId, "title", "content");
+        }}
         className="hover:bg-accent"
       >
         <Plus className="h-4 w-4" />
@@ -71,7 +86,10 @@ const SkillActions = ({ skillId, onAdd, isMastered }: SkillActionsProps) => {
         <Button
           size="icon"
           variant="ghost"
-          onClick={() => markAsMasteredMutation.mutate()}
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent collapsible from toggling
+            markAsMasteredMutation.mutate();
+          }}
           className="hover:bg-green-500/10 hover:text-green-500"
         >
           <Check className="h-4 w-4" />

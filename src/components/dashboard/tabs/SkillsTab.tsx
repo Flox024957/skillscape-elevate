@@ -26,6 +26,7 @@ import SortableSkillItem from "./skills/SortableSkillItem";
 import SkillSection from "./skills/SkillSection";
 import ExamplesSection from "./skills/ExamplesSection";
 import SkillActions from "./skills/SkillActions";
+import { useToast } from "@/hooks/use-toast";
 
 interface UserSkill {
   skill_id: string;
@@ -43,6 +44,7 @@ interface UserSkill {
 
 const SkillsTab = () => {
   const [openSections, setOpenSections] = useState<string[]>([]);
+  const { toast } = useToast();
   
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -104,29 +106,50 @@ const SkillsTab = () => {
   };
 
   const handleAddSkillSection = async (skillId: string, sectionTitle: string, content: string | Json[] | null) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Erreur",
+          description: "Vous devez être connecté pour effectuer cette action",
+          variant: "destructive",
+        });
+        return;
+      }
 
-    if (!content) return;
+      if (!content) return;
 
-    const existingSkill = userSkills.find(skill => skill.skill_id === skillId);
-    let selectedSections = existingSkill?.selected_sections || [];
+      const existingSkill = userSkills.find(skill => skill.skill_id === skillId);
+      let selectedSections = existingSkill?.selected_sections || [];
 
-    if (!selectedSections.includes(sectionTitle)) {
-      selectedSections = [...selectedSections, sectionTitle];
-    }
+      if (!selectedSections.includes(sectionTitle)) {
+        selectedSections = [...selectedSections, sectionTitle];
+      }
 
-    const { error } = await supabase
-      .from('user_skills')
-      .upsert({
-        user_id: user.id,
-        skill_id: skillId,
-        selected_sections: selectedSections,
+      const { error } = await supabase
+        .from('user_skills')
+        .upsert({
+          user_id: user.id,
+          skill_id: skillId,
+          selected_sections: selectedSections,
+        });
+
+      if (error) {
+        console.error('Erreur lors de la mise à jour des sections:', error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de mettre à jour les sections",
+          variant: "destructive",
+        });
+        return;
+      }
+    } catch (error) {
+      console.error('Erreur:', error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue",
+        variant: "destructive",
       });
-
-    if (error) {
-      console.error('Erreur lors de la mise à jour des sections:', error);
-      return;
     }
   };
 
