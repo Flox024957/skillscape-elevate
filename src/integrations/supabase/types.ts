@@ -262,36 +262,36 @@ export type Database = {
       }
       skills: {
         Row: {
-          action_concrete: string | null
           category_id: string | null
+          concrete_action: string | null
           created_at: string
-          exemples: Json | null
-          explication: string | null
+          examples: Json | null
+          explanation: string | null
           id: string
-          resume: string | null
-          titre: string
+          summary: string | null
+          title: string
           updated_at: string
         }
         Insert: {
-          action_concrete?: string | null
           category_id?: string | null
+          concrete_action?: string | null
           created_at?: string
-          exemples?: Json | null
-          explication?: string | null
+          examples?: Json | null
+          explanation?: string | null
           id?: string
-          resume?: string | null
-          titre: string
+          summary?: string | null
+          title: string
           updated_at?: string
         }
         Update: {
-          action_concrete?: string | null
           category_id?: string | null
+          concrete_action?: string | null
           created_at?: string
-          exemples?: Json | null
-          explication?: string | null
+          examples?: Json | null
+          explanation?: string | null
           id?: string
-          resume?: string | null
-          titre?: string
+          summary?: string | null
+          title?: string
           updated_at?: string
         }
         Relationships: [
@@ -380,6 +380,42 @@ export type Database = {
           },
         ]
       }
+      user_mastered_skills: {
+        Row: {
+          mastered_at: string
+          notes: string | null
+          skill_id: string
+          user_id: string
+        }
+        Insert: {
+          mastered_at?: string
+          notes?: string | null
+          skill_id: string
+          user_id: string
+        }
+        Update: {
+          mastered_at?: string
+          notes?: string | null
+          skill_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_mastered_skills_skill_id_fkey"
+            columns: ["skill_id"]
+            isOneToOne: false
+            referencedRelation: "skills"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_mastered_skills_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_notes: {
         Row: {
           content: string
@@ -455,37 +491,22 @@ export type Database = {
       }
       user_skills: {
         Row: {
-          created_at: string | null
-          est_maitrisee: boolean | null
-          id: string
-          maitrisee_le: string | null
-          notes: string | null
-          sections_selectionnees: string[] | null
-          skill_id: string | null
-          updated_at: string | null
-          user_id: string | null
+          created_at: string
+          selected_sections: string[] | null
+          skill_id: string
+          user_id: string
         }
         Insert: {
-          created_at?: string | null
-          est_maitrisee?: boolean | null
-          id?: string
-          maitrisee_le?: string | null
-          notes?: string | null
-          sections_selectionnees?: string[] | null
-          skill_id?: string | null
-          updated_at?: string | null
-          user_id?: string | null
+          created_at?: string
+          selected_sections?: string[] | null
+          skill_id: string
+          user_id: string
         }
         Update: {
-          created_at?: string | null
-          est_maitrisee?: boolean | null
-          id?: string
-          maitrisee_le?: string | null
-          notes?: string | null
-          sections_selectionnees?: string[] | null
-          skill_id?: string | null
-          updated_at?: string | null
-          user_id?: string | null
+          created_at?: string
+          selected_sections?: string[] | null
+          skill_id?: string
+          user_id?: string
         }
         Relationships: [
           {

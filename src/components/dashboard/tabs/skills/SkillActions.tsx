@@ -17,7 +17,7 @@ const SkillActions = ({ skillId, onAdd, isMastered }: SkillActionsProps) => {
   const deleteSkillMutation = useMutation({
     mutationFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("User not authenticated");
+      if (!user) throw new Error("Utilisateur non authentifié");
 
       const { error: deleteError } = await supabase
         .from('user_skills')
@@ -30,14 +30,14 @@ const SkillActions = ({ skillId, onAdd, isMastered }: SkillActionsProps) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userSkills'] });
       toast({
-        title: "Success",
-        description: "Skill deleted successfully",
+        title: "Succès",
+        description: "Compétence supprimée avec succès",
       });
     },
     onError: (error) => {
       toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Unable to delete skill",
+        title: "Erreur",
+        description: error instanceof Error ? error.message : "Impossible de supprimer la compétence",
         variant: "destructive",
       });
     },
@@ -46,31 +46,53 @@ const SkillActions = ({ skillId, onAdd, isMastered }: SkillActionsProps) => {
   const markAsMasteredMutation = useMutation({
     mutationFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("User not authenticated");
+      if (!user) throw new Error("Utilisateur non authentifié");
 
-      const { error: updateError } = await supabase
+      // First check if the skill is already mastered
+      const { data: existingMastery, error: checkError } = await supabase
+        .from('user_mastered_skills')
+        .select('skill_id')
+        .eq('user_id', user.id)
+        .eq('skill_id', skillId)
+        .maybeSingle();
+
+      if (checkError) throw checkError;
+      
+      if (existingMastery) {
+        throw new Error("Cette compétence est déjà marquée comme maîtrisée");
+      }
+
+      // Insert the mastered skill
+      const { error: insertError } = await supabase
+        .from('user_mastered_skills')
+        .insert([{
+          user_id: user.id,
+          skill_id: skillId,
+        }]);
+
+      if (insertError) throw insertError;
+
+      // Remove from user_skills
+      const { error: deleteError } = await supabase
         .from('user_skills')
-        .update({
-          est_maitrisee: true,
-          maitrisee_le: new Date().toISOString(),
-        })
+        .delete()
         .eq('user_id', user.id)
         .eq('skill_id', skillId);
 
-      if (updateError) throw updateError;
+      if (deleteError) throw deleteError;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userSkills'] });
       queryClient.invalidateQueries({ queryKey: ['masteredSkills'] });
       toast({
-        title: "Success",
-        description: "Skill marked as mastered",
+        title: "Succès",
+        description: "Compétence marquée comme maîtrisée et déplacée dans la section appropriée",
       });
     },
     onError: (error) => {
       toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Unable to mark skill as mastered",
+        title: "Erreur",
+        description: error instanceof Error ? error.message : "Impossible de marquer la compétence comme maîtrisée",
         variant: "destructive",
       });
     },
@@ -82,7 +104,7 @@ const SkillActions = ({ skillId, onAdd, isMastered }: SkillActionsProps) => {
         size="icon"
         variant="ghost"
         onClick={(e) => {
-          e.stopPropagation();
+          e.stopPropagation(); // Prevent collapsible from toggling
           deleteSkillMutation.mutate();
         }}
         className="hover:bg-destructive/10 hover:text-destructive"
@@ -94,7 +116,7 @@ const SkillActions = ({ skillId, onAdd, isMastered }: SkillActionsProps) => {
           size="icon"
           variant="ghost"
           onClick={(e) => {
-            e.stopPropagation();
+            e.stopPropagation(); // Prevent collapsible from toggling
             markAsMasteredMutation.mutate();
           }}
           className="hover:bg-green-500/10 hover:text-green-500"

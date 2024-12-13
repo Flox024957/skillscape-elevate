@@ -3,7 +3,17 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { MasteredSkill } from "@/types/skills";
+
+interface MasteredSkill {
+  skill_id: string;
+  mastered_at: string;
+  notes: string | null;
+  skills: {
+    id: string;
+    title: string;
+    summary: string | null;
+  };
+}
 
 const MasteredSkillsSection = () => {
   const { toast } = useToast();
@@ -16,35 +26,32 @@ const MasteredSkillsSection = () => {
       if (!user) return [];
 
       const { data, error } = await supabase
-        .from('user_skills')
+        .from('user_mastered_skills')
         .select(`
           skill_id,
-          maitrisee_le,
+          mastered_at,
+          notes,
           skills (
             id,
-            titre,
-            resume
+            title,
+            summary
           )
         `)
-        .eq('user_id', user.id)
-        .eq('est_maitrisee', true);
+        .eq('user_id', user.id);
 
       if (error) throw error;
-      return data as MasteredSkill[];
+      return data || [];
     },
   });
 
   const removeMasteredSkillMutation = useMutation({
     mutationFn: async (skillId: string) => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("User not authenticated");
+      if (!user) throw new Error("Utilisateur non authentifié");
 
       const { error } = await supabase
-        .from('user_skills')
-        .update({ 
-          est_maitrisee: false, 
-          maitrisee_le: null 
-        })
+        .from('user_mastered_skills')
+        .delete()
         .eq('user_id', user.id)
         .eq('skill_id', skillId);
 
@@ -54,14 +61,14 @@ const MasteredSkillsSection = () => {
       queryClient.invalidateQueries({ queryKey: ['masteredSkills'] });
       queryClient.invalidateQueries({ queryKey: ['userSkills'] });
       toast({
-        title: "Success",
-        description: "Skill removed from mastered skills",
+        title: "Succès",
+        description: "Compétence retirée des compétences maîtrisées",
       });
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Unable to remove skill",
+        title: "Erreur",
+        description: "Impossible de retirer la compétence",
         variant: "destructive",
       });
     },
@@ -70,7 +77,7 @@ const MasteredSkillsSection = () => {
   if (!masteredSkills.length) {
     return (
       <div className="text-center text-muted-foreground p-4">
-        No mastered skills yet
+        Aucune compétence maîtrisée pour le moment
       </div>
     );
   }
@@ -81,12 +88,12 @@ const MasteredSkillsSection = () => {
         <div key={skill.skill_id} className="bg-card/50 p-4 rounded-lg border border-border">
           <div className="flex justify-between items-start">
             <div>
-              <h3 className="font-medium">{skill.skills.titre}</h3>
-              {skill.skills.resume && (
-                <p className="text-sm text-muted-foreground mt-1">{skill.skills.resume}</p>
+              <h3 className="font-medium">{skill.skills.title}</h3>
+              {skill.skills.summary && (
+                <p className="text-sm text-muted-foreground mt-1">{skill.skills.summary}</p>
               )}
               <p className="text-xs text-muted-foreground mt-2">
-                Mastered on {new Date(skill.maitrisee_le).toLocaleDateString()}
+                Maîtrisée le {new Date(skill.mastered_at).toLocaleDateString()}
               </p>
             </div>
             <Button

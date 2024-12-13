@@ -1,20 +1,46 @@
-import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
-import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useUserSkills } from "@/hooks/useUserSkills";
+import { Collapsible } from "@/components/ui/collapsible";
+import { useState } from "react";
+import { Json } from "@/integrations/supabase/types";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import SortableSkillItem from "./skills/SortableSkillItem";
+import { useToast } from "@/hooks/use-toast";
 import SkillHeader from "./skills/SkillHeader";
 import SkillContent from "./skills/SkillContent";
-import { Collapsible } from "@/components/ui/collapsible";
+import { useIsMobile } from "@/hooks/use-mobile";
+
+interface UserSkill {
+  skill_id: string;
+  selected_sections: string[] | null;
+  is_mastered?: boolean;
+  skills: {
+    id: string;
+    title: string;
+    summary: string | null;
+    explanation: string | null;
+    concrete_action: string | null;
+    examples: Json[] | null;
+  };
+}
 
 const SkillsTab = () => {
   const [openSections, setOpenSections] = useState<string[]>([]);
   const { toast } = useToast();
   const isMobile = useIsMobile();
-  const { data: userSkills = [] } = useUserSkills();
   
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -23,22 +49,63 @@ const SkillsTab = () => {
     })
   );
 
+  const { data: userSkills = [] } = useQuery<UserSkill[]>({
+    queryKey: ['userSkills'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return [];
+      
+      const { data: skills, error } = await supabase
+        .from('user_skills')
+        .select(`
+          skill_id,
+          selected_sections,
+          skills (
+            id,
+            title,
+            summary,
+            explanation,
+            concrete_action,
+            examples
+          )
+        `)
+        .eq('user_id', user.id);
+      
+      if (error) throw error;
+
+      const { data: masteredSkills } = await supabase
+        .from('user_mastered_skills')
+        .select('skill_id')
+        .eq('user_id', user.id);
+
+      const masteredSkillIds = new Set((masteredSkills || []).map(s => s.skill_id));
+      
+      return (skills || []).map(skill => ({
+        ...skill,
+        is_mastered: masteredSkillIds.has(skill.skill_id),
+        skills: {
+          ...skill.skills,
+          examples: Array.isArray(skill.skills.examples) ? skill.skills.examples : []
+        }
+      }));
+    },
+  });
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (over && active.id !== over.id) {
       const oldIndex = userSkills.findIndex(item => item.skill_id === active.id);
       const newIndex = userSkills.findIndex(item => item.skill_id === over.id);
-      // Handle reordering logic here if needed
     }
   };
 
-  const handleAddSkillSection = async (skillId: string, sectionTitle: string, content: string | any[] | null) => {
+  const handleAddSkillSection = async (skillId: string, sectionTitle: string, content: string | Json[] | null) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         toast({
-          title: "Error",
-          description: "You must be logged in to perform this action",
+          title: "Erreur",
+          description: "Vous devez être connecté pour effectuer cette action",
           variant: "destructive",
         });
         return;
@@ -47,10 +114,10 @@ const SkillsTab = () => {
       if (!content) return;
 
       const existingSkill = userSkills.find(skill => skill.skill_id === skillId);
-      let sections_selectionnees = existingSkill?.sections_selectionnees || [];
+      let selectedSections = existingSkill?.selected_sections || [];
 
-      if (!sections_selectionnees.includes(sectionTitle)) {
-        sections_selectionnees = [...sections_selectionnees, sectionTitle];
+      if (!selectedSections.includes(sectionTitle)) {
+        selectedSections = [...selectedSections, sectionTitle];
       }
 
       const { error } = await supabase
@@ -58,23 +125,23 @@ const SkillsTab = () => {
         .upsert({
           user_id: user.id,
           skill_id: skillId,
-          sections_selectionnees,
+          selected_sections: selectedSections,
         });
 
       if (error) {
-        console.error('Error updating sections:', error);
+        console.error('Erreur lors de la mise à jour des sections:', error);
         toast({
-          title: "Error",
-          description: "Unable to update sections",
+          title: "Erreur",
+          description: "Impossible de mettre à jour les sections",
           variant: "destructive",
         });
         return;
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Erreur:', error);
       toast({
-        title: "Error",
-        description: "An error occurred",
+        title: "Erreur",
+        description: "Une erreur est survenue",
         variant: "destructive",
       });
     }
@@ -107,19 +174,19 @@ const SkillsTab = () => {
                 className="bg-card rounded-lg border border-border overflow-hidden flex-1"
               >
                 <SkillHeader
-                  title={userSkill.skills.titre}
-                  selectedSections={userSkill.sections_selectionnees}
+                  title={userSkill.skills.title}
+                  selectedSections={userSkill.selected_sections}
                   skillId={userSkill.skill_id}
                   onAdd={handleAddSkillSection}
-                  isMastered={userSkill.est_maitrisee}
+                  isMastered={userSkill.is_mastered}
                 />
                 <SkillContent
                   skillId={userSkill.skill_id}
-                  selectedSections={userSkill.sections_selectionnees}
-                  summary={userSkill.skills.resume}
-                  explanation={userSkill.skills.explication}
-                  concreteAction={userSkill.skills.action_concrete}
-                  examples={userSkill.skills.exemples}
+                  selectedSections={userSkill.selected_sections}
+                  summary={userSkill.skills.summary}
+                  explanation={userSkill.skills.explanation}
+                  concreteAction={userSkill.skills.concrete_action}
+                  examples={userSkill.skills.examples}
                   onAdd={handleAddSkillSection}
                 />
               </Collapsible>

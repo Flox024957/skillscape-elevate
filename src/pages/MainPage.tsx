@@ -2,29 +2,20 @@ import { motion } from "framer-motion";
 import { CategoriesGrid } from "@/components/categories/CategoriesGrid";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Category } from "@/types/skills";
 
 const MainPage = () => {
-  const { data: categories, isLoading } = useQuery<Category[]>({
+  const { data: categories, isLoading } = useQuery({
     queryKey: ['categories'],
     queryFn: async () => {
+      console.log('Fetching categories...');
       const { data: categoriesData, error: categoriesError } = await supabase
         .from('categories')
         .select(`
-          id,
-          name,
-          description,
-          created_at,
+          *,
           skills (
             id,
-            category_id,
-            titre,
-            resume,
-            explication,
-            exemples,
-            action_concrete,
-            created_at,
-            updated_at
+            title,
+            summary
           )
         `)
         .order('name');
@@ -34,7 +25,8 @@ const MainPage = () => {
         throw categoriesError;
       }
       
-      return categoriesData as Category[];
+      console.log('Categories fetched:', categoriesData);
+      return categoriesData;
     },
   });
 

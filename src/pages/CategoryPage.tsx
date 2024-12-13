@@ -5,15 +5,32 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { Category, Skill } from "@/types/skills";
+
+interface Skill {
+  id: string;
+  title: string;
+  summary?: string;
+  explanation?: string;
+  examples?: any[];
+  concrete_action?: string;
+}
+
+interface Category {
+  id: string;
+  name: string;
+  description: string;
+  skills: Skill[];
+}
 
 const CategoryPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const { data: category, isLoading, error } = useQuery<Category>({
+  const { data: category, isLoading, error } = useQuery({
     queryKey: ['category', id],
     queryFn: async () => {
+      console.log('Fetching category with ID:', id);
+      
       if (!id) {
         throw new Error('Category ID is undefined');
       }
@@ -24,13 +41,11 @@ const CategoryPage = () => {
           *,
           skills (
             id,
-            titre,
-            resume,
-            explication,
-            exemples,
-            action_concrete,
-            created_at,
-            updated_at
+            title,
+            summary,
+            explanation,
+            examples,
+            concrete_action
           )
         `)
         .eq('id', id)
@@ -48,6 +63,7 @@ const CategoryPage = () => {
         throw new Error('Category not found');
       }
 
+      console.log('Category data:', categoryData);
       return categoryData as Category;
     },
   });
@@ -107,7 +123,7 @@ const CategoryPage = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {category.skills?.map((skill: Skill) => (
+          {category.skills?.map((skill) => (
             <motion.div
               key={skill.id}
               initial={{ opacity: 0, scale: 0.9 }}
@@ -120,10 +136,10 @@ const CategoryPage = () => {
                             transition-all duration-300 h-full">
                 <h3 className="text-xl font-semibold mb-2 group-hover:text-primary 
                              transition-colors">
-                  {skill.titre}
+                  {skill.title}
                 </h3>
-                {skill.resume && (
-                  <p className="text-muted-foreground">{skill.resume}</p>
+                {skill.summary && (
+                  <p className="text-muted-foreground">{skill.summary}</p>
                 )}
               </div>
             </motion.div>

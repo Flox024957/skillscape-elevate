@@ -10,59 +10,57 @@ interface UserSkillsProps {
 
 interface UserSkill {
   skill_id: string;
-  sections_selectionnees: string[] | null;
+  selected_sections: string[] | null;
   skills: {
     id: string;
-    titre: string;
+    title: string;
   };
 }
 
 interface MasteredSkill {
   skill_id: string;
-  maitrisee_le: string;
+  mastered_at: string;
   skills: {
     id: string;
-    titre: string;
+    title: string;
   };
 }
 
 export const UserSkills = ({ userId }: UserSkillsProps) => {
-  const { data: userSkills = [] } = useQuery<UserSkill[]>({
+  const { data: userSkills = [] } = useQuery({
     queryKey: ['userSkills', userId],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('user_skills')
         .select(`
           skill_id,
-          sections_selectionnees,
+          selected_sections,
           skills (
             id,
-            titre
+            title
           )
         `)
-        .eq('user_id', userId)
-        .eq('est_maitrisee', false);
+        .eq('user_id', userId);
       
       if (error) throw error;
       return data as UserSkill[];
     },
   });
 
-  const { data: masteredSkills = [] } = useQuery<MasteredSkill[]>({
+  const { data: masteredSkills = [] } = useQuery({
     queryKey: ['masteredSkills', userId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('user_skills')
+        .from('user_mastered_skills')
         .select(`
           skill_id,
-          maitrisee_le,
+          mastered_at,
           skills (
             id,
-            titre
+            title
           )
         `)
-        .eq('user_id', userId)
-        .eq('est_maitrisee', true);
+        .eq('user_id', userId);
       
       if (error) throw error;
       return data as MasteredSkill[];
@@ -83,7 +81,7 @@ export const UserSkills = ({ userId }: UserSkillsProps) => {
             <div className="flex flex-wrap gap-2">
               {userSkills.map((userSkill) => (
                 <Badge key={userSkill.skill_id} variant="secondary">
-                  {userSkill.skills.titre}
+                  {userSkill.skills.title}
                 </Badge>
               ))}
             </div>
@@ -101,7 +99,7 @@ export const UserSkills = ({ userId }: UserSkillsProps) => {
                   variant="default"
                   className="bg-green-500/10 text-green-500 hover:bg-green-500/20"
                 >
-                  {masteredSkill.skills.titre}
+                  {masteredSkill.skills.title}
                 </Badge>
               ))}
             </div>
