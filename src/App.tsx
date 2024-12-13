@@ -2,21 +2,12 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AnimatePresence } from "framer-motion";
+import { BrowserRouter } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import Index from "./pages/Index";
-import Dashboard from "./pages/Dashboard";
-import MainPage from "./pages/MainPage";
-import CategoryPage from "./pages/CategoryPage";
-import SkillDetailPage from "./pages/SkillDetailPage";
-import Auth from "./pages/Auth";
-import AudioPage from "./pages/AudioPage";
-import ChallengesPage from "./pages/ChallengesPage";
-import { ProtectedRoute } from "./components/ProtectedRoute";
-import Navbar from "./components/Navbar";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import Navbar from "@/components/Navbar";
+import AppRoutes from "@/routes/AppRoutes";
 
 const queryClient = new QueryClient();
 
@@ -50,48 +41,7 @@ const App = () => {
         <BrowserRouter>
           {isAuthenticated && <Navbar />}
           <div className={cn("min-h-screen", isAuthenticated && "pt-16")}>
-            <AnimatePresence>
-              <Routes>
-                <Route path="/auth" element={
-                  isAuthenticated ? <Navigate to="/main" /> : <Auth />
-                } />
-                <Route path="/" element={
-                  <ProtectedRoute>
-                    <MainPage />
-                  </ProtectedRoute>
-                } />
-                <Route path="/main" element={
-                  <ProtectedRoute>
-                    <MainPage />
-                  </ProtectedRoute>
-                } />
-                <Route path="/category/:id" element={
-                  <ProtectedRoute>
-                    <CategoryPage />
-                  </ProtectedRoute>
-                } />
-                <Route path="/skill/:id" element={
-                  <ProtectedRoute>
-                    <SkillDetailPage />
-                  </ProtectedRoute>
-                } />
-                <Route path="/dashboard" element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                } />
-                <Route path="/audio" element={
-                  <ProtectedRoute>
-                    <AudioPage />
-                  </ProtectedRoute>
-                } />
-                <Route path="/challenges" element={
-                  <ProtectedRoute>
-                    <ChallengesPage />
-                  </ProtectedRoute>
-                } />
-              </Routes>
-            </AnimatePresence>
+            <AppRoutes isAuthenticated={isAuthenticated} />
           </div>
         </BrowserRouter>
       </TooltipProvider>
