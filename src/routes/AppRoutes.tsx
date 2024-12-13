@@ -3,7 +3,7 @@ import Auth from "@/pages/Auth";
 import Dashboard from "@/pages/Dashboard";
 import Social from "@/pages/Social";
 import MainPage from "@/pages/MainPage";
-import ProtectedRoute from "@/components/ProtectedRoute";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 interface AppRoutesProps {
   isAuthenticated: boolean;
@@ -31,7 +31,7 @@ const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
       <Route
         path="/dashboard"
         element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
+          <ProtectedRoute>
             <Dashboard />
           </ProtectedRoute>
         }
@@ -39,7 +39,7 @@ const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
       <Route
         path="/social"
         element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
+          <ProtectedRoute>
             <Social />
           </ProtectedRoute>
         }
