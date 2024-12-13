@@ -29,11 +29,22 @@ const CategoryPage = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
 
-  const { data: category, isLoading } = useQuery({
+  const { data: category, isLoading, error } = useQuery({
     queryKey: ['category', categoryId],
     queryFn: async () => {
       console.log('Fetching category with ID:', categoryId);
       
+      if (!categoryId) {
+        throw new Error('Category ID is required');
+      }
+
+      // Validate that categoryId is a valid UUID
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+      if (!uuidRegex.test(categoryId)) {
+        console.error('Invalid UUID format for category ID:', categoryId);
+        throw new Error('Invalid category ID format');
+      }
+
       const { data: categoryData, error: categoryError } = await supabase
         .from('categories')
         .select(`
@@ -57,41 +68,36 @@ const CategoryPage = () => {
         throw categoryError;
       }
 
+      if (!categoryData) {
+        console.error('No category found with ID:', categoryId);
+        throw new Error('Category not found');
+      }
+
       console.log('Category data received:', categoryData);
       return categoryData as Category;
     },
+    retry: false,
   });
 
-  const addSkillToDashboard = async (skillId: string) => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast.error("Vous devez être connecté pour ajouter une compétence");
-        return;
-      }
-
-      const { error } = await supabase
-        .from('user_skills')
-        .upsert({
-          user_id: user.id,
-          skill_id: skillId,
-        });
-
-      if (error) {
-        if (error.code === '23505') { // Unique violation
-          toast.error("Cette compétence est déjà dans votre tableau de bord");
-        } else {
-          toast.error("Erreur lors de l'ajout de la compétence");
-        }
-        return;
-      }
-
-      toast.success("Compétence ajoutée au tableau de bord");
-    } catch (error) {
-      console.error('Error adding skill:', error);
-      toast.error("Une erreur est survenue");
-    }
-  };
+  if (error) {
+    return (
+      <div className="container mx-auto p-4">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-foreground">Erreur</h2>
+          <p className="text-muted-foreground mt-2">
+            Une erreur est survenue lors du chargement de la catégorie.
+            {error instanceof Error ? ` ${error.message}` : ''}
+          </p>
+          <Button 
+            onClick={() => navigate('/main')} 
+            className="mt-4"
+          >
+            Retour à l'accueil
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -110,6 +116,12 @@ const CategoryPage = () => {
         <div className="text-center">
           <h2 className="text-2xl font-bold text-foreground">Catégorie non trouvée</h2>
           <p className="text-muted-foreground mt-2">La catégorie que vous recherchez n'existe pas.</p>
+          <Button 
+            onClick={() => navigate('/main')} 
+            className="mt-4"
+          >
+            Retour à l'accueil
+          </Button>
         </div>
       </div>
     );
