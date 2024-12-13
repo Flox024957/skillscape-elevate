@@ -1,13 +1,22 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Search } from 'lucide-react';
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from '@tanstack/react-query';
-import { SearchButton } from './search/SearchButton';
-import { SearchDialog } from './search/SearchDialog';
-import { SearchResult } from './search/types';
+import { Avatar } from "@/components/ui/avatar";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+
+interface SearchResult {
+  id: string;
+  pseudo: string;
+  image_profile: string;
+  current_job?: string;
+}
 
 export const SearchBar = () => {
-  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
 
   const { data: searchResults = [], isLoading } = useQuery({
     queryKey: ['profileSearch', searchQuery],
@@ -28,17 +37,58 @@ export const SearchBar = () => {
     refetchOnWindowFocus: false,
   });
 
+  const handleSelect = (userId: string) => {
+    setSearchQuery("");
+    setIsSearching(false);
+    navigate(`/profile/${userId}`);
+  };
+
   return (
-    <>
-      <SearchButton onClick={() => setOpen(true)} />
-      <SearchDialog 
-        open={open}
-        setOpen={setOpen}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        searchResults={searchResults}
-        isLoading={isLoading}
-      />
-    </>
+    <div className="relative w-full max-w-2xl mx-auto">
+      <Command className="rounded-xl border border-neon-purple/30 bg-futuristic-gray/20 backdrop-blur-md shadow-lg">
+        <div className="flex items-center px-3 border-b border-neon-purple/20">
+          <Search className="w-4 h-4 mr-2 text-muted-foreground shrink-0" />
+          <CommandInput
+            placeholder="Rechercher des profils..."
+            value={searchQuery}
+            onValueChange={setSearchQuery}
+            onFocus={() => setIsSearching(true)}
+            className="h-11 bg-transparent border-none focus:ring-0 placeholder:text-muted-foreground"
+          />
+        </div>
+        {isSearching && (
+          <CommandList className="animate-fade-in">
+            <CommandEmpty className="py-6 text-sm text-center text-muted-foreground">
+              {isLoading ? "Recherche en cours..." : "Aucun résultat trouvé."}
+            </CommandEmpty>
+            <CommandGroup heading="Profils">
+              {searchResults.map((result) => (
+                <CommandItem
+                  key={result.id}
+                  onSelect={() => handleSelect(result.id)}
+                  className="flex items-center gap-3 p-2 cursor-pointer hover:bg-futuristic-gray/30 transition-colors duration-200"
+                >
+                  <Avatar className="h-8 w-8 ring-1 ring-neon-purple/30">
+                    <img 
+                      src={result.image_profile || '/placeholder.svg'} 
+                      alt={result.pseudo}
+                      className="object-cover"
+                    />
+                  </Avatar>
+                  <div className="flex flex-col">
+                    <span className="font-medium text-foreground">{result.pseudo}</span>
+                    {result.current_job && (
+                      <span className="text-sm text-muted-foreground">
+                        {result.current_job}
+                      </span>
+                    )}
+                  </div>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        )}
+      </Command>
+    </div>
   );
 };
