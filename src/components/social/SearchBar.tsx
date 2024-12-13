@@ -23,13 +23,14 @@ export const SearchBar = () => {
     queryFn: async () => {
       if (!searchQuery.trim()) return [];
       
-      // Modification de la requête pour chercher dans tous les profils
+      console.log('Recherche avec le terme:', searchQuery); // Debug log
+      
       const { data, error } = await supabase
         .from('profiles')
         .select('id, pseudo, image_profile, current_job')
         .ilike('pseudo', `%${searchQuery}%`)
-        .not('pseudo', 'is', null) // Exclure les profils sans pseudo
-        .order('pseudo') // Trier par pseudo
+        .not('pseudo', 'is', null)
+        .order('pseudo')
         .limit(10);
 
       if (error) {
@@ -37,7 +38,7 @@ export const SearchBar = () => {
         throw error;
       }
 
-      console.log('Résultats de recherche:', data); // Pour le débogage
+      console.log('Résultats de recherche:', data); // Debug log
       return data as SearchResult[];
     },
     enabled: searchQuery.length > 0,
