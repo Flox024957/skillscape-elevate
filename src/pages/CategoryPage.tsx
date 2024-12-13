@@ -72,35 +72,8 @@ const CategoryPage = () => {
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   });
 
-  const addSkillToDashboard = async (skillId: string) => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast.error("Vous devez être connecté pour ajouter une compétence");
-        return;
-      }
-
-      const { error } = await supabase
-        .from('user_skills')
-        .upsert({
-          user_id: user.id,
-          skill_id: skillId,
-        });
-
-      if (error) {
-        if (error.code === '23505') {
-          toast.error("Cette compétence est déjà dans votre tableau de bord");
-        } else {
-          toast.error("Erreur lors de l'ajout de la compétence");
-        }
-        return;
-      }
-
-      toast.success("Compétence ajoutée au tableau de bord");
-    } catch (error) {
-      console.error('Error adding skill:', error);
-      toast.error("Une erreur est survenue");
-    }
+  const handleSkillClick = (skillId: string) => {
+    navigate(`/skill/${skillId}`);
   };
 
   if (error) {
@@ -183,7 +156,7 @@ const CategoryPage = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 whileHover={{ scale: 1.02 }}
                 className="bg-card/80 backdrop-blur-sm p-6 rounded-lg border border-border shadow-lg relative group cursor-pointer"
-                onClick={() => navigate(`/skill/${skill.id}`)}
+                onClick={() => handleSkillClick(skill.id)}
               >
                 <h3 className="text-xl font-semibold mb-3 text-foreground">
                   {skill.title}
@@ -193,17 +166,6 @@ const CategoryPage = () => {
                     {skill.summary}
                   </p>
                 )}
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  className="w-full mt-4"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    addSkillToDashboard(skill.id);
-                  }}
-                >
-                  Ajouter au tableau de bord
-                </Button>
               </motion.div>
             ))}
           </div>

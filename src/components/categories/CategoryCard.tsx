@@ -34,9 +34,7 @@ export const CategoryCard = ({
   const isMobile = useIsMobile();
 
   const handleClick = () => {
-    const element = document.querySelector(`#category-${id}`);
-    element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    setTimeout(() => navigate(`/category/${id}`), 500);
+    navigate(`/category/${id}`);
   };
 
   return (
