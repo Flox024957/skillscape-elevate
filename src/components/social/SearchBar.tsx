@@ -23,13 +23,21 @@ export const SearchBar = () => {
     queryFn: async () => {
       if (!searchQuery.trim()) return [];
       
+      // Modification de la requête pour chercher dans tous les profils
       const { data, error } = await supabase
         .from('profiles')
         .select('id, pseudo, image_profile, current_job')
         .ilike('pseudo', `%${searchQuery}%`)
-        .limit(5);
+        .not('pseudo', 'is', null) // Exclure les profils sans pseudo
+        .order('pseudo') // Trier par pseudo
+        .limit(10);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Erreur lors de la recherche:', error);
+        throw error;
+      }
+
+      console.log('Résultats de recherche:', data); // Pour le débogage
       return data as SearchResult[];
     },
     enabled: searchQuery.length > 0,
@@ -43,8 +51,14 @@ export const SearchBar = () => {
     navigate(`/profile/${userId}`);
   };
 
+  const handleClickOutside = () => {
+    if (isSearching) {
+      setIsSearching(false);
+    }
+  };
+
   return (
-    <div className="relative w-full max-w-2xl mx-auto">
+    <div className="relative w-full max-w-2xl mx-auto" onClick={(e) => e.stopPropagation()}>
       <Command className="rounded-xl border border-neon-purple/30 bg-futuristic-gray/20 backdrop-blur-md shadow-lg">
         <div className="flex items-center px-3 border-b border-neon-purple/20">
           <Search className="w-4 h-4 mr-2 text-muted-foreground shrink-0" />
