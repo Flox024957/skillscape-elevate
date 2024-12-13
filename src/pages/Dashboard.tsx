@@ -3,12 +3,14 @@ import DashboardTabs from "@/components/dashboard/DashboardTabs";
 
 const Dashboard = () => {
   return (
-    <div className="min-h-screen bg-background p-4">
+    <div className="min-h-screen bg-futuristic-black p-4">
       <div className="max-w-7xl mx-auto">
-        <div className="bg-card p-6 mb-8 rounded-lg border border-border">
-          <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
+        <div className="glass-panel p-6 mb-8">
+          <h1 className="text-2xl font-bold neon-text">Dashboard</h1>
         </div>
-        <DashboardTabs />
+        <div className="glass-panel">
+          <DashboardTabs />
+        </div>
       </div>
     </div>
   );

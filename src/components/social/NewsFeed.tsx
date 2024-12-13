@@ -64,11 +64,23 @@ export const NewsFeed = ({ userId }: NewsFeedProps) => {
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="p-4 text-center neon-text">
+        Chargement des publications...
+      </div>
+    );
+  }
+
+  if (!posts?.length) {
+    return (
+      <div className="p-4 text-center text-muted-foreground">
+        Aucune publication pour le moment.
+      </div>
+    );
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 p-4">
       {posts?.map((post) => (
         <Post key={post.id} post={post} currentUserId={userId} />
       ))}
