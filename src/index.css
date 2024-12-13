@@ -34,7 +34,7 @@
   }
 
   .glass-panel:hover {
-    @apply border-futuristic-blue/30 animate-snake-border;
+    @apply border-futuristic-blue/30;
   }
 
   .glass-panel::before {
@@ -62,7 +62,6 @@
   }
 }
 
-/* Ajout de la police futuriste */
 @font-face {
   font-family: 'Futuristic';
   src: url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
@@ -109,7 +108,7 @@
 }
 
 .auth-input::placeholder {
-  color: #86868b;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .auth-button:disabled {
@@ -128,12 +127,5 @@
   }
   to {
     transform: rotate(360deg);
-  }
-}
-
-/* Dark mode overrides */
-@media (prefers-color-scheme: dark) {
-  .auth-input::placeholder {
-    color: #86868b;
   }
 }
