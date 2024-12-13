@@ -2,18 +2,14 @@ import { useState, useEffect } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Message, ChatConversation } from '@/integrations/supabase/types/messages';
-import { MessageList } from './chat/MessageList';
-import { MessageInput } from './chat/MessageInput';
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { cn } from "@/lib/utils";
+import { ConversationList } from './chat/ConversationList';
+import { ChatContainer } from './chat/ChatContainer';
 
 interface ChatSectionProps {
   userId: string;
 }
 
 export const ChatSection = ({ userId }: ChatSectionProps) => {
-  const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [conversations, setConversations] = useState<ChatConversation[]>([]);
   const [selectedFriend, setSelectedFriend] = useState<string | null>(null);
@@ -118,14 +114,14 @@ export const ChatSection = ({ userId }: ChatSectionProps) => {
     };
   }, [userId, selectedFriend]);
 
-  const handleSendMessage = async () => {
-    if (!message.trim() || !selectedFriend) return;
+  const handleSendMessage = async (content: string) => {
+    if (!content.trim() || !selectedFriend) return;
 
     const { error } = await supabase
       .from('messages')
       .insert([
         {
-          content: message,
+          content,
           sender_id: userId,
           receiver_id: selectedFriend,
         },
@@ -137,77 +133,25 @@ export const ChatSection = ({ userId }: ChatSectionProps) => {
         description: "Impossible d'envoyer le message",
         variant: "destructive",
       });
-      return;
     }
-
-    setMessage('');
   };
+
+  const selectedConversation = conversations.find(c => c.friend.id === selectedFriend);
 
   return (
     <div className="h-[600px] flex gap-4">
-      {/* Conversations list */}
-      <div className="w-1/3 glass-panel">
-        <div className="p-4 border-b border-border/50">
-          <h2 className="font-semibold neon-text">Conversations</h2>
-        </div>
-        <ScrollArea className="h-[calc(600px-65px)]">
-          <div className="p-2 space-y-2">
-            {conversations.map((conv) => (
-              <button
-                key={conv.friend.id}
-                onClick={() => setSelectedFriend(conv.friend.id)}
-                className={cn(
-                  "w-full p-3 flex items-center gap-3 rounded-lg transition-colors",
-                  selectedFriend === conv.friend.id
-                    ? "bg-primary/20"
-                    : "hover:bg-muted/20"
-                )}
-              >
-                <Avatar>
-                  <AvatarImage src={conv.friend.image_profile || undefined} />
-                  <AvatarFallback>{conv.friend.pseudo?.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <div className="text-left">
-                  <p className="font-medium">{conv.friend.pseudo}</p>
-                  {conv.lastMessage && (
-                    <p className="text-sm text-muted-foreground truncate">
-                      {conv.lastMessage.content}
-                    </p>
-                  )}
-                </div>
-                {conv.unreadCount > 0 && (
-                  <span className="ml-auto bg-primary text-white text-xs px-2 py-1 rounded-full">
-                    {conv.unreadCount}
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
-        </ScrollArea>
-      </div>
-
-      {/* Messages */}
-      <div className="flex-1 glass-panel">
-        {selectedFriend ? (
-          <>
-            <div className="p-4 border-b border-border/50">
-              <h2 className="font-semibold neon-text">
-                {conversations.find(c => c.friend.id === selectedFriend)?.friend.pseudo}
-              </h2>
-            </div>
-            <MessageList messages={messages} currentUserId={userId} />
-            <MessageInput 
-              message={message}
-              onChange={setMessage}
-              onSend={handleSendMessage}
-            />
-          </>
-        ) : (
-          <div className="h-full flex items-center justify-center text-muted-foreground">
-            Sélectionnez une conversation pour commencer
-          </div>
-        )}
-      </div>
+      <ConversationList 
+        conversations={conversations}
+        selectedFriend={selectedFriend}
+        onSelectFriend={setSelectedFriend}
+      />
+      <ChatContainer 
+        selectedFriend={selectedFriend}
+        messages={messages}
+        currentUserId={userId}
+        friendName={selectedConversation?.friend.pseudo}
+        onSendMessage={handleSendMessage}
+      />
     </div>
   );
 };
