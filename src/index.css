@@ -46,7 +46,7 @@
   .futuristic-text {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-futuristic-blue to-futuristic-violet;
     background-size: 200% 200%;
-    animation: gradient 12s ease infinite;
+    animation: gradient 48s ease infinite;
   }
 
   .hover-lift {
@@ -76,7 +76,7 @@
          transition-all duration-1000 shadow-[0_0_20px_rgba(0,163,255,0.5)]
          disabled:opacity-50 disabled:cursor-not-allowed;
   background-size: 200% 200%;
-  animation: gradient 12s ease infinite;
+  animation: gradient 48s ease infinite;
 }
 
 .futuristic-input {

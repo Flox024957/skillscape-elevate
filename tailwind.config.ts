@@ -96,8 +96,8 @@ export default {
         },
       },
       animation: {
-        "neon-pulse": "neon-border 12s linear infinite",
-        "snake-border": "neon-border 12s linear infinite",
+        "neon-pulse": "neon-border 48s linear infinite",
+        "snake-border": "neon-border 48s linear infinite",
         "fade-in": "fade-in 0.3s ease-out",
       },
       backgroundImage: {
