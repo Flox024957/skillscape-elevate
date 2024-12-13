@@ -61,7 +61,12 @@ export const ChatSection = ({ userId }: ChatSectionProps) => {
       const { data, error } = await supabase
         .from('messages')
         .select(`
-          *,
+          id,
+          sender_id,
+          receiver_id,
+          content,
+          read,
+          created_at,
           profiles:sender_id (
             pseudo,
             image_profile
