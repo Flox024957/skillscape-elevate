@@ -1,11 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ChevronDown } from "lucide-react";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Collapsible } from "@/components/ui/collapsible";
 import { useState } from "react";
 import { Json } from "@/integrations/supabase/types";
 import {
@@ -23,10 +18,10 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import SortableSkillItem from "./skills/SortableSkillItem";
-import SkillSection from "./skills/SkillSection";
-import ExamplesSection from "./skills/ExamplesSection";
-import SkillActions from "./skills/SkillActions";
 import { useToast } from "@/hooks/use-toast";
+import SkillHeader from "./skills/SkillHeader";
+import SkillContent from "./skills/SkillContent";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface UserSkill {
   skill_id: string;
@@ -45,6 +40,7 @@ interface UserSkill {
 const SkillsTab = () => {
   const [openSections, setOpenSections] = useState<string[]>([]);
   const { toast } = useToast();
+  const isMobile = useIsMobile();
   
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -77,7 +73,6 @@ const SkillsTab = () => {
       
       if (error) throw error;
 
-      // Get mastered skills to mark them in the list
       const { data: masteredSkills } = await supabase
         .from('user_mastered_skills')
         .select('skill_id')
@@ -98,7 +93,6 @@ const SkillsTab = () => {
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    
     if (over && active.id !== over.id) {
       const oldIndex = userSkills.findIndex(item => item.skill_id === active.id);
       const newIndex = userSkills.findIndex(item => item.skill_id === over.id);
@@ -167,7 +161,7 @@ const SkillsTab = () => {
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
     >
-      <div className="space-y-4">
+      <div className={`space-y-4 ${isMobile ? 'px-2' : ''}`}>
         <SortableContext
           items={userSkills.map(skill => skill.skill_id)}
           strategy={verticalListSortingStrategy}
@@ -179,60 +173,22 @@ const SkillsTab = () => {
                 onOpenChange={() => toggleSection(userSkill.skill_id)}
                 className="bg-card rounded-lg border border-border overflow-hidden flex-1"
               >
-                <CollapsibleTrigger className="flex justify-between items-center w-full p-4 hover:bg-accent/50">
-                  <div>
-                    <h3 className="text-lg font-semibold">
-                      {userSkill.skills.title}
-                    </h3>
-                    {userSkill.selected_sections && (
-                      <p className="text-sm text-muted-foreground">
-                        Sections sélectionnées : {userSkill.selected_sections.join(', ')}
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <SkillActions
-                      skillId={userSkill.skill_id}
-                      onAdd={handleAddSkillSection}
-                      isMastered={userSkill.is_mastered}
-                    />
-                    <ChevronDown className="h-4 w-4 transition-transform duration-200" />
-                  </div>
-                </CollapsibleTrigger>
-                
-                <CollapsibleContent className="p-4 pt-0 space-y-4">
-                  {(!userSkill.selected_sections || userSkill.selected_sections.includes('Summary')) && (
-                    <SkillSection
-                      skillId={userSkill.skill_id}
-                      title="Résumé"
-                      content={userSkill.skills.summary}
-                      onAdd={handleAddSkillSection}
-                    />
-                  )}
-                  {(!userSkill.selected_sections || userSkill.selected_sections.includes('Explanation')) && (
-                    <SkillSection
-                      skillId={userSkill.skill_id}
-                      title="Explication"
-                      content={userSkill.skills.explanation}
-                      onAdd={handleAddSkillSection}
-                    />
-                  )}
-                  {(!userSkill.selected_sections || userSkill.selected_sections.includes('Concrete Action')) && (
-                    <SkillSection
-                      skillId={userSkill.skill_id}
-                      title="Action Concrète"
-                      content={userSkill.skills.concrete_action}
-                      onAdd={handleAddSkillSection}
-                    />
-                  )}
-                  {(!userSkill.selected_sections || userSkill.selected_sections.includes('Examples')) && (
-                    <ExamplesSection
-                      skillId={userSkill.skill_id}
-                      examples={userSkill.skills.examples as Json[]}
-                      onAdd={handleAddSkillSection}
-                    />
-                  )}
-                </CollapsibleContent>
+                <SkillHeader
+                  title={userSkill.skills.title}
+                  selectedSections={userSkill.selected_sections}
+                  skillId={userSkill.skill_id}
+                  onAdd={handleAddSkillSection}
+                  isMastered={userSkill.is_mastered}
+                />
+                <SkillContent
+                  skillId={userSkill.skill_id}
+                  selectedSections={userSkill.selected_sections}
+                  summary={userSkill.skills.summary}
+                  explanation={userSkill.skills.explanation}
+                  concreteAction={userSkill.skills.concrete_action}
+                  examples={userSkill.skills.examples}
+                  onAdd={handleAddSkillSection}
+                />
               </Collapsible>
             </SortableSkillItem>
           ))}
