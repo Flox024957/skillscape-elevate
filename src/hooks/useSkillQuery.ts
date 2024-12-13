@@ -24,7 +24,7 @@ export const useSkillQuery = (id: string | undefined) => {
         .from('skills')
         .select(`
           *,
-          categories (*)
+          categories!left (*)
         `)
         .eq('id', id)
         .maybeSingle();
@@ -42,7 +42,7 @@ export const useSkillQuery = (id: string | undefined) => {
       return skillData as Skill;
     },
     enabled: Boolean(id) && isValidUUID(id),
-    retry: false, // Disable retries for 404s
+    retry: false,
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   });
 };
