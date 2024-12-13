@@ -7,13 +7,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 
 const CategoryPage = () => {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const { data: category } = useQuery({
     queryKey: ['category', id],
     queryFn: async () => {
+      if (!id) throw new Error('Category ID is required');
       const { data, error } = await supabase
         .from('categories')
         .select('*')
@@ -22,11 +23,13 @@ const CategoryPage = () => {
       if (error) throw error;
       return data;
     },
+    enabled: !!id,
   });
 
   const { data: skills, isLoading } = useQuery({
     queryKey: ['skills', id],
     queryFn: async () => {
+      if (!id) throw new Error('Category ID is required');
       const { data, error } = await supabase
         .from('skills')
         .select('*')
@@ -34,6 +37,7 @@ const CategoryPage = () => {
       if (error) throw error;
       return data;
     },
+    enabled: !!id,
   });
 
   const addToDashboard = async (skillId: string) => {
