@@ -56,7 +56,7 @@ const SkillsTab = () => {
     } else {
       toast({
         title: "Success",
-        description: "Skill added to dashboard",
+        description: "Added to profile",
       });
       refetch();
     }

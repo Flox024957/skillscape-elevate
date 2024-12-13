@@ -31,29 +31,23 @@ const SkillDetailPage = () => {
   });
 
   const addToDashboard = async (type: string, content: string) => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast.error("You must be logged in to add content to your dashboard");
-        return;
-      }
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast.error("You must be logged in to add content to your dashboard");
+      return;
+    }
 
-      const { error } = await supabase
-        .from('user_notes')
-        .insert([{
-          user_id: user.id,
-          content: `${type}: ${content}`,
-        }]);
+    const { error } = await supabase
+      .from('user_notes')
+      .insert([{
+        user_id: user.id,
+        content: `${type}: ${content}`,
+      }]);
 
-      if (error) {
-        console.error('Error adding to dashboard:', error);
-        toast.error("Could not add content to dashboard");
-      } else {
-        toast.success(`${type} added to your dashboard`);
-      }
-    } catch (error) {
-      console.error('Error in addToDashboard:', error);
-      toast.error("An unexpected error occurred");
+    if (error) {
+      toast.error("Could not add content to dashboard");
+    } else {
+      toast.success("Added to profile");
     }
   };
 
@@ -93,55 +87,31 @@ const SkillDetailPage = () => {
         </div>
 
         <div className="space-y-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            key="summary"
-          >
-            <SkillSection
-              title="Summary"
-              content={skill.summary}
-              type="Summary"
-              onAdd={addToDashboard}
-            />
-          </motion.div>
+          <SkillSection
+            title="Summary"
+            content={skill.summary}
+            type="Summary"
+            onAdd={addToDashboard}
+          />
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            key="explanation"
-          >
-            <SkillSection
-              title="Explanation"
-              content={skill.explanation}
-              type="Explanation"
-              onAdd={addToDashboard}
-            />
-          </motion.div>
+          <SkillSection
+            title="Explanation"
+            content={skill.explanation}
+            type="Explanation"
+            onAdd={addToDashboard}
+          />
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            key="action"
-          >
-            <SkillSection
-              title="Concrete Action"
-              content={skill.concrete_action}
-              type="Action"
-              onAdd={addToDashboard}
-            />
-          </motion.div>
+          <SkillSection
+            title="Concrete Action"
+            content={skill.concrete_action}
+            type="Action"
+            onAdd={addToDashboard}
+          />
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            key="examples"
-          >
-            <ExamplesSection
-              examples={examples}
-              onAdd={addToDashboard}
-            />
-          </motion.div>
+          <ExamplesSection
+            examples={examples}
+            onAdd={addToDashboard}
+          />
         </div>
       </div>
     </div>
