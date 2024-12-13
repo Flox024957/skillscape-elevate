@@ -36,30 +36,30 @@ const MainPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-futuristic-black flex items-center justify-center">
-        <div className="text-futuristic-blue text-xl">Loading categories...</div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-primary text-xl">Loading categories...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-futuristic-black bg-futuristic-grid bg-[size:50px_50px]">
+    <div className="min-h-screen bg-background bg-futuristic-grid bg-[size:50px_50px]">
       <div className="container px-4 py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-futuristic-blue to-futuristic-violet bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-primary to-[#8B5CF6] bg-clip-text text-transparent">
             Welcome to FLAP
           </h1>
-          <p className="text-gray-400 max-w-2xl mx-auto mb-8 text-lg">
+          <p className="text-muted-foreground max-w-2xl mx-auto mb-8 text-lg">
             Explore skills, set goals, and track your personal development journey
           </p>
           <div className="flex flex-col gap-6 items-center mb-12">
             <Button
               onClick={() => navigate("/auth")}
-              className="bg-gradient-to-r from-futuristic-blue to-futuristic-violet hover:opacity-90 text-white px-8 py-6 text-lg rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(0,163,255,0.5)]"
+              className="bg-primary/90 hover:bg-primary/95 text-white px-8 py-6 text-lg rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(139,92,246,0.5)]"
             >
               Get Started
             </Button>
@@ -70,10 +70,10 @@ const MainPage = () => {
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-futuristic-blue via-futuristic-violet to-futuristic-blue bg-[length:200%_100%] animate-[gradient_3s_linear_infinite]" />
-              <div className="absolute inset-0 opacity-50 group-hover:opacity-75 blur-xl bg-gradient-to-r from-futuristic-blue via-futuristic-violet to-futuristic-blue bg-[length:200%_100%] animate-[gradient_3s_linear_infinite]" />
-              <div className="absolute inset-0.5 rounded-xl bg-futuristic-black" />
-              <span className="relative text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-futuristic-blue to-futuristic-violet animate-pulse">
+              <div className="absolute inset-0 bg-gradient-to-r from-primary via-[#8B5CF6] to-primary bg-[length:200%_100%] animate-[gradient_3s_linear_infinite]" />
+              <div className="absolute inset-0 opacity-50 group-hover:opacity-75 blur-xl bg-gradient-to-r from-primary via-[#8B5CF6] to-primary bg-[length:200%_100%] animate-[gradient_3s_linear_infinite]" />
+              <div className="absolute inset-0.5 rounded-xl bg-background" />
+              <span className="relative text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-[#8B5CF6] animate-pulse">
                 Dashboard
               </span>
             </motion.button>
@@ -90,19 +90,19 @@ const MainPage = () => {
               onClick={() => navigate(`/category/${category.id}`)}
               className="group cursor-pointer"
             >
-              <div className="relative rounded-xl overflow-hidden border-2 animate-neon-pulse transition-all duration-300 hover:scale-105">
+              <div className="relative rounded-xl overflow-hidden backdrop-blur-lg border border-primary/20 hover:border-primary/40 transition-all duration-300 hover:scale-105 bg-background/40">
                 <div className="aspect-square relative">
                   <img
                     src={`https://images.unsplash.com/${categoryImages[index]}?auto=format&fit=crop&w=800&q=80`}
                     alt={category.name}
                     className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-futuristic-black/90 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <h3 className="text-2xl font-bold mb-2 text-white group-hover:text-futuristic-blue transition-colors">
+                    <h3 className="text-2xl font-bold mb-2 text-white group-hover:text-primary transition-colors">
                       {category.name}
                     </h3>
-                    <p className="text-gray-300 line-clamp-2">
+                    <p className="text-muted-foreground line-clamp-2">
                       {category.description}
                     </p>
                   </div>
