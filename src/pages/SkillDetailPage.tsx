@@ -1,11 +1,13 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Database } from "@/integrations/supabase/types";
+import { SkillSection } from "@/components/skill-detail/SkillSection";
+import { ExamplesSection } from "@/components/skill-detail/ExamplesSection";
+import { Toaster } from "@/components/ui/toaster";
 
 type Skill = Database['public']['Tables']['skills']['Row'] & {
   categories: Database['public']['Tables']['categories']['Row'] | null;
@@ -79,11 +81,11 @@ const SkillDetailPage = () => {
     return <div>Skill not found</div>;
   }
 
-  // Ensure examples is an array, default to empty array if not
   const examples = Array.isArray(skill.examples) ? skill.examples : [];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-futuristic-black to-futuristic-black/95">
+      <Toaster />
       <div className="container px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <div>
@@ -110,87 +112,47 @@ const SkillDetailPage = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="glass-panel p-6"
           >
-            <div className="flex justify-between items-start">
-              <div className="flex-1 mr-4">
-                <h3 className="text-xl font-semibold mb-2">Summary</h3>
-                <p className="text-gray-400">{skill.summary}</p>
-              </div>
-              <Button
-                size="icon"
-                variant="ghost"
-                onClick={() => addToDashboard('Summary', skill.summary || '')}
-                className="hover:bg-futuristic-blue/20"
-              >
-                <Plus className="w-5 h-5" />
-              </Button>
-            </div>
+            <SkillSection
+              title="Summary"
+              content={skill.summary}
+              type="Summary"
+              onAdd={addToDashboard}
+            />
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="glass-panel p-6"
           >
-            <div className="flex justify-between items-start">
-              <div className="flex-1 mr-4">
-                <h3 className="text-xl font-semibold mb-2">Explanation</h3>
-                <p className="text-gray-400">{skill.explanation}</p>
-              </div>
-              <Button
-                size="icon"
-                variant="ghost"
-                onClick={() => addToDashboard('Explanation', skill.explanation || '')}
-                className="hover:bg-futuristic-blue/20"
-              >
-                <Plus className="w-5 h-5" />
-              </Button>
-            </div>
+            <SkillSection
+              title="Explanation"
+              content={skill.explanation}
+              type="Explanation"
+              onAdd={addToDashboard}
+            />
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="glass-panel p-6"
           >
-            <div className="flex justify-between items-start">
-              <div className="flex-1 mr-4">
-                <h3 className="text-xl font-semibold mb-2">Concrete Action</h3>
-                <p className="text-gray-400">{skill.concrete_action}</p>
-              </div>
-              <Button
-                size="icon"
-                variant="ghost"
-                onClick={() => addToDashboard('Action', skill.concrete_action || '')}
-                className="hover:bg-futuristic-blue/20"
-              >
-                <Plus className="w-5 h-5" />
-              </Button>
-            </div>
+            <SkillSection
+              title="Concrete Action"
+              content={skill.concrete_action}
+              type="Action"
+              onAdd={addToDashboard}
+            />
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="glass-panel p-6"
           >
-            <h3 className="text-xl font-semibold mb-4">Examples</h3>
-            <div className="space-y-4">
-              {examples.map((example: string, index: number) => (
-                <div key={index} className="flex justify-between items-start">
-                  <p className="text-gray-400 flex-1 mr-4">{example}</p>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    onClick={() => addToDashboard('Example', example)}
-                    className="hover:bg-futuristic-blue/20"
-                  >
-                    <Plus className="w-5 h-5" />
-                  </Button>
-                </div>
-              ))}
-            </div>
+            <ExamplesSection
+              examples={examples}
+              onAdd={addToDashboard}
+            />
           </motion.div>
         </div>
       </div>
