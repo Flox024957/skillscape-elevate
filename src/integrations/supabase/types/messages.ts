@@ -6,7 +6,7 @@ export type Message = {
   read: boolean | null;
   created_at: string;
   profiles?: {
-    pseudo: string;
-    image_profile: string;
-  };
+    pseudo: string | null;
+    image_profile: string | null;
+  } | null;
 };
