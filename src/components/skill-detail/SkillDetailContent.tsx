@@ -42,9 +42,9 @@ export const SkillDetailContent = ({
         />
 
         <SkillSection
-          title="Explication"
-          content={transformedSkill.explanation}
-          type="Explanation"
+          title="Description"
+          content={transformedSkill.description}
+          type="Description"
           onAdd={onAddToDashboard}
         />
 

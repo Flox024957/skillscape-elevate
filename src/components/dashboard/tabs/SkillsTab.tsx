@@ -53,7 +53,10 @@ const SkillsTab = () => {
             resume,
             description,
             action_concrete,
-            exemples
+            exemples,
+            category_id,
+            created_at,
+            updated_at
           )
         `)
         .eq('user_id', user.id);
@@ -171,7 +174,7 @@ const SkillsTab = () => {
                   skillId={userSkill.skill_id}
                   selectedSections={userSkill.sections_selectionnees}
                   summary={userSkill.skills.resume}
-                  explanation={userSkill.skills.explication}
+                  explanation={userSkill.skills.description}
                   concreteAction={userSkill.skills.action_concrete}
                   examples={userSkill.skills.exemples}
                   onAdd={handleAddSkillSection}
