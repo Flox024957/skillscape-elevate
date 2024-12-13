@@ -45,20 +45,20 @@ const SkillsTab = () => {
         .from('user_skills')
         .select(`
           skill_id,
-          selected_sections,
-          is_mastered,
-          mastered_at,
+          sections_selectionnees,
+          est_maitrisee,
+          maitrisee_le,
           skills (
             id,
-            title,
-            summary,
-            explanation,
-            concrete_action,
-            examples
+            titre,
+            resume,
+            explication,
+            action_concrete,
+            exemples
           )
         `)
         .eq('user_id', user.id)
-        .eq('is_mastered', false);
+        .eq('est_maitrisee', false);
       
       if (error) throw error;
       
@@ -89,10 +89,10 @@ const SkillsTab = () => {
       if (!content) return;
 
       const existingSkill = userSkills.find(skill => skill.skill_id === skillId);
-      let selected_sections = existingSkill?.selected_sections || [];
+      let sections_selectionnees = existingSkill?.sections_selectionnees || [];
 
-      if (!selected_sections.includes(sectionTitle)) {
-        selected_sections = [...selected_sections, sectionTitle];
+      if (!sections_selectionnees.includes(sectionTitle)) {
+        sections_selectionnees = [...sections_selectionnees, sectionTitle];
       }
 
       const { error } = await supabase
@@ -100,7 +100,7 @@ const SkillsTab = () => {
         .upsert({
           user_id: user.id,
           skill_id: skillId,
-          selected_sections,
+          sections_selectionnees,
         });
 
       if (error) {
@@ -149,19 +149,19 @@ const SkillsTab = () => {
                 className="bg-card rounded-lg border border-border overflow-hidden flex-1"
               >
                 <SkillHeader
-                  title={userSkill.skills.title}
-                  selectedSections={userSkill.selected_sections}
+                  title={userSkill.skills.titre}
+                  selectedSections={userSkill.sections_selectionnees}
                   skillId={userSkill.skill_id}
                   onAdd={handleAddSkillSection}
-                  isMastered={userSkill.is_mastered}
+                  isMastered={userSkill.est_maitrisee}
                 />
                 <SkillContent
                   skillId={userSkill.skill_id}
-                  selectedSections={userSkill.selected_sections}
-                  summary={userSkill.skills.summary}
-                  explanation={userSkill.skills.explanation}
-                  concreteAction={userSkill.skills.concrete_action}
-                  examples={userSkill.skills.examples}
+                  selectedSections={userSkill.sections_selectionnees}
+                  summary={userSkill.skills.resume}
+                  explanation={userSkill.skills.explication}
+                  concreteAction={userSkill.skills.action_concrete}
+                  examples={userSkill.skills.exemples}
                   onAdd={handleAddSkillSection}
                 />
               </Collapsible>

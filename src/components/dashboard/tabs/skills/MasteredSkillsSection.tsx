@@ -19,15 +19,15 @@ const MasteredSkillsSection = () => {
         .from('user_skills')
         .select(`
           skill_id,
-          mastered_at,
+          maitrisee_le,
           skills (
             id,
-            title,
-            summary
+            titre,
+            resume
           )
         `)
         .eq('user_id', user.id)
-        .eq('is_mastered', true);
+        .eq('est_maitrisee', true);
 
       if (error) throw error;
       return data || [];
@@ -42,8 +42,8 @@ const MasteredSkillsSection = () => {
       const { error } = await supabase
         .from('user_skills')
         .update({ 
-          is_mastered: false, 
-          mastered_at: null 
+          est_maitrisee: false, 
+          maitrisee_le: null 
         })
         .eq('user_id', user.id)
         .eq('skill_id', skillId);
@@ -81,12 +81,12 @@ const MasteredSkillsSection = () => {
         <div key={skill.skill_id} className="bg-card/50 p-4 rounded-lg border border-border">
           <div className="flex justify-between items-start">
             <div>
-              <h3 className="font-medium">{skill.skills.title}</h3>
-              {skill.skills.summary && (
-                <p className="text-sm text-muted-foreground mt-1">{skill.skills.summary}</p>
+              <h3 className="font-medium">{skill.skills.titre}</h3>
+              {skill.skills.resume && (
+                <p className="text-sm text-muted-foreground mt-1">{skill.skills.resume}</p>
               )}
               <p className="text-xs text-muted-foreground mt-2">
-                Mastered on {new Date(skill.mastered_at).toLocaleDateString()}
+                Mastered on {new Date(skill.maitrisee_le).toLocaleDateString()}
               </p>
             </div>
             <Button

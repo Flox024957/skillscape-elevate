@@ -51,8 +51,8 @@ const SkillActions = ({ skillId, onAdd, isMastered }: SkillActionsProps) => {
       const { error: updateError } = await supabase
         .from('user_skills')
         .update({
-          is_mastered: true,
-          mastered_at: new Date().toISOString(),
+          est_maitrisee: true,
+          maitrisee_le: new Date().toISOString(),
         })
         .eq('user_id', user.id)
         .eq('skill_id', skillId);
