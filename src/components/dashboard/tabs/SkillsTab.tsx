@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Collapsible } from "@/components/ui/collapsible";
 import { useState } from "react";
-import { Json } from "@/integrations/supabase/types";
 import {
   DndContext,
   closestCenter,
@@ -22,20 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 import SkillHeader from "./skills/SkillHeader";
 import SkillContent from "./skills/SkillContent";
 import { useIsMobile } from "@/hooks/use-mobile";
-
-interface UserSkill {
-  skill_id: string;
-  selected_sections: string[] | null;
-  is_mastered?: boolean;
-  skills: {
-    id: string;
-    title: string;
-    summary: string | null;
-    explanation: string | null;
-    concrete_action: string | null;
-    examples: Json[] | null;
-  };
-}
+import { UserSkill } from "@/types/skills";
 
 const SkillsTab = () => {
   const [openSections, setOpenSections] = useState<string[]>([]);
@@ -62,11 +48,11 @@ const SkillsTab = () => {
           selected_sections,
           skills (
             id,
-            title,
-            summary,
-            explanation,
-            concrete_action,
-            examples
+            titre,
+            resume,
+            explication,
+            action_concrete,
+            exemples
           )
         `)
         .eq('user_id', user.id);
@@ -85,7 +71,7 @@ const SkillsTab = () => {
         is_mastered: masteredSkillIds.has(skill.skill_id),
         skills: {
           ...skill.skills,
-          examples: Array.isArray(skill.skills.examples) ? skill.skills.examples : []
+          exemples: Array.isArray(skill.skills.exemples) ? skill.skills.exemples : []
         }
       }));
     },
@@ -174,7 +160,7 @@ const SkillsTab = () => {
                 className="bg-card rounded-lg border border-border overflow-hidden flex-1"
               >
                 <SkillHeader
-                  title={userSkill.skills.title}
+                  title={userSkill.skills.titre}
                   selectedSections={userSkill.selected_sections}
                   skillId={userSkill.skill_id}
                   onAdd={handleAddSkillSection}
@@ -183,10 +169,10 @@ const SkillsTab = () => {
                 <SkillContent
                   skillId={userSkill.skill_id}
                   selectedSections={userSkill.selected_sections}
-                  summary={userSkill.skills.summary}
-                  explanation={userSkill.skills.explanation}
-                  concreteAction={userSkill.skills.concrete_action}
-                  examples={userSkill.skills.examples}
+                  summary={userSkill.skills.resume}
+                  explanation={userSkill.skills.explication}
+                  concreteAction={userSkill.skills.action_concrete}
+                  examples={userSkill.skills.exemples}
                   onAdd={handleAddSkillSection}
                 />
               </Collapsible>

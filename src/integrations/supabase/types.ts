@@ -380,6 +380,48 @@ export type Database = {
           },
         ]
       }
+      user_mastered_skills: {
+        Row: {
+          created_at: string | null
+          id: string
+          mastered_at: string | null
+          notes: string | null
+          skill_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          mastered_at?: string | null
+          notes?: string | null
+          skill_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          mastered_at?: string | null
+          notes?: string | null
+          skill_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_mastered_skills_skill_id_fkey"
+            columns: ["skill_id"]
+            isOneToOne: false
+            referencedRelation: "skills"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_mastered_skills_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_notes: {
         Row: {
           content: string
