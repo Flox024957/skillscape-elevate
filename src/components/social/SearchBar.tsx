@@ -35,13 +35,17 @@ export const SearchBar = () => {
       className="relative w-full max-w-2xl mx-auto" 
       onClick={(e) => e.stopPropagation()}
     >
-      <Command className="rounded-xl border border-neon-purple/30 bg-futuristic-gray/20 backdrop-blur-md shadow-lg">
+      <Command 
+        className="rounded-xl border border-neon-purple/30 bg-futuristic-gray/20 backdrop-blur-md shadow-lg"
+        shouldFilter={false} 
+        loop
+      >
         <SearchInput
           value={searchQuery}
           onChange={setSearchQuery}
           onFocus={() => setIsSearching(true)}
         />
-        {isSearching && searchResults.length > 0 && (
+        {isSearching && (
           <CommandList className="animate-fade-in">
             <SearchResults
               results={searchResults}

@@ -36,6 +36,7 @@ export const SearchResults = ({ results, isLoading, onSelect }: SearchResultsPro
       {results.map((result) => (
         <CommandItem
           key={result.id}
+          value={result.pseudo}
           onSelect={() => onSelect(result.id)}
           className="flex items-center gap-3 p-2 cursor-pointer hover:bg-futuristic-gray/30 transition-colors duration-200"
         >
