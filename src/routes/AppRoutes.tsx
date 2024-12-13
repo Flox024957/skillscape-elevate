@@ -10,9 +10,13 @@ import SkillDetailPage from "@/pages/SkillDetailPage";
 import AudioPage from "@/pages/AudioPage";
 import ChallengesPage from "@/pages/ChallengesPage";
 import MainPage from "@/pages/MainPage";
-import ProtectedRoute from "@/components/ProtectedRoute";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
-export const AppRoutes = () => {
+interface AppRoutesProps {
+  isAuthenticated: boolean;
+}
+
+export const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
   return (
     <Routes>
       <Route path="/" element={<Index />} />
@@ -23,7 +27,7 @@ export const AppRoutes = () => {
       <Route
         path="/dashboard"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
             <Dashboard />
           </ProtectedRoute>
         }
@@ -31,7 +35,7 @@ export const AppRoutes = () => {
       <Route
         path="/social"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
             <Social />
           </ProtectedRoute>
         }
@@ -39,7 +43,7 @@ export const AppRoutes = () => {
       <Route
         path="/edit-profile"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
             <EditProfile />
           </ProtectedRoute>
         }
