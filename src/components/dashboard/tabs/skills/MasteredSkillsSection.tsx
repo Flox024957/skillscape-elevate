@@ -30,7 +30,7 @@ const MasteredSkillsSection = () => {
         .eq('est_maitrisee', true);
 
       if (error) throw error;
-      return data || [];
+      return data as MasteredSkill[];
     },
   });
 

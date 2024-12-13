@@ -1,32 +1,19 @@
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { Collapsible } from "@/components/ui/collapsible";
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
+import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { useState } from "react";
-import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  DragEndEvent,
-} from '@dnd-kit/core';
-import {
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import SortableSkillItem from "./skills/SortableSkillItem";
 import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { useUserSkills } from "@/hooks/useUserSkills";
+import SortableSkillItem from "./skills/SortableSkillItem";
 import SkillHeader from "./skills/SkillHeader";
 import SkillContent from "./skills/SkillContent";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { UserSkill } from "@/types/skills";
+import { Collapsible } from "@/components/ui/collapsible";
 
 const SkillsTab = () => {
   const [openSections, setOpenSections] = useState<string[]>([]);
   const { toast } = useToast();
   const isMobile = useIsMobile();
+  const { data: userSkills = [] } = useUserSkills();
   
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -35,42 +22,12 @@ const SkillsTab = () => {
     })
   );
 
-  const { data: userSkills = [] } = useQuery<UserSkill[]>({
-    queryKey: ['userSkills'],
-    queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return [];
-      
-      const { data, error } = await supabase
-        .from('user_skills')
-        .select(`
-          skill_id,
-          sections_selectionnees,
-          est_maitrisee,
-          maitrisee_le,
-          skills (
-            id,
-            titre,
-            resume,
-            explication,
-            action_concrete,
-            exemples
-          )
-        `)
-        .eq('user_id', user.id)
-        .eq('est_maitrisee', false);
-      
-      if (error) throw error;
-      
-      return data || [];
-    },
-  });
-
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (over && active.id !== over.id) {
       const oldIndex = userSkills.findIndex(item => item.skill_id === active.id);
       const newIndex = userSkills.findIndex(item => item.skill_id === over.id);
+      // Handle reordering logic here if needed
     }
   };
 
