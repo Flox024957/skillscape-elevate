@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Avatar } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Message } from '@/integrations/supabase/types/messages';
+import { MessageList } from './chat/MessageList';
+import { MessageInput } from './chat/MessageInput';
 
 interface ChatSectionProps {
   userId: string;
@@ -40,7 +38,6 @@ export const ChatSection = ({ userId }: ChatSectionProps) => {
 
     fetchMessages();
 
-    // Subscribe to new messages
     const channel = supabase
       .channel('messages_channel')
       .on(
@@ -71,7 +68,7 @@ export const ChatSection = ({ userId }: ChatSectionProps) => {
         {
           content: message,
           sender_id: userId,
-          receiver_id: userId, // For demo purposes, sending to self
+          receiver_id: userId,
         },
       ]);
 
@@ -93,46 +90,12 @@ export const ChatSection = ({ userId }: ChatSectionProps) => {
         <h2 className="font-semibold neon-text">Messages</h2>
       </div>
       
-      <ScrollArea className="flex-1 p-4">
-        <div className="space-y-4">
-          {messages.map((msg) => (
-            <div
-              key={msg.id}
-              className={`flex gap-3 ${
-                msg.sender_id === userId ? 'justify-end' : 'justify-start'
-              }`}
-            >
-              {msg.sender_id !== userId && (
-                <Avatar className="h-8 w-8">
-                  <img 
-                    src={msg.profiles?.image_profile || '/placeholder.svg'} 
-                    alt={msg.profiles?.pseudo || 'User'} 
-                  />
-                </Avatar>
-              )}
-              <div className={`glass-panel p-3 max-w-[80%] ${
-                msg.sender_id === userId ? 'bg-primary/20' : 'bg-muted/20'
-              }`}>
-                <p className="text-sm">{msg.content}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </ScrollArea>
-
-      <div className="p-4 border-t border-border/50">
-        <div className="flex gap-2">
-          <Input
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Écrivez votre message..."
-            className="flex-1 glass-panel"
-          />
-          <Button onClick={handleSendMessage} className="futuristic-button">
-            Envoyer
-          </Button>
-        </div>
-      </div>
+      <MessageList messages={messages} currentUserId={userId} />
+      <MessageInput 
+        message={message}
+        onChange={setMessage}
+        onSend={handleSendMessage}
+      />
     </div>
   );
 };
