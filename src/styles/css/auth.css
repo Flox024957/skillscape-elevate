@@ -19,12 +19,8 @@
 }
 
 @keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .glass-panel {
@@ -35,60 +31,135 @@
   isolation: isolate;
   border: none;
   overflow: hidden;
+  transform-style: preserve-3d;
+  perspective: 1000px;
 }
 
 .glass-panel::before {
   content: '';
   position: absolute;
-  inset: 0;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    rgba(0, 163, 255, 0.3) 60deg,
-    rgba(157, 78, 221, 0.6) 120deg,
-    rgba(0, 163, 255, 0.8) 180deg,
-    rgba(157, 78, 221, 0.6) 240deg,
-    rgba(0, 163, 255, 0.3) 300deg,
-    transparent 360deg
-  );
+  inset: -2px;
+  background: rgba(30, 174, 219, 0.5);
   border-radius: 16px;
-  animation: rotateNeon 3s linear infinite;
-  mask: 
-    linear-gradient(#fff 0 0) content-box, 
-    linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  padding: 2px;
+  filter: blur(8px);
+  opacity: 0;
+  animation: heartbeatPulse 4s ease-in-out infinite;
+  transform: translateZ(20px);
+  box-shadow: 
+    0 0 20px rgba(30, 174, 219, 0.5),
+    0 0 40px rgba(30, 174, 219, 0.3),
+    0 0 60px rgba(30, 174, 219, 0.2),
+    0 0 80px rgba(30, 174, 219, 0.1);
 }
 
 .glass-panel::after {
   content: '';
   position: absolute;
-  inset: -4px;
-  background: inherit;
+  inset: 0;
+  background: linear-gradient(
+    45deg,
+    rgba(30, 174, 219, 0.5),
+    rgba(157, 78, 221, 0.5)
+  );
   border-radius: 16px;
-  filter: blur(20px);
-  opacity: 0.7;
-  z-index: -1;
-  animation: pulseNeon 2s ease-in-out infinite;
+  opacity: 0;
+  animation: heartbeatGlow 4s ease-in-out infinite;
+  transform: translateZ(10px);
 }
 
-@keyframes rotateNeon {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes pulseNeon {
+@keyframes heartbeatPulse {
   0%, 100% {
-    opacity: 0.7;
-    filter: blur(20px) brightness(1);
+    opacity: 0.2;
+    transform: translateZ(20px) scale(1);
+    filter: blur(8px);
+  }
+  35% {
+    opacity: 0.3;
+    transform: translateZ(20px) scale(1.02);
+    filter: blur(10px);
+  }
+  40% {
+    opacity: 1;
+    transform: translateZ(20px) scale(1.04);
+    filter: blur(12px);
+  }
+  45% {
+    opacity: 0.3;
+    transform: translateZ(20px) scale(1.02);
+    filter: blur(10px);
   }
   50% {
-    opacity: 0.9;
-    filter: blur(25px) brightness(1.2);
+    opacity: 0.2;
+    transform: translateZ(20px) scale(1);
+    filter: blur(8px);
+  }
+  85% {
+    opacity: 0.3;
+    transform: translateZ(20px) scale(1.02);
+    filter: blur(10px);
+  }
+  90% {
+    opacity: 0.8;
+    transform: translateZ(20px) scale(1.03);
+    filter: blur(11px);
+  }
+  95% {
+    opacity: 0.3;
+    transform: translateZ(20px) scale(1.02);
+    filter: blur(10px);
+  }
+}
+
+@keyframes heartbeatGlow {
+  0%, 100% {
+    opacity: 0.3;
+    box-shadow: 
+      0 0 20px rgba(30, 174, 219, 0.3),
+      0 0 40px rgba(30, 174, 219, 0.2);
+  }
+  35% {
+    opacity: 0.4;
+    box-shadow: 
+      0 0 25px rgba(30, 174, 219, 0.4),
+      0 0 50px rgba(30, 174, 219, 0.3);
+  }
+  40% {
+    opacity: 1;
+    box-shadow: 
+      0 0 30px rgba(30, 174, 219, 1),
+      0 0 60px rgba(30, 174, 219, 0.8),
+      0 0 90px rgba(30, 174, 219, 0.6);
+  }
+  45% {
+    opacity: 0.4;
+    box-shadow: 
+      0 0 25px rgba(30, 174, 219, 0.4),
+      0 0 50px rgba(30, 174, 219, 0.3);
+  }
+  50% {
+    opacity: 0.3;
+    box-shadow: 
+      0 0 20px rgba(30, 174, 219, 0.3),
+      0 0 40px rgba(30, 174, 219, 0.2);
+  }
+  85% {
+    opacity: 0.4;
+    box-shadow: 
+      0 0 25px rgba(30, 174, 219, 0.4),
+      0 0 50px rgba(30, 174, 219, 0.3);
+  }
+  90% {
+    opacity: 0.8;
+    box-shadow: 
+      0 0 28px rgba(30, 174, 219, 0.8),
+      0 0 56px rgba(30, 174, 219, 0.6),
+      0 0 84px rgba(30, 174, 219, 0.4);
+  }
+  95% {
+    opacity: 0.4;
+    box-shadow: 
+      0 0 25px rgba(30, 174, 219, 0.4),
+      0 0 50px rgba(30, 174, 219, 0.3);
   }
 }
 
