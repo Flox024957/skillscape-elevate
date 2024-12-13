@@ -11,30 +11,38 @@ const CategoryPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const { data: category } = useQuery({
+  const { data: category, isLoading: categoryLoading } = useQuery({
     queryKey: ['category', id],
     queryFn: async () => {
       if (!id) throw new Error('Category ID is required');
       const { data, error } = await supabase
         .from('categories')
-        .select('*')
+        .select()
         .eq('id', id)
         .single();
-      if (error) throw error;
+      
+      if (error) {
+        console.error('Category fetch error:', error);
+        throw error;
+      }
       return data;
     },
     enabled: !!id,
   });
 
-  const { data: skills, isLoading } = useQuery({
+  const { data: skills, isLoading: skillsLoading } = useQuery({
     queryKey: ['skills', id],
     queryFn: async () => {
       if (!id) throw new Error('Category ID is required');
       const { data, error } = await supabase
         .from('skills')
-        .select('*')
+        .select()
         .eq('category_id', id);
-      if (error) throw error;
+      
+      if (error) {
+        console.error('Skills fetch error:', error);
+        throw error;
+      }
       return data;
     },
     enabled: !!id,
@@ -62,8 +70,12 @@ const CategoryPage = () => {
     }
   };
 
-  if (isLoading) {
+  if (categoryLoading || skillsLoading) {
     return <div>Loading...</div>;
+  }
+
+  if (!category) {
+    return <div>Category not found</div>;
   }
 
   return (
@@ -79,7 +91,7 @@ const CategoryPage = () => {
               ← Back
             </Button>
             <h1 className="text-3xl font-bold text-flap-white">
-              {category?.name}
+              {category.name}
             </h1>
           </div>
           <Button
