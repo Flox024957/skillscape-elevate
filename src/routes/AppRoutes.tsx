@@ -8,6 +8,7 @@ import ChallengesPage from "@/pages/ChallengesPage";
 import Social from "@/pages/Social";
 import CategoryPage from "@/pages/CategoryPage";
 import SkillDetailPage from "@/pages/SkillDetailPage";
+import PublicProfile from "@/pages/PublicProfile";
 import Index from "@/pages/Index";
 
 interface AppRoutesProps {
@@ -63,6 +64,14 @@ const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
             element={
               <ProtectedRoute isAuthenticated={isAuthenticated}>
                 <Social />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile/:userId"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <PublicProfile />
               </ProtectedRoute>
             }
           />

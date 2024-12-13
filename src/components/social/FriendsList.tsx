@@ -1,4 +1,5 @@
 import { useEffect, useState, memo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from "@/integrations/supabase/client";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -15,10 +16,13 @@ interface FriendsListProps {
   variant?: 'full' | 'compact';
 }
 
-const FriendItem = memo(({ friend, variant }: { friend: Friend, variant: 'full' | 'compact' }) => {
+const FriendItem = memo(({ friend, variant, onClick }: { friend: Friend, variant: 'full' | 'compact', onClick: () => void }) => {
   if (variant === 'compact') {
     return (
-      <div className="flex items-center gap-2">
+      <button 
+        onClick={onClick}
+        className="w-full flex items-center gap-2 hover:bg-muted/50 p-2 rounded-lg transition-colors"
+      >
         <Avatar className="h-8 w-8">
           <img 
             src={friend.image_profile || '/placeholder.svg'} 
@@ -27,13 +31,16 @@ const FriendItem = memo(({ friend, variant }: { friend: Friend, variant: 'full' 
           />
         </Avatar>
         <span className="text-sm">{friend.pseudo}</span>
-      </div>
+      </button>
     );
   }
 
   return (
     <div className="flex items-center justify-between p-3 bg-card rounded-lg">
-      <div className="flex items-center gap-3">
+      <button 
+        onClick={onClick}
+        className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+      >
         <Avatar className="h-12 w-12">
           <img 
             src={friend.image_profile || '/placeholder.svg'} 
@@ -44,7 +51,7 @@ const FriendItem = memo(({ friend, variant }: { friend: Friend, variant: 'full' 
         <div>
           <h3 className="font-medium">{friend.pseudo}</h3>
         </div>
-      </div>
+      </button>
       <Button variant="ghost" size="sm">
         Message
       </Button>
@@ -55,6 +62,8 @@ const FriendItem = memo(({ friend, variant }: { friend: Friend, variant: 'full' 
 FriendItem.displayName = 'FriendItem';
 
 export const FriendsList = ({ userId, variant = 'full' }: FriendsListProps) => {
+  const navigate = useNavigate();
+  
   const { data: friends, isLoading } = useQuery({
     queryKey: ['friends', userId],
     queryFn: async () => {
@@ -73,18 +82,27 @@ export const FriendsList = ({ userId, variant = 'full' }: FriendsListProps) => {
       if (error) throw error;
       return acceptedFriends.map(f => f.friend);
     },
-    staleTime: 30000, // Cache pendant 30 secondes
+    staleTime: 30000,
   });
 
   if (isLoading) {
     return <div className="animate-pulse">Chargement des amis...</div>;
   }
 
+  const handleFriendClick = (friendId: string) => {
+    navigate(`/profile/${friendId}`);
+  };
+
   if (variant === 'compact') {
     return (
       <div className="space-y-2">
         {friends?.map((friend) => (
-          <FriendItem key={friend.id} friend={friend} variant="compact" />
+          <FriendItem 
+            key={friend.id} 
+            friend={friend} 
+            variant="compact" 
+            onClick={() => handleFriendClick(friend.id)}
+          />
         ))}
       </div>
     );
@@ -93,7 +111,12 @@ export const FriendsList = ({ userId, variant = 'full' }: FriendsListProps) => {
   return (
     <div className="space-y-4">
       {friends?.map((friend) => (
-        <FriendItem key={friend.id} friend={friend} variant="full" />
+        <FriendItem 
+          key={friend.id} 
+          friend={friend} 
+          variant="full"
+          onClick={() => handleFriendClick(friend.id)}
+        />
       ))}
     </div>
   );
