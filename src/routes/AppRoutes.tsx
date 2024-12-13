@@ -1,87 +1,52 @@
 import { Routes, Route } from "react-router-dom";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
+import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
-import MainPage from "@/pages/MainPage";
 import Dashboard from "@/pages/Dashboard";
+import Social from "@/pages/Social";
+import EditProfile from "@/pages/EditProfile";
+import PublicProfile from "@/pages/PublicProfile";
 import CategoryPage from "@/pages/CategoryPage";
 import SkillDetailPage from "@/pages/SkillDetailPage";
 import AudioPage from "@/pages/AudioPage";
-import Social from "@/pages/Social";
-import PublicProfile from "@/pages/PublicProfile";
-import EditProfile from "@/pages/EditProfile";
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import ChallengesPage from "@/pages/ChallengesPage";
+import MainPage from "@/pages/MainPage";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
-const AppRoutes = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
+export const AppRoutes = () => {
   return (
     <Routes>
+      <Route path="/" element={<Index />} />
       <Route path="/auth" element={<Auth />} />
-      <Route
-        path="/"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <MainPage />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/main" element={<MainPage />} />
+      <Route path="/audio" element={<AudioPage />} />
+      <Route path="/challenges" element={<ChallengesPage />} />
       <Route
         path="/dashboard"
         element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
+          <ProtectedRoute>
             <Dashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/category/:categoryId"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <CategoryPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/skill/:skillId"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <SkillDetailPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/audio/:skillId"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <AudioPage />
           </ProtectedRoute>
         }
       />
       <Route
         path="/social"
         element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
+          <ProtectedRoute>
             <Social />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/profile/:userId"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <PublicProfile />
           </ProtectedRoute>
         }
       />
       <Route
         path="/edit-profile"
         element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
+          <ProtectedRoute>
             <EditProfile />
           </ProtectedRoute>
         }
       />
+      <Route path="/profile/:userId" element={<PublicProfile />} />
+      <Route path="/category/:categoryId" element={<CategoryPage />} />
+      <Route path="/skill/:skillId" element={<SkillDetailPage />} />
     </Routes>
   );
 };
-
-export { AppRoutes };
