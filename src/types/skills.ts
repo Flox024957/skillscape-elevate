@@ -4,7 +4,7 @@ export interface Skill {
   id: string;
   titre: string;
   resume: string | null;
-  explication: string | null;
+  description: string | null;
   action_concrete: string | null;
   exemples: Json[] | null;
   category_id: string | null;
@@ -35,7 +35,7 @@ export const transformSkill = (skill: Skill) => ({
   id: skill.id,
   title: skill.titre,
   summary: skill.resume,
-  explanation: skill.explication,
+  description: skill.description,
   concrete_action: skill.action_concrete,
   examples: skill.exemples,
   category_id: skill.category_id,

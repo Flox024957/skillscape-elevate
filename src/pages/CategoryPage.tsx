@@ -10,7 +10,7 @@ interface Skill {
   id: string;
   titre: string;
   resume?: string;
-  explication?: string;
+  description?: string;
   exemples?: any[];
   action_concrete?: string;
 }
@@ -43,7 +43,7 @@ const CategoryPage = () => {
             id,
             titre,
             resume,
-            explication,
+            description,
             exemples,
             action_concrete
           )

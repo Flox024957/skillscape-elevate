@@ -51,7 +51,7 @@ const SkillsTab = () => {
             id,
             titre,
             resume,
-            explication,
+            description,
             action_concrete,
             exemples
           )
