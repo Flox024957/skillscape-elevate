@@ -3,6 +3,7 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Facebook } from "lucide-react";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -67,6 +68,15 @@ const Auth = () => {
                 input: 'auth-input bg-futuristic-gray/50 backdrop-blur-md text-white border-[3px] border-[#8B5CF6]/40 focus:border-[#8B5CF6]/70 rounded-xl px-6 py-4 w-full transition-all duration-300 mb-4',
                 label: 'auth-label block text-sm font-medium text-white mb-3',
                 loader: 'auth-loader border-t-2 border-orange-500',
+              },
+            }}
+            providers={["facebook"]}
+            socialLayout="horizontal"
+            socialButtonStyle={{
+              facebook: {
+                icon: <Facebook className="w-5 h-5" />,
+                iconLayout: "leading",
+                label: "Continue with Facebook",
               },
             }}
           />
