@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from "@/integrations/supabase/client";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -18,10 +19,15 @@ interface Profile {
 }
 
 export const UserProfile = ({ userId }: UserProfileProps) => {
+  const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [isCurrentUser, setIsCurrentUser] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setIsCurrentUser(user?.id === userId);
+
       const { data, error } = await supabase
         .from('profiles')
         .select('pseudo, image_profile, description, current_job, dream_job')
@@ -68,9 +74,15 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
               <p className="text-muted-foreground">{profile.dream_job}</p>
             </div>
           )}
-          <Button className="w-full" variant="outline">
-            Modifier le profil
-          </Button>
+          {isCurrentUser && (
+            <Button 
+              className="w-full" 
+              variant="outline"
+              onClick={() => navigate('/edit-profile')}
+            >
+              Modifier le profil
+            </Button>
+          )}
         </CardContent>
       </Card>
       
