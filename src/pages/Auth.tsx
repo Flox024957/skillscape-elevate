@@ -3,20 +3,20 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Slider } from "@/components/ui/slider";
+import { NeonControls } from "@/components/auth/NeonControls";
 
 const Auth = () => {
   const navigate = useNavigate();
-  const [neonIntensity, setNeonIntensity] = useState(15);
-  const [blurRadius, setBlurRadius] = useState(30);
-  const [colorMix, setColorMix] = useState(50);
-  const [pulseSpeed, setPulseSpeed] = useState(50);
-  const [spreadRadius, setSpreadRadius] = useState(20);
-  const [textGlow, setTextGlow] = useState(10);
-  const [borderWidth, setBorderWidth] = useState(2);
-  const [colorSaturation, setColorSaturation] = useState(100);
-  const [colorHue, setColorHue] = useState(180);
-  const [animationPhase, setAnimationPhase] = useState(0);
+  const [neonIntensity, setNeonIntensity] = useState(25);
+  const [blurRadius, setBlurRadius] = useState(40);
+  const [colorMix, setColorMix] = useState(60);
+  const [pulseSpeed, setPulseSpeed] = useState(2000);
+  const [spreadRadius, setSpreadRadius] = useState(30);
+  const [textGlow, setTextGlow] = useState(15);
+  const [borderWidth, setBorderWidth] = useState(3);
+  const [colorSaturation, setColorSaturation] = useState(80);
+  const [colorHue, setColorHue] = useState(220);
+  const [animationPhase, setAnimationPhase] = useState(45);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -28,7 +28,6 @@ const Auth = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  // Update CSS variables when sliders change
   useEffect(() => {
     const root = document.documentElement;
     root.style.setProperty('--neon-intensity', `${neonIntensity}px`);
@@ -46,137 +45,33 @@ const Auth = () => {
   return (
     <div className="min-h-screen bg-futuristic-black flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="glass-panel p-8 animate-neon-pulse transition-all duration-1000">
-          <h1 className="text-4xl font-semibold text-center mb-8 futuristic-text animate-fade-in">
+        <div className="glass-panel p-8">
+          <h1 className="text-4xl font-semibold text-center mb-8 futuristic-text">
             Welcome to FLAP
           </h1>
           
-          {/* Neon Control Panel */}
-          <div className="mb-8 p-4 rounded-lg bg-black/20 backdrop-blur-sm">
-            <h2 className="text-white text-sm mb-4 font-medium">Neon Controls</h2>
-            
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <label className="text-xs text-white/70">Neon Intensity</label>
-                <Slider
-                  value={[neonIntensity]}
-                  onValueChange={(value) => setNeonIntensity(value[0])}
-                  min={0}
-                  max={30}
-                  step={1}
-                  className="w-full"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-xs text-white/70">Blur Radius</label>
-                <Slider
-                  value={[blurRadius]}
-                  onValueChange={(value) => setBlurRadius(value[0])}
-                  min={0}
-                  max={50}
-                  step={1}
-                  className="w-full"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-xs text-white/70">Color Mix</label>
-                <Slider
-                  value={[colorMix]}
-                  onValueChange={(value) => setColorMix(value[0])}
-                  min={0}
-                  max={100}
-                  step={1}
-                  className="w-full"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-xs text-white/70">Pulse Speed (ms)</label>
-                <Slider
-                  value={[pulseSpeed]}
-                  onValueChange={(value) => setPulseSpeed(value[0])}
-                  min={100}
-                  max={2000}
-                  step={100}
-                  className="w-full"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-xs text-white/70">Spread Radius</label>
-                <Slider
-                  value={[spreadRadius]}
-                  onValueChange={(value) => setSpreadRadius(value[0])}
-                  min={0}
-                  max={50}
-                  step={1}
-                  className="w-full"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-xs text-white/70">Text Glow</label>
-                <Slider
-                  value={[textGlow]}
-                  onValueChange={(value) => setTextGlow(value[0])}
-                  min={0}
-                  max={20}
-                  step={1}
-                  className="w-full"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-xs text-white/70">Border Width</label>
-                <Slider
-                  value={[borderWidth]}
-                  onValueChange={(value) => setBorderWidth(value[0])}
-                  min={0}
-                  max={10}
-                  step={1}
-                  className="w-full"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-xs text-white/70">Color Saturation</label>
-                <Slider
-                  value={[colorSaturation]}
-                  onValueChange={(value) => setColorSaturation(value[0])}
-                  min={0}
-                  max={100}
-                  step={1}
-                  className="w-full"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-xs text-white/70">Color Hue</label>
-                <Slider
-                  value={[colorHue]}
-                  onValueChange={(value) => setColorHue(value[0])}
-                  min={0}
-                  max={360}
-                  step={1}
-                  className="w-full"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-xs text-white/70">Animation Phase</label>
-                <Slider
-                  value={[animationPhase]}
-                  onValueChange={(value) => setAnimationPhase(value[0])}
-                  min={0}
-                  max={360}
-                  step={1}
-                  className="w-full"
-                />
-              </div>
-            </div>
-          </div>
+          <NeonControls
+            neonIntensity={neonIntensity}
+            setNeonIntensity={setNeonIntensity}
+            blurRadius={blurRadius}
+            setBlurRadius={setBlurRadius}
+            colorMix={colorMix}
+            setColorMix={setColorMix}
+            pulseSpeed={pulseSpeed}
+            setPulseSpeed={setPulseSpeed}
+            spreadRadius={spreadRadius}
+            setSpreadRadius={setSpreadRadius}
+            textGlow={textGlow}
+            setTextGlow={setTextGlow}
+            borderWidth={borderWidth}
+            setBorderWidth={setBorderWidth}
+            colorSaturation={colorSaturation}
+            setColorSaturation={setColorSaturation}
+            colorHue={colorHue}
+            setColorHue={setColorHue}
+            animationPhase={animationPhase}
+            setAnimationPhase={setAnimationPhase}
+          />
 
           <SupabaseAuth 
             supabaseClient={supabase}
