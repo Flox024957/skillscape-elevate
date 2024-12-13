@@ -17,8 +17,21 @@ export const AuthForm = () => {
       });
 
       if (error) {
+        if (error.message.includes('Invalid login credentials')) {
+          toast({
+            title: "Demo Account Not Available",
+            description: "Please ask your administrator to set up the demo account.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Error",
+            description: "Could not access demo account. Please try again later.",
+            variant: "destructive",
+          });
+        }
         console.error('Demo login error:', error);
-        throw error;
+        return;
       }
       
       if (session) {
@@ -32,7 +45,7 @@ export const AuthForm = () => {
       console.error('Demo login error:', error);
       toast({
         title: "Error",
-        description: "Could not access demo account. Please try again.",
+        description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
     }
