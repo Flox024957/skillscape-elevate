@@ -3,7 +3,6 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -19,14 +18,10 @@ const Auth = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-flap-black to-flap-black/95 flex items-center justify-center p-4">
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md glass-panel p-8"
-      >
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-card p-8 rounded-lg shadow-lg">
         <h1 className="text-3xl font-bold text-center mb-8">
-          Welcome to <span className="text-flap-neon">FLAP</span>
+          Welcome to <span className="text-primary">FLAP</span>
         </h1>
         <SupabaseAuth 
           supabaseClient={supabase}
@@ -44,7 +39,7 @@ const Auth = () => {
           providers={["google", "facebook"]}
           redirectTo={window.location.origin}
         />
-      </motion.div>
+      </div>
     </div>
   );
 };
