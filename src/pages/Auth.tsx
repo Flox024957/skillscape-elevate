@@ -17,7 +17,7 @@ const Auth = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  const redirectURL = window.location.origin + '/auth';
+  const redirectURL = `${window.location.origin}/dashboard`;
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
@@ -43,7 +43,9 @@ const Auth = () => {
                 }
               }
             }}
+            providers={["github"]}
             redirectTo={redirectURL}
+            onlyThirdPartyProviders={true}
           />
         </div>
       </div>
