@@ -14,7 +14,7 @@ export interface Skill {
 
 export interface UserSkill {
   skill_id: string;
-  selected_sections: string[] | null;
+  sections_selectionnees: string[] | null;
   skills: Skill;
   is_mastered?: boolean;
 }
