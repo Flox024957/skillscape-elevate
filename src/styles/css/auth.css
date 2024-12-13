@@ -37,18 +37,9 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    rgba(138, 43, 226, 0.3) 60deg,
-    rgba(138, 43, 226, 0.6) 120deg,
-    rgba(138, 43, 226, 0.8) 180deg,
-    rgba(138, 43, 226, 0.6) 240deg,
-    rgba(138, 43, 226, 0.3) 300deg,
-    transparent 360deg
-  );
+  background: rgba(138, 43, 226, 0.6);
   border-radius: 16px;
-  animation: rotateNeon 8s linear infinite; /* Rotation ralentie à 8 secondes */
+  animation: rotateNeon 8s linear infinite;
   mask: 
     linear-gradient(#fff 0 0) content-box, 
     linear-gradient(#fff 0 0);
