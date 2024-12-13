@@ -23,9 +23,17 @@ const SkillDetailPage = () => {
         throw new Error('Skill ID is required');
       }
       console.log('Fetching skill with ID:', id);
+      
       const { data, error } = await supabase
         .from('skills')
-        .select('*, categories(*)')
+        .select(`
+          *,
+          categories (
+            id,
+            name,
+            description
+          )
+        `)
         .eq('id', id)
         .single();
 

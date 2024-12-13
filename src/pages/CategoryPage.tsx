@@ -125,7 +125,7 @@ const CategoryPage = () => {
             <p className="text-muted-foreground mb-8">{category.description}</p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {category.skills.map((skill) => (
+              {category.skills?.map((skill) => (
                 <Card 
                   key={skill.id} 
                   className="p-4 hover:border-primary/50 transition-colors cursor-pointer group relative"
