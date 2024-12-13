@@ -1,0 +1,15 @@
+@media (max-width: 768px) {
+  .glass-panel {
+    @apply p-4;
+  }
+  
+  .futuristic-button {
+    @apply px-4 py-2 text-sm;
+  }
+}
+
+@media (max-width: 640px) {
+  .bg-futuristic-grid {
+    @apply bg-[size:30px_30px];
+  }
+}
