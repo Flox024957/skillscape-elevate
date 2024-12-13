@@ -20,16 +20,14 @@ export const useSkillQuery = (id: string | undefined) => {
         throw new Error('Invalid skill ID');
       }
 
-      console.log('Fetching skill with ID:', id);
-
       const { data: skillData, error: skillError } = await supabase
         .from('skills')
         .select(`
           *,
-          categories:categories(*)
+          categories (*)
         `)
         .eq('id', id)
-        .single();
+        .maybeSingle();
 
       if (skillError) {
         console.error('Error fetching skill:', skillError);
@@ -41,10 +39,10 @@ export const useSkillQuery = (id: string | undefined) => {
         throw new Error('Skill not found');
       }
 
-      console.log('Skill data:', skillData);
       return skillData as Skill;
     },
     enabled: Boolean(id) && isValidUUID(id),
-    retry: 1,
+    retry: false, // Disable retries for 404s
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   });
 };
