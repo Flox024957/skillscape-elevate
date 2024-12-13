@@ -68,7 +68,7 @@ export default {
       },
       keyframes: {
         "neon-border": {
-          "0%": {
+          "0%, 100%": {
             "box-shadow": "0 0 5px theme('colors.neon.purple'), 0 0 10px theme('colors.neon.purple')",
             "border-color": "theme('colors.neon.purple')"
           },
@@ -83,10 +83,6 @@ export default {
           "75%": {
             "box-shadow": "0 0 5px theme('colors.neon.blue'), 0 0 10px theme('colors.neon.blue')",
             "border-color": "theme('colors.neon.blue')"
-          },
-          "100%": {
-            "box-shadow": "0 0 5px theme('colors.neon.purple'), 0 0 10px theme('colors.neon.purple')",
-            "border-color": "theme('colors.neon.purple')"
           }
         },
         gradient: {
@@ -100,8 +96,8 @@ export default {
         },
       },
       animation: {
-        "neon-pulse": "neon-border 6s linear infinite",
-        "snake-border": "neon-border 6s linear infinite",
+        "neon-pulse": "neon-border 12s linear infinite",
+        "snake-border": "neon-border 12s linear infinite",
         "fade-in": "fade-in 0.3s ease-out",
       },
       backgroundImage: {

@@ -29,7 +29,7 @@
 
 @layer utilities {
   .glass-panel {
-    @apply bg-futuristic-gray/30 backdrop-blur-md rounded-lg border-2 border-transparent transition-all duration-300;
+    @apply bg-futuristic-gray/30 backdrop-blur-md rounded-lg border-2 border-transparent transition-all duration-1000;
     position: relative;
   }
 
@@ -45,6 +45,8 @@
 
   .futuristic-text {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-futuristic-blue to-futuristic-violet;
+    background-size: 200% 200%;
+    animation: gradient 12s ease infinite;
   }
 
   .hover-lift {
@@ -71,8 +73,10 @@
 .futuristic-button {
   @apply bg-gradient-to-r from-futuristic-blue to-futuristic-violet 
          hover:opacity-90 text-white px-6 py-3 rounded-lg
-         transition-all duration-300 shadow-[0_0_20px_rgba(0,163,255,0.5)]
+         transition-all duration-1000 shadow-[0_0_20px_rgba(0,163,255,0.5)]
          disabled:opacity-50 disabled:cursor-not-allowed;
+  background-size: 200% 200%;
+  animation: gradient 12s ease infinite;
 }
 
 .futuristic-input {
@@ -127,5 +131,17 @@
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }
