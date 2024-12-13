@@ -1,11 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, ChevronDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { useState } from "react";
 
 const SkillsTab = () => {
   const { toast } = useToast();
+  const [openSections, setOpenSections] = useState<string[]>([]);
+  
   const { data: userSkills, refetch } = useQuery({
     queryKey: ['userSkills'],
     queryFn: async () => {
@@ -62,35 +70,83 @@ const SkillsTab = () => {
     }
   };
 
+  const toggleSection = (sectionId: string) => {
+    setOpenSections(prev => 
+      prev.includes(sectionId)
+        ? prev.filter(id => id !== sectionId)
+        : [...prev, sectionId]
+    );
+  };
+
+  const renderSkillSection = (title: string, content: string | null) => {
+    if (!content) return null;
+    
+    return (
+      <div className="bg-card/50 p-4 rounded-lg border border-border mb-2">
+        <h4 className="font-medium text-sm text-muted-foreground mb-1">{title}</h4>
+        <p className="text-sm">{content}</p>
+      </div>
+    );
+  };
+
+  const renderExamples = (examples: any[] | null) => {
+    if (!examples || examples.length === 0) return null;
+    
+    return (
+      <div className="bg-card/50 p-4 rounded-lg border border-border mb-2">
+        <h4 className="font-medium text-sm text-muted-foreground mb-2">Examples</h4>
+        <div className="space-y-2">
+          {examples.map((example, index) => (
+            <p key={index} className="text-sm pl-4 border-l-2 border-border">
+              {String(example)}
+            </p>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="space-y-4">
       {userSkills?.map((userSkill) => (
-        <div
+        <Collapsible
           key={userSkill.skill_id}
-          className="bg-card p-4 rounded-lg border border-border"
+          open={openSections.includes(userSkill.skill_id)}
+          onOpenChange={() => toggleSection(userSkill.skill_id)}
+          className="bg-card rounded-lg border border-border overflow-hidden"
         >
-          <div className="flex justify-between items-start">
-            <div className="flex-1">
+          <CollapsibleTrigger className="flex justify-between items-center w-full p-4 hover:bg-accent/50">
+            <div>
               <h3 className="text-lg font-semibold">
                 {userSkill.skills.title}
               </h3>
-              <p className="text-sm text-muted-foreground mb-2">
+              <p className="text-sm text-muted-foreground">
                 {userSkill.skills.summary}
               </p>
-              <div className="text-sm">
-                Action: {userSkill.skills.concrete_action}
-              </div>
             </div>
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={() => handleAddSkill(userSkill.skill_id)}
-              className="hover:bg-accent"
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
+            <div className="flex items-center gap-2">
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleAddSkill(userSkill.skill_id);
+                }}
+                className="hover:bg-accent"
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+              <ChevronDown className="h-4 w-4 transition-transform duration-200" />
+            </div>
+          </CollapsibleTrigger>
+          
+          <CollapsibleContent className="p-4 pt-0 space-y-4">
+            {renderSkillSection("Summary", userSkill.skills.summary)}
+            {renderSkillSection("Explanation", userSkill.skills.explanation)}
+            {renderSkillSection("Concrete Action", userSkill.skills.concrete_action)}
+            {renderExamples(userSkill.skills.examples)}
+          </CollapsibleContent>
+        </Collapsible>
       ))}
     </div>
   );
