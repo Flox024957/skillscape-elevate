@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,7 +12,7 @@ const NotesTab = () => {
   const [note, setNote] = useState("");
   const { toast } = useToast();
 
-  const { data: userNotes } = useQuery({
+  const { data: userNotes, refetch } = useQuery({
     queryKey: ['userNotes'],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -29,7 +30,14 @@ const NotesTab = () => {
 
   const saveNote = async () => {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user || !note) return;
+    if (!user || !note) {
+      toast({
+        title: "Error",
+        description: "Please enter a note",
+        variant: "destructive",
+      });
+      return;
+    }
 
     const { error } = await supabase
       .from('user_notes')
@@ -50,6 +58,7 @@ const NotesTab = () => {
         description: "Note saved successfully",
       });
       setNote("");
+      refetch();
     }
   };
 
@@ -70,10 +79,13 @@ const NotesTab = () => {
           placeholder="Write a note..."
           className="min-h-[200px]"
         />
-        <Button onClick={saveNote}>Save Note</Button>
+        <Button onClick={saveNote} className="w-full">
+          <Plus className="h-4 w-4 mr-2" />
+          Add Note
+        </Button>
         <div className="space-y-2">
           {userNotes?.map((note) => (
-            <div key={note.id} className="text-sm text-muted-foreground">
+            <div key={note.id} className="text-sm text-muted-foreground p-2 bg-muted rounded-md">
               {note.content}
             </div>
           ))}
