@@ -1,172 +1,21 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Database } from "@/integrations/supabase/types";
-import { SkillSection } from "@/components/skill-detail/SkillSection";
-import { ExamplesSection } from "@/components/skill-detail/ExamplesSection";
 import { Toaster } from "@/components/ui/sonner";
 import { Skeleton } from "@/components/ui/skeleton";
-
-type Skill = Database['public']['Tables']['skills']['Row'] & {
-  categories: Database['public']['Tables']['categories']['Row'] | null;
-};
+import { useSkillQuery } from "@/hooks/useSkillQuery";
+import { SkillDetailContent } from "@/components/skill-detail/SkillDetailContent";
 
 const SkillDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { data: skill, isLoading, error } = useSkillQuery(id);
 
-  const { data: skill, isLoading, error } = useQuery({
-    queryKey: ['skill', id],
-    queryFn: async () => {
-      console.log('Attempting to fetch skill with ID:', id);
-      
-      if (!id) {
-        console.error('No skill ID provided');
-        throw new Error('No skill ID provided');
-      }
-
-      // First, try to fetch directly from skills table
-      const { data: skillData, error: skillError } = await supabase
-        .from('skills')
-        .select('*')
-        .eq('id', id)
-        .single();
-
-      if (skillError) {
-        console.error('Error fetching skill:', skillError);
-        throw skillError;
-      }
-
-      if (!skillData) {
-        console.error('No skill data found for ID:', id);
-        throw new Error('Skill not found');
-      }
-
-      // Then fetch the category data separately
-      const { data: categoryData, error: categoryError } = await supabase
-        .from('categories')
-        .select('*')
-        .eq('id', skillData.category_id)
-        .single();
-
-      if (categoryError) {
-        console.error('Error fetching category:', categoryError);
-      }
-
-      console.log('Skill data received:', skillData);
-      console.log('Category data received:', categoryData);
-
-      return {
-        ...skillData,
-        categories: categoryData || null
-      } as Skill;
-    },
-    retry: 1,
-    staleTime: 1000 * 60 * 5 // Cache for 5 minutes
-  });
-
-  if (error) {
-    console.error('Query error:', error);
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="container px-4 py-8">
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Erreur lors du chargement de la compétence</h2>
-            <Button onClick={() => navigate(-1)}>Retour</Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="container px-4 py-8">
-          <div className="space-y-6">
-            <Skeleton className="h-8 w-1/3" />
-            <Skeleton className="h-32 w-full" />
-            <Skeleton className="h-32 w-full" />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!skill) {
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="container px-4 py-8">
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Compétence non trouvée</h2>
-            <Button onClick={() => navigate(-1)}>Retour</Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const examples = Array.isArray(skill.examples) ? skill.examples : [];
-
-  return (
-    <div className="min-h-screen bg-background">
-      <Toaster />
-      <div className="container px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <Button
-              variant="ghost"
-              onClick={() => navigate(`/category/${skill.categories?.id}`)}
-              className="mb-4"
-            >
-              ← Retour à {skill.categories?.name}
-            </Button>
-            <h1 className="text-3xl font-bold">{skill.title}</h1>
-          </div>
-          <Button onClick={() => navigate("/dashboard")}>
-            Tableau de bord
-          </Button>
-        </div>
-
-        <div className="space-y-8">
-          <SkillSection
-            title="Résumé"
-            content={skill.summary}
-            type="Summary"
-            onAdd={addToDashboard}
-          />
-
-          <SkillSection
-            title="Explication"
-            content={skill.explanation}
-            type="Explanation"
-            onAdd={addToDashboard}
-          />
-
-          <SkillSection
-            title="Action Concrète"
-            content={skill.concrete_action}
-            type="Action"
-            onAdd={addToDashboard}
-          />
-
-          {examples.length > 0 && (
-            <ExamplesSection
-              examples={examples}
-              onAdd={addToDashboard}
-            />
-          )}
-        </div>
-      </div>
-    </div>
-  );
-
-  async function addToDashboard(type: string, content: string) {
+  const handleAddToDashboard = async (type: string, content: string) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+      if (!user || !id) {
         toast.error("Vous devez être connecté pour ajouter une compétence");
         return;
       }
@@ -219,7 +68,59 @@ const SkillDetailPage = () => {
       console.error('Error adding to dashboard:', error);
       toast.error("Une erreur est survenue");
     }
+  };
+
+  if (error) {
+    console.error('Query error:', error);
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container px-4 py-8">
+          <div>
+            <h2 className="text-xl font-semibold mb-4">Erreur lors du chargement de la compétence</h2>
+            <Button onClick={() => navigate(-1)}>Retour</Button>
+          </div>
+        </div>
+      </div>
+    );
   }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container px-4 py-8">
+          <div className="space-y-6">
+            <Skeleton className="h-8 w-1/3" />
+            <Skeleton className="h-32 w-full" />
+            <Skeleton className="h-32 w-full" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!skill) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container px-4 py-8">
+          <div>
+            <h2 className="text-xl font-semibold mb-4">Compétence non trouvée</h2>
+            <Button onClick={() => navigate(-1)}>Retour</Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Toaster />
+      <SkillDetailContent
+        skill={skill}
+        onNavigateBack={() => navigate(`/category/${skill.categories?.id}`)}
+        onAddToDashboard={handleAddToDashboard}
+      />
+    </div>
+  );
 };
 
 export default SkillDetailPage;
