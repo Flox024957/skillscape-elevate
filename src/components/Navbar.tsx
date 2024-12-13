@@ -1,4 +1,4 @@
-import { Home, LayoutGrid, Headphones, Trophy } from "lucide-react";
+import { Home, LayoutGrid, Headphones, Trophy, Users } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ const Navbar = () => {
     { icon: LayoutGrid, label: "Dashboard", path: "/dashboard" },
     { icon: Headphones, label: "Audio", path: "/audio" },
     { icon: Trophy, label: "Défis", path: "/challenges" },
+    { icon: Users, label: "Social", path: "/social" },
   ];
 
   return (
