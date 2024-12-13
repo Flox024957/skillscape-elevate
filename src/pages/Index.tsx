@@ -37,15 +37,34 @@ const Index = () => {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-background to-background/95">
-      {/* Enhanced neon background effects */}
+      {/* Enhanced animated background effects */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-[#0EA5E9]/30 rounded-full filter blur-[128px] animate-pulse"></div>
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#F97316]/30 rounded-full filter blur-[128px] animate-pulse delay-700"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#8B5CF6]/30 rounded-full filter blur-[128px] animate-pulse delay-1000"></div>
+        {/* Primary orbs with enhanced animations */}
+        <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-[#0EA5E9]/20 rounded-full 
+                      filter blur-[150px] animate-float-slow transform-gpu"></div>
+        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-[#F97316]/20 rounded-full 
+                      filter blur-[150px] animate-float-medium transform-gpu delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+                      w-[800px] h-[800px] bg-[#8B5CF6]/20 rounded-full 
+                      filter blur-[180px] animate-float-fast transform-gpu delay-500"></div>
+        
+        {/* Secondary orbs for depth */}
+        <div className="absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-[#0EA5E9]/15 rounded-full 
+                      filter blur-[120px] animate-pulse-slow transform-gpu delay-700"></div>
+        <div className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] bg-[#F97316]/15 rounded-full 
+                      filter blur-[120px] animate-pulse-medium transform-gpu delay-1500"></div>
+        
+        {/* Accent orbs */}
+        <div className="absolute top-1/3 left-2/3 w-[300px] h-[300px] bg-[#8B5CF6]/10 rounded-full 
+                      filter blur-[100px] animate-pulse-fast transform-gpu delay-300"></div>
+        <div className="absolute bottom-1/3 right-2/3 w-[300px] h-[300px] bg-[#0EA5E9]/10 rounded-full 
+                      filter blur-[100px] animate-float-slow transform-gpu delay-1200"></div>
       </div>
 
       {/* Enhanced neon border effect */}
-      <div className="absolute inset-0 border border-[#8B5CF6]/30 shadow-[inset_0_0_50px_rgba(139,92,246,0.5)] pointer-events-none"></div>
+      <div className="absolute inset-0 border border-[#8B5CF6]/30 
+                    shadow-[inset_0_0_100px_rgba(139,92,246,0.5),0_0_50px_rgba(139,92,246,0.3)] 
+                    pointer-events-none"></div>
 
       <div className="container relative z-10 px-4 py-12 mx-auto">
         <motion.div 
