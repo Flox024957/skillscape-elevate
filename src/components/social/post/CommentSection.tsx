@@ -53,8 +53,8 @@ export const CommentSection = ({ comments, onAddComment }: CommentSectionProps) 
             </Avatar>
             <div className="flex-1">
               <div className="bg-accent rounded-lg p-3">
-                <p className="font-semibold text-sm">{comment.profiles?.pseudo}</p>
-                <p className="text-sm">{comment.content}</p>
+                <p className="font-semibold text-sm text-black">{comment.profiles?.pseudo}</p>
+                <p className="text-sm text-black">{comment.content}</p>
               </div>
               <p className="text-xs text-muted-foreground mt-1">
                 {formatDistanceToNow(new Date(comment.created_at), {
