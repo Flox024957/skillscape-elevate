@@ -14,8 +14,8 @@ const MainPage = () => {
           *,
           skills (
             id,
-            title,
-            summary
+            titre,
+            resume
           )
         `)
         .order('name');

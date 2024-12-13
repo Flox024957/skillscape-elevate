@@ -8,11 +8,11 @@ import { ArrowLeft } from "lucide-react";
 
 interface Skill {
   id: string;
-  title: string;
-  summary?: string;
-  explanation?: string;
-  examples?: any[];
-  concrete_action?: string;
+  titre: string;
+  resume?: string;
+  explication?: string;
+  exemples?: any[];
+  action_concrete?: string;
 }
 
 interface Category {
@@ -29,8 +29,6 @@ const CategoryPage = () => {
   const { data: category, isLoading, error } = useQuery({
     queryKey: ['category', id],
     queryFn: async () => {
-      console.log('Fetching category with ID:', id);
-      
       if (!id) {
         throw new Error('Category ID is undefined');
       }
@@ -41,11 +39,11 @@ const CategoryPage = () => {
           *,
           skills (
             id,
-            title,
-            summary,
-            explanation,
-            examples,
-            concrete_action
+            titre,
+            resume,
+            explication,
+            exemples,
+            action_concrete
           )
         `)
         .eq('id', id)
@@ -63,7 +61,6 @@ const CategoryPage = () => {
         throw new Error('Category not found');
       }
 
-      console.log('Category data:', categoryData);
       return categoryData as Category;
     },
   });
@@ -136,10 +133,10 @@ const CategoryPage = () => {
                             transition-all duration-300 h-full">
                 <h3 className="text-xl font-semibold mb-2 group-hover:text-primary 
                              transition-colors">
-                  {skill.title}
+                  {skill.titre}
                 </h3>
-                {skill.summary && (
-                  <p className="text-muted-foreground">{skill.summary}</p>
+                {skill.resume && (
+                  <p className="text-muted-foreground">{skill.resume}</p>
                 )}
               </div>
             </motion.div>

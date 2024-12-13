@@ -10,19 +10,19 @@ interface UserSkillsProps {
 
 interface UserSkill {
   skill_id: string;
-  selected_sections: string[] | null;
+  sections_selectionnees: string[] | null;
   skills: {
     id: string;
-    title: string;
+    titre: string;
   };
 }
 
 interface MasteredSkill {
   skill_id: string;
-  mastered_at: string;
+  maitrisee_le: string;
   skills: {
     id: string;
-    title: string;
+    titre: string;
   };
 }
 
@@ -34,17 +34,17 @@ export const UserSkills = ({ userId }: UserSkillsProps) => {
         .from('user_skills')
         .select(`
           skill_id,
-          selected_sections,
+          sections_selectionnees,
           skills (
             id,
-            title
+            titre
           )
         `)
         .eq('user_id', userId)
-        .eq('is_mastered', false);
+        .eq('est_maitrisee', false);
       
       if (error) throw error;
-      return (data || []) as UserSkill[];
+      return data as UserSkill[];
     },
   });
 
@@ -55,17 +55,17 @@ export const UserSkills = ({ userId }: UserSkillsProps) => {
         .from('user_skills')
         .select(`
           skill_id,
-          mastered_at,
+          maitrisee_le,
           skills (
             id,
-            title
+            titre
           )
         `)
         .eq('user_id', userId)
-        .eq('is_mastered', true);
+        .eq('est_maitrisee', true);
       
       if (error) throw error;
-      return (data || []) as MasteredSkill[];
+      return data as MasteredSkill[];
     },
   });
 
@@ -83,7 +83,7 @@ export const UserSkills = ({ userId }: UserSkillsProps) => {
             <div className="flex flex-wrap gap-2">
               {userSkills.map((userSkill) => (
                 <Badge key={userSkill.skill_id} variant="secondary">
-                  {userSkill.skills.title}
+                  {userSkill.skills.titre}
                 </Badge>
               ))}
             </div>
@@ -101,7 +101,7 @@ export const UserSkills = ({ userId }: UserSkillsProps) => {
                   variant="default"
                   className="bg-green-500/10 text-green-500 hover:bg-green-500/20"
                 >
-                  {masteredSkill.skills.title}
+                  {masteredSkill.skills.titre}
                 </Badge>
               ))}
             </div>

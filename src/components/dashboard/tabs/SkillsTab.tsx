@@ -3,6 +3,7 @@ import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrate
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { supabase } from "@/integrations/supabase/client";
 import { useUserSkills } from "@/hooks/useUserSkills";
 import SortableSkillItem from "./skills/SortableSkillItem";
 import SkillHeader from "./skills/SkillHeader";
