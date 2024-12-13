@@ -4,14 +4,19 @@ import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
-const getCategoryImage = (index: number) => {
-  const images = [
-    'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80', // Collaboration - people working together
-    'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80', // Infrastructure - tech/servers
-    'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80', // Workspace - modern office
-    'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80'  // Data - abstract visualization
-  ];
-  return images[index % images.length];
+const getCategoryImage = (categoryName: string) => {
+  const images = {
+    'Négociation': 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80', // People in discussion
+    'Motivation': 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&w=800&q=80', // Person achieving goals
+    'Finance': 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80', // Financial growth
+    'Relation': 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80', // Team collaboration
+    'Gestion du stress': 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80', // Peaceful workspace
+    'Évolution': 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=800&q=80', // Growth concept
+    'Entreprenariat': 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=800&q=80', // Business success
+    'Bien-être': 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?auto=format&fit=crop&w=800&q=80', // Wellness and balance
+    'Confiance en soi': 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=800&q=80', // Empowerment
+  };
+  return images[categoryName as keyof typeof images] || images['Évolution'];
 };
 
 const MainPage = () => {
@@ -91,7 +96,7 @@ const MainPage = () => {
               <div className="relative rounded-xl overflow-hidden backdrop-blur-lg border border-primary/20 hover:border-primary/40 transition-all duration-300 hover:scale-105 bg-background/40">
                 <div className="aspect-square relative">
                   <motion.img
-                    src={getCategoryImage(index)}
+                    src={getCategoryImage(category.name)}
                     alt={category.name}
                     className="w-full h-full object-cover"
                     whileHover={{ scale: 1.1 }}
