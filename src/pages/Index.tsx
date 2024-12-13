@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { motion } from "framer-motion";
 
 const categories = [
   { id: 1, name: "Mindfulness", image: "/placeholder.svg" },
@@ -34,65 +35,60 @@ const Index = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  const handleCategoryClick = (categoryId: number) => {
-    navigate(`/category/${categoryId}`);
-  };
-
   return (
-    <div className="min-h-screen bg-futuristic-black">
-      <div className="container px-4 py-8">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4">
-            Welcome to{" "}
-            <span className="relative inline-block">
-              FLAP
-              <span className="absolute inset-0 blur-[40px] bg-gradient-to-r from-orange-500 via-purple-500 to-orange-500"></span>
-              <span className="absolute inset-0 blur-[20px] bg-gradient-to-r from-orange-500 via-purple-500 to-orange-500"></span>
-              <span className="relative z-10 bg-gradient-to-r from-orange-500 via-purple-500 to-orange-500 bg-clip-text text-transparent animate-pulse">
-                FLAP
-              </span>
-            </span>
+    <div className="min-h-screen bg-gradient-to-b from-background to-background/95">
+      <div className="container px-4 py-12 mx-auto">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-16"
+        >
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-500 to-primary">
+            Bienvenue sur FLAP
           </h1>
-          <p className="text-gray-400 max-w-2xl mx-auto mb-8 text-lg">
-            Explore skills, set goals, and track your personal development journey
+          <p className="text-muted-foreground max-w-2xl mx-auto mb-8 text-lg">
+            Explorez vos compétences, fixez des objectifs et suivez votre développement personnel
           </p>
-          <div className="flex flex-col gap-6 items-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button
               onClick={() => navigate("/auth")}
-              className="bg-black/75 hover:bg-black/85 text-white px-8 py-6 text-lg rounded-lg backdrop-blur-sm transition-colors border border-orange-500/50 shadow-[0_0_15px_rgba(249,115,22,0.3)] hover:shadow-[0_0_20px_rgba(249,115,22,0.4)]"
+              className="w-full sm:w-auto px-8 py-6 text-lg rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300"
             >
-              Get Started
+              Commencer
             </Button>
             
             <Button
               onClick={() => navigate("/dashboard")}
-              className="bg-black/75 hover:bg-black/85 text-white border border-purple-500/50 px-12 py-6 rounded-xl backdrop-blur-sm transition-colors shadow-[0_0_15px_rgba(168,85,247,0.3)] hover:shadow-[0_0_20px_rgba(168,85,247,0.4)]"
+              variant="outline"
+              className="w-full sm:w-auto px-8 py-6 text-lg rounded-lg border-primary/50 hover:bg-primary/10 shadow-lg hover:shadow-xl transition-all duration-300"
             >
-              <span className="text-xl font-bold">
-                Tableau de bord
-              </span>
+              Tableau de bord
             </Button>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {categories.map((category) => (
-            <div
+            <motion.div
               key={category.id}
-              onClick={() => handleCategoryClick(category.id)}
-              className="cursor-pointer bg-futuristic-gray/30 rounded-lg p-6 border border-futuristic-blue/50"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3, delay: category.id * 0.1 }}
+              onClick={() => navigate(`/category/${category.id}`)}
+              className="group cursor-pointer bg-card/50 backdrop-blur-sm rounded-xl p-6 border border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg"
             >
-              <div className="aspect-square relative mb-4 overflow-hidden rounded-lg">
+              <div className="aspect-square relative mb-4 overflow-hidden rounded-lg bg-gradient-to-br from-primary/20 to-primary/5">
                 <img
                   src={category.image}
                   alt={category.name}
-                  className="object-cover w-full h-full"
+                  className="object-cover w-full h-full opacity-75 group-hover:opacity-100 transition-opacity duration-300"
                 />
               </div>
-              <h3 className="text-xl font-semibold text-white">
+              <h3 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors duration-300">
                 {category.name}
               </h3>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
