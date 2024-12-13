@@ -4,15 +4,12 @@ import { Json } from "@/integrations/supabase/types";
 
 interface ExamplesSectionProps {
   skillId: string;
-  examples: Json;
-  onAdd: (skillId: string, title: string, content: Json) => void;
+  examples: Json[] | null;
+  onAdd: (skillId: string, title: string, content: Json[] | null) => void;
 }
 
 const ExamplesSection = ({ skillId, examples, onAdd }: ExamplesSectionProps) => {
-  // Convert examples to array if it's not already
-  const examplesArray = Array.isArray(examples) ? examples : [examples];
-  
-  if (!examples || examplesArray.length === 0) return null;
+  if (!examples || examples.length === 0) return null;
 
   return (
     <div className="bg-card p-6 rounded-lg border border-border">
@@ -20,7 +17,7 @@ const ExamplesSection = ({ skillId, examples, onAdd }: ExamplesSectionProps) => 
         <div className="flex-1">
           <h3 className="text-xl font-semibold mb-4">Exemples</h3>
           <ul className="list-disc pl-4 space-y-2">
-            {examplesArray.map((example, index) => (
+            {examples.map((example, index) => (
               <li key={index} className="text-muted-foreground">
                 {String(example)}
               </li>
