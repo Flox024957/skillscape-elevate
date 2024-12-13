@@ -63,7 +63,7 @@ export const ChatSection = ({ userId }: ChatSectionProps) => {
           content,
           read,
           created_at,
-          profiles:sender_id (
+          profiles!messages_sender_id_fkey (
             pseudo,
             image_profile
           )

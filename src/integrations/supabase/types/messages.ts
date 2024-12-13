@@ -5,7 +5,7 @@ export type Message = {
   content: string;
   read: boolean | null;
   created_at: string;
-  profiles: {
+  profiles?: {
     pseudo: string | null;
     image_profile: string | null;
   } | null;
@@ -17,6 +17,5 @@ export type ChatConversation = {
     pseudo: string | null;
     image_profile: string | null;
   };
-  lastMessage?: Message;
   unreadCount: number;
 };

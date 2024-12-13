@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Message } from '@/integrations/supabase/types/messages';
 import { MessageList } from './MessageList';
 import { MessageInput } from './MessageInput';
@@ -17,6 +18,15 @@ export const ChatContainer = ({
   friendName,
   onSendMessage
 }: ChatContainerProps) => {
+  const [message, setMessage] = useState('');
+
+  const handleSendMessage = () => {
+    if (message.trim()) {
+      onSendMessage(message);
+      setMessage('');
+    }
+  };
+
   return (
     <div className="flex-1 glass-panel">
       {selectedFriend ? (
@@ -26,9 +36,9 @@ export const ChatContainer = ({
           </div>
           <MessageList messages={messages} currentUserId={currentUserId} />
           <MessageInput 
-            message=""
-            onChange={(message) => {}}
-            onSend={onSendMessage}
+            message={message}
+            onChange={setMessage}
+            onSend={handleSendMessage}
           />
         </>
       ) : (
