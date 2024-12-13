@@ -44,7 +44,7 @@ export const UserSkills = ({ userId }: UserSkillsProps) => {
         .eq('is_mastered', false);
       
       if (error) throw error;
-      return data || [];
+      return (data || []) as UserSkill[];
     },
   });
 
@@ -65,7 +65,7 @@ export const UserSkills = ({ userId }: UserSkillsProps) => {
         .eq('is_mastered', true);
       
       if (error) throw error;
-      return data || [];
+      return (data || []) as MasteredSkill[];
     },
   });
 

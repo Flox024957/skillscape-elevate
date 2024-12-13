@@ -75,15 +75,15 @@ const SkillsTab = () => {
       
       if (error) throw error;
       
-      return (data || []).map(skill => ({
-        skill_id: skill.skill_id,
-        selected_sections: skill.selected_sections,
-        is_mastered: skill.is_mastered,
+      return (data || []).map(item => ({
+        skill_id: item.skill_id,
+        selected_sections: item.selected_sections,
+        is_mastered: item.is_mastered,
         skills: {
-          ...skill.skills,
-          examples: Array.isArray(skill.skills?.examples) ? skill.skills.examples : []
+          ...item.skills,
+          examples: Array.isArray(item.skills?.examples) ? item.skills.examples : []
         }
-      }));
+      })) as UserSkill[];
     },
   });
 
