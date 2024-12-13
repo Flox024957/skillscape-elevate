@@ -23,8 +23,8 @@ export const animations = {
     },
   },
   animation: {
-    "neon-pulse": "neon-border 12s ease-in-out infinite",
-    "snake-border": "neon-border 12s ease-in-out infinite",
+    "neon-pulse": "neon-border 900s ease-in-out infinite",
+    "snake-border": "neon-border 900s ease-in-out infinite",
     "fade-in": "fade-in 0.3s ease-out",
   },
 };
