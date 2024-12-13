@@ -14,8 +14,8 @@ export type Message = {
 export type ChatConversation = {
   friend: {
     id: string;
-    pseudo: string;
-    image_profile: string;
+    pseudo: string | null;
+    image_profile: string | null;
   };
   lastMessage?: Message;
   unreadCount: number;
