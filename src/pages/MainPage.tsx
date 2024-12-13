@@ -11,9 +11,13 @@ const MainPage = () => {
       const { data: categoriesData, error: categoriesError } = await supabase
         .from('categories')
         .select(`
-          *,
+          id,
+          name,
+          description,
+          created_at,
           skills (
             id,
+            category_id,
             titre,
             resume,
             explication,
