@@ -9,37 +9,14 @@ const Auth = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN") {
+      if (session) {
         navigate("/dashboard");
-      } else if (event === "USER_UPDATED") {
-        console.log("User updated:", session);
-      } else if (event === "SIGNED_OUT") {
-        console.log("Signed out");
-      } else if (event === "PASSWORD_RECOVERY") {
-        console.log("Password recovery requested");
-      } else if (event === "ERROR") {
-        // Handle any auth errors
-        toast.error("An authentication error occurred. Please try again.");
       }
     });
 
-    // Listen specifically for auth errors
-    window.addEventListener('supabase.auth.error', (e: any) => {
-      if (e.detail?.error?.message?.includes('already registered')) {
-        toast.error("This email is already registered. Please sign in instead.");
-      } else {
-        toast.error("An error occurred during authentication.");
-      }
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, [navigate]);
-
-  const redirectURL = window.location.origin + '/auth';
 
   return (
     <div className="min-h-screen bg-futuristic-black flex items-center justify-center p-4">
@@ -90,14 +67,6 @@ const Auth = () => {
                 label: 'auth-label block text-sm font-medium text-white/80 mb-2',
                 loader: 'auth-loader border-t-2 border-futuristic-blue',
               },
-            }}
-            redirectTo={redirectURL}
-            onError={(error) => {
-              if (error.message.includes('already registered')) {
-                toast.error("This email is already registered. Please sign in instead.");
-              } else {
-                toast.error(error.message);
-              }
             }}
           />
         </div>
