@@ -3,7 +3,6 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -21,7 +20,7 @@ const Auth = () => {
   return (
     <div className="min-h-screen bg-futuristic-black flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="glass-panel p-8 animate-neon-pulse">
+        <div className="glass-panel p-8 animate-neon-pulse transition-all duration-1000">
           <h1 className="text-4xl font-semibold text-center mb-8 futuristic-text animate-fade-in">
             Welcome to FLAP
           </h1>
