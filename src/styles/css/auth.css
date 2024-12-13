@@ -43,16 +43,42 @@
   --neon-intensity: 15px;
   --blur-radius: 30px;
   --color-mix: 50%;
+  --pulse-speed: 1000ms;
+  --spread-radius: 20px;
+  --text-glow: 10px;
+  --border-width: 2px;
+  --color-saturation: 100%;
+  --color-hue: 180deg;
+  --animation-phase: 0deg;
 }
 
 .glass-panel {
+  border-width: var(--border-width);
+  animation: neonPulse var(--pulse-speed) infinite;
   box-shadow: 
-    0 0 var(--neon-intensity) rgba(0, 229, 255, calc(1 - var(--color-mix) / 100)),
-    0 0 var(--blur-radius) rgba(255, 153, 0, calc(var(--color-mix) / 100));
+    0 0 var(--neon-intensity) hsla(var(--color-hue), var(--color-saturation), 50%, calc(1 - var(--color-mix) / 100)),
+    0 0 var(--blur-radius) hsla(calc(var(--color-hue) + var(--animation-phase)), var(--color-saturation), 50%, calc(var(--color-mix) / 100)),
+    0 0 var(--spread-radius) hsla(calc(var(--color-hue) - var(--animation-phase)), var(--color-saturation), 50%, 0.3);
 }
 
 .glass-panel:hover {
   box-shadow: 
-    0 0 calc(var(--neon-intensity) * 1.5) rgba(0, 229, 255, calc(1 - var(--color-mix) / 100)),
-    0 0 calc(var(--blur-radius) * 1.5) rgba(255, 153, 0, calc(var(--color-mix) / 100));
+    0 0 calc(var(--neon-intensity) * 1.5) hsla(var(--color-hue), var(--color-saturation), 50%, calc(1 - var(--color-mix) / 100)),
+    0 0 calc(var(--blur-radius) * 1.5) hsla(calc(var(--color-hue) + var(--animation-phase)), var(--color-saturation), 50%, calc(var(--color-mix) / 100)),
+    0 0 calc(var(--spread-radius) * 1.5) hsla(calc(var(--color-hue) - var(--animation-phase)), var(--color-saturation), 50%, 0.3);
+}
+
+.futuristic-text {
+  text-shadow: 
+    0 0 var(--text-glow) hsla(var(--color-hue), var(--color-saturation), 50%, calc(1 - var(--color-mix) / 100)),
+    0 0 calc(var(--text-glow) * 2) hsla(calc(var(--color-hue) + var(--animation-phase)), var(--color-saturation), 50%, calc(var(--color-mix) / 100));
+}
+
+@keyframes neonPulse {
+  0%, 100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.2);
+  }
 }
