@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Plus } from "lucide-react";
+import { ArrowLeft, PlusCircle } from "lucide-react";
 
 interface Skill {
   id: string;
@@ -166,17 +166,18 @@ const CategoryPage = () => {
                                transition-colors flex-1">
                     {skill.titre}
                   </h3>
-                  <Button
-                    size="icon"
-                    variant="ghost"
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={(e) => {
                       e.stopPropagation();
                       handleAddSkill(skill.id, skill.titre);
                     }}
-                    className="shrink-0 hover:bg-primary/10 hover:text-primary"
+                    className="group relative flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-orange-500 p-[2px] transition-all duration-300 hover:shadow-[0_0_20px_rgba(139,92,246,0.5)]"
                   >
-                    <Plus className="h-4 w-4" />
-                  </Button>
+                    <div className="absolute inset-[1px] rounded-full bg-black/90 group-hover:bg-black/70 transition-colors" />
+                    <PlusCircle className="w-6 h-6 text-white relative z-10 group-hover:text-primary transition-colors" />
+                  </motion.button>
                 </div>
                 <div onClick={() => handleSkillClick(skill.id)}>
                   {skill.resume && (
