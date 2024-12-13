@@ -29,6 +29,19 @@ import SortableSkillItem from "./skills/SortableSkillItem";
 import SkillSection from "./skills/SkillSection";
 import ExamplesSection from "./skills/ExamplesSection";
 
+interface UserSkill {
+  skill_id: string;
+  selected_sections: string[] | null;
+  skills: {
+    id: string;
+    title: string;
+    summary: string | null;
+    explanation: string | null;
+    concrete_action: string | null;
+    examples: Json[] | null;
+  };
+}
+
 const SkillsTab = () => {
   const { toast } = useToast();
   const [openSections, setOpenSections] = useState<string[]>([]);
@@ -41,7 +54,7 @@ const SkillsTab = () => {
     })
   );
 
-  const { data: userSkills } = useQuery({
+  const { data: userSkills } = useQuery<UserSkill[]>({
     queryKey: ['userSkills'],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -108,7 +121,7 @@ const SkillsTab = () => {
       const oldIndex = userSkills?.findIndex(item => item.skill_id === active.id);
       const newIndex = userSkills?.findIndex(item => item.skill_id === over.id);
       
-      if (oldIndex !== undefined && newIndex !== undefined) {
+      if (oldIndex !== undefined && newIndex !== undefined && userSkills) {
         const newOrder = arrayMove(userSkills, oldIndex, newIndex);
         queryClient.setQueryData(['userSkills'], newOrder);
       }

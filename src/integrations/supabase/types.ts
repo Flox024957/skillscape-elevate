@@ -206,16 +206,19 @@ export type Database = {
       user_skills: {
         Row: {
           created_at: string
+          selected_sections: string[] | null
           skill_id: string
           user_id: string
         }
         Insert: {
           created_at?: string
+          selected_sections?: string[] | null
           skill_id: string
           user_id: string
         }
         Update: {
           created_at?: string
+          selected_sections?: string[] | null
           skill_id?: string
           user_id?: string
         }
