@@ -34,14 +34,14 @@ export const colors = {
   },
   futuristic: {
     blue: "#00A3FF",
-    violet: "#9D4EDD",
-    darkBlue: "#0B1026",
+    violet: "#8B5CF6",
+    darkBlue: "#1A1F2C",
     black: "#070B1A",
     gray: "#1A1F35",
   },
   neon: {
     blue: "#00E5FF",
-    purple: "#FF00FF",
+    purple: "#8B5CF6",
     orange: "#FF9900",
     pink: "#FF1493",
   },

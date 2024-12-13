@@ -4,10 +4,10 @@
 }
 
 .futuristic-button {
-  @apply bg-futuristic-blue/90 text-white px-6 py-3 rounded-lg relative;
+  @apply bg-neon-purple/90 text-white px-6 py-3 rounded-lg relative;
   box-shadow: 
-    0 0 20px rgba(0, 163, 255, 0.5),
-    0 0 40px rgba(0, 163, 255, 0.3),
+    0 0 20px rgba(139, 92, 246, 0.5),
+    0 0 40px rgba(139, 92, 246, 0.3),
     inset 0 0 15px rgba(255, 255, 255, 0.2);
   transform-style: preserve-3d;
   transform: perspective(1000px) translateZ(0);
@@ -19,38 +19,38 @@
 }
 
 .futuristic-input {
-  @apply bg-futuristic-gray/30 backdrop-blur-md border-2 border-futuristic-blue/20
-         focus:border-futuristic-blue/50 rounded-lg px-4 py-2 text-white;
+  @apply bg-futuristic-gray/30 backdrop-blur-md border border-neon-purple/20
+         focus:border-neon-purple/50 rounded-lg px-4 py-2 text-white;
   box-shadow: 
-    0 0 15px rgba(0, 163, 255, 0.2),
-    inset 0 0 10px rgba(0, 163, 255, 0.1);
+    0 0 15px rgba(139, 92, 246, 0.2),
+    inset 0 0 10px rgba(139, 92, 246, 0.1);
 }
 
 .glass-panel {
-  @apply bg-futuristic-gray/20 backdrop-blur-md rounded-lg border border-futuristic-blue/30;
+  @apply bg-futuristic-gray/20 backdrop-blur-md rounded-lg border border-neon-purple/30;
   box-shadow: 
-    0 0 30px rgba(0, 163, 255, 0.3),
-    inset 0 0 15px rgba(0, 163, 255, 0.2);
+    0 0 30px rgba(139, 92, 246, 0.3),
+    inset 0 0 15px rgba(139, 92, 246, 0.2);
   transform-style: preserve-3d;
   transform: perspective(1000px) translateZ(0);
 }
 
 .neon-text {
-  color: #00A3FF;
+  color: #8B5CF6;
   text-shadow: 
-    0 0 10px rgba(0, 163, 255, 0.8),
-    0 0 20px rgba(0, 163, 255, 0.4),
-    0 0 30px rgba(0, 163, 255, 0.2);
+    0 0 10px rgba(139, 92, 246, 0.8),
+    0 0 20px rgba(139, 92, 246, 0.4),
+    0 0 30px rgba(139, 92, 246, 0.2);
 }
 
 .neon-frame {
   position: relative;
-  border: 2px solid rgba(0, 163, 255, 0.8);
+  border: 1px solid rgba(139, 92, 246, 0.8);
   border-radius: 16px;
   box-shadow: 
-    0 0 30px rgba(0, 163, 255, 0.6),
-    0 0 60px rgba(0, 163, 255, 0.3),
-    inset 0 0 20px rgba(0, 163, 255, 0.4);
+    0 0 30px rgba(139, 92, 246, 0.6),
+    0 0 60px rgba(139, 92, 246, 0.3),
+    inset 0 0 20px rgba(139, 92, 246, 0.4);
   transform-style: preserve-3d;
   transform: perspective(1000px) translateZ(0);
 }
@@ -60,10 +60,29 @@
   position: absolute;
   inset: -1px;
   background: linear-gradient(45deg, 
-    rgba(0, 163, 255, 0.5),
+    rgba(139, 92, 246, 0.5),
     transparent 60%,
-    rgba(0, 163, 255, 0.5)
+    rgba(139, 92, 246, 0.5)
   );
   border-radius: 16px;
   z-index: -1;
+}
+
+.animate-neon-pulse {
+  animation: neonPulse 2s ease-in-out infinite;
+}
+
+@keyframes neonPulse {
+  0%, 100% {
+    box-shadow: 
+      0 0 15px rgba(139, 92, 246, 0.6),
+      0 0 30px rgba(139, 92, 246, 0.3);
+    border-color: rgba(139, 92, 246, 0.8);
+  }
+  50% {
+    box-shadow: 
+      0 0 25px rgba(139, 92, 246, 0.8),
+      0 0 50px rgba(139, 92, 246, 0.4);
+    border-color: rgba(139, 92, 246, 1);
+  }
 }

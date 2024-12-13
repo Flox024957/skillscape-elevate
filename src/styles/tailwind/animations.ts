@@ -2,30 +2,22 @@ export const animations = {
   keyframes: {
     "neon-pulse": {
       "0%, 100%": {
-        "box-shadow": "0 0 15px theme('colors.neon.blue'), 0 0 30px theme('colors.neon.blue')",
-        "border-color": "theme('colors.neon.blue')",
+        "box-shadow": "0 0 15px rgba(139, 92, 246, 0.6), 0 0 30px rgba(139, 92, 246, 0.3)",
+        "border-color": "rgba(139, 92, 246, 0.8)",
       },
-      "33%": {
-        "box-shadow": "0 0 15px theme('colors.neon.purple'), 0 0 30px theme('colors.neon.purple')",
-        "border-color": "theme('colors.neon.purple')",
-      },
-      "66%": {
-        "box-shadow": "0 0 15px theme('colors.neon.orange'), 0 0 30px theme('colors.neon.orange')",
-        "border-color": "theme('colors.neon.orange')",
+      "50%": {
+        "box-shadow": "0 0 25px rgba(139, 92, 246, 0.8), 0 0 50px rgba(139, 92, 246, 0.4)",
+        "border-color": "rgba(139, 92, 246, 1)",
       }
     },
     "neon-text": {
       "0%, 100%": {
-        "text-shadow": "0 0 10px theme('colors.neon.blue'), 0 0 20px theme('colors.neon.blue')",
-        "color": "theme('colors.neon.blue')",
+        "text-shadow": "0 0 10px rgba(139, 92, 246, 0.8), 0 0 20px rgba(139, 92, 246, 0.4)",
+        "color": "rgba(139, 92, 246, 1)",
       },
-      "33%": {
-        "text-shadow": "0 0 10px theme('colors.neon.purple'), 0 0 20px theme('colors.neon.purple')",
-        "color": "theme('colors.neon.purple')",
-      },
-      "66%": {
-        "text-shadow": "0 0 10px theme('colors.neon.orange'), 0 0 20px theme('colors.neon.orange')",
-        "color": "theme('colors.neon.orange')",
+      "50%": {
+        "text-shadow": "0 0 15px rgba(139, 92, 246, 1), 0 0 30px rgba(139, 92, 246, 0.6)",
+        "color": "rgba(139, 92, 246, 1)",
       }
     },
     "fade-in": {
@@ -34,8 +26,8 @@ export const animations = {
     }
   },
   animation: {
-    "neon-pulse": "neon-pulse 18s ease-in-out infinite",
-    "neon-text": "neon-text 18s ease-in-out infinite",
+    "neon-pulse": "neon-pulse 2s ease-in-out infinite",
+    "neon-text": "neon-text 2s ease-in-out infinite",
     "fade-in": "fade-in 0.3s ease-out",
   },
 };
