@@ -34,7 +34,7 @@ const SkillDetailPage = () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        toast.error("Vous devez être connecté pour ajouter du contenu à votre tableau de bord");
+        toast.error("You must be logged in to add content to your dashboard");
         return;
       }
 
@@ -47,22 +47,22 @@ const SkillDetailPage = () => {
 
       if (error) {
         console.error('Error adding to dashboard:', error);
-        toast.error("Impossible d'ajouter le contenu au tableau de bord");
+        toast.error("Could not add content to dashboard");
       } else {
-        toast.success(`${type} ajouté à votre tableau de bord`);
+        toast.success(`${type} added to your dashboard`);
       }
     } catch (error) {
       console.error('Error in addToDashboard:', error);
-      toast.error("Une erreur inattendue s'est produite");
+      toast.error("An unexpected error occurred");
     }
   };
 
   if (isLoading) {
-    return <div>Chargement...</div>;
+    return <div>Loading...</div>;
   }
 
   if (!skill) {
-    return <div>Compétence non trouvée</div>;
+    return <div>Skill not found</div>;
   }
 
   const examples = Array.isArray(skill.examples) ? skill.examples : [];
@@ -78,7 +78,7 @@ const SkillDetailPage = () => {
               onClick={() => navigate(`/category/${skill.category_id}`)}
               className="mb-4"
             >
-              ← Retour à {skill.categories?.name}
+              ← Back to {skill.categories?.name}
             </Button>
             <h1 className="text-3xl font-bold text-white">
               {skill.title}
@@ -88,7 +88,7 @@ const SkillDetailPage = () => {
             onClick={() => navigate("/dashboard")}
             className="glass-panel hover:bg-futuristic-blue/20"
           >
-            Tableau de bord
+            Dashboard
           </Button>
         </div>
 
@@ -96,9 +96,10 @@ const SkillDetailPage = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            key="summary"
           >
             <SkillSection
-              title="Résumé"
+              title="Summary"
               content={skill.summary}
               type="Summary"
               onAdd={addToDashboard}
@@ -108,9 +109,10 @@ const SkillDetailPage = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            key="explanation"
           >
             <SkillSection
-              title="Explication"
+              title="Explanation"
               content={skill.explanation}
               type="Explanation"
               onAdd={addToDashboard}
@@ -120,9 +122,10 @@ const SkillDetailPage = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            key="action"
           >
             <SkillSection
-              title="Action Concrète"
+              title="Concrete Action"
               content={skill.concrete_action}
               type="Action"
               onAdd={addToDashboard}
@@ -132,6 +135,7 @@ const SkillDetailPage = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            key="examples"
           >
             <ExamplesSection
               examples={examples}
