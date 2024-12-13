@@ -33,8 +33,8 @@ const Auth = () => {
                 variables: {
                   default: {
                     colors: {
-                      brand: '#00A3FF',
-                      brandAccent: '#9D4EDD',
+                      brand: 'rgba(0, 0, 0, 0.75)',
+                      brandAccent: 'rgba(0, 0, 0, 0.85)',
                       inputBackground: '#1A1F35',
                       inputText: '#FFFFFF',
                       inputBorder: '#00A3FF40',
@@ -46,7 +46,7 @@ const Auth = () => {
                       buttonPadding: '16px',
                     },
                     borderWidths: {
-                      buttonBorderWidth: '0px',
+                      buttonBorderWidth: '1px',
                       inputBorderWidth: '1px',
                     },
                     radii: {
@@ -63,7 +63,7 @@ const Auth = () => {
                 },
                 className: {
                   container: 'auth-container',
-                  button: 'auth-button',
+                  button: 'auth-button bg-black/75 hover:bg-black/85 border border-orange-500/50 shadow-[0_0_15px_rgba(249,115,22,0.3)] hover:shadow-[0_0_20px_rgba(249,115,22,0.4)] backdrop-blur-sm transition-all duration-300',
                   input: 'auth-input bg-futuristic-gray/30 backdrop-blur-md text-white border border-futuristic-blue/20 focus:border-futuristic-violet/50 rounded-xl px-4 py-3 w-full transition-all duration-300',
                   label: 'auth-label block text-sm font-medium text-white/80 mb-2',
                   loader: 'auth-loader border-t-2 border-futuristic-blue',
