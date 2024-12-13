@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
@@ -22,40 +22,12 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
+            <Route path="/" element={<MainPage />} />
             <Route path="/auth" element={<Auth />} />
-            <Route
-              path="/main"
-              element={
-                <ProtectedRoute>
-                  <MainPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/category/:id"
-              element={
-                <ProtectedRoute>
-                  <CategoryPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/skill/:id"
-              element={
-                <ProtectedRoute>
-                  <SkillDetailPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/main" element={<MainPage />} />
+            <Route path="/category/:id" element={<CategoryPage />} />
+            <Route path="/skill/:id" element={<SkillDetailPage />} />
+            <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
         </BrowserRouter>
       </AnimatePresence>
