@@ -2,19 +2,19 @@ export const animations = {
   keyframes: {
     "neon-border": {
       "0%, 100%": {
-        "box-shadow": "0 0 5px theme('colors.neon.purple'), 0 0 10px theme('colors.neon.purple')",
+        "box-shadow": "0 0 10mm theme('colors.neon.purple'), 0 0 10mm theme('colors.neon.purple'), 0 0 10mm theme('colors.neon.purple')",
         "border-color": "theme('colors.neon.purple')"
       },
       "25%": {
-        "box-shadow": "0 0 5px theme('colors.neon.pink'), 0 0 10px theme('colors.neon.pink')",
+        "box-shadow": "0 0 10mm theme('colors.neon.pink'), 0 0 10mm theme('colors.neon.pink'), 0 0 10mm theme('colors.neon.pink')",
         "border-color": "theme('colors.neon.pink')"
       },
       "50%": {
-        "box-shadow": "0 0 5px theme('colors.neon.orange'), 0 0 10px theme('colors.neon.orange')",
+        "box-shadow": "0 0 10mm theme('colors.neon.orange'), 0 0 10mm theme('colors.neon.orange'), 0 0 10mm theme('colors.neon.orange')",
         "border-color": "theme('colors.neon.orange')"
       },
       "75%": {
-        "box-shadow": "0 0 5px theme('colors.neon.blue'), 0 0 10px theme('colors.neon.blue')",
+        "box-shadow": "0 0 10mm theme('colors.neon.blue'), 0 0 10mm theme('colors.neon.blue'), 0 0 10mm theme('colors.neon.blue')",
         "border-color": "theme('colors.neon.blue')"
       }
     },
@@ -29,8 +29,8 @@ export const animations = {
     },
   },
   animation: {
-    "neon-pulse": "neon-border 48s linear infinite",
-    "snake-border": "neon-border 48s linear infinite",
+    "neon-pulse": "neon-border 240s linear infinite",
+    "snake-border": "neon-border 240s linear infinite",
     "fade-in": "fade-in 0.3s ease-out",
   },
 };
