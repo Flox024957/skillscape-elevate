@@ -25,7 +25,7 @@ export const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
-  const { data: searchResults = [] } = useQuery({
+  const { data: searchResults = [], isLoading } = useQuery({
     queryKey: ['profileSearch', searchQuery],
     queryFn: async () => {
       if (!searchQuery.trim()) return [];
@@ -33,17 +33,20 @@ export const SearchBar = () => {
       const { data, error } = await supabase
         .from('profiles')
         .select('id, pseudo, image_profile, current_job')
-        .ilike('pseudo', `%${searchQuery}%`)
+        .ilike('pseudo', `${searchQuery}%`) // Changé pour chercher les profils qui commencent par la recherche
         .limit(5);
 
       if (error) throw error;
       return data as SearchResult[];
     },
     enabled: searchQuery.length > 0,
+    staleTime: 1000, // Cache les résultats pendant 1 seconde
+    refetchOnWindowFocus: false,
   });
 
   const handleSelect = (userId: string) => {
     setOpen(false);
+    setSearchQuery("");
     navigate(`/profile/${userId}`);
   };
 
@@ -62,15 +65,24 @@ export const SearchBar = () => {
           placeholder="Rechercher des profils..." 
           value={searchQuery}
           onValueChange={setSearchQuery}
+          className="border-none focus:ring-0"
         />
         <CommandList>
-          <CommandEmpty>Aucun résultat trouvé.</CommandEmpty>
+          <CommandEmpty>
+            {isLoading ? (
+              <div className="flex items-center justify-center py-6 text-sm text-muted-foreground">
+                Recherche en cours...
+              </div>
+            ) : (
+              "Aucun résultat trouvé."
+            )}
+          </CommandEmpty>
           <CommandGroup heading="Profils">
             {searchResults.map((result) => (
               <CommandItem
                 key={result.id}
                 onSelect={() => handleSelect(result.id)}
-                className="flex items-center gap-3 cursor-pointer"
+                className="flex items-center gap-3 cursor-pointer hover:bg-futuristic-gray/20"
               >
                 <Avatar className="h-8 w-8">
                   <img 
