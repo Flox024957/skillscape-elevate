@@ -48,45 +48,23 @@ const SkillActions = ({ skillId, onAdd, isMastered }: SkillActionsProps) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Utilisateur non authentifié");
 
-      // First check if the skill is already mastered
-      const { data: existingMastery, error: checkError } = await supabase
-        .from('user_mastered_skills')
-        .select('skill_id')
-        .eq('user_id', user.id)
-        .eq('skill_id', skillId)
-        .maybeSingle();
-
-      if (checkError) throw checkError;
-      
-      if (existingMastery) {
-        throw new Error("Cette compétence est déjà marquée comme maîtrisée");
-      }
-
-      // Insert the mastered skill
-      const { error: insertError } = await supabase
-        .from('user_mastered_skills')
-        .insert([{
-          user_id: user.id,
-          skill_id: skillId,
-        }]);
-
-      if (insertError) throw insertError;
-
-      // Remove from user_skills
-      const { error: deleteError } = await supabase
+      const { error: updateError } = await supabase
         .from('user_skills')
-        .delete()
+        .update({
+          is_mastered: true,
+          mastered_at: new Date().toISOString(),
+        })
         .eq('user_id', user.id)
         .eq('skill_id', skillId);
 
-      if (deleteError) throw deleteError;
+      if (updateError) throw updateError;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userSkills'] });
       queryClient.invalidateQueries({ queryKey: ['masteredSkills'] });
       toast({
         title: "Succès",
-        description: "Compétence marquée comme maîtrisée et déplacée dans la section appropriée",
+        description: "Compétence marquée comme maîtrisée",
       });
     },
     onError: (error) => {
@@ -104,7 +82,7 @@ const SkillActions = ({ skillId, onAdd, isMastered }: SkillActionsProps) => {
         size="icon"
         variant="ghost"
         onClick={(e) => {
-          e.stopPropagation(); // Prevent collapsible from toggling
+          e.stopPropagation();
           deleteSkillMutation.mutate();
         }}
         className="hover:bg-destructive/10 hover:text-destructive"
@@ -116,7 +94,7 @@ const SkillActions = ({ skillId, onAdd, isMastered }: SkillActionsProps) => {
           size="icon"
           variant="ghost"
           onClick={(e) => {
-            e.stopPropagation(); // Prevent collapsible from toggling
+            e.stopPropagation();
             markAsMasteredMutation.mutate();
           }}
           className="hover:bg-green-500/10 hover:text-green-500"

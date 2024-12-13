@@ -27,7 +27,7 @@ interface MasteredSkill {
 }
 
 export const UserSkills = ({ userId }: UserSkillsProps) => {
-  const { data: userSkills = [] } = useQuery({
+  const { data: userSkills = [] } = useQuery<UserSkill[]>({
     queryKey: ['userSkills', userId],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -40,18 +40,19 @@ export const UserSkills = ({ userId }: UserSkillsProps) => {
             title
           )
         `)
-        .eq('user_id', userId);
+        .eq('user_id', userId)
+        .eq('is_mastered', false);
       
       if (error) throw error;
-      return data as UserSkill[];
+      return data;
     },
   });
 
-  const { data: masteredSkills = [] } = useQuery({
+  const { data: masteredSkills = [] } = useQuery<MasteredSkill[]>({
     queryKey: ['masteredSkills', userId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('user_mastered_skills')
+        .from('user_skills')
         .select(`
           skill_id,
           mastered_at,
@@ -60,10 +61,11 @@ export const UserSkills = ({ userId }: UserSkillsProps) => {
             title
           )
         `)
-        .eq('user_id', userId);
+        .eq('user_id', userId)
+        .eq('is_mastered', true);
       
       if (error) throw error;
-      return data as MasteredSkill[];
+      return data;
     },
   });
 

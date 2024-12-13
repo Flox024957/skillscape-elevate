@@ -26,7 +26,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 interface UserSkill {
   skill_id: string;
   selected_sections: string[] | null;
-  is_mastered?: boolean;
+  is_mastered: boolean;
   skills: {
     id: string;
     title: string;
@@ -60,6 +60,7 @@ const SkillsTab = () => {
         .select(`
           skill_id,
           selected_sections,
+          is_mastered,
           skills (
             id,
             title,
@@ -69,20 +70,13 @@ const SkillsTab = () => {
             examples
           )
         `)
-        .eq('user_id', user.id);
+        .eq('user_id', user.id)
+        .eq('is_mastered', false);
       
       if (error) throw error;
-
-      const { data: masteredSkills } = await supabase
-        .from('user_mastered_skills')
-        .select('skill_id')
-        .eq('user_id', user.id);
-
-      const masteredSkillIds = new Set((masteredSkills || []).map(s => s.skill_id));
       
       return (skills || []).map(skill => ({
         ...skill,
-        is_mastered: masteredSkillIds.has(skill.skill_id),
         skills: {
           ...skill.skills,
           examples: Array.isArray(skill.skills.examples) ? skill.skills.examples : []

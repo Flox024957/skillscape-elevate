@@ -7,7 +7,6 @@ import { useToast } from "@/hooks/use-toast";
 interface MasteredSkill {
   skill_id: string;
   mastered_at: string;
-  notes: string | null;
   skills: {
     id: string;
     title: string;
@@ -26,18 +25,18 @@ const MasteredSkillsSection = () => {
       if (!user) return [];
 
       const { data, error } = await supabase
-        .from('user_mastered_skills')
+        .from('user_skills')
         .select(`
           skill_id,
           mastered_at,
-          notes,
           skills (
             id,
             title,
             summary
           )
         `)
-        .eq('user_id', user.id);
+        .eq('user_id', user.id)
+        .eq('is_mastered', true);
 
       if (error) throw error;
       return data || [];
@@ -50,8 +49,8 @@ const MasteredSkillsSection = () => {
       if (!user) throw new Error("Utilisateur non authentifié");
 
       const { error } = await supabase
-        .from('user_mastered_skills')
-        .delete()
+        .from('user_skills')
+        .update({ is_mastered: false, mastered_at: null })
         .eq('user_id', user.id)
         .eq('skill_id', skillId);
 
