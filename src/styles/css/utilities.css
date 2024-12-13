@@ -16,6 +16,28 @@
     z-index: -1;
   }
 
+  .neon-frame {
+    position: relative;
+    border: 2px solid rgba(138, 43, 226, 0.6);
+    border-radius: 16px;
+    box-shadow: 0 0 15px rgba(138, 43, 226, 0.6);
+    overflow: hidden;
+  }
+
+  .neon-frame::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: conic-gradient(
+      from 0deg at 50% 50%,
+      transparent 0%,
+      rgba(138, 43, 226, 0.8) 5%,
+      transparent 15%
+    );
+    border-radius: 16px;
+    animation: rotateGlow 6s linear infinite;
+  }
+
   .futuristic-text {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-neon-blue via-neon-purple to-neon-orange animate-neon-text;
     background-size: 300% 300%;
@@ -27,5 +49,14 @@
     @apply transition-all duration-300 hover:-translate-y-1;
     position: relative;
     z-index: 2;
+  }
+
+  @keyframes rotateGlow {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 }
