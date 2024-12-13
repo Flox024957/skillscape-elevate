@@ -16,15 +16,23 @@ export const AuthForm = () => {
         password: 'demo123456'
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Demo login error:', error);
+        throw error;
+      }
       
       if (session) {
+        toast({
+          title: "Success",
+          description: "Welcome to the demo account!",
+        });
         navigate('/main');
       }
     } catch (error) {
+      console.error('Demo login error:', error);
       toast({
         title: "Error",
-        description: "Could not access demo account",
+        description: "Could not access demo account. Please try again.",
         variant: "destructive",
       });
     }
@@ -78,17 +86,17 @@ export const AuthForm = () => {
       />
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t" />
+          <span className="w-full border-t border-gray-600" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
           <span className="bg-background px-2 text-muted-foreground">
-            Or try the demo
+            Try the demo account
           </span>
         </div>
       </div>
       <Button 
         onClick={handleDemoLogin}
-        className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white shadow-lg"
+        className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
       >
         Access Demo Account
       </Button>
