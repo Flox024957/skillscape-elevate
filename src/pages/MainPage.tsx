@@ -6,17 +6,32 @@ import { supabase } from "@/integrations/supabase/client";
 
 const getCategoryImage = (categoryName: string) => {
   const images = {
-    'Négociation': 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80', // People in discussion
-    'Motivation': 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&w=800&q=80', // Person achieving goals
-    'Finance': 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80', // Financial growth
-    'Relation': 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80', // Team collaboration
-    'Gestion du stress': 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80', // Peaceful workspace
-    'Évolution': 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=800&q=80', // Growth concept
-    'Entreprenariat': 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=800&q=80', // Business success
-    'Bien-être': 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?auto=format&fit=crop&w=800&q=80', // Wellness and balance
-    'Confiance en soi': 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=800&q=80', // Empowerment
+    'Négociation': '/lovable-uploads/e9c7503e-7d72-442d-88b3-fb71c139dd55.png#cowboy',
+    'Motivation': '/lovable-uploads/e9c7503e-7d72-442d-88b3-fb71c139dd55.png#flame',
+    'Finance': '/lovable-uploads/e9c7503e-7d72-442d-88b3-fb71c139dd55.png#money',
+    'Relation': '/lovable-uploads/e9c7503e-7d72-442d-88b3-fb71c139dd55.png#owl',
+    'Gestion du stress': '/lovable-uploads/e9c7503e-7d72-442d-88b3-fb71c139dd55.png#feather',
+    'Évolution': '/lovable-uploads/e9c7503e-7d72-442d-88b3-fb71c139dd55.png#book',
+    'Entreprenariat': '/lovable-uploads/e9c7503e-7d72-442d-88b3-fb71c139dd55.png#scale',
+    'Bien-être': '/lovable-uploads/e9c7503e-7d72-442d-88b3-fb71c139dd55.png#hourglass',
+    'Confiance en soi': '/lovable-uploads/e9c7503e-7d72-442d-88b3-fb71c139dd55.png#tree'
   };
-  return images[categoryName as keyof typeof images] || images['Évolution'];
+  return images[categoryName as keyof typeof images];
+};
+
+const getImagePosition = (categoryName: string): string => {
+  const positions = {
+    'Négociation': 'object-[0%_54%]',
+    'Motivation': 'object-[50%_54%]',
+    'Finance': 'object-[100%_54%]',
+    'Relation': 'object-[0%_71%]',
+    'Gestion du stress': 'object-[50%_71%]',
+    'Évolution': 'object-[100%_71%]',
+    'Entreprenariat': 'object-[0%_88%]',
+    'Bien-être': 'object-[50%_88%]',
+    'Confiance en soi': 'object-[100%_88%]'
+  };
+  return positions[categoryName as keyof typeof positions];
 };
 
 const MainPage = () => {
@@ -46,18 +61,18 @@ const MainPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background bg-futuristic-grid bg-[size:50px_50px]">
+    <div className="min-h-screen bg-background bg-[url('/lovable-uploads/e9c7503e-7d72-442d-88b3-fb71c139dd55.png')] bg-cover bg-center bg-no-repeat bg-fixed">
       <div className="container px-4 py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-primary to-[#8B5CF6] bg-clip-text text-transparent">
-            Welcome to FLAP
+          <h1 className="text-4xl md:text-6xl font-bold mb-4 text-white">
+            FLAP
           </h1>
-          <p className="text-muted-foreground max-w-2xl mx-auto mb-8 text-lg">
-            Explore skills, set goals, and track your personal development journey
+          <p className="text-white/90 max-w-2xl mx-auto mb-8 text-lg">
+            Journal de bord
           </p>
           <div className="flex flex-col gap-6 items-center mb-12">
             <Button
@@ -93,12 +108,10 @@ const MainPage = () => {
               onClick={() => navigate(`/category/${category.id}`)}
               className="group cursor-pointer"
             >
-              <div className="relative rounded-xl overflow-hidden backdrop-blur-lg border border-primary/20 hover:border-primary/40 transition-all duration-300 hover:scale-105 bg-background/40">
-                <div className="aspect-square relative">
-                  <motion.img
-                    src={getCategoryImage(category.name)}
-                    alt={category.name}
-                    className="w-full h-full object-cover"
+              <div className="relative rounded-xl overflow-hidden backdrop-blur-lg border border-primary/20 hover:border-primary/40 transition-all duration-300 hover:scale-105 bg-background/40 aspect-[3/4]">
+                <div className="w-full h-full relative">
+                  <motion.div
+                    className={`w-full h-full bg-[url('${getCategoryImage(category.name)}')] bg-cover ${getImagePosition(category.name)}`}
                     whileHover={{ scale: 1.1 }}
                     transition={{ duration: 0.3 }}
                   />
@@ -106,7 +119,7 @@ const MainPage = () => {
                     <h3 className="text-2xl font-bold mb-2 text-white group-hover:text-primary transition-colors">
                       {category.name}
                     </h3>
-                    <p className="text-muted-foreground line-clamp-2">
+                    <p className="text-white/75 line-clamp-2">
                       {category.description}
                     </p>
                   </div>
