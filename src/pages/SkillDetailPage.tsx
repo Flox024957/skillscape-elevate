@@ -1,17 +1,17 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useSkillQuery } from "@/hooks/useSkillQuery";
 import { motion } from "framer-motion";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { SkillDetailContent } from "@/components/skill-detail/SkillDetailContent";
 import { Skill } from "@/types/skills";
+import { toast } from "sonner";
 
 const SkillDetailPage = () => {
-  const { id } = useParams<{ id: string }>();
+  const { skillId } = useParams<{ skillId: string }>();
   const navigate = useNavigate();
 
-  const { data: skill, isLoading, error } = useSkillQuery(id);
+  const { data: skill, isLoading, error } = useSkillQuery(skillId);
 
   if (isLoading) {
     return (
@@ -25,13 +25,16 @@ const SkillDetailPage = () => {
     return (
       <div className="min-h-screen bg-background">
         <div className="container px-4 py-8">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-red-500 mb-4">
+          <div className="max-w-2xl mx-auto text-center space-y-6">
+            <h1 className="text-3xl font-bold text-red-500">
               La compétence que vous recherchez n'existe pas ou a été supprimée.
             </h1>
-            <Button onClick={() => navigate('/')} variant="outline">
+            <p className="text-muted-foreground">
+              Veuillez vérifier l'URL ou retourner à la page précédente.
+            </p>
+            <Button onClick={() => navigate(-1)} variant="outline" size="lg">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Retour à l'accueil
+              Retour
             </Button>
           </div>
         </div>
@@ -48,7 +51,6 @@ const SkillDetailPage = () => {
   };
 
   const handleAddToDashboard = (type: string, content: string) => {
-    // TODO: Implement add to dashboard functionality
     toast.success(`${type} ajouté au tableau de bord`);
   };
 
