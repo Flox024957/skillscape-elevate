@@ -40,7 +40,10 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           {isAuthenticated && <Navbar />}
-          <div className={cn("min-h-screen bg-background", isAuthenticated && "pt-16")}>
+          <div className={cn(
+            "min-h-screen bg-background",
+            isAuthenticated && "pt-16 pb-16 md:pb-0"
+          )}>
             <AppRoutes isAuthenticated={isAuthenticated} />
           </div>
         </BrowserRouter>
