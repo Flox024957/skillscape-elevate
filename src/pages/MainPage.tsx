@@ -88,14 +88,14 @@ const MainPage = () => {
           </div>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-12 max-w-[2000px] mx-auto">
           {categories?.map((category, index) => (
             <motion.div
               key={category.id}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3, delay: index * 0.1 }}
-              className="group cursor-pointer relative aspect-square overflow-hidden rounded-full neon-frame"
+              className="group cursor-pointer relative aspect-square w-full min-h-[500px] overflow-hidden rounded-full neon-frame"
               onClick={() => {
                 const element = document.querySelector(`#category-${category.id}`);
                 element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -108,11 +108,11 @@ const MainPage = () => {
                 id={`category-${category.id}`}
               />
               <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px] hover:bg-black/10 hover:backdrop-blur-0 transition-all duration-300" />
-              <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/60 to-transparent">
-                <h3 className="text-2xl font-bold mb-2 text-white group-hover:text-primary transition-colors duration-300 text-shadow-neon">
+              <div className="absolute bottom-0 left-0 right-0 p-12 bg-gradient-to-t from-black/60 to-transparent">
+                <h3 className="text-4xl font-bold mb-4 text-white group-hover:text-primary transition-colors duration-300 text-shadow-neon">
                   {category.name}
                 </h3>
-                <p className="text-white/90 line-clamp-2 group-hover:text-white transition-colors duration-300">
+                <p className="text-white/90 text-xl line-clamp-2 group-hover:text-white transition-colors duration-300">
                   {category.description}
                 </p>
               </div>
