@@ -18,19 +18,36 @@ const NotesTab = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return [];
       
+      // First, ensure the user has a profile
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', user.id)
+        .single();
+
+      if (profileError) {
+        console.error('Profile error:', profileError);
+        return [];
+      }
+
+      // Now fetch the notes
       const { data, error } = await supabase
         .from('user_notes')
         .select('*')
-        .eq('user_id', user.id);
+        .eq('user_id', profile.id)
+        .order('created_at', { ascending: false });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Notes error:', error);
+        return [];
+      }
+      
       return data;
     },
   });
 
   const saveNote = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user || !note) {
+    if (!note.trim()) {
       toast({
         title: "Error",
         description: "Please enter a note",
@@ -39,14 +56,41 @@ const NotesTab = () => {
       return;
     }
 
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to add notes",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // First, ensure the user has a profile
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('id', user.id)
+      .single();
+
+    if (profileError) {
+      toast({
+        title: "Error",
+        description: "Could not verify user profile",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const { error } = await supabase
       .from('user_notes')
       .insert([{
-        user_id: user.id,
-        content: note,
+        user_id: profile.id,
+        content: note.trim(),
       }]);
 
     if (error) {
+      console.error('Error saving note:', error);
       toast({
         title: "Error",
         description: "Could not save note",
