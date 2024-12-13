@@ -3,14 +3,15 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
-import { CategoryModel } from "@/components/3d/CategoryModel";
-import { Suspense } from "react";
 
-const getModelType = (index: number) => {
-  const types = ['collaboration', 'infrastructure', 'workspace', 'data'] as const;
-  return types[index % types.length];
+const getCategoryImage = (index: number) => {
+  const images = [
+    '/collaboration.svg',  // Illustration pour la collaboration
+    '/infrastructure.svg', // Illustration pour l'infrastructure
+    '/workspace.svg',      // Illustration pour l'espace de travail
+    '/data.svg'           // Illustration pour les données
+  ];
+  return images[index % images.length];
 };
 
 const MainPage = () => {
@@ -89,23 +90,13 @@ const MainPage = () => {
             >
               <div className="relative rounded-xl overflow-hidden backdrop-blur-lg border border-primary/20 hover:border-primary/40 transition-all duration-300 hover:scale-105 bg-background/40">
                 <div className="aspect-square relative">
-                  <Canvas>
-                    <PerspectiveCamera makeDefault position={[0, 0, 5]} />
-                    <OrbitControls 
-                      enableZoom={false}
-                      enablePan={false}
-                      minPolarAngle={Math.PI / 3}
-                      maxPolarAngle={Math.PI / 1.5}
-                    />
-                    <ambientLight intensity={0.5} />
-                    <pointLight position={[10, 10, 10]} intensity={1} />
-                    <Suspense fallback={null}>
-                      <CategoryModel
-                        modelType={getModelType(index)}
-                        onClick={() => navigate(`/category/${category.id}`)}
-                      />
-                    </Suspense>
-                  </Canvas>
+                  <motion.img
+                    src={getCategoryImage(index)}
+                    alt={category.name}
+                    className="w-full h-full object-cover"
+                    whileHover={{ scale: 1.1 }}
+                    transition={{ duration: 0.3 }}
+                  />
                   <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-background/90 to-transparent">
                     <h3 className="text-2xl font-bold mb-2 text-white group-hover:text-primary transition-colors">
                       {category.name}
