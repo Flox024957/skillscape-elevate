@@ -30,7 +30,7 @@ const App = () => {
   }, []);
 
   if (isAuthenticated === null) {
-    return null; // Loading state
+    return null;
   }
 
   return (
@@ -40,7 +40,7 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           {isAuthenticated && <Navbar />}
-          <div className={cn("min-h-screen", isAuthenticated && "pt-16")}>
+          <div className={cn("min-h-screen bg-background", isAuthenticated && "pt-16")}>
             <AppRoutes isAuthenticated={isAuthenticated} />
           </div>
         </BrowserRouter>

@@ -30,19 +30,19 @@ export const ProtectedRoute = ({ children, isAuthenticated }: ProtectedRouteProp
       }
     };
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    checkAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!session) {
         navigate('/auth', { replace: true });
       }
     });
 
-    checkAuth();
-
     return () => subscription.unsubscribe();
   }, [navigate, isAuthenticated]);
 
   if (isLoading) {
-    return null; // Or a loading spinner
+    return null;
   }
 
   return <>{children}</>;

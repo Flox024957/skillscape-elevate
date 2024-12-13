@@ -8,6 +8,7 @@ import ChallengesPage from "@/pages/ChallengesPage";
 import Social from "@/pages/Social";
 import CategoryPage from "@/pages/CategoryPage";
 import SkillDetailPage from "@/pages/SkillDetailPage";
+import Index from "@/pages/Index";
 
 interface AppRoutesProps {
   isAuthenticated: boolean;
@@ -19,6 +20,7 @@ const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
       {!isAuthenticated ? (
         <>
           <Route path="/auth" element={<Auth />} />
+          <Route path="/" element={<Index />} />
           <Route path="*" element={<Navigate to="/auth" replace />} />
         </>
       ) : (
