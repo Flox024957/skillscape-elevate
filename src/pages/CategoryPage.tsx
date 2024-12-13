@@ -31,8 +31,6 @@ const CategoryPage = () => {
   const { data: category, isLoading, error } = useQuery({
     queryKey: ['category', id],
     queryFn: async () => {
-      console.log('Fetching category with ID:', id);
-      
       if (!id) {
         throw new Error('Category ID is required');
       }
@@ -67,16 +65,13 @@ const CategoryPage = () => {
         throw new Error('Category not found');
       }
 
-      console.log('Category data received:', data);
       return data as Category;
     },
     enabled: !!id,
     retry: false,
-    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   });
 
   const handleSkillClick = (skillId: string) => {
-    console.log('Navigating to skill:', skillId);
     navigate(`/skill/${skillId}`);
   };
 
@@ -86,7 +81,7 @@ const CategoryPage = () => {
         <div className="space-y-4">
           <Skeleton className="h-12 w-2/3 mx-auto" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
+            {[1, 2, 3, 4, 5, 6].map((n) => (
               <Skeleton key={n} className="h-48 w-full rounded-lg" />
             ))}
           </div>

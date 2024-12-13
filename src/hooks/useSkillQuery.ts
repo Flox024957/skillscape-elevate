@@ -13,10 +13,6 @@ export const useSkillQuery = (id: string | undefined) => {
       if (!id) {
         throw new Error('No skill ID provided');
       }
-
-      // Clean the ID if it comes from a route parameter
-      const cleanId = id.replace('skill/', '');
-      console.log('Fetching skill with cleaned ID:', cleanId);
       
       const { data: skillData, error: skillError } = await supabase
         .from('skills')
@@ -28,7 +24,7 @@ export const useSkillQuery = (id: string | undefined) => {
             description
           )
         `)
-        .eq('id', cleanId)
+        .eq('id', id)
         .single();
 
       if (skillError) {
@@ -42,8 +38,8 @@ export const useSkillQuery = (id: string | undefined) => {
 
       return skillData as Skill;
     },
-    enabled: Boolean(id),
-    retry: false, // Don't retry on error since we're handling 404s
+    enabled: !!id,
+    retry: false,
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   });
 };
