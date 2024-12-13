@@ -39,12 +39,14 @@ const App = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          {isAuthenticated && <Navbar />}
-          <div className={cn(
-            "min-h-screen bg-background",
-            isAuthenticated && "pt-16 pb-16 md:pb-0 md:pt-16"
-          )}>
-            <AppRoutes isAuthenticated={isAuthenticated} />
+          <div className="min-h-screen bg-background relative">
+            {isAuthenticated && <Navbar />}
+            <main className={cn(
+              "w-full",
+              isAuthenticated && "pt-16 pb-16 md:pb-0 md:pt-16"
+            )}>
+              <AppRoutes isAuthenticated={isAuthenticated} />
+            </main>
           </div>
         </BrowserRouter>
       </TooltipProvider>
