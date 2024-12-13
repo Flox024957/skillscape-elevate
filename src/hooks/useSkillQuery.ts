@@ -16,6 +16,7 @@ export const useSkillQuery = (id: string | undefined) => {
     queryKey: ['skill', id],
     queryFn: async () => {
       if (!id || !isValidUUID(id)) {
+        console.error('Invalid skill ID:', id);
         throw new Error('Invalid skill ID');
       }
 
