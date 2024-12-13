@@ -8,11 +8,11 @@ import { ArrowLeft } from "lucide-react";
 
 interface Skill {
   id: string;
-  title: string;
-  summary?: string;
-  explanation?: string;
-  examples?: any[];
-  concrete_action?: string;
+  titre: string;
+  resume?: string;
+  explication?: string;
+  exemples?: any[];
+  action_concrete?: string;
 }
 
 interface Category {
@@ -41,11 +41,11 @@ const CategoryPage = () => {
           *,
           skills (
             id,
-            title,
-            summary,
-            explanation,
-            examples,
-            concrete_action
+            titre,
+            resume,
+            explication,
+            exemples,
+            action_concrete
           )
         `)
         .eq('id', id)
@@ -136,10 +136,10 @@ const CategoryPage = () => {
                             transition-all duration-300 h-full">
                 <h3 className="text-xl font-semibold mb-2 group-hover:text-primary 
                              transition-colors">
-                  {skill.title}
+                  {skill.titre}
                 </h3>
-                {skill.summary && (
-                  <p className="text-muted-foreground">{skill.summary}</p>
+                {skill.resume && (
+                  <p className="text-muted-foreground">{skill.resume}</p>
                 )}
               </div>
             </motion.div>
