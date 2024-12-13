@@ -26,7 +26,7 @@ export const useSkillQuery = (id: string | undefined) => {
         .from('skills')
         .select(`
           *,
-          categories:categories!inner(*)
+          categories:categories(*)
         `)
         .eq('id', id)
         .single();
