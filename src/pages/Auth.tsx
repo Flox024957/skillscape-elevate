@@ -19,26 +19,32 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-card p-8 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold text-center mb-8">
-          Welcome to <span className="text-primary">FLAP</span>
-        </h1>
-        <SupabaseAuth 
-          supabaseClient={supabase}
-          appearance={{
-            theme: ThemeSupa,
-            variables: {
-              default: {
-                colors: {
-                  brand: '#B026FF',
-                  brandAccent: '#9215DE',
+      <div className="relative w-full max-w-md">
+        {/* Neon border container */}
+        <div className="absolute inset-0 border-2 rounded-lg animate-snake-border"></div>
+        
+        {/* Main content */}
+        <div className="w-full bg-card p-8 rounded-lg shadow-lg relative z-10">
+          <h1 className="text-3xl font-bold text-center mb-8">
+            Welcome to <span className="text-primary">FLAP</span>
+          </h1>
+          <SupabaseAuth 
+            supabaseClient={supabase}
+            appearance={{
+              theme: ThemeSupa,
+              variables: {
+                default: {
+                  colors: {
+                    brand: '#B026FF',
+                    brandAccent: '#9215DE',
+                  }
                 }
               }
-            }
-          }}
-          providers={["google", "facebook"]}
-          redirectTo={window.location.origin}
-        />
+            }}
+            providers={["google", "facebook"]}
+            redirectTo={window.location.origin}
+          />
+        </div>
       </div>
     </div>
   );
