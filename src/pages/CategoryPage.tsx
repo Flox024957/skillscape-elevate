@@ -77,7 +77,14 @@ const CategoryPage = () => {
     );
   }
 
-  return <CategoryContent category={category} />;
+  return (
+    <CategoryContent 
+      name={category.name}
+      description={category.description || ""}
+      skillsCount={category.skills?.length || 0}
+      isMobile={window.innerWidth < 768}
+    />
+  );
 };
 
 export default CategoryPage;
