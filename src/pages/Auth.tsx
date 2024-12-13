@@ -22,7 +22,7 @@ const Auth = () => {
       <div className="w-full max-w-md">
         <div className="neon-frame">
           <div className="glass-panel p-8">
-            <h1 className="text-4xl font-semibold text-center mb-8 gradient-text">
+            <h1 className="text-4xl font-semibold text-center mb-8 futuristic-text">
               Welcome to FLAP
             </h1>
             
@@ -63,7 +63,7 @@ const Auth = () => {
                 },
                 className: {
                   container: 'auth-container',
-                  button: 'auth-button',
+                  button: 'auth-button bg-gradient-to-r from-futuristic-blue to-futuristic-violet hover:opacity-90 text-white font-medium py-3 px-4 rounded-xl transition-all duration-300',
                   input: 'auth-input bg-futuristic-gray/30 backdrop-blur-md text-white border border-futuristic-blue/20 focus:border-futuristic-violet/50 rounded-xl px-4 py-3 w-full transition-all duration-300',
                   label: 'auth-label block text-sm font-medium text-white/80 mb-2',
                   loader: 'auth-loader border-t-2 border-futuristic-blue',
