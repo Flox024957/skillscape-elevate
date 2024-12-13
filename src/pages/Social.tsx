@@ -8,6 +8,7 @@ import { FriendsList } from '@/components/social/FriendsList';
 import { ChatSection } from '@/components/social/ChatSection';
 import { UserProfile } from '@/components/social/UserProfile';
 import { CreatePost } from '@/components/social/CreatePost';
+import { SearchBar } from '@/components/social/SearchBar';
 
 const Social = () => {
   const navigate = useNavigate();
@@ -65,6 +66,10 @@ const Social = () => {
 
           {/* Contenu principal */}
           <div className="md:col-span-6">
+            <div className="glass-panel p-4 mb-6">
+              <SearchBar />
+            </div>
+            
             <div className="glass-panel p-4 mb-6">
               <CreatePost userId={user.id} />
             </div>
