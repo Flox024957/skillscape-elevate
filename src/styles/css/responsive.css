@@ -1,15 +1,43 @@
 @media (max-width: 768px) {
   .glass-panel {
-    @apply p-4;
+    @apply p-3;
   }
   
   .futuristic-button {
-    @apply px-4 py-2 text-sm;
+    @apply px-3 py-1.5 text-sm;
+  }
+
+  .container {
+    @apply px-3;
+  }
+
+  body {
+    @apply pb-16 md:pb-0;
+  }
+
+  main {
+    @apply mt-0 md:mt-16;
   }
 }
 
 @media (max-width: 640px) {
   .bg-futuristic-grid {
-    @apply bg-[size:30px_30px];
+    @apply bg-[size:20px_20px];
+  }
+
+  h1 {
+    @apply text-2xl;
+  }
+
+  h2 {
+    @apply text-xl;
+  }
+
+  h3 {
+    @apply text-lg;
+  }
+
+  p {
+    @apply text-sm;
   }
 }
