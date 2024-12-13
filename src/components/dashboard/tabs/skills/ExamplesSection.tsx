@@ -1,53 +1,36 @@
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { Json } from "@/integrations/supabase/types";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { cn } from "@/lib/utils";
 
 interface ExamplesSectionProps {
   skillId: string;
   examples: Json[] | null;
-  onAdd: (skillId: string, title: string, content: string | Json[] | null) => void;
+  onAdd: (skillId: string, title: string, content: Json[] | null) => void;
 }
 
 const ExamplesSection = ({ skillId, examples, onAdd }: ExamplesSectionProps) => {
-  const isMobile = useIsMobile();
-  
   if (!examples || examples.length === 0) return null;
-  
+
   return (
-    <div className="bg-card/50 p-3 md:p-4 rounded-lg border border-border mb-2">
-      <div className="flex justify-between items-start">
+    <div className="bg-card p-6 rounded-lg border border-border">
+      <div className="flex justify-between items-start gap-4">
         <div className="flex-1">
-          <h4 className={cn(
-            "font-medium mb-2",
-            isMobile ? "text-sm" : "text-base"
-          )}>
-            Examples
-          </h4>
-          <div className="space-y-2">
+          <h3 className="text-xl font-semibold mb-4">Exemples</h3>
+          <ul className="list-disc pl-4 space-y-2">
             {examples.map((example, index) => (
-              <p 
-                key={index} 
-                className={cn(
-                  "pl-3 md:pl-4 border-l-2 border-border",
-                  isMobile ? "text-xs" : "text-sm"
-                )}
-              >
+              <li key={index} className="text-muted-foreground">
                 {String(example)}
-              </p>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
         <Button
-          size={isMobile ? "sm" : "icon"}
+          size="icon"
           variant="ghost"
           onClick={() => onAdd(skillId, "Examples", examples)}
-          className="hover:bg-accent ml-2 shrink-0"
+          className="shrink-0 hover:bg-primary/10 hover:text-primary"
         >
-          <Plus className={cn(
-            isMobile ? "h-3 w-3" : "h-4 w-4"
-          )} />
+          <Plus className="h-4 w-4" />
         </Button>
       </div>
     </div>
