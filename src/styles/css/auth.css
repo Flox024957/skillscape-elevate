@@ -27,76 +27,87 @@
   }
 }
 
-:root {
-  --neon-intensity: 15px;
-  --blur-radius: 30px;
-  --color-mix: 50%;
-  --pulse-speed: 1000ms;
-  --spread-radius: 20px;
-  --text-glow: 10px;
-  --border-width: 2px;
-  --color-saturation: 100%;
-  --color-hue: 180deg;
-  --animation-phase: 0deg;
-}
-
 .glass-panel {
   background: rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(10px);
   border-radius: 16px;
-  border: var(--border-width) solid transparent;
   position: relative;
   isolation: isolate;
+  border: none;
+  overflow: hidden;
 }
 
 .glass-panel::before {
   content: '';
   position: absolute;
-  inset: calc(-1 * var(--border-width));
-  border-radius: 16px;
-  padding: var(--border-width);
-  background: linear-gradient(
-    calc(var(--animation-phase) * 1deg),
-    hsla(var(--color-hue), var(--color-saturation), 50%, calc(1 - var(--color-mix) / 100)),
-    hsla(calc(var(--color-hue) + 120), var(--color-saturation), 50%, calc(var(--color-mix) / 100))
+  inset: 0;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(0, 163, 255, 0.3) 60deg,
+    rgba(157, 78, 221, 0.6) 120deg,
+    rgba(0, 163, 255, 0.8) 180deg,
+    rgba(157, 78, 221, 0.6) 240deg,
+    rgba(0, 163, 255, 0.3) 300deg,
+    transparent 360deg
   );
+  border-radius: 16px;
+  animation: rotateNeon 3s linear infinite;
   mask: 
     linear-gradient(#fff 0 0) content-box, 
     linear-gradient(#fff 0 0);
   mask-composite: exclude;
-  pointer-events: none;
-  animation: neonPulse var(--pulse-speed) infinite;
+  padding: 2px;
 }
 
 .glass-panel::after {
   content: '';
   position: absolute;
-  inset: calc(-2 * var(--border-width));
+  inset: -4px;
+  background: inherit;
   border-radius: 16px;
-  background: linear-gradient(
-    calc(var(--animation-phase) * -1deg),
-    hsla(var(--color-hue), var(--color-saturation), 50%, 0.5),
-    hsla(calc(var(--color-hue) + 120), var(--color-saturation), 50%, 0.5)
-  );
-  filter: blur(var(--blur-radius));
+  filter: blur(20px);
   opacity: 0.7;
   z-index: -1;
-  animation: neonPulse var(--pulse-speed) infinite reverse;
+  animation: pulseNeon 2s ease-in-out infinite;
+}
+
+@keyframes rotateNeon {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulseNeon {
+  0%, 100% {
+    opacity: 0.7;
+    filter: blur(20px) brightness(1);
+  }
+  50% {
+    opacity: 0.9;
+    filter: blur(25px) brightness(1.2);
+  }
 }
 
 .futuristic-text {
-  text-shadow: 
-    0 0 var(--text-glow) hsla(var(--color-hue), var(--color-saturation), 50%, calc(1 - var(--color-mix) / 100)),
-    0 0 calc(var(--text-glow) * 2) hsla(calc(var(--color-hue) + var(--animation-phase)), var(--color-saturation), 50%, calc(var(--color-mix) / 100));
+  background: linear-gradient(
+    to right,
+    #00A3FF,
+    #9D4EDD,
+    #00A3FF
+  );
+  background-size: 200% auto;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: textGradient 3s linear infinite;
 }
 
-@keyframes neonPulse {
-  0%, 100% {
-    opacity: 1;
-    filter: brightness(1) blur(var(--blur-radius));
-  }
-  50% {
-    opacity: 0.8;
-    filter: brightness(1.2) blur(calc(var(--blur-radius) * 1.2));
+@keyframes textGradient {
+  to {
+    background-position: 200% center;
   }
 }

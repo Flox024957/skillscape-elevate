@@ -1,22 +1,11 @@
 import { Auth as SupabaseAuth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { NeonControls } from "@/components/auth/NeonControls";
 
 const Auth = () => {
   const navigate = useNavigate();
-  const [neonIntensity, setNeonIntensity] = useState(25);
-  const [blurRadius, setBlurRadius] = useState(40);
-  const [colorMix, setColorMix] = useState(60);
-  const [pulseSpeed, setPulseSpeed] = useState(2000);
-  const [spreadRadius, setSpreadRadius] = useState(30);
-  const [textGlow, setTextGlow] = useState(15);
-  const [borderWidth, setBorderWidth] = useState(3);
-  const [colorSaturation, setColorSaturation] = useState(80);
-  const [colorHue, setColorHue] = useState(220);
-  const [animationPhase, setAnimationPhase] = useState(45);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -28,20 +17,6 @@ const Auth = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  useEffect(() => {
-    const root = document.documentElement;
-    root.style.setProperty('--neon-intensity', `${neonIntensity}px`);
-    root.style.setProperty('--blur-radius', `${blurRadius}px`);
-    root.style.setProperty('--color-mix', `${colorMix}%`);
-    root.style.setProperty('--pulse-speed', `${pulseSpeed}ms`);
-    root.style.setProperty('--spread-radius', `${spreadRadius}px`);
-    root.style.setProperty('--text-glow', `${textGlow}px`);
-    root.style.setProperty('--border-width', `${borderWidth}px`);
-    root.style.setProperty('--color-saturation', `${colorSaturation}%`);
-    root.style.setProperty('--color-hue', `${colorHue}deg`);
-    root.style.setProperty('--animation-phase', `${animationPhase}deg`);
-  }, [neonIntensity, blurRadius, colorMix, pulseSpeed, spreadRadius, textGlow, borderWidth, colorSaturation, colorHue, animationPhase]);
-
   return (
     <div className="min-h-screen bg-futuristic-black flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-md">
@@ -50,29 +25,6 @@ const Auth = () => {
             Welcome to FLAP
           </h1>
           
-          <NeonControls
-            neonIntensity={neonIntensity}
-            setNeonIntensity={setNeonIntensity}
-            blurRadius={blurRadius}
-            setBlurRadius={setBlurRadius}
-            colorMix={colorMix}
-            setColorMix={setColorMix}
-            pulseSpeed={pulseSpeed}
-            setPulseSpeed={setPulseSpeed}
-            spreadRadius={spreadRadius}
-            setSpreadRadius={setSpreadRadius}
-            textGlow={textGlow}
-            setTextGlow={setTextGlow}
-            borderWidth={borderWidth}
-            setBorderWidth={setBorderWidth}
-            colorSaturation={colorSaturation}
-            setColorSaturation={setColorSaturation}
-            colorHue={colorHue}
-            setColorHue={setColorHue}
-            animationPhase={animationPhase}
-            setAnimationPhase={setAnimationPhase}
-          />
-
           <SupabaseAuth 
             supabaseClient={supabase}
             appearance={{
