@@ -1,7 +1,8 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { CategoryContent } from "@/components/categories/CategoryContent";
+import { Card } from "@/components/ui/card";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Skill {
   id: string;
@@ -21,6 +22,7 @@ interface Category {
 
 const CategoryPage = () => {
   const { categoryId } = useParams();
+  const isMobile = useIsMobile();
 
   const { data: category, isLoading } = useQuery({
     queryKey: ['category', categoryId],
@@ -70,20 +72,33 @@ const CategoryPage = () => {
     return (
       <div className="container mx-auto p-4">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-800">Catégorie non trouvée</h2>
-          <p className="text-gray-600 mt-2">La catégorie que vous recherchez n'existe pas.</p>
+          <h2 className="text-2xl font-bold text-foreground">Catégorie non trouvée</h2>
+          <p className="text-muted-foreground mt-2">La catégorie que vous recherchez n'existe pas.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <CategoryContent 
-      name={category.name}
-      description={category.description || ""}
-      skillsCount={category.skills?.length || 0}
-      isMobile={window.innerWidth < 768}
-    />
+    <div className="container mx-auto p-4">
+      <Card className="bg-background border-border">
+        <div className="p-6">
+          <h1 className="text-3xl font-bold text-foreground mb-4">{category.name}</h1>
+          <p className="text-muted-foreground mb-8">{category.description}</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {category.skills.map((skill) => (
+              <Card key={skill.id} className="p-4 hover:border-primary/50 transition-colors">
+                <h3 className="text-lg font-semibold text-foreground mb-2">{skill.title}</h3>
+                {skill.summary && (
+                  <p className="text-sm text-muted-foreground">{skill.summary}</p>
+                )}
+              </Card>
+            ))}
+          </div>
+        </div>
+      </Card>
+    </div>
   );
 };
 
