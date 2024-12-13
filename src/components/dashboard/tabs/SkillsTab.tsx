@@ -51,6 +51,7 @@ const SkillsTab = () => {
         .from('user_skills')
         .select(`
           skill_id,
+          selected_sections,
           skills (
             id,
             title,
@@ -127,25 +128,56 @@ const SkillsTab = () => {
 
     if (!content) return;
 
-    const { error } = await supabase
-      .from('user_notes')
-      .insert([{
-        user_id: user.id,
-        content: `${sectionTitle} - ${Array.isArray(content) ? content.join('\n') : content}`,
-      }]);
+    // Check if the skill is already in the dashboard
+    const existingSkill = userSkills?.find(skill => skill.skill_id === skillId);
+    let selectedSections = existingSkill?.selected_sections || [];
 
-    if (error) {
-      toast({
-        title: "Error",
-        description: "Could not add section to dashboard",
-        variant: "destructive",
-      });
-    } else {
-      toast({
-        title: "Success",
-        description: `Added ${sectionTitle.toLowerCase()} to dashboard`,
-      });
+    // Add the new section if it's not already included
+    if (!selectedSections.includes(sectionTitle)) {
+      selectedSections = [...selectedSections, sectionTitle];
     }
+
+    if (existingSkill) {
+      // Update existing skill's selected sections
+      const { error } = await supabase
+        .from('user_skills')
+        .update({ selected_sections: selectedSections })
+        .eq('user_id', user.id)
+        .eq('skill_id', skillId);
+
+      if (error) {
+        toast({
+          title: "Error",
+          description: "Could not update skill sections",
+          variant: "destructive",
+        });
+        return;
+      }
+    } else {
+      // Add new skill with selected section
+      const { error } = await supabase
+        .from('user_skills')
+        .insert([{
+          user_id: user.id,
+          skill_id: skillId,
+          selected_sections: [sectionTitle],
+        }]);
+
+      if (error) {
+        toast({
+          title: "Error",
+          description: "Could not add skill to dashboard",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
+    queryClient.invalidateQueries({ queryKey: ['userSkills'] });
+    toast({
+      title: "Success",
+      description: `Added ${sectionTitle.toLowerCase()} to dashboard`,
+    });
   };
 
   const toggleSection = (sectionId: string) => {
@@ -179,9 +211,11 @@ const SkillsTab = () => {
                     <h3 className="text-lg font-semibold">
                       {userSkill.skills.title}
                     </h3>
-                    <p className="text-sm text-muted-foreground">
-                      {userSkill.skills.summary}
-                    </p>
+                    {userSkill.selected_sections && (
+                      <p className="text-sm text-muted-foreground">
+                        Selected sections: {userSkill.selected_sections.join(', ')}
+                      </p>
+                    )}
                   </div>
                   <div className="flex items-center gap-2">
                     <Button
@@ -200,29 +234,37 @@ const SkillsTab = () => {
                 </CollapsibleTrigger>
                 
                 <CollapsibleContent className="p-4 pt-0 space-y-4">
-                  <SkillSection
-                    skillId={userSkill.skill_id}
-                    title="Summary"
-                    content={userSkill.skills.summary}
-                    onAdd={handleAddSkillSection}
-                  />
-                  <SkillSection
-                    skillId={userSkill.skill_id}
-                    title="Explanation"
-                    content={userSkill.skills.explanation}
-                    onAdd={handleAddSkillSection}
-                  />
-                  <SkillSection
-                    skillId={userSkill.skill_id}
-                    title="Concrete Action"
-                    content={userSkill.skills.concrete_action}
-                    onAdd={handleAddSkillSection}
-                  />
-                  <ExamplesSection
-                    skillId={userSkill.skill_id}
-                    examples={userSkill.skills.examples as Json[]}
-                    onAdd={handleAddSkillSection}
-                  />
+                  {(!userSkill.selected_sections || userSkill.selected_sections.includes('Summary')) && (
+                    <SkillSection
+                      skillId={userSkill.skill_id}
+                      title="Summary"
+                      content={userSkill.skills.summary}
+                      onAdd={handleAddSkillSection}
+                    />
+                  )}
+                  {(!userSkill.selected_sections || userSkill.selected_sections.includes('Explanation')) && (
+                    <SkillSection
+                      skillId={userSkill.skill_id}
+                      title="Explanation"
+                      content={userSkill.skills.explanation}
+                      onAdd={handleAddSkillSection}
+                    />
+                  )}
+                  {(!userSkill.selected_sections || userSkill.selected_sections.includes('Concrete Action')) && (
+                    <SkillSection
+                      skillId={userSkill.skill_id}
+                      title="Concrete Action"
+                      content={userSkill.skills.concrete_action}
+                      onAdd={handleAddSkillSection}
+                    />
+                  )}
+                  {(!userSkill.selected_sections || userSkill.selected_sections.includes('Examples')) && (
+                    <ExamplesSection
+                      skillId={userSkill.skill_id}
+                      examples={userSkill.skills.examples as Json[]}
+                      onAdd={handleAddSkillSection}
+                    />
+                  )}
                 </CollapsibleContent>
               </Collapsible>
             </SortableSkillItem>
