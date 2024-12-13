@@ -336,6 +336,42 @@ export type Database = {
           },
         ]
       }
+      user_mastered_skills: {
+        Row: {
+          mastered_at: string
+          notes: string | null
+          skill_id: string
+          user_id: string
+        }
+        Insert: {
+          mastered_at?: string
+          notes?: string | null
+          skill_id: string
+          user_id: string
+        }
+        Update: {
+          mastered_at?: string
+          notes?: string | null
+          skill_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_mastered_skills_skill_id_fkey"
+            columns: ["skill_id"]
+            isOneToOne: false
+            referencedRelation: "skills"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_mastered_skills_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_notes: {
         Row: {
           content: string

@@ -1,8 +1,6 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { ChevronDown, Trash2 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { ChevronDown } from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -20,7 +18,6 @@ import {
   DragEndEvent,
 } from '@dnd-kit/core';
 import {
-  arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
@@ -28,10 +25,12 @@ import {
 import SortableSkillItem from "./skills/SortableSkillItem";
 import SkillSection from "./skills/SkillSection";
 import ExamplesSection from "./skills/ExamplesSection";
+import SkillActions from "./skills/SkillActions";
 
 interface UserSkill {
   skill_id: string;
   selected_sections: string[] | null;
+  is_mastered?: boolean;
   skills: {
     id: string;
     title: string;
@@ -43,9 +42,7 @@ interface UserSkill {
 }
 
 const SkillsTab = () => {
-  const { toast } = useToast();
   const [openSections, setOpenSections] = useState<string[]>([]);
-  const queryClient = useQueryClient();
   
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -60,7 +57,7 @@ const SkillsTab = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return [];
       
-      const { data, error } = await supabase
+      const { data: skills, error } = await supabase
         .from('user_skills')
         .select(`
           skill_id,
@@ -77,50 +74,25 @@ const SkillsTab = () => {
         .eq('user_id', user.id);
       
       if (error) throw error;
+
+      // Get mastered skills to mark them in the list
+      const { data: masteredSkills } = await supabase
+        .from('user_mastered_skills')
+        .select('skill_id')
+        .eq('user_id', user.id);
+
+      const masteredSkillIds = new Set((masteredSkills || []).map(s => s.skill_id));
       
-      // Ensure examples is always an array
-      return (data || []).map(item => ({
-        ...item,
+      return (skills || []).map(skill => ({
+        ...skill,
+        is_mastered: masteredSkillIds.has(skill.skill_id),
         skills: {
-          ...item.skills,
-          examples: Array.isArray(item.skills.examples) ? item.skills.examples : []
+          ...skill.skills,
+          examples: Array.isArray(skill.skills.examples) ? skill.skills.examples : []
         }
       }));
     },
   });
-
-  const deleteSkillMutation = useMutation({
-    mutationFn: async (skillId: string) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("User not authenticated");
-
-      const { error } = await supabase
-        .from('user_skills')
-        .delete()
-        .eq('user_id', user.id)
-        .eq('skill_id', skillId);
-
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['userSkills'] });
-      toast({
-        title: "Success",
-        description: "Skill removed from dashboard",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: "Could not remove skill from dashboard",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const handleDeleteSkill = (skillId: string) => {
-    deleteSkillMutation.mutate(skillId);
-  };
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -128,77 +100,34 @@ const SkillsTab = () => {
     if (over && active.id !== over.id) {
       const oldIndex = userSkills.findIndex(item => item.skill_id === active.id);
       const newIndex = userSkills.findIndex(item => item.skill_id === over.id);
-      
-      if (oldIndex !== -1 && newIndex !== -1) {
-        const newOrder = arrayMove(userSkills, oldIndex, newIndex);
-        queryClient.setQueryData(['userSkills'], newOrder);
-      }
     }
   };
 
   const handleAddSkillSection = async (skillId: string, sectionTitle: string, content: string | Json[] | null) => {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      toast({
-        title: "Error",
-        description: "You must be logged in to add skills",
-        variant: "destructive",
-      });
-      return;
-    }
+    if (!user) return;
 
     if (!content) return;
 
-    // Check if the skill is already in the dashboard
     const existingSkill = userSkills.find(skill => skill.skill_id === skillId);
     let selectedSections = existingSkill?.selected_sections || [];
 
-    // Add the new section if it's not already included
     if (!selectedSections.includes(sectionTitle)) {
       selectedSections = [...selectedSections, sectionTitle];
     }
 
-    if (existingSkill) {
-      // Update existing skill's selected sections
-      const { error } = await supabase
-        .from('user_skills')
-        .update({ selected_sections: selectedSections })
-        .eq('user_id', user.id)
-        .eq('skill_id', skillId);
+    const { error } = await supabase
+      .from('user_skills')
+      .upsert({
+        user_id: user.id,
+        skill_id: skillId,
+        selected_sections: selectedSections,
+      });
 
-      if (error) {
-        toast({
-          title: "Error",
-          description: "Could not update skill sections",
-          variant: "destructive",
-        });
-        return;
-      }
-    } else {
-      // Add new skill with selected section
-      const { error } = await supabase
-        .from('user_skills')
-        .insert([{
-          user_id: user.id,
-          skill_id: skillId,
-          selected_sections: [sectionTitle],
-        }]);
-
-      if (error) {
-        toast({
-          title: "Error",
-          description: "Could not add skill to dashboard",
-          variant: "destructive",
-        });
-        return;
-      }
+    if (error) {
+      console.error('Erreur lors de la mise à jour des sections:', error);
+      return;
     }
-
-    queryClient.invalidateQueries({ queryKey: ['userSkills'] });
-    toast({
-      title: "Success",
-      description: `Added ${sectionTitle.toLowerCase()} to dashboard`,
-    });
   };
 
   const toggleSection = (sectionId: string) => {
@@ -234,22 +163,16 @@ const SkillsTab = () => {
                     </h3>
                     {userSkill.selected_sections && (
                       <p className="text-sm text-muted-foreground">
-                        Selected sections: {userSkill.selected_sections.join(', ')}
+                        Sections sélectionnées : {userSkill.selected_sections.join(', ')}
                       </p>
                     )}
                   </div>
                   <div className="flex items-center gap-2">
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteSkill(userSkill.skill_id);
-                      }}
-                      className="hover:bg-destructive/10 hover:text-destructive"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                    <SkillActions
+                      skillId={userSkill.skill_id}
+                      onAdd={handleAddSkillSection}
+                      isMastered={userSkill.is_mastered}
+                    />
                     <ChevronDown className="h-4 w-4 transition-transform duration-200" />
                   </div>
                 </CollapsibleTrigger>
@@ -258,7 +181,7 @@ const SkillsTab = () => {
                   {(!userSkill.selected_sections || userSkill.selected_sections.includes('Summary')) && (
                     <SkillSection
                       skillId={userSkill.skill_id}
-                      title="Summary"
+                      title="Résumé"
                       content={userSkill.skills.summary}
                       onAdd={handleAddSkillSection}
                     />
@@ -266,7 +189,7 @@ const SkillsTab = () => {
                   {(!userSkill.selected_sections || userSkill.selected_sections.includes('Explanation')) && (
                     <SkillSection
                       skillId={userSkill.skill_id}
-                      title="Explanation"
+                      title="Explication"
                       content={userSkill.skills.explanation}
                       onAdd={handleAddSkillSection}
                     />
@@ -274,7 +197,7 @@ const SkillsTab = () => {
                   {(!userSkill.selected_sections || userSkill.selected_sections.includes('Concrete Action')) && (
                     <SkillSection
                       skillId={userSkill.skill_id}
-                      title="Concrete Action"
+                      title="Action Concrète"
                       content={userSkill.skills.concrete_action}
                       onAdd={handleAddSkillSection}
                     />
