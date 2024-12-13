@@ -15,36 +15,47 @@ interface SearchResultsProps {
 }
 
 export const SearchResults = ({ results, isLoading, onSelect }: SearchResultsProps) => {
-  return (
-    <>
+  if (isLoading) {
+    return (
       <CommandEmpty className="py-6 text-sm text-center text-muted-foreground">
-        {isLoading ? "Recherche en cours..." : "Aucun résultat trouvé."}
+        Recherche en cours...
       </CommandEmpty>
-      <CommandGroup heading="Profils">
-        {results.map((result) => (
-          <CommandItem
-            key={result.id}
-            onSelect={() => onSelect(result.id)}
-            className="flex items-center gap-3 p-2 cursor-pointer hover:bg-futuristic-gray/30 transition-colors duration-200"
-          >
-            <Avatar className="h-8 w-8 ring-1 ring-neon-purple/30">
-              <img 
-                src={result.image_profile || '/placeholder.svg'} 
-                alt={result.pseudo}
-                className="object-cover"
-              />
-            </Avatar>
-            <div className="flex flex-col">
-              <span className="font-medium text-foreground">{result.pseudo}</span>
-              {result.current_job && (
-                <span className="text-sm text-muted-foreground">
-                  {result.current_job}
-                </span>
-              )}
-            </div>
-          </CommandItem>
-        ))}
-      </CommandGroup>
-    </>
+    );
+  }
+
+  if (results.length === 0) {
+    return (
+      <CommandEmpty className="py-6 text-sm text-center text-muted-foreground">
+        Aucun résultat trouvé.
+      </CommandEmpty>
+    );
+  }
+
+  return (
+    <CommandGroup heading="Profils">
+      {results.map((result) => (
+        <CommandItem
+          key={result.id}
+          onSelect={() => onSelect(result.id)}
+          className="flex items-center gap-3 p-2 cursor-pointer hover:bg-futuristic-gray/30 transition-colors duration-200"
+        >
+          <Avatar className="h-8 w-8 ring-1 ring-neon-purple/30">
+            <img 
+              src={result.image_profile || '/placeholder.svg'} 
+              alt={result.pseudo}
+              className="object-cover"
+            />
+          </Avatar>
+          <div className="flex flex-col">
+            <span className="font-medium text-foreground">{result.pseudo}</span>
+            {result.current_job && (
+              <span className="text-sm text-muted-foreground">
+                {result.current_job}
+              </span>
+            )}
+          </div>
+        </CommandItem>
+      ))}
+    </CommandGroup>
   );
 };

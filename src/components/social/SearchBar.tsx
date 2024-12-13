@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Command, CommandList } from "@/components/ui/command";
 import { SearchInput } from './search/SearchInput';
@@ -10,6 +10,18 @@ export const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const { data: searchResults = [], isLoading } = useProfileSearch(searchQuery);
+  const searchRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setIsSearching(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleSelect = (userId: string) => {
     setSearchQuery("");
@@ -18,14 +30,18 @@ export const SearchBar = () => {
   };
 
   return (
-    <div className="relative w-full max-w-2xl mx-auto" onClick={(e) => e.stopPropagation()}>
+    <div 
+      ref={searchRef}
+      className="relative w-full max-w-2xl mx-auto" 
+      onClick={(e) => e.stopPropagation()}
+    >
       <Command className="rounded-xl border border-neon-purple/30 bg-futuristic-gray/20 backdrop-blur-md shadow-lg">
         <SearchInput
           value={searchQuery}
           onChange={setSearchQuery}
           onFocus={() => setIsSearching(true)}
         />
-        {isSearching && (
+        {isSearching && searchResults.length > 0 && (
           <CommandList className="animate-fade-in">
             <SearchResults
               results={searchResults}
