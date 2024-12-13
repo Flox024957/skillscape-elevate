@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import AudioPlayer from "@/components/dashboard/AudioPlayer";
 import { useState } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { LayoutDashboard } from "lucide-react";
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -50,24 +51,29 @@ const MainPage = () => {
     setSelectedContent(content);
   };
 
+  const handleCategoryClick = (categoryId: string) => {
+    navigate(`/category/${categoryId}`);
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-flap-black to-flap-black/95">
+    <div className="min-h-screen bg-gradient-to-b from-futuristic-black to-futuristic-black/95">
       <div className="container px-4 py-8">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-flap-white">
-            Welcome to <span className="text-flap-neon">FLAP</span>
+          <h1 className="text-3xl font-bold">
+            Welcome to <span className="futuristic-text">FLAP</span>
           </h1>
           <Button
             onClick={() => navigate("/dashboard")}
-            className="glass-panel hover:bg-flap-neon/20"
+            className="glass-panel hover:bg-futuristic-blue/20"
           >
+            <LayoutDashboard className="mr-2" />
             Dashboard
           </Button>
         </div>
 
         {/* Audio Player Section */}
         <div className="glass-panel p-6 mb-8 animate-fade-in">
-          <h2 className="text-xl font-semibold mb-4 text-flap-white">Voice Assistant</h2>
+          <h2 className="text-xl font-semibold mb-4">Voice Assistant</h2>
           <AudioPlayer 
             selectedContent={selectedContent}
             userNotes={userNotes}
@@ -77,19 +83,19 @@ const MainPage = () => {
 
         {/* Neon Graph Section */}
         <div className="glass-panel p-6 mb-8 animate-fade-in">
-          <h2 className="text-xl font-semibold mb-4 text-flap-white">Progress Overview</h2>
+          <h2 className="text-xl font-semibold mb-4">Progress Overview</h2>
           <div className="h-[200px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={data}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                <XAxis dataKey="name" stroke="#B026FF" />
-                <YAxis stroke="#B026FF" />
+                <XAxis dataKey="name" stroke="#00A3FF" />
+                <YAxis stroke="#00A3FF" />
                 <Line
                   type="monotone"
                   dataKey="value"
-                  stroke="#00FF9F"
+                  stroke="#9D4EDD"
                   strokeWidth={2}
-                  dot={{ fill: '#00FF9F', strokeWidth: 2 }}
+                  dot={{ fill: '#9D4EDD', strokeWidth: 2 }}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -104,19 +110,19 @@ const MainPage = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3, delay: index * 0.1 }}
-              className="group relative"
-              onClick={() => navigate(`/category/${category.id}`)}
+              onClick={() => handleCategoryClick(category.id)}
+              className="group cursor-pointer"
             >
-              <div className="glass-panel p-6 hover-lift cursor-pointer">
-                <div className="aspect-square relative mb-4 overflow-hidden rounded-lg max-h-[200px]">
+              <div className="glass-panel p-6 hover:scale-105 transition-transform duration-300">
+                <div className="aspect-square relative mb-4 overflow-hidden rounded-lg">
                   <img
-                    src={`https://source.unsplash.com/photo-1488590528505-98d2b5aba04b/400x400`}
+                    src={`https://source.unsplash.com/random/800x800/?tech,${index}`}
                     alt={category.name}
                     className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-radial from-transparent to-flap-black/50" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-futuristic-black/80 to-transparent" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">{category.name}</h3>
+                <h3 className="text-xl font-semibold mb-2 futuristic-text">{category.name}</h3>
                 <p className="text-sm text-gray-400">{category.description}</p>
               </div>
             </motion.div>
