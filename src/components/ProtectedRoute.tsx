@@ -2,13 +2,22 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from "@/integrations/supabase/client";
 
-export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+interface ProtectedRouteProps {
+  children: React.ReactNode;
+  isAuthenticated: boolean;
+}
+
+export const ProtectedRoute = ({ children, isAuthenticated }: ProtectedRouteProps) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
+        if (!isAuthenticated) {
+          navigate('/auth', { replace: true });
+          return;
+        }
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) {
           navigate('/auth', { replace: true });
@@ -30,7 +39,7 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     checkAuth();
 
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, [navigate, isAuthenticated]);
 
   if (isLoading) {
     return null; // Or a loading spinner
