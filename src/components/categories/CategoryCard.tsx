@@ -34,6 +34,7 @@ export const CategoryCard = ({
   const isMobile = useIsMobile();
 
   const handleClick = () => {
+    console.log('Navigating to category:', id);
     navigate(`/category/${id}`);
   };
 
@@ -62,8 +63,8 @@ export const CategoryCard = ({
         isMobile={isMobile}
       />
       <div className="absolute inset-0 border border-primary/0 rounded-xl opacity-0 
-                      group-hover:opacity-100 group-hover:border-primary/30 transition-all 
-                      duration-500 shadow-[0_0_15px_rgba(139,92,246,0.3)] pointer-events-none" />
+                    group-hover:opacity-100 group-hover:border-primary/30 transition-all 
+                    duration-500 shadow-[0_0_15px_rgba(139,92,246,0.3)] pointer-events-none" />
     </motion.div>
   );
 };

@@ -7,6 +7,7 @@ import { Database } from "@/integrations/supabase/types";
 import { SkillSection } from "@/components/skill-detail/SkillSection";
 import { ExamplesSection } from "@/components/skill-detail/ExamplesSection";
 import { Toaster } from "@/components/ui/sonner";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type Skill = Database['public']['Tables']['skills']['Row'] & {
   categories: Database['public']['Tables']['categories']['Row'] | null;
@@ -48,7 +49,8 @@ const SkillDetailPage = () => {
       return data as Skill;
     },
     enabled: !!id,
-    retry: false
+    retry: false,
+    staleTime: 1000 * 60 * 5 // Cache for 5 minutes
   });
 
   const addToDashboard = async (type: string, content: string) => {
@@ -87,9 +89,10 @@ const SkillDetailPage = () => {
     return (
       <div className="min-h-screen bg-background">
         <div className="container px-4 py-8">
-          <div className="animate-pulse space-y-4">
-            <div className="h-8 bg-muted rounded w-1/4"></div>
-            <div className="h-32 bg-muted rounded"></div>
+          <div className="space-y-6">
+            <Skeleton className="h-8 w-1/3" />
+            <Skeleton className="h-32 w-full" />
+            <Skeleton className="h-32 w-full" />
           </div>
         </div>
       </div>
