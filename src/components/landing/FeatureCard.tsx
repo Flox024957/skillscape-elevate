@@ -12,9 +12,9 @@ const FeatureCard = ({ title, description, icon, color }: FeatureCardProps) => {
     <motion.div
       whileHover={{ scale: 1.05, rotateY: 5 }}
       className="group p-8 rounded-2xl relative overflow-hidden
-               bg-[#1A1F2C]/80 backdrop-blur-sm
-               border-2 border-[#8B5CF6] hover:border-[#8B5CF6]
-               shadow-[0_0_60px_rgba(139,92,246,0.8)] hover:shadow-[0_0_80px_rgba(139,92,246,1)]
+               bg-background/30 backdrop-blur-sm
+               border border-[#F97316] hover:border-[#F97316]
+               shadow-[0_0_40px_rgba(249,115,22,0.6)] hover:shadow-[0_0_60px_rgba(249,115,22,0.8)]
                transform transition-all duration-300
                perspective-1000"
     >
@@ -23,11 +23,11 @@ const FeatureCard = ({ title, description, icon, color }: FeatureCardProps) => {
       <div className="text-4xl mb-4 transform group-hover:scale-110 transition-transform duration-300">
         {icon}
       </div>
-      <h3 className="text-xl font-semibold mb-3 text-white/90 drop-shadow-[0_0_8px_rgba(139,92,246,0.8)]
+      <h3 className="text-xl font-semibold mb-3 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]
                      group-hover:scale-105 transition-transform duration-300">
         {title}
       </h3>
-      <p className="text-gray-300 leading-relaxed drop-shadow-[0_0_5px_rgba(139,92,246,0.5)]">
+      <p className="text-gray-100 leading-relaxed drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">
         {description}
       </p>
     </motion.div>
