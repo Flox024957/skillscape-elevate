@@ -2,9 +2,10 @@ import { motion } from "framer-motion";
 import { CategoriesGrid } from "@/components/categories/CategoriesGrid";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { Loader2 } from "lucide-react";
 
 const MainPage = () => {
-  const { data: categories, isLoading } = useQuery({
+  const { data: categories, isLoading, error } = useQuery({
     queryKey: ['categories'],
     queryFn: async () => {
       console.log('Fetching categories...');
@@ -15,7 +16,10 @@ const MainPage = () => {
           skills (
             id,
             titre,
-            resume
+            resume,
+            description,
+            exemples,
+            action_concrete
           )
         `)
         .order('name');
@@ -25,29 +29,23 @@ const MainPage = () => {
         throw categoriesError;
       }
       
-      // Transform the data to match the expected interface
-      const transformedCategories = categoriesData?.map(category => ({
-        ...category,
-        skills: category.skills?.map(skill => ({
-          id: skill.id,
-          title: skill.titre,
-          summary: skill.resume
-        }))
-      }));
-      
-      console.log('Categories fetched:', transformedCategories);
-      return transformedCategories;
+      console.log('Categories fetched:', categoriesData);
+      return categoriesData || [];
     },
   });
 
+  if (error) {
+    console.error('Error in categories query:', error);
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-red-500">Une erreur est survenue lors du chargement des catégories.</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black to-purple-900/20">
-      <div 
-        className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1518770660439-4636190af475')] 
-                   bg-cover bg-center opacity-10 pointer-events-none"
-      />
-      
-      <div className="container mx-auto px-4 py-8 relative z-10">
+    <div className="min-h-screen bg-gradient-to-b from-background to-background/95">
+      <div className="container mx-auto px-4 py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -64,7 +62,9 @@ const MainPage = () => {
           </div>
 
           {isLoading ? (
-            <div className="text-center text-gray-300">Chargement des catégories...</div>
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            </div>
           ) : (
             <CategoriesGrid categories={categories || []} />
           )}
