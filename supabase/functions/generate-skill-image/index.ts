@@ -13,6 +13,12 @@ serve(async (req) => {
   }
 
   try {
+    const hfToken = Deno.env.get('HUGGING_FACE_ACCESS_TOKEN')
+    if (!hfToken) {
+      console.error('Hugging Face token not found in environment variables')
+      throw new Error('Hugging Face token not configured')
+    }
+
     const { skillId, skillTitle, skillDescription } = await req.json()
     
     // Create a prompt based on the skill information
@@ -20,7 +26,7 @@ serve(async (req) => {
 
     console.log('Generating image for skill:', skillId, 'with prompt:', prompt)
 
-    const hf = new HfInference(Deno.env.get('HUGGING_FACE_ACCESS_TOKEN'))
+    const hf = new HfInference(hfToken)
 
     const image = await hf.textToImage({
       inputs: prompt,
