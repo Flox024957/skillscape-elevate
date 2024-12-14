@@ -28,7 +28,16 @@ export const GameCard = ({ title, description, players, icon, color, route, avai
     }
     
     if (route) {
-      navigate(route);
+      try {
+        navigate(route);
+      } catch (error) {
+        console.error("Navigation error:", error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de lancer le jeu pour le moment",
+          variant: "destructive",
+        });
+      }
     }
   };
 
@@ -47,9 +56,6 @@ export const GameCard = ({ title, description, players, icon, color, route, avai
           <h3 className="text-xl font-semibold">{title}</h3>
           <p className="text-sm text-muted-foreground">{description}</p>
           <p className="text-xs text-muted-foreground">{players}</p>
-          {!available && (
-            <p className="text-xs text-yellow-500">Bientôt disponible</p>
-          )}
         </div>
         {IconComponent && (
           <div
