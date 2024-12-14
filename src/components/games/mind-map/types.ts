@@ -2,9 +2,6 @@ export interface MindMapNodeType {
   id: string;
   content: string;
   parentId: string | null;
-  x?: number;
-  y?: number;
-  color?: string;
 }
 
 export interface MindMapNodeProps {
@@ -21,9 +18,4 @@ export interface MindMapToolbarProps {
   onRedo: () => void;
   canUndo: boolean;
   canRedo: boolean;
-}
-
-export interface MindMapAction {
-  type: 'ADD_NODE' | 'UPDATE_NODE' | 'DELETE_NODE' | 'UNDO' | 'REDO';
-  payload: any;
 }

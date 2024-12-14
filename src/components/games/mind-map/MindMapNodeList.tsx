@@ -1,9 +1,11 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { MindMapNode } from "./MindMapNode";
 import type { MindMapNodeType } from "./types";
 
 interface MindMapNodeListProps {
   nodes: MindMapNodeType[];
+  parentId: string | null;
+  level?: number;
   onContentChange: (id: string, content: string) => void;
   onAddChild: (parentId: string) => void;
   onDeleteNode: (id: string) => void;
@@ -11,36 +13,34 @@ interface MindMapNodeListProps {
 
 export const MindMapNodeList = ({
   nodes,
+  parentId,
+  level = 0,
   onContentChange,
   onAddChild,
   onDeleteNode,
 }: MindMapNodeListProps) => {
-  const renderNodes = (parentId: string | null = null, level = 0) => {
-    const childNodes = nodes.filter((node) => node.parentId === parentId);
+  const childNodes = nodes.filter((node) => node.parentId === parentId);
 
-    return (
-      <div
-        className={`flex flex-col gap-4 ${
-          parentId ? "ml-8 pl-4 border-l border-primary/20" : ""
-        }`}
-      >
-        <AnimatePresence>
-          {childNodes.map((node) => (
-            <motion.div key={node.id}>
-              <MindMapNode
-                node={node}
-                nodes={nodes}
-                onAddChild={onAddChild}
-                onUpdate={onContentChange}
-                onDelete={onDeleteNode}
-              />
-              {renderNodes(node.id, level + 1)}
-            </motion.div>
-          ))}
-        </AnimatePresence>
+  const renderNodes = (parentId: string | null, level: number) => {
+    const childNodes = nodes.filter((node) => node.parentId === parentId);
+    
+    return childNodes.length > 0 ? (
+      <div className={`ml-${level * 8} mt-4 space-y-4`}>
+        {childNodes.map((node) => (
+          <motion.div key={node.id}>
+            <MindMapNode
+              node={node}
+              nodes={nodes}
+              onAddChild={onAddChild}
+              onUpdate={onContentChange}
+              onDelete={onDeleteNode}
+            />
+            {renderNodes(node.id, level + 1)}
+          </motion.div>
+        ))}
       </div>
-    );
+    ) : null;
   };
 
-  return renderNodes();
+  return renderNodes(parentId, level);
 };
