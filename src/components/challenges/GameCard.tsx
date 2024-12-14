@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import * as LucideIcons from "lucide-react";
 import { Game } from "@/types/games";
+import { LucideIcon } from "lucide-react";
 
 interface GameCardProps extends Game {
   onClick?: () => void;
@@ -9,8 +10,8 @@ interface GameCardProps extends Game {
 type IconType = keyof typeof LucideIcons;
 
 export const GameCard = ({ title, description, players, icon, color, onClick }: GameCardProps) => {
-  // Get the icon component directly from LucideIcons
-  const Icon = icon ? LucideIcons[icon as IconType] : null;
+  // Get the icon component directly from LucideIcons using type assertion
+  const IconComponent = icon ? (LucideIcons[icon as IconType] as LucideIcon) : null;
 
   return (
     <motion.div
@@ -26,12 +27,12 @@ export const GameCard = ({ title, description, players, icon, color, onClick }: 
           <p className="text-sm text-muted-foreground">{description}</p>
           <p className="text-xs text-muted-foreground">{players}</p>
         </div>
-        {Icon && (
+        {IconComponent && (
           <div
             className="rounded-full p-2"
             style={{ backgroundColor: color + '10' }}
           >
-            <Icon className="h-6 w-6" style={{ color }} />
+            <IconComponent className="h-6 w-6" style={{ color }} />
           </div>
         )}
       </div>
