@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
 import { Progress } from "@/components/ui/progress";
 import { Card } from "@/components/ui/card";
-import { Link, Sparkles } from "lucide-react";
+import { Link, Sparkles, BookOpen, Target } from "lucide-react";
 import type { Skill } from "@/types/skills";
+import { Badge } from "@/components/ui/badge";
 
 interface SkillChainGameProps {
   skills: Skill[];
@@ -61,7 +62,10 @@ export const SkillChainGame = ({
 
         <div className="space-y-8">
           <div className="bg-card p-6 rounded-xl border border-border">
-            <h2 className="text-xl font-semibold mb-4">Votre chaîne</h2>
+            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+              <BookOpen className="w-5 h-5" />
+              Votre chaîne de compétences
+            </h2>
             <div className="flex flex-wrap gap-4">
               {chain.map((skill, index) => (
                 <div key={skill.id} className="flex items-center">
@@ -71,8 +75,13 @@ export const SkillChainGame = ({
                     className="bg-blue-500/10 p-4 rounded-xl"
                   >
                     <h3 className="font-medium">{skill.titre}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {skill.categories?.name}
+                    <div className="flex items-center gap-2 mt-1">
+                      <Badge variant="secondary" className="text-xs">
+                        {skill.categories?.name}
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
+                      {skill.action_concrete}
                     </p>
                   </motion.div>
                   {index < chain.length - 1 && (
@@ -83,27 +92,38 @@ export const SkillChainGame = ({
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {availableSkills.map((skill) => (
-              <motion.div
-                key={skill.id}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Card
-                  className="p-4 cursor-pointer hover:border-primary transition-colors"
-                  onClick={() => handleAddSkill(skill)}
+          <div>
+            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+              <Target className="w-5 h-5" />
+              Compétences disponibles
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {availableSkills.map((skill) => (
+                <motion.div
+                  key={skill.id}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  <h3 className="font-medium">{skill.titre}</h3>
-                  <p className="text-sm text-muted-foreground line-clamp-2">
-                    {skill.resume}
-                  </p>
-                  <div className="text-xs text-muted-foreground mt-2">
-                    {skill.categories?.name}
-                  </div>
-                </Card>
-              </motion.div>
-            ))}
+                  <Card
+                    className="p-4 cursor-pointer hover:border-primary transition-colors"
+                    onClick={() => handleAddSkill(skill)}
+                  >
+                    <h3 className="font-medium">{skill.titre}</h3>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Badge variant="secondary" className="text-xs">
+                        {skill.categories?.name}
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
+                      {skill.resume}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-2 italic">
+                      Action : {skill.action_concrete}
+                    </p>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
