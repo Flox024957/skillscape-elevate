@@ -2,6 +2,8 @@ export interface MindMapNodeType {
   id: string;
   content: string;
   parentId: string | null;
+  color: string;
+  children: MindMapNodeType[];
 }
 
 export interface MindMapNodeProps {

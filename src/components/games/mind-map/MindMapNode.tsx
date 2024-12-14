@@ -1,85 +1,77 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
-import { Plus, X, Edit2 } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import type { MindMapNodeProps } from "./types";
 
-export const MindMapNode = ({
+export const MindMapNode = ({ 
   node,
   nodes,
   onAddChild,
   onUpdate,
-  onDelete,
+  onDelete
 }: MindMapNodeProps) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [content, setContent] = useState(node.content);
   const isRoot = !node.parentId;
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onUpdate(node.id, content);
-    setIsEditing(false);
-  };
-
-  const nodeVariants = {
-    initial: { scale: 0.8, opacity: 0 },
-    animate: { scale: 1, opacity: 1 },
-    exit: { scale: 0.8, opacity: 0 },
-  };
-
+  const hasChildren = node.children.length > 0;
+  
   return (
     <motion.div
-      variants={nodeVariants}
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      className={`relative p-4 rounded-lg shadow-lg backdrop-blur-sm ${
-        isRoot
-          ? "bg-primary/20 border-2 border-primary/50"
-          : "bg-background/40 border border-primary/30"
-      }`}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className={cn(
+        "relative p-4 mb-4",
+        isRoot ? "ml-0" : "ml-8"
+      )}
     >
-      {isEditing ? (
-        <form onSubmit={handleSubmit} className="flex items-center gap-2">
+      <div className="flex items-center gap-4">
+        <div className={cn(
+          "relative p-4 rounded-xl backdrop-blur-sm border border-white/10",
+          "bg-gradient-to-br shadow-xl",
+          node.color
+        )}>
           <Input
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            className="bg-background/50"
-            autoFocus
+            value={node.content}
+            onChange={(e) => onUpdate(node.id, e.target.value)}
+            className="bg-transparent border-none text-white placeholder-white/50 focus:ring-0"
           />
-          <Button type="submit" size="sm" variant="ghost">
-            <Edit2 className="w-4 h-4" />
-          </Button>
-        </form>
-      ) : (
-        <div className="flex items-center justify-between gap-4">
-          <span
-            onClick={() => setIsEditing(true)}
-            className="text-lg font-medium cursor-pointer hover:text-primary transition-colors"
-          >
-            {node.content}
-          </span>
-          <div className="flex items-center gap-2">
+          
+          <div className="absolute -right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
             <Button
-              onClick={() => onAddChild(node.id)}
-              size="sm"
+              size="icon"
               variant="ghost"
-              className="hover:bg-primary/20"
+              onClick={() => onAddChild(node.id)}
+              className="h-6 w-6 rounded-full bg-white/10 hover:bg-white/20 text-white"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="h-4 w-4" />
             </Button>
+            
             {!isRoot && (
               <Button
-                onClick={() => onDelete(node.id)}
-                size="sm"
+                size="icon"
                 variant="ghost"
-                className="hover:bg-destructive/20"
+                onClick={() => onDelete(node.id)}
+                className="h-6 w-6 rounded-full bg-white/10 hover:bg-white/20 text-white"
               >
-                <X className="w-4 h-4" />
+                <Trash2 className="h-4 w-4" />
               </Button>
             )}
           </div>
+        </div>
+      </div>
+
+      {hasChildren && (
+        <div className="mt-4 space-y-4">
+          {node.children.map(child => (
+            <MindMapNode
+              key={child.id}
+              node={child}
+              nodes={nodes}
+              onAddChild={onAddChild}
+              onUpdate={onUpdate}
+              onDelete={onDelete}
+            />
+          ))}
         </div>
       )}
     </motion.div>
