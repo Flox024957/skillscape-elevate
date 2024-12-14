@@ -4,26 +4,17 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Plus, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-interface MindMapNodeProps {
-  id: string;
-  content: string;
-  color?: string;
-  onContentChange: (id: string, content: string) => void;
-  onAddChild: (parentId: string) => void;
-  onDelete: (id: string) => void;
-  isRoot?: boolean;
-}
+import type { MindMapNodeProps } from "./types";
 
 export const MindMapNode = ({
-  id,
-  content,
-  color,
-  onContentChange,
+  node,
+  nodes,
   onAddChild,
+  onUpdate,
   onDelete,
-  isRoot = false,
 }: MindMapNodeProps) => {
+  const isRoot = !node.parentId;
+
   return (
     <motion.div
       initial={{ scale: 0.8, opacity: 0 }}
@@ -37,13 +28,13 @@ export const MindMapNode = ({
         className={cn(
           "p-2 backdrop-blur-sm border-primary/20 overflow-hidden",
           isRoot ? "bg-gradient-to-r from-primary to-primary-foreground" : "bg-gradient-to-r",
-          color
+          node.color
         )}
       >
         <div className="flex items-center gap-2">
           <Input
-            value={content}
-            onChange={(e) => onContentChange(id, e.target.value)}
+            value={node.content}
+            onChange={(e) => onUpdate(node.id, e.target.value)}
             className={cn(
               "min-w-[150px] bg-background/50 border-0 focus-visible:ring-1 focus-visible:ring-white",
               isRoot && "text-white placeholder:text-white/70"
@@ -54,7 +45,7 @@ export const MindMapNode = ({
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => onAddChild(id)}
+              onClick={() => onAddChild(node.id)}
               className={cn(
                 "h-8 w-8 hover:bg-white/20",
                 isRoot && "text-white hover:text-white"
@@ -66,7 +57,7 @@ export const MindMapNode = ({
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => onDelete(id)}
+                onClick={() => onDelete(node.id)}
                 className="h-8 w-8 text-white hover:bg-white/20 hover:text-white"
               >
                 <X className="h-4 w-4" />
