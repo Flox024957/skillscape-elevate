@@ -14,13 +14,13 @@ export const AuthHeader = () => {
           textShadow: [
             "0 0 20px rgba(139,92,246,0.5)",
             "0 0 35px rgba(139,92,246,0.3)",
-            "0 0 20px rgba(139,92,246,0.5)",
           ],
         }}
         transition={{
           duration: 2,
           repeat: Infinity,
-          ease: "linear",
+          repeatType: "reverse",
+          ease: "easeInOut"
         }}
       >
         Welcome to{" "}
@@ -32,9 +32,19 @@ export const AuthHeader = () => {
         animate={{
           textShadow: [
             "0 0 25px rgba(139,92,246,0.7)",
-            "0 0 45px rgba(139,92,246,0.5)",
-            "0 0 25px rgba(139,92,246,0.7)",
+            "0 0 45px rgba(139,92,246,0.4)",
           ],
+        }}
+        initial={{
+          textShadow: "0 0 25px rgba(139,92,246,0.7)",
+        }}
+        transition={{
+          textShadow: {
+            duration: 2,
+            repeat: Infinity,
+            repeatType: "reverse",
+            ease: "easeInOut"
+          }
         }}
       >
         FLAP
