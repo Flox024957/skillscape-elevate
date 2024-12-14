@@ -9,11 +9,19 @@ export interface Category {
 
 export interface Skill {
   id: string;
-  title: string;
-  summary: string;
+  titre: string;          // French field from DB
+  resume: string;         // French field from DB
   description: string;
-  examples: Json;
-  concrete_action: string;
+  action_concrete: string; // French field from DB
+  exemples: Json;         // French field from DB
+  category_id?: string;
+  created_at?: string;
+  updated_at?: string;
+  categories?: {
+    id: string;
+    name: string;
+    description?: string;
+  } | null;
 }
 
 export interface UserSkill {
@@ -29,13 +37,13 @@ export interface MasteredSkill {
   notes: string | null;
   skills: {
     id: string;
-    title: string;
-    summary: string | null;
+    titre: string;
+    resume: string | null;
   };
 }
 
 // Helper function to transform French column names to English for UI
-export const transformSkill = (skill: any) => ({
+export const transformSkill = (skill: Skill) => ({
   id: skill.id,
   title: skill.titre,
   summary: skill.resume,
@@ -47,3 +55,11 @@ export const transformSkill = (skill: any) => ({
   updated_at: skill.updated_at,
   category: skill.categories,
 });
+
+// Helper function to transform examples array
+export const normalizeExamples = (examples: Json): Json[] => {
+  if (Array.isArray(examples)) {
+    return examples;
+  }
+  return [];
+};
