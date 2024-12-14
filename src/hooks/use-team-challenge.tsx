@@ -47,7 +47,12 @@ export const useTeamChallenge = () => {
       }
 
       if (data) {
-        setQuestions(data);
+        // Transform the data to ensure options is string[]
+        const transformedQuestions = data.map(q => ({
+          ...q,
+          options: q.options as string[] // Cast the JSON to string[]
+        }));
+        setQuestions(transformedQuestions);
       }
     };
 
