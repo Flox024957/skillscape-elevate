@@ -20,7 +20,11 @@ export const useSkillChainGame = () => {
           titre,
           resume,
           description,
+          action_concrete,
+          exemples,
           category_id,
+          created_at,
+          updated_at,
           categories (
             name
           )
@@ -36,7 +40,7 @@ export const useSkillChainGame = () => {
       }
 
       if (data) {
-        setSkills(data);
+        setSkills(data as Skill[]);
       }
     };
 
