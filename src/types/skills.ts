@@ -21,6 +21,24 @@ export interface Skill {
   categories?: Category | null;
 }
 
+export interface UserSkill {
+  skill_id: string;
+  sections_selectionnees: string[] | null;
+  skills: Skill;
+  is_mastered?: boolean;
+}
+
+export interface MasteredSkill {
+  skill_id: string;
+  mastered_at: string;
+  notes: string | null;
+  skills: {
+    id: string;
+    titre: string;
+    resume: string | null;
+  };
+}
+
 // Helper function to transform French column names to English for UI
 export const transformSkill = (skill: Skill) => ({
   id: skill.id,
