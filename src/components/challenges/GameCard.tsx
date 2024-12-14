@@ -6,10 +6,11 @@ interface GameCardProps extends Game {
   onClick?: () => void;
 }
 
-type LucideIconType = keyof typeof LucideIcons;
+type IconType = keyof typeof LucideIcons;
 
 export const GameCard = ({ title, description, players, icon, color, onClick }: GameCardProps) => {
-  const LucideIcon = icon ? LucideIcons[icon as LucideIconType] : null;
+  // Get the icon component directly from LucideIcons
+  const Icon = icon ? LucideIcons[icon as IconType] : null;
 
   return (
     <motion.div
@@ -25,12 +26,12 @@ export const GameCard = ({ title, description, players, icon, color, onClick }: 
           <p className="text-sm text-muted-foreground">{description}</p>
           <p className="text-xs text-muted-foreground">{players}</p>
         </div>
-        {LucideIcon && (
+        {Icon && (
           <div
             className="rounded-full p-2"
             style={{ backgroundColor: color + '10' }}
           >
-            <LucideIcon className="h-6 w-6" style={{ color }} />
+            <Icon className="h-6 w-6" style={{ color }} />
           </div>
         )}
       </div>
