@@ -260,6 +260,35 @@ export type Database = {
         }
         Relationships: []
       }
+      skill_illustrations: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string
+          skill_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url: string
+          skill_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string
+          skill_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "skill_illustrations_skill_id_fkey"
+            columns: ["skill_id"]
+            isOneToOne: false
+            referencedRelation: "skills"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       skills: {
         Row: {
           action_concrete: string

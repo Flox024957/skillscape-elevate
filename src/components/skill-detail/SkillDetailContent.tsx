@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { ArrowLeft, PlusCircle, Sparkles, Target, Book, Lightbulb, Trophy, Rocket, Shield } from "lucide-react";
+import { ArrowLeft, PlusCircle, Trophy, Book, Rocket, Shield } from "lucide-react";
 import { Skill } from "@/types/skills";
 import { Badge } from "@/components/ui/badge";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect } from "react";
 
 type SkillDetailContentProps = {
   skill: Skill;
@@ -16,6 +19,39 @@ export const SkillDetailContent = ({
   onAddToDashboard 
 }: SkillDetailContentProps) => {
   const examples = Array.isArray(skill.exemples) ? skill.exemples : [];
+
+  // Fetch existing illustration
+  const { data: illustration, isLoading: isLoadingIllustration } = useQuery({
+    queryKey: ['skillIllustration', skill.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('skill_illustrations')
+        .select('image_url')
+        .eq('skill_id', skill.id)
+        .single();
+      return data;
+    },
+  });
+
+  // Generate illustration if none exists
+  useEffect(() => {
+    if (!isLoadingIllustration && !illustration) {
+      const generateImage = async () => {
+        try {
+          await supabase.functions.invoke('generate-skill-image', {
+            body: {
+              skillId: skill.id,
+              skillTitle: skill.titre,
+              skillDescription: skill.description
+            }
+          });
+        } catch (error) {
+          console.error('Error generating image:', error);
+        }
+      };
+      generateImage();
+    }
+  }, [skill, illustration, isLoadingIllustration]);
 
   // Animation variants
   const containerVariants = {
@@ -33,47 +69,37 @@ export const SkillDetailContent = ({
     visible: { opacity: 1, y: 0 }
   };
 
-  const decorativeElements = {
-    topLeft: {
-      initial: { scale: 0.8, opacity: 0.3 },
-      animate: {
-        scale: [0.8, 1.1, 0.8],
-        opacity: [0.3, 0.6, 0.3],
-        transition: {
-          duration: 4,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }
-      }
+  const panelHoverVariants = {
+    initial: { 
+      backgroundColor: "rgba(0, 0, 0, 0)",
+      scale: 1
     },
-    bottomRight: {
-      initial: { scale: 0.8, rotate: 0, opacity: 0.3 },
-      animate: {
-        scale: [0.8, 1.2, 0.8],
-        rotate: [0, 360],
-        opacity: [0.3, 0.5, 0.3],
-        transition: {
-          duration: 8,
-          repeat: Infinity,
-          ease: "linear"
-        }
+    hover: { 
+      backgroundColor: "rgba(var(--primary-rgb), 0.05)",
+      scale: 1.02,
+      transition: {
+        duration: 0.2
       }
     }
   };
 
   return (
     <div className="container max-w-6xl px-4 py-8 relative overflow-hidden">
-      {/* Decorative Elements */}
-      <motion.div
-        className="absolute -top-20 -left-20 w-64 h-64 bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-full blur-3xl"
-        initial={decorativeElements.topLeft.initial}
-        animate={decorativeElements.topLeft.animate}
-      />
-      <motion.div
-        className="absolute -bottom-32 -right-32 w-96 h-96 bg-gradient-to-tl from-primary/20 via-purple-500/20 to-orange-500/20 rounded-full blur-3xl"
-        initial={decorativeElements.bottomRight.initial}
-        animate={decorativeElements.bottomRight.animate}
-      />
+      {/* Background Illustration */}
+      {illustration?.image_url && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.15 }}
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage: `url(${illustration.image_url})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            filter: 'blur(20px)',
+            zIndex: -1
+          }}
+        />
+      )}
 
       <motion.div
         variants={containerVariants}
@@ -119,26 +145,34 @@ export const SkillDetailContent = ({
           <div className="space-y-6">
             <motion.div
               variants={itemVariants}
-              className="glass-panel p-8 relative group hover:bg-primary/5 transition-all duration-300"
+              whileHover="hover"
+              initial="initial"
+              variants={panelHoverVariants}
+              className="glass-panel p-8 relative rounded-xl backdrop-blur-sm 
+                       border border-white/10 bg-black/50 shadow-xl"
             >
               <Trophy className="absolute top-4 right-4 w-6 h-6 text-primary/40 group-hover:text-primary/60 transition-colors" />
               <h2 className="text-2xl font-semibold mb-4 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent flex items-center gap-2">
                 Résumé
               </h2>
-              <p className="text-muted-foreground leading-relaxed group-hover:text-foreground transition-colors duration-300">
+              <p className="text-muted-foreground leading-relaxed transition-colors duration-300 hover:text-foreground">
                 {skill.resume}
               </p>
             </motion.div>
 
             <motion.div
               variants={itemVariants}
-              className="glass-panel p-8 relative group hover:bg-primary/5 transition-all duration-300"
+              whileHover="hover"
+              initial="initial"
+              variants={panelHoverVariants}
+              className="glass-panel p-8 relative rounded-xl backdrop-blur-sm 
+                       border border-white/10 bg-black/50 shadow-xl"
             >
               <Book className="absolute top-4 right-4 w-6 h-6 text-primary/40 group-hover:text-primary/60 transition-colors" />
               <h2 className="text-2xl font-semibold mb-4 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
                 Description
               </h2>
-              <p className="text-muted-foreground leading-relaxed group-hover:text-foreground transition-colors duration-300">
+              <p className="text-muted-foreground leading-relaxed transition-colors duration-300 hover:text-foreground">
                 {skill.description}
               </p>
             </motion.div>
@@ -148,13 +182,17 @@ export const SkillDetailContent = ({
           <div className="space-y-6">
             <motion.div
               variants={itemVariants}
-              className="glass-panel p-8 relative group hover:bg-primary/5 transition-all duration-300"
+              whileHover="hover"
+              initial="initial"
+              variants={panelHoverVariants}
+              className="glass-panel p-8 relative rounded-xl backdrop-blur-sm 
+                       border border-white/10 bg-black/50 shadow-xl"
             >
               <Rocket className="absolute top-4 right-4 w-6 h-6 text-primary/40 group-hover:text-primary/60 transition-colors" />
               <h2 className="text-2xl font-semibold mb-4 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
                 Action Concrète
               </h2>
-              <p className="text-muted-foreground leading-relaxed group-hover:text-foreground transition-colors duration-300">
+              <p className="text-muted-foreground leading-relaxed transition-colors duration-300 hover:text-foreground">
                 {skill.action_concrete}
               </p>
             </motion.div>
@@ -162,7 +200,11 @@ export const SkillDetailContent = ({
             {examples.length > 0 && (
               <motion.div
                 variants={itemVariants}
-                className="glass-panel p-8 relative group hover:bg-primary/5 transition-all duration-300"
+                whileHover="hover"
+                initial="initial"
+                variants={panelHoverVariants}
+                className="glass-panel p-8 relative rounded-xl backdrop-blur-sm 
+                         border border-white/10 bg-black/50 shadow-xl"
               >
                 <Shield className="absolute top-4 right-4 w-6 h-6 text-primary/40 group-hover:text-primary/60 transition-colors" />
                 <h2 className="text-2xl font-semibold mb-4 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
