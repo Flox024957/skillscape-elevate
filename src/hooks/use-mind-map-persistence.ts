@@ -49,6 +49,42 @@ export const useMindMapPersistence = (mindMapId?: string) => {
     loadMindMap();
   }, [mindMapId]);
 
+  const saveMindMap = async (title: string, nodes: MindMapNodeType[]) => {
+    if (!mindMap) return;
+
+    try {
+      const { error } = await supabase
+        .from('mind_maps')
+        .update({
+          title,
+          data: nodes as unknown as Json,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', mindMap.id);
+
+      if (error) throw error;
+
+      setMindMap({
+        ...mindMap,
+        title,
+        data: nodes,
+        updated_at: new Date().toISOString()
+      });
+
+      toast({
+        title: "Succès",
+        description: "Carte mentale mise à jour"
+      });
+    } catch (error) {
+      console.error('Error updating mind map:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de mettre à jour la carte mentale",
+        variant: "destructive"
+      });
+    }
+  };
+
   const updateMindMap = async (nodes: MindMapNodeType[]) => {
     if (!mindMap) return;
 
@@ -125,6 +161,7 @@ export const useMindMapPersistence = (mindMapId?: string) => {
   return {
     mindMap,
     isLoading,
+    saveMindMap,
     updateMindMap,
     createMindMap
   };

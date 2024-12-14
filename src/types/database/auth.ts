@@ -1,5 +1,7 @@
 import type { Database } from '@/integrations/supabase/types';
 
-export type Tables<T extends keyof Database['public']> = Database['public'][T];
-export type TablesInsert<T extends keyof Database['public']> = Database['public'][T]['Insert'];
-export type TablesUpdate<T extends keyof Database['public']> = Database['public'][T]['Update'];
+type TableRow<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row'];
+type TableInsert<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Insert'];
+type TableUpdate<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Update'];
+
+export type { TableRow, TableInsert, TableUpdate };
