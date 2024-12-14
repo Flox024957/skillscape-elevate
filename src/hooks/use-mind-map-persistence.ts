@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import type { MindMap, MindMapNode } from '@/types/database/mind-map';
+import type { MindMap } from '@/types/database/mind-map';
+import type { MindMapNodeType } from '@/components/games/mind-map/types';
 
 export const useMindMapPersistence = (mindMapId?: string) => {
   const [mindMap, setMindMap] = useState<MindMap | null>(null);
@@ -24,7 +25,14 @@ export const useMindMapPersistence = (mindMapId?: string) => {
         .single();
 
       if (error) throw error;
-      setMindMap(data as MindMap);
+      
+      // Conversion explicite des données JSON en MindMap
+      const mindMapData: MindMap = {
+        ...data,
+        data: data.data as MindMapNodeType[]
+      };
+      
+      setMindMap(mindMapData);
     } catch (error) {
       console.error('Error loading mind map:', error);
       toast({
@@ -35,16 +43,18 @@ export const useMindMapPersistence = (mindMapId?: string) => {
     }
   };
 
-  const saveMindMap = async (title: string, nodes: MindMapNode[], isTemplate = false) => {
+  const saveMindMap = async (title: string, nodes: MindMapNodeType[]) => {
     try {
+      const mindMapData = {
+        title,
+        data: nodes,
+        updated_at: new Date().toISOString()
+      };
+
       if (mindMapId) {
         const { error } = await supabase
           .from('mind_maps')
-          .update({
-            title,
-            data: nodes,
-            updated_at: new Date().toISOString()
-          })
+          .update(mindMapData)
           .eq('id', mindMapId);
 
         if (error) throw error;
@@ -52,9 +62,8 @@ export const useMindMapPersistence = (mindMapId?: string) => {
         const { data, error } = await supabase
           .from('mind_maps')
           .insert({
-            title,
-            data: nodes,
-            is_template: isTemplate
+            ...mindMapData,
+            is_template: false
           })
           .select()
           .single();

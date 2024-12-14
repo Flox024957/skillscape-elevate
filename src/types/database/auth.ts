@@ -1,5 +1,6 @@
-import type { Database } from "@/integrations/supabase/types";
+import type { Database } from '@/integrations/supabase/types';
 
-export type AuthUser = Database["public"]["Tables"]["auth"]["Row"];
-export type AuthUserInsert = Database["public"]["Tables"]["auth"]["Insert"];
-export type AuthUserUpdate = Database["public"]["Tables"]["auth"]["Update"];
+export type Tables = Database;
+export type TableRow<T extends keyof Database> = Database[T]['Row'];
+export type TableInsert<T extends keyof Database> = Database[T]['Insert'];
+export type TableUpdate<T extends keyof Database> = Database[T]['Update'];

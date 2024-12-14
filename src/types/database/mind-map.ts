@@ -1,18 +1,10 @@
-export interface MindMapNode {
-  id: string;
-  content: string;
-  children: MindMapNode[];
-  parentId?: string;
-  level: number;
-  color?: string;
-}
-
-export type MindMapNodeType = MindMapNode;
+import { Json } from '@/integrations/supabase/types';
+import { MindMapNodeData } from '@/components/games/mind-map/types';
 
 export interface MindMap {
   id: string;
   title: string;
-  data: MindMapNode[];
+  data: MindMapNodeData[];
   is_template: boolean;
   created_at: string;
   updated_at: string;
