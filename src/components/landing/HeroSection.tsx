@@ -9,70 +9,70 @@ const HeroSection = () => {
     <motion.div 
       variants={{
         hidden: { opacity: 0 },
-        visible: { opacity: 1, transition: { duration: 0.5 } }
+        visible: { opacity: 1, transition: { duration: 0.8 } }
       }}
-      className="text-center mb-20 perspective-1000"
+      className="text-center perspective-1000"
     >
       <motion.h1 
-        initial={{ opacity: 0, filter: "brightness(0.3)" }}
+        initial={{ opacity: 0, y: 20 }}
         animate={{ 
           opacity: 1, 
-          filter: "brightness(1)",
-          textShadow: [
-            "0 0 0px rgba(255,255,255,0)",
-            "0 0 20px rgba(3,105,161,0.8)",
-            "0 0 40px rgba(3,105,161,0.8)",
-            "0 0 60px rgba(3,105,161,0.8)"
-          ]
+          y: 0,
+          transition: { duration: 1, ease: "easeOut" }
         }}
-        transition={{ 
-          duration: 1.5,
-          times: [0, 0.4, 0.7, 1],
-          ease: "easeInOut"
-        }}
-        className="text-6xl md:text-8xl font-bold mb-6
+        className="text-7xl md:text-9xl font-bold mb-8
                    bg-gradient-to-r from-[#0C4A6E] via-[#0EA5E9] to-[#38BDF8] bg-clip-text text-transparent
-                   transform hover:scale-105 transition-transform duration-300 cursor-default
-                   drop-shadow-[0_0_30px_rgba(3,105,161,0.8)]"
+                   tracking-tight leading-none
+                   transform hover:scale-105 transition-transform duration-500 cursor-default"
       >
         FLAP
       </motion.h1>
       <motion.p 
-        className="text-4xl md:text-5xl font-bold mb-6
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0, transition: { delay: 0.3, duration: 0.8 } }}
+        className="text-4xl md:text-6xl font-bold mb-8
                    bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#D946EF] bg-clip-text text-transparent
-                   drop-shadow-[0_0_20px_rgba(139,92,246,0.6)]"
-        whileHover={{ scale: 1.02 }}
+                   tracking-tight leading-tight max-w-4xl mx-auto"
       >
         Passez à l'Action, Transformez Votre Vie
       </motion.p>
-      <p className="text-xl text-gray-100 max-w-2xl mx-auto mb-8 leading-relaxed
-                    drop-shadow-[0_0_5px_rgba(3,105,161,0.5)]">
+      <motion.p 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0, transition: { delay: 0.5, duration: 0.8 } }}
+        className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mb-12 leading-relaxed
+                   font-light tracking-wide"
+      >
         Découvrez les clés d'action extraites de plus de 50 best-sellers du développement personnel. 
         Arrêtez de lire sans fin, commencez à transformer votre vie dès aujourd'hui.
-      </p>
-      <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+      </motion.p>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0, transition: { delay: 0.7, duration: 0.8 } }}
+        className="flex flex-col sm:flex-row gap-8 justify-center items-center"
+      >
         <Button
           onClick={() => navigate("/auth")}
-          className="w-full sm:w-auto px-8 py-6 text-lg rounded-xl
+          className="w-full sm:w-auto px-8 py-7 text-lg rounded-2xl
                    bg-gradient-to-r from-[#0C4A6E] via-[#8B5CF6] to-[#F97316] hover:from-[#0C4A6E] hover:via-[#7C3AED] hover:to-[#EA580C]
-                   shadow-[0_0_30px_rgba(3,105,161,0.5)] hover:shadow-[0_0_40px_rgba(3,105,161,0.7)]
-                   transform hover:-translate-y-1 transition-all duration-300
-                   border border-[#0369A1]/50"
+                   shadow-[0_0_30px_rgba(3,105,161,0.3)] hover:shadow-[0_0_50px_rgba(3,105,161,0.5)]
+                   transform hover:-translate-y-1 transition-all duration-500
+                   border border-[#0369A1]/30 font-medium tracking-wide"
         >
           Commencer Votre Transformation
         </Button>
         <Button
           onClick={() => navigate("/dashboard")}
           variant="outline"
-          className="w-full sm:w-auto px-8 py-6 text-lg rounded-xl
-                   bg-background/10 backdrop-blur-sm
-                   border border-[#0369A1]/50 hover:border-[#8B5CF6]
-                   shadow-[0_0_25px_rgba(3,105,161,0.4)] hover:shadow-[0_0_35px_rgba(139,92,246,0.6)]
-                   transform hover:-translate-y-1 transition-all duration-300"
+          className="w-full sm:w-auto px-8 py-7 text-lg rounded-2xl
+                   bg-background/5 backdrop-blur-sm
+                   border border-[#0369A1]/30 hover:border-[#8B5CF6]/50
+                   shadow-[0_0_25px_rgba(3,105,161,0.2)] hover:shadow-[0_0_40px_rgba(139,92,246,0.3)]
+                   transform hover:-translate-y-1 transition-all duration-500
+                   font-medium tracking-wide text-gray-300"
         >
           Découvrir la Méthode
         </Button>
-      </div>
+      </motion.div>
     </motion.div>
   );
 };
