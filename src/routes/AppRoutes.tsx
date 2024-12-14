@@ -28,6 +28,7 @@ const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
   return (
     <Routes>
       <Route path="/" element={<MainPage />} />
+      <Route path="/main" element={<MainPage />} />
       <Route path="/auth" element={<Auth />} />
       
       <Route
@@ -46,7 +47,6 @@ const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
       <Route path="/social" element={<Social />} />
       <Route path="/audio" element={<AudioPage />} />
       
-      {/* Routes des jeux */}
       <Route path="/challenges" element={<ChallengesPage />} />
       <Route path="/games/bubble-pop" element={<BubblePopPage />} />
       <Route path="/games/flash-cards" element={<FlashCardsPage />} />
