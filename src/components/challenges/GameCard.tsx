@@ -15,13 +15,19 @@ export const GameCard = ({ title, description, players, icon, color, route }: Ga
   const navigate = useNavigate();
   const IconComponent = icon ? (LucideIcons[icon as IconType] as React.ComponentType<LucideProps>) : null;
 
+  const handleClick = () => {
+    if (route) {
+      navigate(route);
+    }
+  };
+
   return (
     <motion.div
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       className="relative overflow-hidden rounded-xl border bg-card p-6 shadow-lg transition-colors hover:bg-accent/10 cursor-pointer"
       style={{ borderColor: color + '20' }}
-      onClick={() => navigate(route)}
+      onClick={handleClick}
     >
       <div className="flex items-start justify-between">
         <div className="space-y-2">
