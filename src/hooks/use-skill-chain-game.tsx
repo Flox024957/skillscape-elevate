@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@supabase/auth-helpers-react";
+import { useUser } from "@supabase/auth-helpers-react";
 import type { Skill } from "@/types/skills";
+import type { Achievement, UserAchievement } from "@/types/achievements";
 import { useAchievements } from "./skill-chain/use-achievements";
 import { useSkillValidation } from "./skill-chain/use-skill-validation";
 import { useScoring } from "./skill-chain/use-scoring";
@@ -16,7 +17,7 @@ export const useSkillChainGame = () => {
   const [combo, setCombo] = useState(0);
   
   const { toast } = useToast();
-  const { user } = useAuth();
+  const user = useUser();
   const { checkAchievements } = useAchievements(user?.id);
   const { isValidConnection } = useSkillValidation();
   const { calculatePoints } = useScoring();

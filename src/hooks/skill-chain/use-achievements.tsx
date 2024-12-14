@@ -1,15 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-
-export interface Achievement {
-  id: string;
-  title: string;
-  description: string;
-  condition_type: string;
-  condition_value: number;
-  icon_name: string;
-}
+import { supabase } from "@/integrations/supabase/client";
+import type { Achievement, UserAchievement } from "@/types/achievements";
 
 export const useAchievements = (userId: string | undefined) => {
   const { toast } = useToast();
@@ -21,16 +12,17 @@ export const useAchievements = (userId: string | undefined) => {
   ) => {
     if (!userId) return;
 
-    const { data: achievements } = await supabase
+    const { data: achievements, error: achievementsError } = await supabase
       .from("game_achievements")
-      .select("*");
+      .select("*") as { data: Achievement[] | null, error: any };
 
-    if (!achievements) return;
+    if (achievementsError || !achievements) return;
 
-    const { data: userAchievements } = await supabase
+    const { data: userAchievements, error: userAchievementsError } = await supabase
       .from("user_achievements")
-      .select("achievement_id")
-      .eq("user_id", userId);
+      .select("achievement_id") as { data: UserAchievement[] | null, error: any };
+
+    if (userAchievementsError) return;
 
     const unlockedIds = userAchievements?.map((ua) => ua.achievement_id) || [];
 
