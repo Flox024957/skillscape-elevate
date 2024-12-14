@@ -12,13 +12,13 @@ const features = [
     title: "Objectifs Transformationnels",
     description: "Définissez et atteignez vos objectifs de vie étape par étape",
     icon: "🎯",
-    color: "from-[#0369A1] to-[#0EA5E9]"
+    color: "from-[#8B5CF6] to-[#D946EF]"
   },
   {
     title: "Communauté Inspirante",
     description: "Échangez avec des personnes qui passent à l'action pour changer leur vie",
     icon: "🤝",
-    color: "from-[#0C4A6E] to-[#0369A1]"
+    color: "from-[#F97316] to-[#FB923C]"
   }
 ];
 
