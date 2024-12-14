@@ -120,17 +120,23 @@ export const useSkillChainGame = () => {
     return false;
   };
 
-  const handleAddSkill = (skill: Skill) => {
+  const handleAddSkill = async (skill: Skill) => {
     if (chain.length === 0 || isValidConnection(chain[chain.length - 1], skill)) {
-      setChain([...chain, skill]);
+      const newChain = [...chain, skill];
+      setChain(newChain);
       const points = calculatePoints(chain.length, combo);
-      setScore((prev) => prev + points);
-      setCombo((prev) => prev + 1);
+      const newScore = score + points;
+      setScore(newScore);
+      const newCombo = combo + 1;
+      setCombo(newCombo);
       
       toast({
         title: "Bonne connexion !",
         description: `+${points} points${combo > 0 ? ` (Combo x${combo + 1})` : ''}`,
       });
+
+      // Vérifier les achievements
+      await checkAchievements(newScore, newCombo, newChain.length);
     } else {
       setCombo(0);
       toast({
@@ -160,6 +166,66 @@ export const useSkillChainGame = () => {
     setTimeLeft(180);
     setGameOver(false);
     setCombo(0);
+  };
+
+  // Fonction pour vérifier et débloquer les achievements
+  const checkAchievements = async (currentScore: number, currentCombo: number, chainsCreated: number) => {
+    const { data: achievements } = await supabase
+      .from("game_achievements")
+      .select("*");
+
+    if (!achievements) return;
+
+    const { data: user } = await supabase.auth.getUser();
+    if (!user?.user?.id) return;
+
+    for (const achievement of achievements) {
+      switch (achievement.condition_type) {
+        case "score_reached":
+          if (currentScore >= achievement.condition_value) {
+            await unlockAchievement(user.user.id, achievement.id);
+          }
+          break;
+        case "combo_reached":
+          if (currentCombo >= achievement.condition_value) {
+            await unlockAchievement(user.user.id, achievement.id);
+          }
+          break;
+        case "chains_created":
+          if (chainsCreated >= achievement.condition_value) {
+            await unlockAchievement(user.user.id, achievement.id);
+          }
+          break;
+      }
+    }
+  };
+
+  const unlockAchievement = async (userId: string, achievementId: string) => {
+    const { data: existing } = await supabase
+      .from("user_achievements")
+      .select("*")
+      .eq("user_id", userId)
+      .eq("achievement_id", achievementId)
+      .single();
+
+    if (!existing) {
+      const { data: achievement } = await supabase
+        .from("game_achievements")
+        .select("*")
+        .eq("id", achievementId)
+        .single();
+
+      if (achievement) {
+        await supabase
+          .from("user_achievements")
+          .insert([{ user_id: userId, achievement_id: achievementId }]);
+
+        toast({
+          title: "Achievement débloqué !",
+          description: achievement.title,
+        });
+      }
+    }
   };
 
   return {
