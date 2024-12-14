@@ -28,13 +28,11 @@ export const MindMapNodeList = ({
           {childNodes.map((node) => (
             <motion.div key={node.id}>
               <MindMapNode
-                id={node.id}
-                content={node.content}
-                color={node.color}
-                onContentChange={onContentChange}
+                node={node}
+                nodes={nodes}
                 onAddChild={onAddChild}
+                onUpdate={onContentChange}
                 onDelete={onDeleteNode}
-                isRoot={!parentId}
               />
               {renderNodes(node.id, level + 1)}
             </motion.div>
