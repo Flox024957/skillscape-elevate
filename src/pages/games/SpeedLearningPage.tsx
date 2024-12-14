@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Timer, Brain, Trophy } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { Question } from "@/types/game";
+import { GameHeader } from "@/components/games/speed-learning/GameHeader";
+import { GameStats } from "@/components/games/speed-learning/GameStats";
+import { QuestionCard } from "@/components/games/speed-learning/QuestionCard";
+import { GameOver } from "@/components/games/speed-learning/GameOver";
+import { StartScreen } from "@/components/games/speed-learning/StartScreen";
 
 export default function SpeedLearningPage() {
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -15,7 +17,6 @@ export default function SpeedLearningPage() {
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   
-  const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -35,7 +36,6 @@ export default function SpeedLearningPage() {
       }
 
       if (data) {
-        // Assurons-nous que les options sont bien un tableau de strings
         const formattedQuestions = data.map(q => ({
           ...q,
           options: Array.isArray(q.options) ? q.options : JSON.parse(q.options as string)
@@ -113,99 +113,23 @@ export default function SpeedLearningPage() {
           animate={{ opacity: 1, y: 0 }}
           className="max-w-4xl mx-auto space-y-8"
         >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Brain className="w-8 h-8 text-primary" />
-              <h1 className="text-4xl font-bold">Speed Learning Battle</h1>
-            </div>
-            <Button
-              variant="outline"
-              onClick={() => navigate("/challenges")}
-              className="gap-2"
-            >
-              Retour
-            </Button>
-          </div>
+          <GameHeader />
 
           <div className="glass-panel p-8 space-y-6">
             {!gameStarted ? (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="text-center space-y-6"
-              >
-                <h2 className="text-2xl font-semibold">
-                  Prêt à tester vos connaissances ?
-                </h2>
-                <p className="text-muted-foreground">
-                  Répondez à un maximum de questions en 30 secondes !
-                </p>
-                <Button
-                  size="lg"
-                  onClick={handleStartGame}
-                  className="gap-2"
-                >
-                  <Trophy className="w-5 h-5" />
-                  Commencer le défi
-                </Button>
-              </motion.div>
+              <StartScreen onStart={handleStartGame} />
             ) : (
               <div className="space-y-6">
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-2">
-                    <Trophy className="w-5 h-5 text-primary" />
-                    <span className="text-xl font-semibold">
-                      Score: {score}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Timer className="w-5 h-5 text-primary" />
-                    <span className="text-xl font-semibold">
-                      {timeLeft}s
-                    </span>
-                  </div>
-                </div>
+                <GameStats score={score} timeLeft={timeLeft} />
 
                 {gameOver ? (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="text-center space-y-6"
-                  >
-                    <h2 className="text-2xl font-semibold">Partie terminée !</h2>
-                    <p className="text-xl">Score final : {score} points</p>
-                    <Button
-                      size="lg"
-                      onClick={handleStartGame}
-                      className="gap-2"
-                    >
-                      <Trophy className="w-5 h-5" />
-                      Rejouer
-                    </Button>
-                  </motion.div>
+                  <GameOver score={score} onRestart={handleStartGame} />
                 ) : currentQuestion ? (
-                  <motion.div
-                    key={currentQuestionIndex}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className="space-y-6"
-                  >
-                    <h3 className="text-xl font-medium">
-                      {currentQuestion.question}
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {currentQuestion.options.map((option, index) => (
-                        <Button
-                          key={index}
-                          variant="outline"
-                          className="p-4 h-auto text-left hover:bg-primary/20"
-                          onClick={() => handleAnswer(option)}
-                        >
-                          {option}
-                        </Button>
-                      ))}
-                    </div>
-                  </motion.div>
+                  <QuestionCard
+                    question={currentQuestion}
+                    onAnswer={handleAnswer}
+                    isDisabled={gameOver}
+                  />
                 ) : null}
               </div>
             )}
