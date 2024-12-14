@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import * as LucideIcons from "lucide-react";
 import { Game } from "@/types/games";
-import { LucideIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface GameCardProps extends Game {
   onClick?: () => void;
@@ -9,17 +9,17 @@ interface GameCardProps extends Game {
 
 type IconType = keyof typeof LucideIcons;
 
-export const GameCard = ({ title, description, players, icon, color, onClick }: GameCardProps) => {
-  // Get the icon component directly from LucideIcons using type assertion
-  const IconComponent = icon ? (LucideIcons[icon as IconType] as LucideIcon) : null;
+export const GameCard = ({ title, description, players, icon, color, route }: GameCardProps) => {
+  const navigate = useNavigate();
+  const IconComponent = icon ? LucideIcons[icon as IconType] : null;
 
   return (
     <motion.div
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
-      className="relative overflow-hidden rounded-xl border bg-card p-6 shadow-lg transition-colors hover:bg-accent/10"
+      className="relative overflow-hidden rounded-xl border bg-card p-6 shadow-lg transition-colors hover:bg-accent/10 cursor-pointer"
       style={{ borderColor: color + '20' }}
-      onClick={onClick}
+      onClick={() => navigate(route)}
     >
       <div className="flex items-start justify-between">
         <div className="space-y-2">
@@ -32,7 +32,10 @@ export const GameCard = ({ title, description, players, icon, color, onClick }: 
             className="rounded-full p-2"
             style={{ backgroundColor: color + '10' }}
           >
-            <IconComponent className="h-6 w-6" style={{ color }} />
+            {React.createElement(IconComponent, {
+              className: "h-6 w-6",
+              style: { color }
+            })}
           </div>
         )}
       </div>
