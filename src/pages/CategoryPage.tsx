@@ -69,7 +69,13 @@ const CategoryPage = () => {
   });
 
   const handleSkillClick = (skillId: string) => {
-    navigate(`/skill/${skillId}`);
+    try {
+      console.log('Navigating to skill:', skillId);
+      navigate(`/skill/${skillId}`);
+    } catch (error) {
+      console.error('Navigation error:', error);
+      toast.error("Erreur lors de la navigation");
+    }
   };
 
   const handleAddSkill = async (skillId: string, title: string) => {
@@ -158,6 +164,7 @@ const CategoryPage = () => {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3 }}
               className="cursor-pointer group"
+              onClick={() => handleSkillClick(skill.id)}
             >
               <div className="bg-card p-6 rounded-lg border border-border hover:border-primary 
                             transition-all duration-300 h-full">
@@ -179,7 +186,7 @@ const CategoryPage = () => {
                     <PlusCircle className="w-6 h-6 text-white relative z-10 group-hover:text-primary transition-colors" />
                   </motion.button>
                 </div>
-                <div onClick={() => handleSkillClick(skill.id)}>
+                <div>
                   {skill.resume && (
                     <p className="text-muted-foreground">{skill.resume}</p>
                   )}
