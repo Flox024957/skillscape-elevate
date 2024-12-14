@@ -17,8 +17,8 @@ const FeatureCard = ({ title, description, icon, color }: FeatureCardProps) => {
       whileHover={{ scale: 1.03, rotateY: 5 }}
       className="group p-10 rounded-3xl relative overflow-hidden
                bg-[#0C4A6E]/5 backdrop-blur-md
-               border border-[#0369A1]/20 hover:border-[#8B5CF6]/30
-               shadow-[0_0_30px_rgba(3,105,161,0.2)] hover:shadow-[0_0_50px_rgba(139,92,246,0.3)]
+               border border-[#0369A1]/20 hover:border-[#6E59A5]/30
+               shadow-[0_0_30px_rgba(3,105,161,0.2)] hover:shadow-[0_0_50px_rgba(110,89,165,0.3)]
                transform transition-all duration-500
                perspective-1000"
     >

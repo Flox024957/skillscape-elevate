@@ -21,9 +21,10 @@ const HeroSection = () => {
           transition: { duration: 1, ease: "easeOut" }
         }}
         className="text-7xl md:text-9xl font-bold mb-8
-                   bg-gradient-to-r from-[#0C4A6E] via-[#0EA5E9] to-[#38BDF8] bg-clip-text text-transparent
+                   text-[#F1F1F1]/90 hover:text-[#eee]
                    tracking-tight leading-none
-                   transform hover:scale-105 transition-transform duration-500 cursor-default"
+                   transform hover:scale-105 transition-transform duration-500 cursor-default
+                   shadow-[0_0_30px_rgba(241,241,241,0.2)]"
       >
         FLAP
       </motion.h1>
@@ -31,7 +32,7 @@ const HeroSection = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0, transition: { delay: 0.3, duration: 0.8 } }}
         className="text-4xl md:text-6xl font-bold mb-8
-                   bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#D946EF] bg-clip-text text-transparent
+                   bg-gradient-to-r from-[#6E59A5] via-[#7E69AB] to-[#8E79BB] bg-clip-text text-transparent
                    tracking-tight leading-tight max-w-4xl mx-auto"
       >
         Passez à l'Action, Transformez Votre Vie
