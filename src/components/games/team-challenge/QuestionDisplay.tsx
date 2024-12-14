@@ -24,18 +24,18 @@ export const QuestionDisplay = ({ question, onAnswer, timeLeft }: QuestionDispla
         </div>
       </div>
 
-      <div className="bg-card p-6 rounded-xl shadow-lg">
-        <h3 className="text-xl font-semibold mb-4">{question.question}</h3>
+      <div className="bg-card p-6 rounded-xl shadow-lg space-y-6">
+        <h3 className="text-xl font-semibold mb-4 leading-relaxed">{question.question}</h3>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4">
           {question.options.map((option, index) => (
             <Button
               key={index}
               variant="outline"
-              className="h-auto py-4 text-left justify-start hover:bg-primary/10"
+              className="h-auto py-6 px-4 text-left justify-start hover:bg-primary/10 whitespace-normal"
               onClick={() => onAnswer(option)}
             >
-              {option}
+              <span className="line-clamp-3">{option}</span>
             </Button>
           ))}
         </div>
