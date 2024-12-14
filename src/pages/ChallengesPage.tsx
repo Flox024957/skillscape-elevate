@@ -1,16 +1,9 @@
 import { motion } from "framer-motion";
 import { Trophy } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { GameSection } from "@/components/challenges/GameSection";
 import { games } from "@/data/games";
 
 const ChallengesPage = () => {
-  const navigate = useNavigate();
-
-  const handleGameClick = (route: string) => {
-    navigate(route);
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/80 pt-24">
       <div className="container mx-auto p-6 space-y-12">
@@ -57,7 +50,6 @@ const ChallengesPage = () => {
                 key={type}
                 type={type as "speed" | "construction" | "collaborative"}
                 games={games}
-                onPlay={handleGameClick}
               />
             ))}
           </div>

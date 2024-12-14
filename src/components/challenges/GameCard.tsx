@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import * as LucideIcons from "lucide-react";
 import { LucideIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface GameCardProps {
   id: string;
@@ -13,7 +14,6 @@ interface GameCardProps {
   icon: keyof typeof LucideIcons;
   color: string;
   route: string;
-  onPlay: (route: string) => void;
 }
 
 export const GameCard = ({
@@ -23,8 +23,8 @@ export const GameCard = ({
   icon,
   color,
   route,
-  onPlay,
 }: GameCardProps) => {
+  const navigate = useNavigate();
   const IconComponent = LucideIcons[icon] as LucideIcon;
 
   const item = {
@@ -79,7 +79,7 @@ export const GameCard = ({
             {players}
           </span>
           <Button
-            onClick={() => onPlay(route)}
+            onClick={() => navigate(route)}
             variant="secondary"
             className="bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 px-6 py-2 text-lg font-medium"
           >
