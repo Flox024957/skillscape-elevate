@@ -20,9 +20,9 @@ const HeroSection = () => {
           filter: "brightness(1)",
           textShadow: [
             "0 0 0px rgba(255,255,255,0)",
-            "0 0 20px rgba(255,255,255,0.8)",
-            "0 0 40px rgba(255,255,255,0.8)",
-            "0 0 60px rgba(255,255,255,0.8)"
+            "0 0 20px rgba(255,255,255,0.5)",
+            "0 0 40px rgba(255,255,255,0.5)",
+            "0 0 60px rgba(255,255,255,0.5)"
           ]
         }}
         transition={{ 
@@ -30,21 +30,21 @@ const HeroSection = () => {
           times: [0, 0.4, 0.7, 1],
           ease: "easeInOut"
         }}
-        className="text-6xl md:text-8xl font-bold mb-6 text-white
+        className="text-6xl md:text-8xl font-bold mb-6 text-[#E5E7EB]
                    transform hover:scale-105 transition-transform duration-300 cursor-default
-                   drop-shadow-[0_0_30px_rgba(255,255,255,0.8)]"
+                   drop-shadow-[0_0_30px_rgba(255,255,255,0.5)]"
       >
         FLAP
       </motion.h1>
       <motion.p 
-        className="text-4xl md:text-5xl font-bold mb-6 text-white
-                   drop-shadow-[0_0_20px_rgba(255,255,255,0.6)]"
+        className="text-4xl md:text-5xl font-bold mb-6 text-[#D1D5DB]
+                   drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]"
         whileHover={{ scale: 1.02 }}
       >
         Élevez Votre Potentiel Professionnel
       </motion.p>
-      <p className="text-xl text-gray-100 max-w-2xl mx-auto mb-8 leading-relaxed
-                    drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">
+      <p className="text-xl text-[#9CA3AF] max-w-2xl mx-auto mb-8 leading-relaxed
+                    drop-shadow-[0_0_5px_rgba(255,255,255,0.3)]">
         Développez vos compétences, fixez des objectifs ambitieux et suivez votre progression vers l'excellence professionnelle
       </p>
       <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">

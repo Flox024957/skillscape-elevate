@@ -23,11 +23,11 @@ const FeatureCard = ({ title, description, icon, color }: FeatureCardProps) => {
       <div className="text-4xl mb-4 transform group-hover:scale-110 transition-transform duration-300">
         {icon}
       </div>
-      <h3 className="text-xl font-semibold mb-3 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]
+      <h3 className="text-xl font-semibold mb-3 text-[#D1D5DB] drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]
                      group-hover:scale-105 transition-transform duration-300">
         {title}
       </h3>
-      <p className="text-gray-100 leading-relaxed drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">
+      <p className="text-[#9CA3AF] leading-relaxed drop-shadow-[0_0_5px_rgba(255,255,255,0.3)]">
         {description}
       </p>
     </motion.div>
