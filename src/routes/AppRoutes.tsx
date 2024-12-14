@@ -18,6 +18,7 @@ import BubblePopPage from "@/pages/games/BubblePopPage";
 import SkillBuilderPage from "@/pages/games/SkillBuilderPage";
 import MindMapPage from "@/pages/games/MindMapPage";
 import TeamChallengePage from "@/pages/games/TeamChallengePage";
+import SkillChainPage from "@/pages/games/SkillChainPage";
 
 export default function AppRoutes({ isAuthenticated }: { isAuthenticated: boolean }) {
   return (
@@ -141,6 +142,14 @@ export default function AppRoutes({ isAuthenticated }: { isAuthenticated: boolea
         element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
             <MindMapPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/games/skill-chain"
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <SkillChainPage />
           </ProtectedRoute>
         }
       />

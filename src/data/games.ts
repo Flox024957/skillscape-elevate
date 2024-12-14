@@ -70,5 +70,15 @@ export const games: Game[] = [
     icon: "Users",
     color: "bg-gradient-to-r from-violet-500 to-purple-500",
     route: "/games/team-challenge"
+  },
+  {
+    id: "skill-chain",
+    title: "Skill Chain",
+    description: "Construisez des chaînes de compétences liées !",
+    type: "construction",
+    players: "1-4",
+    icon: "Link",
+    color: "bg-gradient-to-r from-cyan-500 to-blue-500",
+    route: "/games/skill-chain"
   }
 ];
