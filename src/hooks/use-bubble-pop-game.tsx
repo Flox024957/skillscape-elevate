@@ -37,7 +37,7 @@ export const useBubblePopGame = () => {
   const generateBubble = useCallback(async (): Promise<Bubble> => {
     const { data: skills } = await supabase
       .from("skills")
-      .select("id, titre, resume, description, action_concrete")
+      .select("id, titre, resume, description, action_concrete, category_id, created_at, updated_at, exemples")
       .limit(1)
       .order("random()");
 
@@ -46,7 +46,7 @@ export const useBubblePopGame = () => {
     }
 
     const skill = skills[0];
-    const questionTypes = ["titre", "resume", "description", "action_concrete"];
+    const questionTypes = ["titre", "resume", "description", "action_concrete"] as const;
     const selectedType = questionTypes[Math.floor(Math.random() * questionTypes.length)];
     
     const x = Math.random() * (window.innerWidth - 100) + 50;
@@ -58,7 +58,7 @@ export const useBubblePopGame = () => {
       y,
       size: Math.random() * 20 + 60, // Random size between 60 and 80
       speed: Math.random() * 1 + 0.5, // Random speed between 0.5 and 1.5
-      skill: skill,
+      skill,
       questionType: selectedType,
       color: `hsl(${Math.random() * 360}, 70%, 70%)`,
     };
