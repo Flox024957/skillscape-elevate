@@ -8,8 +8,8 @@ import { toast } from "sonner";
 
 interface Skill {
   id: string;
-  title: string;
-  summary?: string;
+  titre: string;
+  resume?: string;
 }
 
 interface CategoryCardProps {

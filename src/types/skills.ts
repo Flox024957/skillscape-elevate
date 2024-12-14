@@ -9,37 +9,14 @@ export interface Category {
 
 export interface Skill {
   id: string;
-  titre: string;          // French field from DB
-  resume: string;         // French field from DB
+  titre: string;
+  resume: string;
   description: string;
-  action_concrete: string; // French field from DB
-  exemples: Json;         // French field from DB
+  action_concrete: string;
+  exemples: Json;
   category_id?: string;
   created_at?: string;
   updated_at?: string;
-  categories?: {
-    id: string;
-    name: string;
-    description?: string;
-  } | null;
-}
-
-export interface UserSkill {
-  skill_id: string;
-  sections_selectionnees: string[] | null;
-  skills: Skill;
-  is_mastered?: boolean;
-}
-
-export interface MasteredSkill {
-  skill_id: string;
-  mastered_at: string;
-  notes: string | null;
-  skills: {
-    id: string;
-    titre: string;
-    resume: string | null;
-  };
 }
 
 // Helper function to normalize examples array
