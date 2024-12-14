@@ -3,22 +3,22 @@ import FeatureCard from "./FeatureCard";
 
 const features = [
   {
-    title: "Développement Personnel Actionnable",
-    description: "Des actions concrètes extraites des meilleurs livres de développement personnel pour des résultats immédiats",
+    title: "Développement Personnel",
+    description: "Suivez votre progression et développez vos compétences à votre rythme",
     icon: "✨",
-    color: "from-[#0C4A6E] to-[#0369A1]"
+    color: "from-[#0EA5E9] to-[#33C3F0]"
   },
   {
-    title: "Objectifs Transformationnels",
-    description: "Une méthode éprouvée pour définir et atteindre vos objectifs de vie étape par étape",
+    title: "Objectifs Clairs",
+    description: "Définissez et atteignez vos objectifs professionnels étape par étape",
     icon: "🎯",
-    color: "from-[#6E59A5] to-[#7E69AB]"
+    color: "from-[#F97316] to-[#FEC6A1]"
   },
   {
-    title: "Communauté Inspirante",
-    description: "Rejoignez des personnes déterminées qui passent à l'action pour transformer leur vie",
+    title: "Communauté Active",
+    description: "Partagez et apprenez avec une communauté de professionnels motivés",
     icon: "🤝",
-    color: "from-[#F97316] to-[#FB923C]"
+    color: "from-[#9b87f5] to-[#8B5CF6]"
   }
 ];
 
@@ -30,11 +30,11 @@ const FeaturesSection = () => {
         visible: {
           opacity: 1,
           transition: {
-            staggerChildren: 0.3
+            staggerChildren: 0.2
           }
         }
       }}
-      className="grid grid-cols-1 md:grid-cols-3 gap-8"
+      className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20"
     >
       {features.map((feature, index) => (
         <FeatureCard key={index} {...feature} />
