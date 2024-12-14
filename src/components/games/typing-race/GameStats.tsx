@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Timer, Target, Zap, Flame } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface GameStatsProps {
   score: number;
