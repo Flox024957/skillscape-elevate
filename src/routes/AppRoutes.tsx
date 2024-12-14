@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import ProtectedRoute from "@/components/ProtectedRoute";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
 import MainPage from "@/pages/MainPage";
@@ -13,7 +13,7 @@ import AudioPage from "@/pages/AudioPage";
 import ChallengesPage from "@/pages/ChallengesPage";
 import SpeedLearningPage from "@/pages/games/SpeedLearningPage";
 
-export default function AppRoutes() {
+export default function AppRoutes({ isAuthenticated }: { isAuthenticated: boolean }) {
   return (
     <Routes>
       <Route path="/" element={<Index />} />
@@ -21,7 +21,7 @@ export default function AppRoutes() {
       <Route
         path="/app"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
             <MainPage />
           </ProtectedRoute>
         }
@@ -29,7 +29,7 @@ export default function AppRoutes() {
       <Route
         path="/dashboard"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
             <Dashboard />
           </ProtectedRoute>
         }
@@ -37,7 +37,7 @@ export default function AppRoutes() {
       <Route
         path="/social"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
             <Social />
           </ProtectedRoute>
         }
@@ -45,7 +45,7 @@ export default function AppRoutes() {
       <Route
         path="/profile/:id"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
             <PublicProfile />
           </ProtectedRoute>
         }
@@ -53,7 +53,7 @@ export default function AppRoutes() {
       <Route
         path="/edit-profile"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
             <EditProfile />
           </ProtectedRoute>
         }
@@ -61,7 +61,7 @@ export default function AppRoutes() {
       <Route
         path="/category/:id"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
             <CategoryPage />
           </ProtectedRoute>
         }
@@ -69,7 +69,7 @@ export default function AppRoutes() {
       <Route
         path="/skill/:id"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
             <SkillDetailPage />
           </ProtectedRoute>
         }
@@ -77,7 +77,7 @@ export default function AppRoutes() {
       <Route
         path="/audio"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
             <AudioPage />
           </ProtectedRoute>
         }
@@ -85,7 +85,7 @@ export default function AppRoutes() {
       <Route
         path="/challenges"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
             <ChallengesPage />
           </ProtectedRoute>
         }
@@ -93,7 +93,7 @@ export default function AppRoutes() {
       <Route
         path="/games/speed-learning"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
             <SpeedLearningPage />
           </ProtectedRoute>
         }

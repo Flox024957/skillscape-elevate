@@ -5,15 +5,7 @@ import { Timer, Brain, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-
-interface Question {
-  id: string;
-  category: string;
-  question: string;
-  options: string[];
-  correct_answer: string;
-  difficulty: number;
-}
+import type { Question } from "@/types/game";
 
 export default function SpeedLearningPage() {
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -43,7 +35,12 @@ export default function SpeedLearningPage() {
       }
 
       if (data) {
-        setQuestions(data);
+        // Assurons-nous que les options sont bien un tableau de strings
+        const formattedQuestions = data.map(q => ({
+          ...q,
+          options: Array.isArray(q.options) ? q.options : JSON.parse(q.options as string)
+        }));
+        setQuestions(formattedQuestions);
       }
     };
 
@@ -89,7 +86,7 @@ export default function SpeedLearningPage() {
       toast({
         title: "Bonne réponse !",
         description: "+10 points",
-        variant: "success",
+        variant: "default",
       });
     } else {
       toast({
