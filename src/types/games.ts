@@ -11,3 +11,9 @@ export interface Game {
   color: string;
   route: string;
 }
+
+export interface CodeSnippet {
+  id: string;
+  content: string;
+  order: number;
+}

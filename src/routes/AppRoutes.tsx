@@ -5,6 +5,7 @@ import Layout from "@/components/layout/Layout";
 import LoadingScreen from "@/components/LoadingScreen";
 import ChallengesPage from "@/pages/ChallengesPage";
 import SpeedLearningPage from "@/pages/games/SpeedLearningPage";
+import CodeBuilderPage from "@/pages/games/CodeBuilderPage";
 
 const AppRoutes = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
   return (
@@ -36,6 +37,14 @@ const AppRoutes = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
           <ProtectedRoute isAuthenticated={isAuthenticated}>
             <Suspense fallback={<LoadingScreen />}>
               <SpeedLearningPage />
+            </Suspense>
+          </ProtectedRoute>
+        } />
+
+        <Route path="/games/code-builder" element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <Suspense fallback={<LoadingScreen />}>
+              <CodeBuilderPage />
             </Suspense>
           </ProtectedRoute>
         } />
