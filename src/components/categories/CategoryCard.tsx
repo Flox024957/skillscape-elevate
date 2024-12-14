@@ -50,7 +50,7 @@ export const CategoryCard = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.1 }}
       className={cn(
-        "group relative overflow-hidden rounded-xl bg-black/5 backdrop-blur-sm",
+        "group relative overflow-hidden rounded-xl bg-white/5 backdrop-blur-sm",
         "border border-white/10 hover:border-primary/50 transition-all duration-500",
         "cursor-pointer hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] transform-gpu",
         isMobile ? "h-[200px]" : "h-[280px]"

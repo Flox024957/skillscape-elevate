@@ -33,7 +33,6 @@ const MainPage = () => {
         throw categoriesError;
       }
       
-      // Transform the data to match our Category type
       const transformedCategories: Category[] = categoriesData?.map(category => ({
         id: category.id,
         name: category.name,
@@ -66,7 +65,7 @@ const MainPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-background/95">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -78,7 +77,7 @@ const MainPage = () => {
                          bg-gradient-to-r from-purple-400 to-pink-600">
               Bienvenue sur FLAP
             </h1>
-            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Explorez nos catégories et commencez votre voyage de développement personnel
             </p>
           </div>
