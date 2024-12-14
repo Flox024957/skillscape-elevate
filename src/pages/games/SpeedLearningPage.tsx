@@ -5,12 +5,23 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { GameQuestion } from "@/components/games/speed-learning/GameQuestion";
+import { GameScore } from "@/components/games/speed-learning/GameScore";
+
+const GAME_DURATION = 300; // 5 minutes en secondes
 
 const SpeedLearningPage = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [gameState, setGameState] = useState<"waiting" | "playing" | "finished">("waiting");
+  const [timeLeft, setTimeLeft] = useState(GAME_DURATION);
+  const [score, setScore] = useState(0);
+  const [currentQuestion, setCurrentQuestion] = useState({
+    question: "",
+    options: [""],
+    correctAnswer: ""
+  });
 
   useEffect(() => {
     const checkGameSession = async () => {
@@ -37,6 +48,22 @@ const SpeedLearningPage = () => {
 
     checkGameSession();
   }, [toast]);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (gameState === "playing") {
+      timer = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev <= 1) {
+            setGameState("finished");
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [gameState]);
 
   const handleCreateGame = async () => {
     try {
@@ -71,6 +98,17 @@ const SpeedLearningPage = () => {
     }
   };
 
+  const handleAnswer = (answer: string) => {
+    if (answer === currentQuestion.correctAnswer) {
+      setScore((prev) => prev + 100);
+      toast({
+        title: "Bonne réponse !",
+        description: "+100 points",
+      });
+    }
+    // Charger la prochaine question...
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/80 pt-24">
       <div className="container mx-auto p-6">
@@ -102,51 +140,48 @@ const SpeedLearningPage = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className="p-6 rounded-xl bg-card border border-border/50 space-y-4"
-            >
-              <div className="flex items-center gap-3">
-                <Timer className="w-6 h-6 text-primary" />
-                <h2 className="text-xl font-semibold">Comment jouer</h2>
-              </div>
-              <ul className="space-y-2 text-muted-foreground">
-                <li>• Répondez rapidement aux questions</li>
-                <li>• Gagnez des points pour chaque bonne réponse</li>
-                <li>• Le plus rapide avec les bonnes réponses gagne</li>
-                <li>• Durée de la partie : 5 minutes</li>
-              </ul>
-            </motion.div>
+          {gameState === "playing" && (
+            <>
+              <GameScore score={score} position={1} totalPlayers={4} />
+              <GameQuestion
+                question={currentQuestion.question}
+                options={currentQuestion.options}
+                onAnswer={handleAnswer}
+                timeLeft={timeLeft}
+              />
+            </>
+          )}
 
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 }}
-              className="p-6 rounded-xl bg-card border border-border/50 space-y-4"
-            >
-              <div className="flex items-center gap-3">
-                <Trophy className="w-6 h-6 text-primary" />
-                <h2 className="text-xl font-semibold">Classement</h2>
-              </div>
-              <div className="text-muted-foreground">
-                Le classement sera disponible bientôt...
-              </div>
-            </motion.div>
-          </div>
+          {gameState === "waiting" && (
+            <div className="flex justify-center pt-8">
+              <Button
+                size="lg"
+                className="text-lg px-8"
+                onClick={handleCreateGame}
+                disabled={isLoading}
+              >
+                {isLoading ? "Chargement..." : "Créer une partie"}
+              </Button>
+            </div>
+          )}
 
-          <div className="flex justify-center pt-8">
-            <Button
-              size="lg"
-              className="text-lg px-8"
-              onClick={handleCreateGame}
-              disabled={isLoading}
+          {gameState === "finished" && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="text-center space-y-4"
             >
-              {isLoading ? "Chargement..." : "Créer une partie"}
-            </Button>
-          </div>
+              <Trophy className="w-16 h-16 text-yellow-500 mx-auto" />
+              <h2 className="text-3xl font-bold">Partie terminée !</h2>
+              <p className="text-xl">Score final : {score}</p>
+              <Button
+                size="lg"
+                onClick={() => navigate("/challenges")}
+              >
+                Retour aux défis
+              </Button>
+            </motion.div>
+          )}
         </motion.div>
       </div>
     </div>
