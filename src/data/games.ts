@@ -1,97 +1,74 @@
 import type { Game } from "@/types/games";
 
 export const games: Game[] = [
-  // Jeux de rapidité
   {
-    id: "speed-learning-battle",
-    title: "Speed Learning Battle",
-    description: "Affrontez d'autres joueurs dans une bataille de connaissances rapide !",
+    id: "speed-learning",
+    title: "Speed Learning",
+    description: "Testez vos compétences en vitesse d'apprentissage !",
     type: "speed",
-    players: "2-4 joueurs",
-    icon: "Timer",
-    color: "from-orange-500 to-pink-500",
+    players: "1-4",
+    icon: "Clock",
+    color: "bg-gradient-to-r from-green-400 to-blue-500",
     route: "/games/speed-learning"
   },
   {
     id: "typing-race",
     title: "Typing Race",
-    description: "Course de frappe avec des termes techniques. Soyez le plus rapide !",
+    description: "Affrontez-vous dans une course de frappe !",
     type: "speed",
-    players: "2-6 joueurs",
-    icon: "Rocket",
-    color: "from-blue-500 to-purple-500",
+    players: "1-4",
+    icon: "Keyboard",
+    color: "bg-gradient-to-r from-yellow-400 to-red-500",
     route: "/games/typing-race"
   },
   {
-    id: "flash-cards-sprint",
-    title: "Flash Cards Sprint",
-    description: "Mémorisez et répondez rapidement aux cartes-éclair !",
-    type: "speed",
-    players: "1 joueur",
-    icon: "Brain",
-    color: "from-green-500 to-teal-500",
+    id: "flash-cards",
+    title: "Flash Cards",
+    description: "Apprenez avec des cartes mémoire interactives !",
+    type: "construction",
+    players: "1-10",
+    icon: "BookOpen",
+    color: "bg-gradient-to-r from-blue-500 to-indigo-500",
     route: "/games/flash-cards"
   },
   {
-    id: "bubble-pop-challenge",
-    title: "Bubble Pop Challenge",
-    description: "Éclatez les bulles en équipe et battez des records !",
-    type: "speed",
-    players: "2-4 joueurs",
-    icon: "Gamepad",
-    color: "from-purple-500 to-indigo-500",
+    id: "bubble-pop",
+    title: "Bubble Pop",
+    description: "Éclatez des bulles tout en apprenant !",
+    type: "collaborative",
+    players: "1-4",
+    icon: "Droplet",
+    color: "bg-gradient-to-r from-pink-500 to-red-500",
     route: "/games/bubble-pop"
   },
-  // Jeux de construction
   {
-    id: "skill-builder-coop",
-    title: "Skill Builder Co-op",
-    description: "Construisez ensemble la structure parfaite !",
+    id: "skill-builder",
+    title: "Skill Builder",
+    description: "Construisez vos compétences avec des défis !",
     type: "construction",
-    players: "2-3 joueurs",
-    icon: "Users",
-    color: "from-yellow-500 to-orange-500",
+    players: "1-10",
+    icon: "Hammer",
+    color: "bg-gradient-to-r from-purple-500 to-pink-500",
     route: "/games/skill-builder"
   },
   {
-    id: "mind-map-masters",
-    title: "Mind Map Masters",
-    description: "Créez la meilleure carte mentale en collaboration !",
+    id: "mind-map",
+    title: "Mind Map",
+    description: "Créez des cartes mentales pour organiser vos idées !",
     type: "construction",
-    players: "2-4 joueurs",
-    icon: "Brain",
-    color: "from-cyan-500 to-blue-500",
+    players: "1-10",
+    icon: "Map",
+    color: "bg-gradient-to-r from-teal-500 to-green-500",
     route: "/games/mind-map"
   },
-  // Jeux collaboratifs
   {
     id: "team-challenge",
     title: "Team Challenge",
-    description: "Relevez des défis en équipe contre d'autres équipes !",
+    description: "Affrontez-vous en équipe dans un quiz de connaissances sur les compétences !",
     type: "collaborative",
-    players: "4-8 joueurs",
+    players: "4-10",
     icon: "Users",
-    color: "from-red-500 to-orange-500",
+    color: "bg-gradient-to-r from-violet-500 to-purple-500",
     route: "/games/team-challenge"
-  },
-  {
-    id: "skill-chain",
-    title: "Skill Chain",
-    description: "Créez la plus longue chaîne de compétences en équipe !",
-    type: "collaborative",
-    players: "3-6 joueurs",
-    icon: "Crown",
-    color: "from-emerald-500 to-green-500",
-    route: "/games/skill-chain"
-  },
-  {
-    id: "knowledge-race",
-    title: "Knowledge Race",
-    description: "Course de connaissances entre équipes !",
-    type: "collaborative",
-    players: "4-8 joueurs",
-    icon: "Trophy",
-    color: "from-violet-500 to-purple-500",
-    route: "/games/knowledge-race"
-  },
+  }
 ];

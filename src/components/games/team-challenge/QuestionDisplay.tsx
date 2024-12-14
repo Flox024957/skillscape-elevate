@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import type { Question } from "@/types/game";
 
 interface QuestionDisplayProps {
@@ -9,19 +10,24 @@ interface QuestionDisplayProps {
 }
 
 export const QuestionDisplay = ({ question, onAnswer, timeLeft }: QuestionDisplayProps) => {
+  const timeProgress = (timeLeft / 60) * 100;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="space-y-6"
     >
-      <div className="flex justify-between items-center">
-        <div className="text-sm font-medium text-muted-foreground">
-          Temps restant: {timeLeft}s
+      <div className="space-y-2">
+        <div className="flex justify-between items-center text-sm">
+          <span className="font-medium text-muted-foreground">
+            Temps restant: {timeLeft}s
+          </span>
+          <span className="font-medium text-primary">
+            Difficulté: {question.difficulty}
+          </span>
         </div>
-        <div className="text-sm font-medium text-primary">
-          Difficulté: {question.difficulty}
-        </div>
+        <Progress value={timeProgress} className="h-2" />
       </div>
 
       <div className="bg-card p-6 rounded-xl shadow-lg space-y-6">

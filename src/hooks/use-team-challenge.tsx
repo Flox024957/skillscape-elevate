@@ -13,12 +13,13 @@ interface TeamChallengeState {
   timeLeft: number;
 }
 
-const QUESTION_TIME = 45; // Increased time for reading skill-based questions
+const QUESTION_TIME = 60; // Augmenté pour donner plus de temps pour lire
 const TOTAL_QUESTIONS = 10;
 
 export const useTeamChallenge = () => {
   const { toast } = useToast();
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [gameState, setGameState] = useState<TeamChallengeState>({
     status: "waiting",
     currentTeam: 1,
@@ -29,6 +30,7 @@ export const useTeamChallenge = () => {
 
   useEffect(() => {
     const loadQuestions = async () => {
+      setIsLoading(true);
       const { data, error } = await supabase
         .from("game_questions")
         .select("*")
@@ -47,13 +49,13 @@ export const useTeamChallenge = () => {
       }
 
       if (data) {
-        // Transform the data to ensure options is string[]
         const transformedQuestions = data.map(q => ({
           ...q,
-          options: q.options as string[] // Cast the JSON to string[]
+          options: q.options as string[]
         }));
         setQuestions(transformedQuestions);
       }
+      setIsLoading(false);
     };
 
     loadQuestions();
@@ -84,7 +86,12 @@ export const useTeamChallenge = () => {
 
     const nextQuestionIndex = currentState.currentQuestionIndex + 1;
     
-    if (nextQuestionIndex >= TOTAL_QUESTIONS) {
+    if (nextQuestionIndex >= questions.length) {
+      // Sauvegarder le score dans les leaderboards
+      const winningTeam = Object.entries(newScores).reduce((a, b) => 
+        newScores[Number(a)] > newScores[Number(b)] ? a : b
+      );
+      
       return {
         ...currentState,
         status: "finished" as const,
@@ -103,7 +110,7 @@ export const useTeamChallenge = () => {
     };
   };
 
-  const handleAnswer = (question: Question, answer: string) => {
+  const handleAnswer = async (question: Question, answer: string) => {
     const isCorrect = answer === question.correct_answer;
 
     toast({
@@ -129,7 +136,7 @@ export const useTeamChallenge = () => {
 
     setGameState(prev => ({ 
       ...prev, 
-      status: "playing" as const,
+      status: "playing",
       timeLeft: QUESTION_TIME,
     }));
   };
@@ -139,5 +146,6 @@ export const useTeamChallenge = () => {
     startGame,
     handleAnswer,
     questions,
+    isLoading,
   };
 };
