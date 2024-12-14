@@ -5,12 +5,7 @@ import { cn } from "@/lib/utils";
 import { CategoryImage } from "./CategoryImage";
 import { CategoryContent } from "./CategoryContent";
 import { toast } from "sonner";
-
-interface Skill {
-  id: string;
-  title: string;
-  summary?: string;
-}
+import { Skill } from "@/types/skills";
 
 interface CategoryCardProps {
   id: string;
@@ -19,7 +14,7 @@ interface CategoryCardProps {
   imageUrl: string;
   imagePosition: string;
   index: number;
-  skills?: Skill[];
+  skills: Skill[];
 }
 
 export const CategoryCard = ({ 

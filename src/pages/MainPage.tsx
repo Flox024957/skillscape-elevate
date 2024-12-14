@@ -3,6 +3,7 @@ import { CategoriesGrid } from "@/components/categories/CategoriesGrid";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
+import { Category, Skill } from "@/types/skills";
 
 const MainPage = () => {
   const { data: categories, isLoading, error } = useQuery({
@@ -30,7 +31,7 @@ const MainPage = () => {
       }
       
       console.log('Categories fetched:', categoriesData);
-      return categoriesData || [];
+      return (categoriesData || []) as Category[];
     },
   });
 
