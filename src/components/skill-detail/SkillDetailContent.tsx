@@ -24,12 +24,18 @@ export const SkillDetailContent = ({
   const { data: illustration, isLoading: isLoadingIllustration } = useQuery({
     queryKey: ['skillIllustration', skill.id],
     queryFn: async () => {
-      const { data } = await supabase
-        .from('skill_illustrations')
-        .select('image_url')
-        .eq('skill_id', skill.id)
-        .single();
-      return data;
+      try {
+        const { data, error } = await supabase
+          .from('skill_illustrations')
+          .select('image_url')
+          .eq('skill_id', skill.id);
+        
+        if (error) throw error;
+        return data?.[0] || null;
+      } catch (error) {
+        console.error('Error fetching illustration:', error);
+        return null;
+      }
     },
   });
 
@@ -69,13 +75,13 @@ export const SkillDetailContent = ({
     visible: { opacity: 1, y: 0 }
   };
 
-  const panelHoverVariants = {
+  const panelVariants = {
     initial: { 
-      backgroundColor: "rgba(0, 0, 0, 0)",
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
       scale: 1
     },
     hover: { 
-      backgroundColor: "rgba(var(--primary-rgb), 0.05)",
+      backgroundColor: "rgba(0, 0, 0, 0.7)",
       scale: 1.02,
       transition: {
         duration: 0.2
@@ -145,9 +151,9 @@ export const SkillDetailContent = ({
           <div className="space-y-6">
             <motion.div
               variants={itemVariants}
-              whileHover="hover"
               initial="initial"
-              variants={panelHoverVariants}
+              whileHover="hover"
+              animate="visible"
               className="glass-panel p-8 relative rounded-xl backdrop-blur-sm 
                        border border-white/10 bg-black/50 shadow-xl"
             >
@@ -162,9 +168,9 @@ export const SkillDetailContent = ({
 
             <motion.div
               variants={itemVariants}
-              whileHover="hover"
               initial="initial"
-              variants={panelHoverVariants}
+              whileHover="hover"
+              animate="visible"
               className="glass-panel p-8 relative rounded-xl backdrop-blur-sm 
                        border border-white/10 bg-black/50 shadow-xl"
             >
@@ -182,9 +188,9 @@ export const SkillDetailContent = ({
           <div className="space-y-6">
             <motion.div
               variants={itemVariants}
-              whileHover="hover"
               initial="initial"
-              variants={panelHoverVariants}
+              whileHover="hover"
+              animate="visible"
               className="glass-panel p-8 relative rounded-xl backdrop-blur-sm 
                        border border-white/10 bg-black/50 shadow-xl"
             >
@@ -200,9 +206,9 @@ export const SkillDetailContent = ({
             {examples.length > 0 && (
               <motion.div
                 variants={itemVariants}
-                whileHover="hover"
                 initial="initial"
-                variants={panelHoverVariants}
+                whileHover="hover"
+                animate="visible"
                 className="glass-panel p-8 relative rounded-xl backdrop-blur-sm 
                          border border-white/10 bg-black/50 shadow-xl"
               >
