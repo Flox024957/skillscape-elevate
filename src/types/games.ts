@@ -10,4 +10,5 @@ export interface Game {
   icon: keyof typeof LucideIcons;
   color: string;
   route: string;
+  available?: boolean;
 }

@@ -9,7 +9,8 @@ export const games: Game[] = [
     players: "1 joueur",
     icon: "Zap",
     color: "#FF6B6B",
-    route: "/games/speed-learning"
+    route: "/games/speed-learning",
+    available: true
   },
   {
     id: "typing-race",
@@ -19,7 +20,8 @@ export const games: Game[] = [
     players: "1-4 joueurs",
     icon: "Keyboard",
     color: "#4ECDC4",
-    route: "/games/typing-race"
+    route: "/games/typing-race",
+    available: false
   },
   {
     id: "flash-cards",
@@ -29,7 +31,8 @@ export const games: Game[] = [
     players: "1 joueur",
     icon: "ScrollText",
     color: "#45B7D1",
-    route: "/games/flash-cards"
+    route: "/games/flash-cards",
+    available: false
   },
   {
     id: "bubble-pop",
@@ -39,7 +42,8 @@ export const games: Game[] = [
     players: "1 joueur",
     icon: "Circle",
     color: "#96CEB4",
-    route: "/games/bubble-pop"
+    route: "/games/bubble-pop",
+    available: false
   },
   {
     id: "skill-builder",
@@ -49,7 +53,8 @@ export const games: Game[] = [
     players: "1 joueur",
     icon: "TreePine",
     color: "#D4A373",
-    route: "/games/skill-builder"
+    route: "/games/skill-builder",
+    available: false
   },
   {
     id: "mind-map",
@@ -59,7 +64,8 @@ export const games: Game[] = [
     players: "1-5 joueurs",
     icon: "Network",
     color: "#FFB4A2",
-    route: "/games/mind-map"
+    route: "/games/mind-map",
+    available: false
   },
   {
     id: "skill-chain",
@@ -69,7 +75,8 @@ export const games: Game[] = [
     players: "1 joueur",
     icon: "Link",
     color: "#E9C46A",
-    route: "/games/skill-chain"
+    route: "/games/skill-chain",
+    available: false
   },
   {
     id: "team-challenge",
@@ -79,7 +86,8 @@ export const games: Game[] = [
     players: "2-8 joueurs",
     icon: "Users",
     color: "#2A9D8F",
-    route: "/games/team-challenge"
+    route: "/games/team-challenge",
+    available: false
   },
   {
     id: "knowledge-race",
@@ -89,6 +97,7 @@ export const games: Game[] = [
     players: "1-4 joueurs",
     icon: "Flag",
     color: "#E76F51",
-    route: "/games/knowledge-race"
+    route: "/games/knowledge-race",
+    available: false
   }
 ];
