@@ -15,6 +15,8 @@ import SpeedLearningPage from "@/pages/games/SpeedLearningPage";
 import TypingRacePage from "@/pages/games/TypingRacePage";
 import FlashCardsPage from "@/pages/games/FlashCardsPage";
 import BubblePopPage from "@/pages/games/BubblePopPage";
+import SkillBuilderPage from "@/pages/games/SkillBuilderPage";
+import MindMapPage from "@/pages/games/MindMapPage";
 
 export default function AppRoutes({ isAuthenticated }: { isAuthenticated: boolean }) {
   return (
@@ -122,6 +124,22 @@ export default function AppRoutes({ isAuthenticated }: { isAuthenticated: boolea
         element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
             <BubblePopPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/games/skill-builder"
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <SkillBuilderPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/games/mind-map"
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <MindMapPage />
           </ProtectedRoute>
         }
       />

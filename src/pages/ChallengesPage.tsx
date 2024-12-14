@@ -1,23 +1,14 @@
 import { motion } from "framer-motion";
 import { Trophy } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
 import { GameSection } from "@/components/challenges/GameSection";
 import { games } from "@/data/games";
 
 const ChallengesPage = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   const handleGameClick = (route: string) => {
-    if (route === "/games/speed-learning" || route === "/games/typing-race") {
-      navigate(route);
-    } else {
-      toast({
-        title: "Bientôt disponible !",
-        description: "Ce jeu sera disponible dans une prochaine mise à jour.",
-      });
-    }
+    navigate(route);
   };
 
   return (
