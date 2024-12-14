@@ -3,22 +3,22 @@ import FeatureCard from "./FeatureCard";
 
 const features = [
   {
-    title: "Développement Personnel",
-    description: "Suivez votre progression et développez vos compétences à votre rythme",
+    title: "Développement Personnel Actionnable",
+    description: "Des actions concrètes extraites des meilleurs livres de développement personnel",
     icon: "✨",
-    color: "from-[#0EA5E9] to-[#33C3F0]"
+    color: "from-[#0C4A6E] to-[#0369A1]"
   },
   {
-    title: "Objectifs Clairs",
-    description: "Définissez et atteignez vos objectifs professionnels étape par étape",
+    title: "Objectifs Transformationnels",
+    description: "Définissez et atteignez vos objectifs de vie étape par étape",
     icon: "🎯",
-    color: "from-[#F97316] to-[#FEC6A1]"
+    color: "from-[#0369A1] to-[#0EA5E9]"
   },
   {
-    title: "Communauté Active",
-    description: "Partagez et apprenez avec une communauté de professionnels motivés",
+    title: "Communauté Inspirante",
+    description: "Échangez avec des personnes qui passent à l'action pour changer leur vie",
     icon: "🤝",
-    color: "from-[#0EA5E9] to-[#33C3F0]"
+    color: "from-[#0C4A6E] to-[#0369A1]"
   }
 ];
 
