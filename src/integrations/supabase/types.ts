@@ -152,39 +152,6 @@ export type Database = {
           },
         ]
       }
-      game_questions: {
-        Row: {
-          category: string
-          correct_answer: string
-          created_at: string
-          difficulty: number
-          id: string
-          options: Json
-          question: string
-          updated_at: string
-        }
-        Insert: {
-          category: string
-          correct_answer: string
-          created_at?: string
-          difficulty?: number
-          id?: string
-          options: Json
-          question: string
-          updated_at?: string
-        }
-        Update: {
-          category?: string
-          correct_answer?: string
-          created_at?: string
-          difficulty?: number
-          id?: string
-          options?: Json
-          question?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       game_sessions: {
         Row: {
           created_at: string

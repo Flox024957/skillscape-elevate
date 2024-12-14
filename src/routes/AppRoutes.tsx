@@ -1,56 +1,56 @@
 import { Routes, Route } from "react-router-dom";
-import { Suspense, lazy } from "react";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
-import Layout from "@/components/layout/Layout";
-import LoadingScreen from "@/components/LoadingScreen";
+import Index from "@/pages/Index";
+import Auth from "@/pages/Auth";
+import Dashboard from "@/pages/Dashboard";
+import Social from "@/pages/Social";
+import EditProfile from "@/pages/EditProfile";
+import PublicProfile from "@/pages/PublicProfile";
+import CategoryPage from "@/pages/CategoryPage";
+import SkillDetailPage from "@/pages/SkillDetailPage";
+import AudioPage from "@/pages/AudioPage";
 import ChallengesPage from "@/pages/ChallengesPage";
-import SpeedLearningPage from "@/pages/games/SpeedLearningPage";
-import CodeBuilderPage from "@/pages/games/CodeBuilderPage";
+import MainPage from "@/pages/MainPage";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
-const AppRoutes = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
+interface AppRoutesProps {
+  isAuthenticated: boolean;
+}
+
+export const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
   return (
     <Routes>
-      <Route path="/auth" element={
-        <Suspense fallback={<LoadingScreen />}>
-          <div>Auth Page</div>
-        </Suspense>
-      } />
-      
-      <Route element={<Layout />}>
-        <Route path="/" element={
+      <Route path="/" element={<Index />} />
+      <Route path="/auth" element={<Auth />} />
+      <Route path="/main" element={<MainPage />} />
+      <Route path="/audio" element={<AudioPage />} />
+      <Route path="/challenges" element={<ChallengesPage />} />
+      <Route path="/category/:id" element={<CategoryPage />} />
+      <Route path="/skill/:skillId" element={<SkillDetailPage />} />
+      <Route
+        path="/dashboard"
+        element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <Suspense fallback={<LoadingScreen />}>
-              <div>Home Page</div>
-            </Suspense>
+            <Dashboard />
           </ProtectedRoute>
-        } />
-        
-        <Route path="/challenges" element={
+        }
+      />
+      <Route
+        path="/social"
+        element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <Suspense fallback={<LoadingScreen />}>
-              <ChallengesPage />
-            </Suspense>
+            <Social />
           </ProtectedRoute>
-        } />
-
-        <Route path="/games/speed-learning" element={
+        }
+      />
+      <Route
+        path="/edit-profile"
+        element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <Suspense fallback={<LoadingScreen />}>
-              <SpeedLearningPage />
-            </Suspense>
+            <EditProfile />
           </ProtectedRoute>
-        } />
-
-        <Route path="/games/code-builder" element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <Suspense fallback={<LoadingScreen />}>
-              <CodeBuilderPage />
-            </Suspense>
-          </ProtectedRoute>
-        } />
-      </Route>
+        }
+      />
+      <Route path="/profile/:userId" element={<PublicProfile />} />
     </Routes>
   );
 };
-
-export default AppRoutes;
