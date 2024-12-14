@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
 import type { Skill } from "@/types/skills";
 import { Card } from "@/components/ui/card";
-import { Trophy } from "lucide-react";
+import { Trophy, Layers, Category } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 interface ConstructionZoneProps {
   skills: Skill[];
@@ -22,6 +23,8 @@ export const ConstructionZone = ({ skills }: ConstructionZoneProps) => {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0 }
   };
+
+  const uniqueCategories = new Set(skills.map(s => s.categories?.name));
 
   return (
     <Card className="p-6 min-h-[400px] bg-gradient-to-br from-background/50 to-muted/30 backdrop-blur-sm border-2 border-dashed border-primary/20 rounded-xl relative overflow-hidden">
@@ -56,7 +59,14 @@ export const ConstructionZone = ({ skills }: ConstructionZoneProps) => {
                   {String(index + 1).padStart(2, '0')}
                 </span>
                 <div className="flex-1">
-                  <h4 className="font-medium text-lg">{skill.titre}</h4>
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium text-lg">{skill.titre}</h4>
+                    {skill.categories && (
+                      <Badge variant="secondary" className="bg-primary/10 text-primary">
+                        {skill.categories.name}
+                      </Badge>
+                    )}
+                  </div>
                   <p className="text-sm text-muted-foreground line-clamp-2">
                     {skill.action_concrete}
                   </p>
@@ -65,15 +75,16 @@ export const ConstructionZone = ({ skills }: ConstructionZoneProps) => {
             </motion.div>
           ))}
           
-          {skills.length >= 3 && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="absolute top-2 right-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium"
-            >
+          <div className="flex flex-wrap gap-2 mt-4">
+            <Badge variant="outline" className="flex items-center gap-2">
+              <Layers className="w-4 h-4" />
               {skills.length} compétences
-            </motion.div>
-          )}
+            </Badge>
+            <Badge variant="outline" className="flex items-center gap-2">
+              <Category className="w-4 h-4" />
+              {uniqueCategories.size} catégories
+            </Badge>
+          </div>
         </motion.div>
       )}
     </Card>

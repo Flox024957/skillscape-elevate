@@ -10,13 +10,16 @@ import {
 } from "@dnd-kit/sortable";
 import { SkillBlock } from "./SkillBlock";
 import { ConstructionZone } from "./ConstructionZone";
+import { SaveStructureDialog } from "./SaveStructureDialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
+import { Save, RotateCcw, Trophy } from "lucide-react";
 
 export const GameArea = () => {
   const [selectedSkills, setSelectedSkills] = useState<Skill[]>([]);
   const [score, setScore] = useState(0);
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
   const { toast } = useToast();
 
   const { data: availableSkills = [], isLoading } = useQuery({
@@ -54,21 +57,49 @@ export const GameArea = () => {
     const skill = availableSkills.find(s => s.id === active.id);
     if (skill && !selectedSkills.some(s => s.id === skill.id)) {
       setSelectedSkills([...selectedSkills, skill]);
-      setScore(prev => prev + 10);
+      
+      // Calculate bonus points based on structure size and skill category
+      const basePoints = 10;
+      const sizeBonus = selectedSkills.length * 2;
+      const categoryBonus = selectedSkills.some(
+        s => s.categories?.id === skill.categories?.id
+      ) ? 5 : 0;
+      
+      const totalPoints = basePoints + sizeBonus + categoryBonus;
+      
+      setScore(prev => prev + totalPoints);
+      
       toast({
-        title: "Compétence ajoutée !",
-        description: "+10 points ! Continuez à construire votre structure.",
+        title: `+${totalPoints} points !`,
+        description: 
+          categoryBonus > 0 
+            ? "Bonus de catégorie appliqué !"
+            : "Continuez à construire votre structure.",
       });
     }
   };
 
   const validateStructure = () => {
-    const bonus = selectedSkills.length * 5;
-    setScore(prev => prev + bonus);
+    const structureSize = selectedSkills.length;
+    const uniqueCategories = new Set(selectedSkills.map(s => s.categories?.id)).size;
+    
+    const sizeBonus = structureSize * 5;
+    const categoryBonus = uniqueCategories * 10;
+    const completionBonus = structureSize >= 5 ? 50 : 0;
+    
+    const totalBonus = sizeBonus + categoryBonus + completionBonus;
+    
+    setScore(prev => prev + totalBonus);
+    
     toast({
       title: "Structure validée !",
-      description: `Félicitations ! Vous avez gagné ${bonus} points bonus pour avoir construit une structure avec ${selectedSkills.length} compétences.`,
+      description: `Félicitations ! Bonus total : +${totalBonus} points
+        ${completionBonus ? "(Structure complète +50)" : ""}
+        ${categoryBonus ? `(Diversité +${categoryBonus})` : ""}
+        ${sizeBonus ? `(Taille +${sizeBonus})` : ""}`,
     });
+    
+    setShowSaveDialog(true);
   };
 
   const resetGame = () => {
@@ -95,14 +126,21 @@ export const GameArea = () => {
           <div className="flex items-center justify-between">
             <h3 className="text-2xl font-semibold">Compétences Disponibles</h3>
             <div className="flex items-center gap-2">
-              <span className="text-lg font-bold text-primary">Score: {score}</span>
+              <Trophy className="w-6 h-6 text-primary" />
+              <span className="text-lg font-bold text-primary">{score}</span>
             </div>
           </div>
           
-          <Progress value={(selectedSkills.length / 10) * 100} className="h-2" />
+          <Progress 
+            value={(selectedSkills.length / 10) * 100} 
+            className="h-2"
+          />
           
           <div className="grid gap-4">
-            <SortableContext items={availableSkills} strategy={verticalListSortingStrategy}>
+            <SortableContext 
+              items={availableSkills} 
+              strategy={verticalListSortingStrategy}
+            >
               {availableSkills.map((skill) => (
                 <SkillBlock key={skill.id} skill={skill} />
               ))}
@@ -120,18 +158,36 @@ export const GameArea = () => {
               onClick={resetGame}
               className="hover:bg-destructive/10"
             >
+              <RotateCcw className="w-4 h-4 mr-2" />
               Réinitialiser
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setShowSaveDialog(true)}
+              disabled={selectedSkills.length === 0}
+              className="hover:bg-primary/10"
+            >
+              <Save className="w-4 h-4 mr-2" />
+              Sauvegarder
             </Button>
             <Button 
               onClick={validateStructure}
               className="bg-gradient-to-r from-primary to-primary-foreground hover:opacity-90"
               disabled={selectedSkills.length === 0}
             >
+              <Trophy className="w-4 h-4 mr-2" />
               Valider la Structure
             </Button>
           </div>
         </div>
       </DndContext>
+
+      <SaveStructureDialog
+        isOpen={showSaveDialog}
+        onClose={() => setShowSaveDialog(false)}
+        skills={selectedSkills}
+        score={score}
+      />
     </div>
   );
 };
