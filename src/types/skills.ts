@@ -31,6 +31,17 @@ export interface UserSkill {
   is_mastered?: boolean;
 }
 
+export interface MasteredSkill {
+  skill_id: string;
+  mastered_at: string;
+  notes: string | null;
+  skills: {
+    id: string;
+    titre: string;
+    resume: string | null;
+  };
+}
+
 // Helper function to normalize examples array
 export const normalizeExamples = (examples: Json): Json[] => {
   if (Array.isArray(examples)) {
