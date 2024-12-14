@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import * as LucideIcons from "lucide-react";
+import { LucideIcon } from "lucide-react";
 
 interface GameCardProps {
   id: string;
@@ -9,7 +10,7 @@ interface GameCardProps {
   description: string;
   type: "speed" | "construction" | "collaborative";
   players: string;
-  icon: string;
+  icon: keyof typeof LucideIcons;
   color: string;
   route: string;
   onPlay: (route: string) => void;
@@ -25,7 +26,7 @@ export const GameCard = ({
   onPlay,
 }: GameCardProps) => {
   // Dynamically get the icon component from lucide-react
-  const IconComponent = LucideIcons[icon as keyof typeof LucideIcons];
+  const IconComponent = LucideIcons[icon] as LucideIcon;
 
   return (
     <motion.div
