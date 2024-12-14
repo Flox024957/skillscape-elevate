@@ -16,6 +16,8 @@ export default function SpeedLearningPage() {
   const [timeLeft, setTimeLeft] = useState(30);
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
+  const [streak, setStreak] = useState(0);
+  const [highScore, setHighScore] = useState(0);
   
   const { toast } = useToast();
 
@@ -45,7 +47,22 @@ export default function SpeedLearningPage() {
     };
 
     fetchQuestions();
+    loadHighScore();
   }, [toast]);
+
+  const loadHighScore = async () => {
+    const { data: leaderboard } = await supabase
+      .from('game_leaderboards')
+      .select('score')
+      .eq('game_type', 'speed_learning')
+      .order('score', { ascending: false })
+      .limit(1)
+      .single();
+
+    if (leaderboard) {
+      setHighScore(leaderboard.score);
+    }
+  };
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -71,24 +88,70 @@ export default function SpeedLearningPage() {
     setGameStarted(true);
     setTimeLeft(30);
     setScore(0);
+    setStreak(0);
     setCurrentQuestionIndex(0);
     setGameOver(false);
   };
 
-  const handleAnswer = (selectedAnswer: string) => {
+  const updateLeaderboard = async (finalScore: number) => {
+    const { data: existingEntry } = await supabase
+      .from('game_leaderboards')
+      .select('*')
+      .eq('game_type', 'speed_learning')
+      .single();
+
+    if (existingEntry) {
+      if (finalScore > existingEntry.score) {
+        await supabase
+          .from('game_leaderboards')
+          .update({ 
+            score: finalScore,
+            games_played: existingEntry.games_played + 1 
+          })
+          .eq('id', existingEntry.id);
+      } else {
+        await supabase
+          .from('game_leaderboards')
+          .update({ 
+            games_played: existingEntry.games_played + 1 
+          })
+          .eq('id', existingEntry.id);
+      }
+    } else {
+      await supabase
+        .from('game_leaderboards')
+        .insert({
+          game_type: 'speed_learning',
+          score: finalScore,
+          games_played: 1
+        });
+    }
+  };
+
+  const handleAnswer = async (selectedAnswer: string) => {
     if (gameOver) return;
 
     const currentQuestion = questions[currentQuestionIndex];
     const isCorrect = selectedAnswer === currentQuestion.correct_answer;
+    let pointsEarned = 0;
 
     if (isCorrect) {
-      setScore((prev) => prev + 10);
+      // Points calculation based on streak and time left
+      const basePoints = 10;
+      const streakBonus = Math.floor(streak * 0.5);
+      const timeBonus = Math.floor(timeLeft * 0.2);
+      pointsEarned = basePoints + streakBonus + timeBonus;
+
+      setScore((prev) => prev + pointsEarned);
+      setStreak((prev) => prev + 1);
+
       toast({
         title: "Bonne réponse !",
-        description: "+10 points",
+        description: `+${pointsEarned} points ${streak > 0 ? `(Série: ${streak + 1})` : ''}`,
         variant: "default",
       });
     } else {
+      setStreak(0);
       toast({
         title: "Mauvaise réponse",
         description: "La bonne réponse était : " + currentQuestion.correct_answer,
@@ -100,6 +163,7 @@ export default function SpeedLearningPage() {
       setCurrentQuestionIndex((prev) => prev + 1);
     } else {
       setGameOver(true);
+      await updateLeaderboard(score + (isCorrect ? pointsEarned : 0));
     }
   };
 
@@ -120,10 +184,19 @@ export default function SpeedLearningPage() {
               <StartScreen onStart={handleStartGame} />
             ) : (
               <div className="space-y-6">
-                <GameStats score={score} timeLeft={timeLeft} />
+                <GameStats 
+                  score={score} 
+                  timeLeft={timeLeft} 
+                  streak={streak}
+                  highScore={highScore}
+                />
 
                 {gameOver ? (
-                  <GameOver score={score} onRestart={handleStartGame} />
+                  <GameOver 
+                    score={score} 
+                    onRestart={handleStartGame}
+                    highScore={highScore}
+                  />
                 ) : currentQuestion ? (
                   <QuestionCard
                     question={currentQuestion}
