@@ -1,23 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { Skill } from "@/types/skills";
 import { toast } from "sonner";
-
-export interface Skill {
-  id: string;
-  titre: string;
-  resume: string;
-  description: string;
-  action_concrete: string;
-  exemples: any[];
-  category_id: string;
-  created_at?: string;
-  updated_at?: string;
-  categories?: {
-    id: string;
-    name: string;
-    description: string;
-  } | null;
-}
 
 const isValidUUID = (uuid: string) => {
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;

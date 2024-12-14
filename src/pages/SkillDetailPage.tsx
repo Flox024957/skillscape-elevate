@@ -1,8 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useSkillQuery } from "@/hooks/useSkillQuery";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
 import { SkillDetailContent } from "@/components/skill-detail/SkillDetailContent";
 import { toast } from "sonner";
 
@@ -32,10 +29,6 @@ const SkillDetailPage = () => {
             <p className="text-muted-foreground">
               Veuillez vérifier l'URL ou retourner à la page précédente.
             </p>
-            <Button onClick={() => navigate(-1)} variant="outline" size="lg">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Retour
-            </Button>
           </div>
         </div>
       </div>
@@ -55,13 +48,11 @@ const SkillDetailPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <SkillDetailContent 
-        skill={skill}
-        onNavigateBack={handleNavigateBack}
-        onAddToDashboard={handleAddToDashboard}
-      />
-    </div>
+    <SkillDetailContent 
+      skill={skill}
+      onNavigateBack={handleNavigateBack}
+      onAddToDashboard={handleAddToDashboard}
+    />
   );
 };
 

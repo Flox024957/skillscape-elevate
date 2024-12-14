@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Skill } from "@/hooks/useSkillQuery";
+import { Skill } from "@/types/skills";
 import { SkillHeader } from "./SkillHeader";
 import { SkillContent } from "./SkillContent";
 import { getSkillIllustration } from "@/utils/skillIllustrations";
