@@ -75,7 +75,11 @@ const SkillsTab = () => {
         is_mastered: masteredSkillIds.has(skill.skill_id),
         skills: {
           ...skill.skills,
-          exemples: Array.isArray(skill.skills.exemples) ? skill.skills.exemples : []
+          exemples: Array.isArray(skill.skills.exemples) 
+            ? skill.skills.exemples 
+            : skill.skills.exemples 
+              ? [skill.skills.exemples]
+              : []
         }
       }));
     },
