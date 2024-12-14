@@ -22,14 +22,6 @@ export const GameSection = ({ type, games, onPlay }: GameSectionProps) => {
     }
   };
 
-  // Filtrer les jeux qui correspondent au type actuel
-  const filteredGames = games.filter((game) => game.type === type);
-
-  // Ne pas afficher la section si aucun jeu n'est disponible pour ce type
-  if (filteredGames.length === 0) {
-    return null;
-  }
-
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -63,9 +55,11 @@ export const GameSection = ({ type, games, onPlay }: GameSectionProps) => {
         animate="show"
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
       >
-        {filteredGames.map((game) => (
-          <GameCard key={game.id} {...game} onPlay={onPlay} />
-        ))}
+        {games
+          .filter((game) => game.type === type)
+          .map((game) => (
+            <GameCard key={game.id} {...game} onPlay={onPlay} />
+          ))}
       </motion.div>
     </motion.div>
   );

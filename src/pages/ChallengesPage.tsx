@@ -10,7 +10,7 @@ const ChallengesPage = () => {
   const { toast } = useToast();
 
   const handleGameClick = (route: string) => {
-    if (route === "/games/speed-learning" || route === "/games/typing-race" || route === "/games/flash-cards") {
+    if (route === "/games/speed-learning" || route === "/games/typing-race") {
       navigate(route);
     } else {
       toast({

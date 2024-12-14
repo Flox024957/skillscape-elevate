@@ -13,7 +13,6 @@ import AudioPage from "@/pages/AudioPage";
 import ChallengesPage from "@/pages/ChallengesPage";
 import SpeedLearningPage from "@/pages/games/SpeedLearningPage";
 import TypingRacePage from "@/pages/games/TypingRacePage";
-import FlashCardsPage from "@/pages/games/FlashCardsPage";
 
 export default function AppRoutes({ isAuthenticated }: { isAuthenticated: boolean }) {
   return (
@@ -105,14 +104,6 @@ export default function AppRoutes({ isAuthenticated }: { isAuthenticated: boolea
         element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
             <TypingRacePage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/games/flash-cards"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <FlashCardsPage />
           </ProtectedRoute>
         }
       />
