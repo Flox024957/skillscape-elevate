@@ -34,9 +34,11 @@ export const GameCard = ({ title, description, players, icon, color, route, avai
 
   return (
     <motion.div
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      className={`relative overflow-hidden rounded-xl border bg-card p-6 shadow-lg transition-colors hover:bg-accent/10 cursor-pointer ${!available ? 'opacity-50' : ''}`}
+      whileHover={{ scale: available ? 1.02 : 1 }}
+      whileTap={{ scale: available ? 0.98 : 1 }}
+      className={`relative overflow-hidden rounded-xl border bg-card p-6 shadow-lg transition-colors ${
+        available ? 'hover:bg-accent/10 cursor-pointer' : 'opacity-50 cursor-not-allowed'
+      }`}
       style={{ borderColor: color + '20' }}
       onClick={handleClick}
     >
