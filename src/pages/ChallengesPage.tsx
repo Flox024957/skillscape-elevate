@@ -18,33 +18,55 @@ const ChallengesPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-background/80 pt-20">
-      <div className="container mx-auto p-4 space-y-8">
+    <div className="min-h-screen bg-gradient-to-b from-background to-background/80 pt-24">
+      <div className="container mx-auto p-6 space-y-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="space-y-6"
+          className="space-y-8"
         >
-          <div className="flex items-center gap-3">
-            <Trophy className="w-8 h-8 text-primary animate-pulse" />
-            <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary-foreground">
+          <div className="flex items-center gap-4">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ 
+                type: "spring",
+                stiffness: 260,
+                damping: 20,
+                delay: 0.2 
+              }}
+            >
+              <Trophy className="w-12 h-12 text-primary animate-pulse" />
+            </motion.div>
+            <motion.h1 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-500 to-primary-foreground"
+            >
               Défis Interactifs
-            </h1>
+            </motion.h1>
           </div>
           
-          <p className="text-lg text-muted-foreground">
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="text-xl text-muted-foreground max-w-2xl"
+          >
             Affrontez d'autres apprenants dans des jeux éducatifs et collaboratifs !
-          </p>
+          </motion.p>
 
-          {/* Sections de jeux */}
-          {["speed", "construction", "collaborative"].map((type) => (
-            <GameSection
-              key={type}
-              type={type as "speed" | "construction" | "collaborative"}
-              games={games}
-              onPlay={handleGameClick}
-            />
-          ))}
+          <div className="space-y-16">
+            {["speed", "construction", "collaborative"].map((type, index) => (
+              <GameSection
+                key={type}
+                type={type as "speed" | "construction" | "collaborative"}
+                games={games}
+                onPlay={handleGameClick}
+              />
+            ))}
+          </div>
         </motion.div>
       </div>
     </div>
