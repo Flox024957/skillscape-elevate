@@ -15,13 +15,13 @@ export const CategoryContent = ({ name, description, skillsCount, isMobile }: Ca
                     bg-gradient-to-t from-black/80 via-black/50 to-transparent
                     text-white transition-opacity duration-300
                     ${isMobile ? 'gap-1' : 'gap-2'}`}>
-      <h3 className={`font-bold ${isMobile ? 'text-lg' : 'text-xl'} text-white`}>
+      <h3 className={`font-bold ${isMobile ? 'text-lg' : 'text-xl'}`}>
         {name}
       </h3>
-      <p className={`text-white/90 line-clamp-2 ${isMobile ? 'text-sm' : 'text-base'}`}>
+      <p className={`text-white/80 line-clamp-2 ${isMobile ? 'text-sm' : 'text-base'}`}>
         {description}
       </p>
-      <div className="flex items-center gap-2 text-sm text-white/80">
+      <div className="flex items-center gap-2 text-sm text-white/60">
         <span>{skillsCount} skills</span>
       </div>
     </div>

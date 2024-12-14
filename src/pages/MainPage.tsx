@@ -1,43 +1,41 @@
 import { motion } from "framer-motion";
+import { CategoriesGrid } from "@/components/categories/CategoriesGrid";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
-import { toast } from "sonner";
-import { CategoriesGrid } from "@/components/categories/CategoriesGrid";
-import HeroSection from "@/components/landing/HeroSection";
-import FeaturesSection from "@/components/landing/FeaturesSection";
-import CallToAction from "@/components/landing/CallToAction";
 
 const MainPage = () => {
   const { data: categories, isLoading, error } = useQuery({
     queryKey: ['categories'],
     queryFn: async () => {
       console.log('Fetching categories...');
-      const { data, error } = await supabase
+      const { data: categoriesData, error: categoriesError } = await supabase
         .from('categories')
-        .select('*, skills(*)');
-
-      if (error) {
-        console.error('Error fetching categories:', error);
-        toast.error("Erreur lors du chargement des catégories");
-        throw error;
+        .select(`
+          *,
+          skills (
+            id,
+            titre,
+            resume,
+            description,
+            exemples,
+            action_concrete
+          )
+        `)
+        .order('name');
+      
+      if (categoriesError) {
+        console.error('Error fetching categories:', categoriesError);
+        throw categoriesError;
       }
-
-      console.log('Categories fetched:', data);
-      return data;
+      
+      console.log('Categories fetched:', categoriesData);
+      return categoriesData || [];
     },
   });
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
   if (error) {
-    console.error('Error in component:', error);
+    console.error('Error in categories query:', error);
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-red-500">Une erreur est survenue lors du chargement des catégories.</div>
@@ -46,30 +44,30 @@ const MainPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 space-y-20">
+    <div className="min-h-screen bg-gradient-to-b from-background to-background/95">
+      <div className="container mx-auto px-4 py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          className="space-y-8"
         >
-          <HeroSection />
-          
-          <div className="py-16">
-            <h2 className="text-3xl font-bold text-center mb-12 text-foreground">
-              Catégories de compétences
-            </h2>
-            {categories && categories.length > 0 ? (
-              <CategoriesGrid categories={categories} />
-            ) : (
-              <div className="text-center text-muted-foreground">
-                Aucune catégorie disponible pour le moment.
-              </div>
-            )}
+          <div className="text-center mb-12">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent 
+                         bg-gradient-to-r from-purple-400 to-pink-600">
+              Bienvenue sur FLAP
+            </h1>
+            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+              Explorez nos catégories et commencez votre voyage de développement personnel
+            </p>
           </div>
 
-          <FeaturesSection />
-          <CallToAction />
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            </div>
+          ) : (
+            <CategoriesGrid categories={categories || []} />
+          )}
         </motion.div>
       </div>
     </div>
