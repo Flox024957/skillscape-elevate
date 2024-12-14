@@ -13,7 +13,7 @@ type IconType = keyof typeof LucideIcons;
 
 export const GameCard = ({ title, description, players, icon, color, route }: GameCardProps) => {
   const navigate = useNavigate();
-  const IconComponent = icon ? LucideIcons[icon as IconType] : null;
+  const IconComponent = icon ? (LucideIcons[icon as IconType] as React.ComponentType<LucideProps>) : null;
 
   return (
     <motion.div
