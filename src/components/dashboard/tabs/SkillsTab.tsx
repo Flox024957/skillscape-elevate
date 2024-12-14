@@ -75,15 +75,22 @@ const SkillsTab = () => {
         is_mastered: masteredSkillIds.has(skill.skill_id),
         skills: {
           ...skill.skills,
-          exemples: Array.isArray(skill.skills.exemples) 
-            ? skill.skills.exemples 
-            : skill.skills.exemples 
-              ? [skill.skills.exemples]
-              : []
+          exemples: normalizeExamples(skill.skills.exemples)
         }
       }));
     },
   });
+
+  // Helper function to normalize examples to always be an array
+  const normalizeExamples = (examples: Json): Json[] => {
+    if (Array.isArray(examples)) {
+      return examples;
+    }
+    if (examples === null || examples === undefined) {
+      return [];
+    }
+    return [examples];
+  };
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
