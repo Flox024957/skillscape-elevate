@@ -25,9 +25,9 @@ export const games: Game[] = [
   {
     id: "flash-cards-sprint",
     title: "Flash Cards Sprint",
-    description: "Mémorisez et répondez en équipe aux cartes-éclair !",
+    description: "Mémorisez et répondez rapidement aux cartes-éclair !",
     type: "speed",
-    players: "2-4 joueurs",
+    players: "1 joueur",
     icon: "Brain",
     color: "from-green-500 to-teal-500",
     route: "/games/flash-cards"
