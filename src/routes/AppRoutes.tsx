@@ -14,6 +14,7 @@ import ChallengesPage from "@/pages/ChallengesPage";
 import SpeedLearningPage from "@/pages/games/SpeedLearningPage";
 import TypingRacePage from "@/pages/games/TypingRacePage";
 import FlashCardsPage from "@/pages/games/FlashCardsPage";
+import BubblePopPage from "@/pages/games/BubblePopPage";
 
 export default function AppRoutes({ isAuthenticated }: { isAuthenticated: boolean }) {
   return (
@@ -113,6 +114,14 @@ export default function AppRoutes({ isAuthenticated }: { isAuthenticated: boolea
         element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
             <FlashCardsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/games/bubble-pop"
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <BubblePopPage />
           </ProtectedRoute>
         }
       />
