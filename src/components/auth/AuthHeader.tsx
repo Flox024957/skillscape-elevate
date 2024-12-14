@@ -6,15 +6,36 @@ export const AuthHeader = () => {
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="text-4xl font-semibold text-center mb-12"
+      className="text-4xl font-semibold text-center mb-12 relative"
     >
-      <span className="welcome bg-clip-text text-transparent bg-gradient-to-r from-primary/80 to-primary">
-        Welcome to{" "}
-      </span>
       <motion.span 
-        className="flap text-primary font-bold"
+        className="welcome inline-block bg-clip-text text-transparent bg-gradient-to-r from-primary/80 to-primary relative"
+        animate={{
+          textShadow: [
+            "0 0 20px rgba(139,92,246,0.5)",
+            "0 0 35px rgba(139,92,246,0.3)",
+            "0 0 20px rgba(139,92,246,0.5)",
+          ],
+        }}
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+          ease: "linear",
+        }}
+      >
+        Welcome to{" "}
+      </motion.span>
+      <motion.span 
+        className="flap text-primary font-bold inline-block"
         whileHover={{ scale: 1.05 }}
         transition={{ type: "spring", stiffness: 300 }}
+        animate={{
+          textShadow: [
+            "0 0 25px rgba(139,92,246,0.7)",
+            "0 0 45px rgba(139,92,246,0.5)",
+            "0 0 25px rgba(139,92,246,0.7)",
+          ],
+        }}
       >
         FLAP
       </motion.span>
