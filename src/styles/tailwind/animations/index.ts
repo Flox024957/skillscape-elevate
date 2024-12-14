@@ -1,19 +1,19 @@
-import { cosmicAnimations } from "./cosmic";
-import { geometricAnimations } from "./geometric";
-import { energyAnimations } from "./energy";
-import { stellarAnimations } from "./stellar";
+import { backgroundAnimations } from "./background";
+import { shapeAnimations } from "./shapes";
+import { effectAnimations } from "./effects";
+import { nebulaAnimations } from "./nebula";
 
 export const animations = {
   keyframes: {
-    ...cosmicAnimations.keyframes,
-    ...geometricAnimations.keyframes,
-    ...energyAnimations.keyframes,
-    ...stellarAnimations.keyframes,
+    ...backgroundAnimations.keyframes,
+    ...shapeAnimations.keyframes,
+    ...effectAnimations.keyframes,
+    ...nebulaAnimations.keyframes,
   },
   animation: {
-    ...cosmicAnimations.animation,
-    ...geometricAnimations.animation,
-    ...energyAnimations.animation,
-    ...stellarAnimations.animation,
+    ...backgroundAnimations.animation,
+    ...shapeAnimations.animation,
+    ...effectAnimations.animation,
+    ...nebulaAnimations.animation,
   },
 };
