@@ -64,7 +64,9 @@ export const Post = ({ post, currentUserId }: PostProps) => {
   };
 
   return (
-    <div className="bg-card rounded-lg p-4 space-y-4">
+    <div className="glass-panel rounded-lg p-4 space-y-4 backdrop-blur-xl border border-[#8B5CF6]/30 
+                    shadow-[0_0_15px_rgba(139,92,246,0.2)] hover:shadow-[0_0_30px_rgba(139,92,246,0.3)]
+                    transition-all duration-300">
       <PostHeader 
         profile={post.profiles}
         createdAt={post.created_at}
@@ -76,7 +78,7 @@ export const Post = ({ post, currentUserId }: PostProps) => {
         <img
           src={post.image_url}
           alt="Post"
-          className="rounded-lg max-h-96 w-full object-cover"
+          className="rounded-lg max-h-96 w-full object-cover border border-[#8B5CF6]/30"
         />
       )}
 
