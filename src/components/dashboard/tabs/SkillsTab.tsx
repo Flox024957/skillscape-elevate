@@ -24,6 +24,17 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { UserSkill } from "@/types/skills";
 import { Json } from "@/integrations/supabase/types";
 
+// Helper function to normalize examples to always be an array
+const normalizeExamples = (examples: Json | null): Json[] => {
+  if (Array.isArray(examples)) {
+    return examples;
+  }
+  if (examples === null || examples === undefined) {
+    return [];
+  }
+  return [examples];
+};
+
 const SkillsTab = () => {
   const [openSections, setOpenSections] = useState<string[]>([]);
   const { toast } = useToast();
@@ -80,17 +91,6 @@ const SkillsTab = () => {
       }));
     },
   });
-
-  // Helper function to normalize examples to always be an array
-  const normalizeExamples = (examples: Json): Json[] => {
-    if (Array.isArray(examples)) {
-      return examples;
-    }
-    if (examples === null || examples === undefined) {
-      return [];
-    }
-    return [examples];
-  };
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
