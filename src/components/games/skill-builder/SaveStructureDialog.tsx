@@ -1,15 +1,8 @@
 import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Trophy, Save } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { Skill } from "@/types/skills";
@@ -42,13 +35,16 @@ export const SaveStructureDialog = ({
       return;
     }
 
-    setIsSaving(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
+      setIsSaving(true);
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
       if (!user) {
         toast({
-          title: "Erreur",
+          title: "Non connecté",
           description: "Vous devez être connecté pour sauvegarder une structure",
           variant: "destructive",
         });
@@ -76,23 +72,24 @@ export const SaveStructureDialog = ({
         .from('skill_builder_structures')
         .insert({
           name: structureName,
+          user_id: user.id,
           skills: skillsForStorage,
           score: score,
-          user_id: user.id
         });
 
       if (error) throw error;
 
       toast({
         title: "Structure sauvegardée !",
-        description: "Votre structure a été sauvegardée avec succès.",
+        description: `"${structureName}" a été sauvegardée avec succès.`,
       });
+
       onClose();
     } catch (error) {
       console.error("Error saving structure:", error);
       toast({
         title: "Erreur",
-        description: "Une erreur est survenue lors de la sauvegarde",
+        description: "Impossible de sauvegarder la structure. Veuillez réessayer.",
         variant: "destructive",
       });
     } finally {
@@ -102,42 +99,46 @@ export const SaveStructureDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Sauvegarder la structure</DialogTitle>
-          <DialogDescription>
-            Donnez un nom à votre structure pour la sauvegarder
-          </DialogDescription>
+          <DialogTitle className="flex items-center gap-2 text-2xl">
+            <Trophy className="w-6 h-6 text-primary" />
+            Sauvegarder la Structure
+          </DialogTitle>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Nom
-            </Label>
-            <Input
-              id="name"
-              value={structureName}
-              onChange={(e) => setStructureName(e.target.value)}
-              className="col-span-3"
-              placeholder="Ma structure de compétences"
-            />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label className="text-right">Score</Label>
-            <div className="col-span-3">
-              <span className="text-2xl font-bold text-primary">{score}</span>
-              <span className="text-muted-foreground ml-2">points</span>
+
+        <div className="space-y-6 py-4">
+          <div className="flex items-center gap-4 p-4 bg-primary/10 rounded-lg">
+            <Trophy className="w-8 h-8 text-primary" />
+            <div>
+              <p className="text-sm font-medium">Score Final</p>
+              <p className="text-2xl font-bold text-primary">{score} points</p>
             </div>
           </div>
+
+          <div className="space-y-2">
+            <label htmlFor="structureName" className="text-sm font-medium">
+              Nom de la Structure
+            </label>
+            <Input
+              id="structureName"
+              value={structureName}
+              onChange={(e) => setStructureName(e.target.value)}
+              placeholder="Ma super structure"
+              className="w-full"
+            />
+          </div>
+
+          <div className="flex justify-end gap-4">
+            <Button variant="outline" onClick={onClose} disabled={isSaving}>
+              Annuler
+            </Button>
+            <Button onClick={handleSave} disabled={isSaving} className="gap-2">
+              <Save className="w-4 h-4" />
+              {isSaving ? "Sauvegarde..." : "Sauvegarder"}
+            </Button>
+          </div>
         </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
-            Annuler
-          </Button>
-          <Button onClick={handleSave} disabled={isSaving}>
-            {isSaving ? "Sauvegarde..." : "Sauvegarder"}
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
