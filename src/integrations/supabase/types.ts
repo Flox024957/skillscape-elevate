@@ -69,6 +69,36 @@ export type Database = {
           },
         ]
       }
+      game_achievements: {
+        Row: {
+          condition_type: string
+          condition_value: number
+          created_at: string
+          description: string
+          icon_name: string
+          id: string
+          title: string
+        }
+        Insert: {
+          condition_type: string
+          condition_value: number
+          created_at?: string
+          description: string
+          icon_name: string
+          id?: string
+          title: string
+        }
+        Update: {
+          condition_type?: string
+          condition_value?: number
+          created_at?: string
+          description?: string
+          icon_name?: string
+          id?: string
+          title?: string
+        }
+        Relationships: []
+      }
       game_leaderboards: {
         Row: {
           created_at: string
@@ -766,6 +796,42 @@ export type Database = {
           },
           {
             foreignKeyName: "team_chat_messages_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_achievements: {
+        Row: {
+          achievement_id: string | null
+          id: string
+          unlocked_at: string
+          user_id: string | null
+        }
+        Insert: {
+          achievement_id?: string | null
+          id?: string
+          unlocked_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          achievement_id?: string | null
+          id?: string
+          unlocked_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievements_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "game_achievements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_achievements_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
