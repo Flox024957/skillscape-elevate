@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { ArrowLeft, PlusCircle, Sparkles, Target, Book, Lightbulb } from "lucide-react";
+import { ArrowLeft, PlusCircle, Sparkles, Target, Book, Lightbulb, Trophy, Rocket, Shield } from "lucide-react";
 import { Skill } from "@/types/skills";
 import { Badge } from "@/components/ui/badge";
 
@@ -119,26 +119,26 @@ export const SkillDetailContent = ({
           <div className="space-y-6">
             <motion.div
               variants={itemVariants}
-              className="glass-panel p-8 relative group"
+              className="glass-panel p-8 relative group hover:bg-primary/5 transition-all duration-300"
             >
-              <Sparkles className="absolute top-4 right-4 w-6 h-6 text-primary/40 group-hover:text-primary/60 transition-colors" />
+              <Trophy className="absolute top-4 right-4 w-6 h-6 text-primary/40 group-hover:text-primary/60 transition-colors" />
               <h2 className="text-2xl font-semibold mb-4 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent flex items-center gap-2">
                 Résumé
               </h2>
-              <p className="text-muted-foreground leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed group-hover:text-foreground transition-colors duration-300">
                 {skill.resume}
               </p>
             </motion.div>
 
             <motion.div
               variants={itemVariants}
-              className="glass-panel p-8 relative group"
+              className="glass-panel p-8 relative group hover:bg-primary/5 transition-all duration-300"
             >
               <Book className="absolute top-4 right-4 w-6 h-6 text-primary/40 group-hover:text-primary/60 transition-colors" />
               <h2 className="text-2xl font-semibold mb-4 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
                 Description
               </h2>
-              <p className="text-muted-foreground leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed group-hover:text-foreground transition-colors duration-300">
                 {skill.description}
               </p>
             </motion.div>
@@ -148,13 +148,13 @@ export const SkillDetailContent = ({
           <div className="space-y-6">
             <motion.div
               variants={itemVariants}
-              className="glass-panel p-8 relative group"
+              className="glass-panel p-8 relative group hover:bg-primary/5 transition-all duration-300"
             >
-              <Target className="absolute top-4 right-4 w-6 h-6 text-primary/40 group-hover:text-primary/60 transition-colors" />
+              <Rocket className="absolute top-4 right-4 w-6 h-6 text-primary/40 group-hover:text-primary/60 transition-colors" />
               <h2 className="text-2xl font-semibold mb-4 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
                 Action Concrète
               </h2>
-              <p className="text-muted-foreground leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed group-hover:text-foreground transition-colors duration-300">
                 {skill.action_concrete}
               </p>
             </motion.div>
@@ -162,9 +162,9 @@ export const SkillDetailContent = ({
             {examples.length > 0 && (
               <motion.div
                 variants={itemVariants}
-                className="glass-panel p-8 relative group"
+                className="glass-panel p-8 relative group hover:bg-primary/5 transition-all duration-300"
               >
-                <Lightbulb className="absolute top-4 right-4 w-6 h-6 text-primary/40 group-hover:text-primary/60 transition-colors" />
+                <Shield className="absolute top-4 right-4 w-6 h-6 text-primary/40 group-hover:text-primary/60 transition-colors" />
                 <h2 className="text-2xl font-semibold mb-4 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
                   Exemples
                 </h2>
