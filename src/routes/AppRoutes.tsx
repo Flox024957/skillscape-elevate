@@ -20,7 +20,11 @@ import SpeedLearningPage from "@/pages/games/SpeedLearningPage";
 import TeamChallengePage from "@/pages/games/TeamChallengePage";
 import TypingRacePage from "@/pages/games/TypingRacePage";
 
-const AppRoutes = () => {
+interface AppRoutesProps {
+  isAuthenticated: boolean;
+}
+
+const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
   return (
     <Routes>
       <Route path="/" element={<MainPage />} />
@@ -29,7 +33,7 @@ const AppRoutes = () => {
       <Route
         path="/dashboard"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
             <Dashboard />
           </ProtectedRoute>
         }
