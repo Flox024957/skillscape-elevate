@@ -41,14 +41,14 @@ const MainPage = () => {
   if (error) {
     console.error('Error in categories query:', error);
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center text-foreground">
         <div className="text-red-500">Une erreur est survenue lors du chargement des catégories.</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background/80 to-background/95">
+    <main className="min-h-screen bg-background text-foreground">
       <div className="container mx-auto px-4 py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -74,7 +74,7 @@ const MainPage = () => {
           )}
         </motion.div>
       </div>
-    </div>
+    </main>
   );
 };
 
