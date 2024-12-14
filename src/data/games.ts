@@ -80,5 +80,15 @@ export const games: Game[] = [
     icon: "Link",
     color: "bg-gradient-to-r from-cyan-500 to-blue-500",
     route: "/games/skill-chain"
+  },
+  {
+    id: "knowledge-race",
+    title: "Knowledge Race",
+    description: "Testez vos connaissances dans une course contre la montre !",
+    type: "speed",
+    players: "1",
+    icon: "Brain",
+    color: "bg-gradient-to-r from-violet-500 to-fuchsia-500",
+    route: "/games/knowledge-race"
   }
 ];

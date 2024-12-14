@@ -19,6 +19,7 @@ import SkillBuilderPage from "@/pages/games/SkillBuilderPage";
 import MindMapPage from "@/pages/games/MindMapPage";
 import TeamChallengePage from "@/pages/games/TeamChallengePage";
 import SkillChainPage from "@/pages/games/SkillChainPage";
+import KnowledgeRacePage from "@/pages/games/KnowledgeRacePage";
 
 export default function AppRoutes({ isAuthenticated }: { isAuthenticated: boolean }) {
   return (
@@ -98,10 +99,10 @@ export default function AppRoutes({ isAuthenticated }: { isAuthenticated: boolea
         }
       />
       <Route
-        path="/games/speed-learning"
+        path="/games/knowledge-race"
         element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <SpeedLearningPage />
+            <KnowledgeRacePage />
           </ProtectedRoute>
         }
       />
