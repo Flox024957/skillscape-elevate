@@ -23,7 +23,7 @@ export interface MindMapHistory {
   id: string;
   mind_map_id: string;
   user_id: string;
-  action: string;
+  action: MindMapAction['type'];
   data: any;
   created_at: string;
 }

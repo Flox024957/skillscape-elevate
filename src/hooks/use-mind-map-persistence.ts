@@ -11,92 +11,121 @@ export const useMindMapPersistence = (mindMapId?: string) => {
   const { toast } = useToast();
 
   useEffect(() => {
-    if (mindMapId) {
-      loadMindMap();
+    if (!mindMapId) {
+      setIsLoading(false);
+      return;
     }
-    setIsLoading(false);
+
+    const loadMindMap = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('mind_maps')
+          .select('*')
+          .eq('id', mindMapId)
+          .single();
+
+        if (error) throw error;
+
+        // Explicit conversion from database row to MindMap
+        const dbData = data as MindMapDatabaseRow;
+        const mindMapData: MindMap = {
+          ...dbData,
+          data: dbData.data as unknown as MindMapNodeType[]
+        };
+
+        setMindMap(mindMapData);
+      } catch (error) {
+        console.error('Error loading mind map:', error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger la carte mentale",
+          variant: "destructive"
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadMindMap();
   }, [mindMapId]);
 
-  const loadMindMap = async () => {
+  const updateMindMap = async (nodes: MindMapNodeType[]) => {
+    if (!mindMap) return;
+
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('mind_maps')
-        .select('*')
-        .eq('id', mindMapId)
-        .single();
+        .update({
+          data: nodes as unknown as Json,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', mindMap.id);
 
       if (error) throw error;
-      
-      // Explicit conversion from database row to MindMap
-      const dbData = data as MindMapDatabaseRow;
-      const mindMapData: MindMap = {
-        ...dbData,
-        data: dbData.data as unknown as MindMapNodeType[]
-      };
-      
-      setMindMap(mindMapData);
-    } catch (error) {
-      console.error('Error loading mind map:', error);
+
+      setMindMap({
+        ...mindMap,
+        data: nodes,
+        updated_at: new Date().toISOString()
+      });
+
       toast({
-        title: "Erreur lors du chargement",
-        description: "Impossible de charger la carte mentale",
+        title: "Succès",
+        description: "Carte mentale mise à jour"
+      });
+    } catch (error) {
+      console.error('Error updating mind map:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de mettre à jour la carte mentale",
         variant: "destructive"
       });
     }
   };
 
-  const saveMindMap = async (title: string, nodes: MindMapNodeType[]) => {
+  const createMindMap = async (title: string) => {
     try {
-      const mindMapData = {
-        title,
-        data: nodes as unknown as Json,
-        updated_at: new Date().toISOString()
+      const { data, error } = await supabase
+        .from('mind_maps')
+        .insert({
+          is_template: false,
+          title,
+          data: [] as unknown as Json,
+          updated_at: new Date().toISOString()
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      const dbData = data as MindMapDatabaseRow;
+      const newMindMap: MindMap = {
+        ...dbData,
+        data: dbData.data as unknown as MindMapNodeType[]
       };
-
-      if (mindMapId) {
-        const { error } = await supabase
-          .from('mind_maps')
-          .update(mindMapData)
-          .eq('id', mindMapId);
-
-        if (error) throw error;
-      } else {
-        const { data, error } = await supabase
-          .from('mind_maps')
-          .insert({
-            ...mindMapData,
-            is_template: false
-          })
-          .select()
-          .single();
-
-        if (error) throw error;
-        
-        const dbData = data as MindMapDatabaseRow;
-        const newMindMap: MindMap = {
-          ...dbData,
-          data: dbData.data as unknown as MindMapNodeType[]
-        };
-        setMindMap(newMindMap);
-      }
+      setMindMap(newMindMap);
 
       toast({
-        title: "Sauvegarde réussie",
-        description: "Votre carte mentale a été sauvegardée"
+        title: "Succès",
+        description: "Nouvelle carte mentale créée"
       });
+
+      return newMindMap;
     } catch (error) {
-      console.error('Error saving mind map:', error);
+      console.error('Error creating mind map:', error);
       toast({
-        title: "Erreur lors de la sauvegarde",
-        description: "Impossible de sauvegarder la carte mentale",
+        title: "Erreur",
+        description: "Impossible de créer la carte mentale",
         variant: "destructive"
       });
+      return null;
     }
   };
 
   return {
     mindMap,
     isLoading,
-    saveMindMap
+    updateMindMap,
+    createMindMap
   };
 };
