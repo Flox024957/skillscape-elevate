@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { Json } from '@/integrations/supabase/types';
 import type { MindMap, MindMapDatabaseRow } from '@/types/database/mind-map';
 import type { MindMapNodeType } from '@/components/games/mind-map/types';
 
@@ -26,11 +27,11 @@ export const useMindMapPersistence = (mindMapId?: string) => {
 
       if (error) throw error;
       
-      // Conversion explicite des données JSON en MindMap
+      // Explicit conversion from database row to MindMap
       const dbData = data as MindMapDatabaseRow;
       const mindMapData: MindMap = {
         ...dbData,
-        data: dbData.data as MindMapNodeType[]
+        data: dbData.data as unknown as MindMapNodeType[]
       };
       
       setMindMap(mindMapData);
@@ -70,7 +71,13 @@ export const useMindMapPersistence = (mindMapId?: string) => {
           .single();
 
         if (error) throw error;
-        setMindMap(data as MindMap);
+        
+        const dbData = data as MindMapDatabaseRow;
+        const newMindMap: MindMap = {
+          ...dbData,
+          data: dbData.data as unknown as MindMapNodeType[]
+        };
+        setMindMap(newMindMap);
       }
 
       toast({

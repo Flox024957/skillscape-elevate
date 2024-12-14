@@ -11,6 +11,28 @@ export interface MindMap {
   user_id: string;
 }
 
+export interface MindMapCollaborator {
+  id: string;
+  mind_map_id: string;
+  user_id: string;
+  role: 'viewer' | 'editor';
+  created_at: string;
+}
+
+export interface MindMapHistory {
+  id: string;
+  mind_map_id: string;
+  user_id: string;
+  action: string;
+  data: any;
+  created_at: string;
+}
+
+export interface MindMapAction {
+  type: 'ADD_NODE' | 'UPDATE_NODE' | 'DELETE_NODE' | 'UNDO' | 'REDO';
+  payload: any;
+}
+
 export type MindMapDatabaseRow = Omit<MindMap, 'data'> & {
   data: Json;
 };

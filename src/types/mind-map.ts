@@ -1,3 +1,5 @@
+import type { MindMapNodeType } from '@/components/games/mind-map/types';
+
 export interface MindMap {
   id: string;
   title: string;
