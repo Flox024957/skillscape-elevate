@@ -1,6 +1,10 @@
 import type { Database } from "@/integrations/supabase/types";
 
-type Skill = Database["public"]["Tables"]["skills"]["Row"];
+type Skill = Database["public"]["Tables"]["skills"]["Row"] & {
+  categories?: {
+    name: string;
+  } | null;
+};
 
 export interface Bubble {
   id: string;

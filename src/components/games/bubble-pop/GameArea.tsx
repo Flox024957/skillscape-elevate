@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import type { Bubble } from "@/types/bubble-pop";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 interface GameAreaProps {
   bubbles: Bubble[];
@@ -50,7 +51,7 @@ export const GameArea = ({ bubbles, onBubblePop, isPlaying }: GameAreaProps) => 
               height: bubble.size,
             }}
             className={cn(
-              "rounded-full flex items-center justify-center p-4 text-xs md:text-sm font-medium text-white shadow-lg",
+              "rounded-full flex flex-col items-center justify-center p-4 text-xs md:text-sm font-medium text-white shadow-lg",
               "hover:scale-110 active:scale-95 transition-transform",
               "bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-md border border-white/20",
               "before:absolute before:inset-0 before:rounded-full before:bg-gradient-to-br",
@@ -62,9 +63,17 @@ export const GameArea = ({ bubbles, onBubblePop, isPlaying }: GameAreaProps) => 
             whileTap={{ scale: 0.9 }}
           >
             <div className="absolute inset-0 rounded-full bg-gradient-to-br opacity-50" style={{ backgroundColor: bubble.color }} />
-            <span className="relative z-10 text-center leading-tight">
-              {bubble.skill[bubble.questionType]}
-            </span>
+            <div className="relative z-10 flex flex-col items-center gap-1">
+              <Badge 
+                variant="outline" 
+                className="bg-black/30 text-[10px] border-white/20 px-2 mb-1"
+              >
+                {bubble.skill.categories?.name || "Général"}
+              </Badge>
+              <span className="text-center leading-tight">
+                {bubble.skill[bubble.questionType]}
+              </span>
+            </div>
           </motion.button>
         ))}
       </AnimatePresence>

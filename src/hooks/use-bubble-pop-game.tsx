@@ -3,8 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import type { Bubble } from "@/types/bubble-pop";
 
-const GAME_DURATION = 60; // 60 seconds
-const BUBBLE_SPAWN_INTERVAL = 2000; // 2 seconds
+const GAME_DURATION = 60;
+const BUBBLE_SPAWN_INTERVAL = 2000;
 const INITIAL_BUBBLES = 3;
 
 export const useBubblePopGame = () => {
@@ -35,9 +35,23 @@ export const useBubblePopGame = () => {
   };
 
   const generateBubble = useCallback(async (): Promise<Bubble> => {
+    // Récupérer une compétence aléatoire avec sa catégorie
     const { data: skills } = await supabase
       .from("skills")
-      .select("id, titre, resume, description, action_concrete, category_id, created_at, updated_at, exemples")
+      .select(`
+        id,
+        titre,
+        resume,
+        description,
+        action_concrete,
+        exemples,
+        category_id,
+        created_at,
+        updated_at,
+        categories (
+          name
+        )
+      `)
       .limit(1)
       .order("random()");
 
@@ -47,20 +61,31 @@ export const useBubblePopGame = () => {
 
     const skill = skills[0];
     const questionTypes = ["titre", "resume", "description", "action_concrete"] as const;
-    const selectedType = questionTypes[Math.floor(Math.random() * questionTypes.length)];
+    const selectedType = questionTypes[Math.random() * questionTypes.length | 0];
     
     const x = Math.random() * (window.innerWidth - 100) + 50;
     const y = Math.random() * (window.innerHeight - 200) + 100;
+    
+    // Générer une couleur basée sur la catégorie
+    const categoryColors: { [key: string]: string } = {
+      "Frontend": "hsl(330, 70%, 70%)", // Rose
+      "Backend": "hsl(200, 70%, 70%)", // Bleu
+      "Design": "hsl(150, 70%, 70%)", // Vert
+      "DevOps": "hsl(270, 70%, 70%)", // Violet
+      "Mobile": "hsl(30, 70%, 70%)", // Orange
+    };
+    
+    const color = categoryColors[skill.categories?.name] || `hsl(${Math.random() * 360}, 70%, 70%)`;
     
     return {
       id: crypto.randomUUID(),
       x,
       y,
-      size: Math.random() * 20 + 60, // Random size between 60 and 80
-      speed: Math.random() * 1 + 0.5, // Random speed between 0.5 and 1.5
+      size: Math.random() * 20 + 60,
+      speed: Math.random() * 1 + 0.5,
       skill,
       questionType: selectedType,
-      color: `hsl(${Math.random() * 360}, 70%, 70%)`,
+      color,
     };
   }, []);
 
@@ -140,12 +165,12 @@ export const useBubblePopGame = () => {
     await loadHighScore();
   };
 
-  // Load high score on mount
+  // Effet pour charger le meilleur score au montage
   useEffect(() => {
     loadHighScore();
   }, []);
 
-  // Game timer
+  // Effet pour le timer du jeu
   useEffect(() => {
     let timer: number;
     if (isPlaying && timeLeft > 0) {
@@ -156,11 +181,15 @@ export const useBubblePopGame = () => {
       setIsPlaying(false);
       setIsGameOver(true);
       updateLeaderboard(score);
+      toast({
+        title: "Temps écoulé !",
+        description: `Score final : ${score} points`,
+      });
     }
     return () => clearInterval(timer);
   }, [isPlaying, timeLeft, score]);
 
-  // Bubble spawning
+  // Effet pour générer les bulles
   useEffect(() => {
     let spawnTimer: number;
     if (isPlaying) {
