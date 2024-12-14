@@ -3,20 +3,17 @@ import { Json } from "@/integrations/supabase/types";
 export interface Category {
   id: string;
   name: string;
-  description?: string | null;
+  description: string;
+  skills: Skill[];
 }
 
 export interface Skill {
   id: string;
-  titre: string;
-  resume: string;
+  title: string;
+  summary: string;
   description: string;
-  action_concrete: string;
-  exemples: Json;
-  category_id: string | null;
-  created_at: string;
-  updated_at: string;
-  categories?: Category | null;
+  examples: Json;
+  concrete_action: string;
 }
 
 export interface UserSkill {
@@ -32,13 +29,13 @@ export interface MasteredSkill {
   notes: string | null;
   skills: {
     id: string;
-    titre: string;
-    resume: string | null;
+    title: string;
+    summary: string | null;
   };
 }
 
 // Helper function to transform French column names to English for UI
-export const transformSkill = (skill: Skill) => ({
+export const transformSkill = (skill: any) => ({
   id: skill.id,
   title: skill.titre,
   summary: skill.resume,

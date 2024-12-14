@@ -3,6 +3,7 @@ import { CategoriesGrid } from "@/components/categories/CategoriesGrid";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
+import { Category, Skill } from "@/types/skills";
 
 const MainPage = () => {
   const { data: categories, isLoading, error } = useQuery({
@@ -29,8 +30,23 @@ const MainPage = () => {
         throw categoriesError;
       }
       
-      console.log('Categories fetched:', categoriesData);
-      return categoriesData || [];
+      // Transform the data to match our Category type
+      const transformedCategories: Category[] = categoriesData?.map(category => ({
+        id: category.id,
+        name: category.name,
+        description: category.description || "",
+        skills: category.skills?.map(skill => ({
+          id: skill.id,
+          title: skill.titre, // Map French field to English
+          summary: skill.resume, // Map French field to English
+          description: skill.description,
+          examples: skill.exemples,
+          concrete_action: skill.action_concrete,
+        })) || []
+      })) || [];
+
+      console.log('Categories transformed:', transformedCategories);
+      return transformedCategories;
     },
   });
 
