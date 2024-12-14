@@ -49,6 +49,13 @@ const Index = () => {
                         animate-cosmic-wave-3 transform-gpu opacity-20 delay-2000"></div>
         </div>
 
+        {/* New Animated Circle */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-[500px] h-[500px] border-4 border-[#001E3C]/50 
+                       animate-circle-pulse transform-gpu 
+                       shadow-[0_0_100px_rgba(0,30,60,0.6)] backdrop-blur-sm"></div>
+        </div>
+
         {/* Geometric shapes */}
         <div className="absolute inset-0">
           {/* Hexagons */}
