@@ -3,6 +3,7 @@ import SkillSection from "./SkillSection";
 import ExamplesSection from "./ExamplesSection";
 import { Json } from "@/integrations/supabase/types";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { motion } from "framer-motion";
 
 interface SkillContentProps {
   skillId: string;
@@ -26,38 +27,45 @@ const SkillContent = ({
   const isMobile = useIsMobile();
 
   return (
-    <CollapsibleContent className={`p-4 pt-0 space-y-4 ${isMobile ? 'text-sm' : ''}`}>
-      {(!selectedSections || selectedSections.includes('Summary')) && (
-        <SkillSection
-          skillId={skillId}
-          title="Résumé"
-          content={summary}
-          onAdd={onAdd}
-        />
-      )}
-      {(!selectedSections || selectedSections.includes('Explanation')) && (
-        <SkillSection
-          skillId={skillId}
-          title="Explication"
-          content={explanation}
-          onAdd={onAdd}
-        />
-      )}
-      {(!selectedSections || selectedSections.includes('Concrete Action')) && (
-        <SkillSection
-          skillId={skillId}
-          title="Action Concrète"
-          content={concreteAction}
-          onAdd={onAdd}
-        />
-      )}
-      {(!selectedSections || selectedSections.includes('Examples')) && (
-        <ExamplesSection
-          skillId={skillId}
-          examples={examples}
-          onAdd={onAdd}
-        />
-      )}
+    <CollapsibleContent>
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        className={`p-6 space-y-6 ${isMobile ? 'text-sm' : ''}`}
+      >
+        {(!selectedSections || selectedSections.includes('Summary')) && (
+          <SkillSection
+            skillId={skillId}
+            title="Résumé"
+            content={summary}
+            onAdd={onAdd}
+          />
+        )}
+        {(!selectedSections || selectedSections.includes('Explanation')) && (
+          <SkillSection
+            skillId={skillId}
+            title="Explication"
+            content={explanation}
+            onAdd={onAdd}
+          />
+        )}
+        {(!selectedSections || selectedSections.includes('Concrete Action')) && (
+          <SkillSection
+            skillId={skillId}
+            title="Action Concrète"
+            content={concreteAction}
+            onAdd={onAdd}
+          />
+        )}
+        {(!selectedSections || selectedSections.includes('Examples')) && (
+          <ExamplesSection
+            skillId={skillId}
+            examples={examples}
+            onAdd={onAdd}
+          />
+        )}
+      </motion.div>
     </CollapsibleContent>
   );
 };
