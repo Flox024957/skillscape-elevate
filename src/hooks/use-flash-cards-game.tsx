@@ -128,17 +128,24 @@ export const useFlashCardsGame = () => {
   };
 
   const updateLeaderboard = async (finalScore: number) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
     const { data: existingEntry } = await supabase
       .from('game_leaderboards')
       .select('*')
       .eq('game_type', 'flash_cards')
+      .eq('user_id', user.id)
       .limit(1);
 
     if (existingEntry && existingEntry.length > 0) {
       if (finalScore > existingEntry[0].score) {
         await supabase
           .from('game_leaderboards')
-          .update({ score: finalScore })
+          .update({ 
+            score: finalScore,
+            games_played: existingEntry[0].games_played + 1
+          })
           .eq('id', existingEntry[0].id);
       }
     } else {
@@ -146,10 +153,13 @@ export const useFlashCardsGame = () => {
         .from('game_leaderboards')
         .insert({
           game_type: 'flash_cards',
+          user_id: user.id,
           score: finalScore,
           games_played: 1
         });
     }
+
+    await loadHighScore();
   };
 
   useEffect(() => {
