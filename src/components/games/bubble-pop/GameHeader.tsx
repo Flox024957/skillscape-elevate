@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import { X, Timer, Trophy } from "lucide-react";
 
 interface GameHeaderProps {
   score: number;
@@ -16,9 +16,12 @@ export const GameHeader = ({ score, timeLeft, isPlaying, onExit }: GameHeaderPro
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
-          className="bg-primary/10 backdrop-blur-sm rounded-lg p-4 text-center"
+          className="bg-primary/10 backdrop-blur-sm rounded-lg p-4 text-center border border-white/10"
         >
-          <p className="text-sm font-medium text-primary mb-1">Score</p>
+          <div className="flex items-center gap-2 text-primary mb-1">
+            <Trophy className="w-4 h-4" />
+            <p className="text-sm font-medium">Score</p>
+          </div>
           <p className="text-2xl font-bold text-primary">{score}</p>
         </motion.div>
 
@@ -26,9 +29,12 @@ export const GameHeader = ({ score, timeLeft, isPlaying, onExit }: GameHeaderPro
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            className="bg-primary/10 backdrop-blur-sm rounded-lg p-4 text-center"
+            className="bg-primary/10 backdrop-blur-sm rounded-lg p-4 text-center border border-white/10"
           >
-            <p className="text-sm font-medium text-primary mb-1">Temps</p>
+            <div className="flex items-center gap-2 text-primary mb-1">
+              <Timer className="w-4 h-4" />
+              <p className="text-sm font-medium">Temps</p>
+            </div>
             <p className="text-2xl font-bold text-primary">{timeLeft}s</p>
           </motion.div>
         )}
