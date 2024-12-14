@@ -5,12 +5,7 @@ import { useAchievements } from "./skill-chain/use-achievements";
 import { useSkillValidation } from "./skill-chain/use-skill-validation";
 import { useScoring } from "./skill-chain/use-scoring";
 import type { Achievement } from "@/types/achievements";
-
-interface Skill {
-  id: string;
-  name: string;
-  category: string;
-}
+import type { Skill } from "@/types/skills";
 
 export const useSkillChainGame = () => {
   const user = useUser();
@@ -27,13 +22,28 @@ export const useSkillChainGame = () => {
 
   const checkAndUnlockAchievements = () => {
     if (user?.id) {
-      checkAchievements(score, combo, chain.length);
+      checkAchievements(score);
     }
   };
 
   useEffect(() => {
     checkAndUnlockAchievements();
   }, [score, user?.id]);
+
+  // Fetch skills from Supabase when component mounts
+  useEffect(() => {
+    const fetchSkills = async () => {
+      const { data, error } = await supabase
+        .from('skills')
+        .select('*, categories(*)');
+      
+      if (data && !error) {
+        setSkills(data);
+      }
+    };
+
+    fetchSkills();
+  }, []);
 
   const handleAddSkill = (skill: Skill) => {
     setChain(prev => [...prev, skill]);
