@@ -1,5 +1,7 @@
+import React from "react";
 import { motion } from "framer-motion";
 import * as LucideIcons from "lucide-react";
+import { LucideProps } from "lucide-react";
 import { Game } from "@/types/games";
 import { useNavigate } from "react-router-dom";
 
@@ -32,10 +34,7 @@ export const GameCard = ({ title, description, players, icon, color, route }: Ga
             className="rounded-full p-2"
             style={{ backgroundColor: color + '10' }}
           >
-            {React.createElement(IconComponent, {
-              className: "h-6 w-6",
-              style: { color }
-            })}
+            <IconComponent className="h-6 w-6" style={{ color }} />
           </div>
         )}
       </div>
