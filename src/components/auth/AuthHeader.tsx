@@ -28,23 +28,21 @@ export const AuthHeader = () => {
       <motion.span 
         className="flap text-primary font-bold inline-block"
         whileHover={{ scale: 1.05 }}
-        transition={{ type: "spring", stiffness: 300 }}
+        initial={{
+          textShadow: "0 0 25px rgba(139,92,246,0.7)",
+        }}
         animate={{
           textShadow: [
             "0 0 25px rgba(139,92,246,0.7)",
             "0 0 45px rgba(139,92,246,0.4)",
           ],
         }}
-        initial={{
-          textShadow: "0 0 25px rgba(139,92,246,0.7)",
-        }}
         transition={{
-          textShadow: {
-            duration: 2,
-            repeat: Infinity,
-            repeatType: "reverse",
-            ease: "easeInOut"
-          }
+          duration: 2,
+          repeat: Infinity,
+          repeatType: "reverse",
+          ease: "easeInOut",
+          scale: { type: "spring", stiffness: 300 }
         }}
       >
         FLAP
