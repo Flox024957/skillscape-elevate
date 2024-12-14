@@ -10,11 +10,14 @@ const ChallengesPage = () => {
   const { toast } = useToast();
 
   const handleGameClick = (route: string) => {
-    toast({
-      title: "Bientôt disponible !",
-      description: "Ce jeu sera disponible dans une prochaine mise à jour.",
-    });
-    // navigate(route); // À décommenter quand les jeux seront implémentés
+    if (route === "/games/speed-learning") {
+      navigate(route);
+    } else {
+      toast({
+        title: "Bientôt disponible !",
+        description: "Ce jeu sera disponible dans une prochaine mise à jour.",
+      });
+    }
   };
 
   return (
