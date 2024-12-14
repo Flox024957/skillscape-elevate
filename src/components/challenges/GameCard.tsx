@@ -9,8 +9,7 @@ interface GameCardProps extends Game {
 type LucideIconType = keyof typeof LucideIcons;
 
 export const GameCard = ({ title, description, players, icon, color, onClick }: GameCardProps) => {
-  // Get the icon component from LucideIcons
-  const IconComponent = LucideIcons[icon as LucideIconType];
+  const IconComponent = icon ? LucideIcons[icon as LucideIconType] : null;
 
   return (
     <motion.div
