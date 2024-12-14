@@ -38,7 +38,13 @@ const MainPage = () => {
         id: category.id,
         name: category.name,
         description: category.description || "",
-        skills: category.skills?.map(skill => transformSkill(skill)) || []
+        skills: category.skills?.map(skill => ({
+          ...skill,
+          title: skill.titre,
+          summary: skill.resume,
+          examples: skill.exemples,
+          concrete_action: skill.action_concrete
+        })) || []
       })) || [];
 
       console.log('Categories transformed:', transformedCategories);
