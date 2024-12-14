@@ -25,24 +25,27 @@ export const GameCard = ({
   route,
   onPlay,
 }: GameCardProps) => {
-  // Dynamically get the icon component from lucide-react
   const IconComponent = LucideIcons[icon] as LucideIcon;
+
+  const item = {
+    hidden: { opacity: 0, scale: 0.8 },
+    show: { opacity: 1, scale: 1 }
+  };
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      whileHover={{ scale: 1.02 }}
+      variants={item}
+      whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
       whileTap={{ scale: 0.98 }}
       className={cn(
-        "relative overflow-hidden rounded-xl bg-gradient-to-br",
+        "relative overflow-hidden rounded-xl bg-gradient-to-br shadow-lg hover:shadow-xl transition-shadow duration-300",
         color
       )}
     >
-      <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
       <div className="relative p-6 space-y-4">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
+          <div className="p-2.5 bg-white/20 rounded-lg backdrop-blur-sm">
             {IconComponent && <IconComponent className="w-6 h-6 text-white" />}
           </div>
           <h3 className="text-xl font-semibold text-white">
@@ -50,18 +53,18 @@ export const GameCard = ({
           </h3>
         </div>
         
-        <p className="text-white/90">
+        <p className="text-white/90 line-clamp-2">
           {description}
         </p>
         
         <div className="flex items-center justify-between">
-          <span className="text-sm text-white/80">
+          <span className="text-sm text-white/80 bg-black/20 px-3 py-1 rounded-full backdrop-blur-sm">
             {players}
           </span>
           <Button
             onClick={() => onPlay(route)}
             variant="secondary"
-            className="bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm"
+            className="bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300"
           >
             Jouer
           </Button>
