@@ -13,8 +13,8 @@ export const AuthHeader = () => {
         animate={{
           textShadow: [
             "0 0 20px rgba(139,92,246,0.5)",
-            "0 0 35px rgba(139,92,246,0.3)",
-          ],
+            "0 0 35px rgba(139,92,246,0.3)"
+          ]
         }}
         transition={{
           duration: 2,
@@ -27,22 +27,23 @@ export const AuthHeader = () => {
       </motion.span>
       <motion.span 
         className="flap text-primary font-bold inline-block"
+        initial={{ textShadow: "0 0 25px rgba(139,92,246,0.7)" }}
         whileHover={{ scale: 1.05 }}
-        initial={{
-          textShadow: "0 0 25px rgba(139,92,246,0.7)",
-        }}
         animate={{
           textShadow: [
             "0 0 25px rgba(139,92,246,0.7)",
-            "0 0 45px rgba(139,92,246,0.4)",
-          ],
+            "0 0 45px rgba(139,92,246,0.4)"
+          ]
         }}
         transition={{
           duration: 2,
           repeat: Infinity,
           repeatType: "reverse",
           ease: "easeInOut",
-          scale: { type: "spring", stiffness: 300 }
+          scale: {
+            type: "spring",
+            stiffness: 300
+          }
         }}
       >
         FLAP
