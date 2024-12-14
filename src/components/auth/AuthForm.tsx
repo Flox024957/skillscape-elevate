@@ -52,7 +52,7 @@ export const AuthForm = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <SupabaseAuth 
         supabaseClient={supabase}
         appearance={{
@@ -89,9 +89,9 @@ export const AuthForm = () => {
             },
           },
           className: {
-            container: 'auth-container space-y-6',
+            container: 'auth-container space-y-8',
             button: 'auth-button bg-black/90 hover:bg-black/95 border border-orange-500/80 shadow-[0_0_25px_rgba(249,115,22,0.5)] hover:shadow-[0_0_35px_rgba(249,115,22,0.6)] backdrop-blur-sm transition-all duration-300',
-            input: 'auth-input bg-futuristic-gray/50 backdrop-blur-md text-white border-[3px] border-[#8B5CF6]/40 focus:border-[#8B5CF6]/70 rounded-xl px-6 py-4 w-full transition-all duration-300 mb-4',
+            input: 'auth-input bg-futuristic-gray/50 backdrop-blur-md text-white border-[3px] border-[#8B5CF6]/40 focus:border-[#8B5CF6]/70 rounded-xl px-6 py-4 w-full transition-all duration-300 mb-6',
             label: 'auth-label block text-sm font-medium text-white mb-3',
             loader: 'auth-loader border-t-2 border-orange-500',
           },
