@@ -54,23 +54,10 @@ const SkillDetailPage = () => {
     toast.success(`${type} ajouté au tableau de bord`);
   };
 
-  // Transform the skill data to include both French and English field names
-  const transformedSkill: Skill = {
-    ...skill,
-    title: skill.titre,
-    summary: skill.resume,
-    examples: skill.exemples,
-    concrete_action: skill.action_concrete,
-    titre: skill.titre,
-    resume: skill.resume,
-    exemples: skill.exemples,
-    action_concrete: skill.action_concrete
-  };
-
   return (
     <div className="min-h-screen bg-background">
       <SkillDetailContent 
-        skill={transformedSkill}
+        skill={skill}
         onNavigateBack={handleNavigateBack}
         onAddToDashboard={handleAddToDashboard}
       />

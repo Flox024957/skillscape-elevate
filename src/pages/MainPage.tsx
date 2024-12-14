@@ -3,7 +3,7 @@ import { CategoriesGrid } from "@/components/categories/CategoriesGrid";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
-import { Category, Skill, transformSkill } from "@/types/skills";
+import { Category, Skill } from "@/types/skills";
 
 const MainPage = () => {
   const { data: categories, isLoading, error } = useQuery({
@@ -40,10 +40,10 @@ const MainPage = () => {
         description: category.description || "",
         skills: category.skills?.map(skill => ({
           ...skill,
-          title: skill.titre,
-          summary: skill.resume,
-          examples: skill.exemples,
-          concrete_action: skill.action_concrete
+          titre: skill.titre,
+          resume: skill.resume,
+          exemples: skill.exemples,
+          action_concrete: skill.action_concrete
         })) || []
       })) || [];
 
