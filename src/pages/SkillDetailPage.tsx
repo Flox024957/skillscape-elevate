@@ -19,6 +19,7 @@ const SkillDetailPage = () => {
   }
 
   if (error || !skill) {
+    toast.error("Erreur lors du chargement de la compétence");
     return (
       <div className="min-h-screen bg-background">
         <div className="container px-4 py-8">
