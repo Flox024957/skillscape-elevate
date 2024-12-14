@@ -31,9 +31,9 @@ export const NavItem = ({
       className={cn(
         "relative flex flex-col md:flex-row items-center gap-1 md:gap-2 transition-all duration-300",
         isActive 
-          ? "bg-[#8B5CF6]/20 text-[#8B5CF6] shadow-[0_0_20px_rgba(139,92,246,0.3)] border border-[#8B5CF6]/30" 
-          : "hover:text-[#8B5CF6] hover:bg-[#8B5CF6]/10 hover:shadow-[0_0_15px_rgba(139,92,246,0.2)]",
-        "focus-visible:ring-2 focus-visible:ring-[#8B5CF6] focus-visible:ring-offset-2",
+          ? "bg-primary text-primary-foreground shadow-lg" 
+          : "hover:text-primary hover:bg-primary/10",
+        "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
         "disabled:pointer-events-none disabled:opacity-50"
       )}
       onClick={onClick}

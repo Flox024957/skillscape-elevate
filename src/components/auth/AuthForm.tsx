@@ -60,13 +60,13 @@ export const AuthForm = () => {
           variables: {
             default: {
               colors: {
-                brand: 'rgba(139, 92, 246, 0.9)',
-                brandAccent: 'rgba(139, 92, 246, 1)',
-                inputBackground: 'rgba(26, 31, 53, 0.8)',
+                brand: 'rgba(0, 0, 0, 0.9)',
+                brandAccent: 'rgba(0, 0, 0, 0.95)',
+                inputBackground: '#1A1F35',
                 inputText: '#FFFFFF',
-                inputBorder: 'rgba(139, 92, 246, 0.5)',
-                inputBorderFocus: 'rgba(139, 92, 246, 0.8)',
-                inputBorderHover: 'rgba(139, 92, 246, 0.7)',
+                inputBorder: '#8B5CF680',
+                inputBorderFocus: '#8B5CF6',
+                inputBorderHover: '#8B5CF6',
               },
               space: {
                 inputPadding: '16px',
@@ -74,7 +74,7 @@ export const AuthForm = () => {
               },
               borderWidths: {
                 buttonBorderWidth: '1px',
-                inputBorderWidth: '2px',
+                inputBorderWidth: '3px',
               },
               radii: {
                 borderRadiusButton: '12px',
@@ -90,26 +90,26 @@ export const AuthForm = () => {
           },
           className: {
             container: 'auth-container space-y-6',
-            button: 'auth-button bg-primary/20 hover:bg-primary/30 border border-primary/50 shadow-[0_0_25px_rgba(139,92,246,0.3)] hover:shadow-[0_0_35px_rgba(139,92,246,0.4)] backdrop-blur-sm transition-all duration-300',
-            input: 'auth-input bg-background/50 backdrop-blur-md text-white border-2 border-primary/40 focus:border-primary/70 rounded-xl px-6 py-4 w-full transition-all duration-300 mb-4',
+            button: 'auth-button bg-black/90 hover:bg-black/95 border border-orange-500/80 shadow-[0_0_25px_rgba(249,115,22,0.5)] hover:shadow-[0_0_35px_rgba(249,115,22,0.6)] backdrop-blur-sm transition-all duration-300',
+            input: 'auth-input bg-futuristic-gray/50 backdrop-blur-md text-white border-[3px] border-[#8B5CF6]/40 focus:border-[#8B5CF6]/70 rounded-xl px-6 py-4 w-full transition-all duration-300 mb-4',
             label: 'auth-label block text-sm font-medium text-white mb-3',
-            loader: 'auth-loader border-t-2 border-primary',
+            loader: 'auth-loader border-t-2 border-orange-500',
           },
         }}
       />
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t border-primary/30" />
+          <span className="w-full border-t border-gray-600" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background/80 backdrop-blur-sm px-2 text-muted-foreground">
+          <span className="bg-background px-2 text-muted-foreground">
             Try the demo account
           </span>
         </div>
       </div>
       <Button 
         onClick={handleDemoLogin}
-        className="w-full bg-gradient-to-r from-primary/80 to-primary hover:from-primary hover:to-primary/90 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+        className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
       >
         Access Demo Account
       </Button>

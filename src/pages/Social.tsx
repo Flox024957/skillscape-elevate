@@ -31,31 +31,31 @@ const Social = () => {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-futuristic-black">
       <div className="container mx-auto px-4 py-6">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           {/* Sidebar gauche - Profile et Navigation */}
           <div className="md:col-span-3">
-            <div className="glass-panel p-4 backdrop-blur-xl border border-[#8B5CF6]/30 shadow-[0_0_30px_rgba(139,92,246,0.3)]">
+            <div className="glass-panel p-4">
               <UserProfile userId={user.id} />
               <nav className="mt-6 space-y-2">
                 <Button 
                   variant="ghost" 
-                  className="w-full justify-start text-[#8B5CF6] hover:bg-[#8B5CF6]/10 hover:text-[#8B5CF6] transition-all duration-300"
+                  className="w-full justify-start neon-text"
                   onClick={() => setActiveTab("feed")}
                 >
                   Fil d'actualité
                 </Button>
                 <Button 
                   variant="ghost" 
-                  className="w-full justify-start text-[#8B5CF6] hover:bg-[#8B5CF6]/10 hover:text-[#8B5CF6] transition-all duration-300"
+                  className="w-full justify-start neon-text"
                   onClick={() => setActiveTab("friends")}
                 >
                   Amis
                 </Button>
                 <Button 
                   variant="ghost" 
-                  className="w-full justify-start text-[#8B5CF6] hover:bg-[#8B5CF6]/10 hover:text-[#8B5CF6] transition-all duration-300"
+                  className="w-full justify-start neon-text"
                   onClick={() => setActiveTab("messages")}
                 >
                   Messages
@@ -66,43 +66,23 @@ const Social = () => {
 
           {/* Contenu principal */}
           <div className="md:col-span-6">
-            <div className="glass-panel p-4 mb-6 backdrop-blur-xl border border-[#8B5CF6]/30 shadow-[0_0_30px_rgba(139,92,246,0.3)]">
+            <div className="glass-panel p-4 mb-6">
               <SearchBar />
             </div>
             
-            <div className="glass-panel p-4 mb-6 backdrop-blur-xl border border-[#8B5CF6]/30 shadow-[0_0_30px_rgba(139,92,246,0.3)]">
+            <div className="glass-panel p-4 mb-6">
               <CreatePost userId={user.id} />
             </div>
             
-            <div className="glass-panel backdrop-blur-xl border border-[#8B5CF6]/30 shadow-[0_0_30px_rgba(139,92,246,0.3)]">
+            <div className="glass-panel">
               <Tabs value={activeTab} className="w-full">
-                <TabsList className="w-full bg-background/50 backdrop-blur-md border-b border-[#8B5CF6]/30">
-                  <TabsTrigger 
-                    value="feed"
-                    className="flex-1 data-[state=active]:bg-[#8B5CF6]/20 data-[state=active]:text-[#8B5CF6]"
-                  >
-                    Fil d'actualité
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="friends"
-                    className="flex-1 data-[state=active]:bg-[#8B5CF6]/20 data-[state=active]:text-[#8B5CF6]"
-                  >
-                    Amis
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="messages"
-                    className="flex-1 data-[state=active]:bg-[#8B5CF6]/20 data-[state=active]:text-[#8B5CF6]"
-                  >
-                    Messages
-                  </TabsTrigger>
-                </TabsList>
-                <TabsContent value="feed" className="p-4">
+                <TabsContent value="feed">
                   <NewsFeed userId={user.id} />
                 </TabsContent>
-                <TabsContent value="friends" className="p-4">
+                <TabsContent value="friends">
                   <FriendsList userId={user.id} />
                 </TabsContent>
-                <TabsContent value="messages" className="p-4">
+                <TabsContent value="messages">
                   <ChatSection userId={user.id} />
                 </TabsContent>
               </Tabs>
@@ -111,8 +91,8 @@ const Social = () => {
 
           {/* Sidebar droite - Contacts */}
           <div className="md:col-span-3">
-            <div className="glass-panel p-4 backdrop-blur-xl border border-[#8B5CF6]/30 shadow-[0_0_30px_rgba(139,92,246,0.3)]">
-              <h3 className="font-semibold mb-4 text-[#8B5CF6] text-shadow-neon">Contacts</h3>
+            <div className="glass-panel p-4">
+              <h3 className="font-semibold mb-4 neon-text">Contacts</h3>
               <FriendsList userId={user.id} variant="compact" />
             </div>
           </div>

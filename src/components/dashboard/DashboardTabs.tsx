@@ -1,46 +1,40 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import AudioTab from "./tabs/AudioTab";
-import NotesTab from "./tabs/NotesTab";
 import SkillsTab from "./tabs/SkillsTab";
+import NotesTab from "./tabs/NotesTab";
 import CanvasTab from "./tabs/CanvasTab";
+import AudioTab from "./tabs/AudioTab";
+import MasteredSkillsSection from "./tabs/skills/MasteredSkillsSection";
 
 const DashboardTabs = () => {
   return (
-    <Tabs defaultValue="skills" className="w-full">
-      <TabsList className="grid grid-cols-4 gap-4 bg-transparent">
-        {[
-          { value: "skills", label: "Compétences" },
-          { value: "notes", label: "Notes" },
-          { value: "audio", label: "Audio" },
-          { value: "canvas", label: "Canvas" },
-        ].map((tab) => (
-          <TabsTrigger
-            key={tab.value}
-            value={tab.value}
-            className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary hover:text-primary/80 transition-colors"
-          >
-            {tab.label}
-          </TabsTrigger>
-        ))}
+    <Tabs defaultValue="skills" className="space-y-4">
+      <TabsList className="grid grid-cols-5 gap-4">
+        <TabsTrigger value="skills">Compétences & Actions</TabsTrigger>
+        <TabsTrigger value="mastered">Compétences Maîtrisées</TabsTrigger>
+        <TabsTrigger value="notes">Notes & Calendrier</TabsTrigger>
+        <TabsTrigger value="canvas">Canevas</TabsTrigger>
+        <TabsTrigger value="audio">Lecteur Audio</TabsTrigger>
       </TabsList>
 
-      <div className="mt-6 space-y-8">
-        <TabsContent value="skills" className="space-y-4">
-          <SkillsTab />
-        </TabsContent>
+      <TabsContent value="skills">
+        <SkillsTab />
+      </TabsContent>
 
-        <TabsContent value="notes" className="space-y-4">
-          <NotesTab />
-        </TabsContent>
+      <TabsContent value="mastered">
+        <MasteredSkillsSection />
+      </TabsContent>
 
-        <TabsContent value="audio" className="space-y-4">
-          <AudioTab />
-        </TabsContent>
+      <TabsContent value="notes">
+        <NotesTab />
+      </TabsContent>
 
-        <TabsContent value="canvas" className="space-y-4">
-          <CanvasTab />
-        </TabsContent>
-      </div>
+      <TabsContent value="canvas">
+        <CanvasTab />
+      </TabsContent>
+
+      <TabsContent value="audio">
+        <AudioTab />
+      </TabsContent>
     </Tabs>
   );
 };

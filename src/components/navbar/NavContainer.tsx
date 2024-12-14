@@ -10,8 +10,7 @@ export const NavContainer = ({ children }: NavContainerProps) => {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ type: "spring", stiffness: 100 }}
-      className="fixed top-0 left-0 right-0 bg-background/30 backdrop-blur-xl border-b border-[#8B5CF6]/30 z-50
-                shadow-[0_0_30px_rgba(139,92,246,0.2)]"
+      className="fixed top-0 left-0 right-0 bg-background/95 backdrop-blur-md border-b border-border z-50"
       role="navigation"
       aria-label="Navigation principale"
     >
