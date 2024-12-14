@@ -18,7 +18,7 @@ export const TypingArea = ({ currentWord, onType }: TypingAreaProps) => {
     inputRef.current?.focus();
     setShowHint(false);
     
-    // Show hint after 3 seconds of inactivity
+    // Montrer l'indice après 3 secondes d'inactivité
     const timer = setTimeout(() => {
       if (input === "") {
         setShowHint(true);
