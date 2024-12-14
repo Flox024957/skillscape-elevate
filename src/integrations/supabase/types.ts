@@ -423,6 +423,44 @@ export type Database = {
         }
         Relationships: []
       }
+      skill_builder_structures: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          score: number | null
+          skills: Json[]
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          score?: number | null
+          skills: Json[]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          score?: number | null
+          skills?: Json[]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "skill_builder_structures_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       skill_illustrations: {
         Row: {
           created_at: string

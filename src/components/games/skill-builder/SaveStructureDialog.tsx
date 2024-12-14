@@ -43,11 +43,25 @@ export const SaveStructureDialog = ({
 
     setIsSaving(true);
     try {
-      const { error } = await supabase.from("skill_builder_structures").insert({
-        name: structureName,
-        skills: skills,
-        score: score,
-      });
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Erreur",
+          description: "Vous devez être connecté pour sauvegarder une structure",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { error } = await supabase
+        .from('skill_builder_structures')
+        .insert({
+          name: structureName,
+          skills: skills,
+          score: score,
+          user_id: user.id
+        });
 
       if (error) throw error;
 

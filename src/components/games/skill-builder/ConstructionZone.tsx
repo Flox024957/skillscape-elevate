@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import type { Skill } from "@/types/skills";
 import { Card } from "@/components/ui/card";
-import { Trophy, Layers, Category } from "lucide-react";
+import { Trophy, Layers, FolderTree } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 interface ConstructionZoneProps {
@@ -81,7 +81,7 @@ export const ConstructionZone = ({ skills }: ConstructionZoneProps) => {
               {skills.length} compétences
             </Badge>
             <Badge variant="outline" className="flex items-center gap-2">
-              <Category className="w-4 h-4" />
+              <FolderTree className="w-4 h-4" />
               {uniqueCategories.size} catégories
             </Badge>
           </div>
