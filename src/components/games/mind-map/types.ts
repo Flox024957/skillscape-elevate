@@ -9,15 +9,10 @@ export interface MindMapNodeType {
 
 export interface MindMapNodeProps {
   node: MindMapNodeType;
-  onUpdate: (node: MindMapNodeType) => void;
-  onDelete: (id: string) => void;
-  isEditable?: boolean;
-}
-
-export interface MindMapAreaProps {
   nodes: MindMapNodeType[];
-  onNodesChange: (nodes: MindMapNodeType[]) => void;
-  isEditable?: boolean;
+  onAddChild: (parentId: string) => void;
+  onUpdate: (nodeId: string, content: string) => void;
+  onDelete: (nodeId: string) => void;
 }
 
 export interface MindMapToolbarProps {
@@ -26,5 +21,9 @@ export interface MindMapToolbarProps {
   onRedo: () => void;
   canUndo: boolean;
   canRedo: boolean;
-  isEditable?: boolean;
+}
+
+export interface MindMapAction {
+  type: 'ADD_NODE' | 'UPDATE_NODE' | 'DELETE_NODE' | 'UNDO' | 'REDO';
+  payload: any;
 }

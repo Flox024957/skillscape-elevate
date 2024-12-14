@@ -25,21 +25,21 @@ export const MindMapArea = () => {
     const updatedNodes = [...nodes, newNode];
     setNodes(updatedNodes);
     updateMindMap(updatedNodes);
-    addToHistory({ type: "add", payload: newNode });
+    addToHistory({ type: "ADD_NODE", payload: newNode });
   };
 
   const handleUpdateNode = (nodeId: string, content: string) => {
     const updatedNodes = updateNode(nodes, nodeId, content);
     setNodes(updatedNodes);
     updateMindMap(updatedNodes);
-    addToHistory({ type: "update", payload: { id: nodeId, content } });
+    addToHistory({ type: "UPDATE_NODE", payload: { id: nodeId, content } });
   };
 
   const handleDeleteNode = (nodeId: string) => {
     const updatedNodes = deleteNode(nodes, nodeId);
     setNodes(updatedNodes);
     updateMindMap(updatedNodes);
-    addToHistory({ type: "delete", payload: { id: nodeId } });
+    addToHistory({ type: "DELETE_NODE", payload: { id: nodeId } });
   };
 
   const handleUndo = () => {
@@ -79,7 +79,13 @@ export const MindMapArea = () => {
       className="relative min-h-[600px] bg-background/50 backdrop-blur-sm rounded-xl shadow-lg p-8"
     >
       <div className="absolute top-4 left-4 right-4 flex justify-between gap-4">
-        <MindMapToolbar onAddNode={() => handleAddNode(null)} />
+        <MindMapToolbar 
+          onAddNode={() => handleAddNode(null)}
+          onUndo={handleUndo}
+          onRedo={handleRedo}
+          canUndo={currentIndex > 0}
+          canRedo={currentIndex < history.length - 1}
+        />
         <CollaborativeToolbar
           mindMapId={mindMap?.id || ""}
           onSave={handleSave}
