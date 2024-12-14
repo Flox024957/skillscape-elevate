@@ -18,7 +18,7 @@ const features = [
     title: "Communauté Active",
     description: "Partagez et apprenez avec une communauté de professionnels motivés",
     icon: "🤝",
-    color: "from-[#9b87f5] to-[#8B5CF6]"
+    color: "from-[#0EA5E9] to-[#33C3F0]"
   }
 ];
 
