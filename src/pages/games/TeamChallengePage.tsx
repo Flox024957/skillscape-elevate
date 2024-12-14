@@ -6,10 +6,52 @@ import { QuestionDisplay } from "@/components/games/team-challenge/QuestionDispl
 import { TeamScoreDisplay } from "@/components/games/team-challenge/TeamScoreDisplay";
 import { WaitingScreen } from "@/components/games/team-challenge/WaitingScreen";
 import { GameOverScreen } from "@/components/games/team-challenge/GameOverScreen";
+import { TeamChat } from "@/components/games/team-challenge/TeamChat";
 import { useTeamChallenge } from "@/hooks/use-team-challenge";
+import { useEffect, useState } from "react";
 
 const TeamChallengePage = () => {
   const { gameState, startGame, handleAnswer } = useTeamChallenge();
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const getCurrentUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUserId(user.id);
+      }
+    };
+
+    getCurrentUser();
+  }, []);
+
+  useEffect(() => {
+    if (gameState.status === "playing" && !sessionId) {
+      const createGameSession = async () => {
+        const { data, error } = await supabase
+          .from("game_sessions")
+          .insert([
+            {
+              game_type: "team_challenge",
+              max_players: 10,
+              status: "playing",
+            },
+          ])
+          .select()
+          .single();
+
+        if (error) {
+          console.error("Error creating game session:", error);
+          return;
+        }
+
+        setSessionId(data.id);
+      };
+
+      createGameSession();
+    }
+  }, [gameState.status, sessionId]);
 
   // Charger les questions depuis Supabase
   const { data: questions, isLoading } = useQuery({
@@ -23,7 +65,6 @@ const TeamChallengePage = () => {
 
       if (error) throw error;
       
-      // Conversion explicite des options en string[]
       return data.map(question => ({
         ...question,
         options: question.options as string[]
@@ -60,31 +101,49 @@ const TeamChallengePage = () => {
         </motion.div>
 
         {/* Zone de jeu principale */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-card rounded-xl p-8 shadow-lg space-y-6"
-        >
-          {gameState.status === "waiting" ? (
-            <WaitingScreen onStart={startGame} isLoading={isLoading} />
-          ) : gameState.status === "playing" && questions ? (
-            <div className="space-y-6">
-              <TeamScoreDisplay 
-                scores={gameState.scores} 
-                currentTeam={gameState.currentTeam} 
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="lg:col-span-2 bg-card rounded-xl p-8 shadow-lg space-y-6"
+          >
+            {gameState.status === "waiting" ? (
+              <WaitingScreen onStart={startGame} isLoading={isLoading} />
+            ) : gameState.status === "playing" && questions ? (
+              <div className="space-y-6">
+                <TeamScoreDisplay 
+                  scores={gameState.scores} 
+                  currentTeam={gameState.currentTeam} 
+                />
+                
+                <QuestionDisplay
+                  question={questions[gameState.currentQuestionIndex]}
+                  onAnswer={answer => handleAnswer(questions[gameState.currentQuestionIndex], answer)}
+                  timeLeft={gameState.timeLeft}
+                />
+              </div>
+            ) : (
+              <GameOverScreen scores={gameState.scores} />
+            )}
+          </motion.div>
+
+          {/* Chat d'équipe */}
+          {gameState.status === "playing" && sessionId && userId && (
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
+              className="lg:col-span-1"
+            >
+              <TeamChat
+                sessionId={sessionId}
+                teamNumber={gameState.currentTeam}
+                currentUserId={userId}
               />
-              
-              <QuestionDisplay
-                question={questions[gameState.currentQuestionIndex]}
-                onAnswer={answer => handleAnswer(questions[gameState.currentQuestionIndex], answer)}
-                timeLeft={gameState.timeLeft}
-              />
-            </div>
-          ) : (
-            <GameOverScreen scores={gameState.scores} />
+            </motion.div>
           )}
-        </motion.div>
+        </div>
       </div>
     </div>
   );

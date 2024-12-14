@@ -731,6 +731,48 @@ export type Database = {
           },
         ]
       }
+      team_chat_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          session_id: string | null
+          team_number: number
+          user_id: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          session_id?: string | null
+          team_number: number
+          user_id?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          session_id?: string | null
+          team_number?: number
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_chat_messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "game_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "team_chat_messages_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_canvas_images: {
         Row: {
           created_at: string
