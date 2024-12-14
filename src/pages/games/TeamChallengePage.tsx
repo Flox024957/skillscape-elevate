@@ -1,35 +1,15 @@
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Users, Trophy } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { QuestionDisplay } from "@/components/games/team-challenge/QuestionDisplay";
 import { TeamScoreDisplay } from "@/components/games/team-challenge/TeamScoreDisplay";
-import { useToast } from "@/components/ui/use-toast";
-
-interface TeamChallengeState {
-  status: "waiting" | "playing" | "finished";
-  currentTeam: number;
-  scores: Record<number, number>;
-  currentQuestionIndex: number;
-  timeLeft: number;
-}
-
-const QUESTION_TIME = 30; // Secondes par question
-const TOTAL_QUESTIONS = 10;
+import { WaitingScreen } from "@/components/games/team-challenge/WaitingScreen";
+import { GameOverScreen } from "@/components/games/team-challenge/GameOverScreen";
+import { useTeamChallenge } from "@/hooks/use-team-challenge";
 
 const TeamChallengePage = () => {
-  const navigate = useNavigate();
-  const { toast } = useToast();
-  const [gameState, setGameState] = useState<TeamChallengeState>({
-    status: "waiting",
-    currentTeam: 1,
-    scores: { 1: 0, 2: 0 },
-    currentQuestionIndex: 0,
-    timeLeft: QUESTION_TIME,
-  });
+  const { gameState, startGame, handleAnswer } = useTeamChallenge();
 
   // Charger les questions depuis Supabase
   const { data: questions, isLoading } = useQuery({
@@ -42,79 +22,14 @@ const TeamChallengePage = () => {
         .order("difficulty", { ascending: true });
 
       if (error) throw error;
-      return data;
+      
+      // Conversion explicite des options en string[]
+      return data.map(question => ({
+        ...question,
+        options: question.options as string[]
+      }));
     }
   });
-
-  // Timer pour les questions
-  useEffect(() => {
-    if (gameState.status !== "playing") return;
-
-    const timer = setInterval(() => {
-      setGameState(prev => {
-        if (prev.timeLeft <= 0) {
-          // Passer au tour suivant si le temps est écoulé
-          return handleNextTurn(prev, false);
-        }
-        return { ...prev, timeLeft: prev.timeLeft - 1 };
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [gameState.status]);
-
-  const handleNextTurn = (currentState: TeamChallengeState, wasCorrect: boolean) => {
-    const newScores = { ...currentState.scores };
-    if (wasCorrect) {
-      newScores[currentState.currentTeam] += 
-        (currentState.timeLeft * questions![currentState.currentQuestionIndex].difficulty);
-    }
-
-    const nextQuestionIndex = currentState.currentQuestionIndex + 1;
-    
-    // Vérifier si le jeu est terminé
-    if (nextQuestionIndex >= TOTAL_QUESTIONS) {
-      return {
-        ...currentState,
-        status: "finished",
-        scores: newScores,
-      };
-    }
-
-    // Passer à l'équipe suivante
-    const nextTeam = currentState.currentTeam === 1 ? 2 : 1;
-
-    return {
-      ...currentState,
-      currentTeam: nextTeam,
-      scores: newScores,
-      currentQuestionIndex: nextQuestionIndex,
-      timeLeft: QUESTION_TIME,
-    };
-  };
-
-  const handleAnswer = (answer: string) => {
-    const currentQuestion = questions![gameState.currentQuestionIndex];
-    const isCorrect = answer === currentQuestion.correct_answer;
-
-    toast({
-      title: isCorrect ? "Bonne réponse !" : "Mauvaise réponse",
-      description: isCorrect 
-        ? `+${gameState.timeLeft * currentQuestion.difficulty} points`
-        : "Pas de points gagnés",
-      variant: isCorrect ? "default" : "destructive",
-    });
-
-    setGameState(prev => handleNextTurn(prev, isCorrect));
-  };
-
-  const startGame = () => {
-    setGameState(prev => ({ 
-      ...prev, 
-      status: "playing",
-      timeLeft: QUESTION_TIME,
-    }));
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/80 pt-24">
@@ -152,20 +67,7 @@ const TeamChallengePage = () => {
           className="bg-card rounded-xl p-8 shadow-lg space-y-6"
         >
           {gameState.status === "waiting" ? (
-            <div className="space-y-6 text-center">
-              <h2 className="text-2xl font-semibold">Prêt à relever le défi ?</h2>
-              <div className="flex flex-col items-center gap-4">
-                <Trophy className="w-16 h-16 text-primary animate-pulse" />
-                <Button
-                  size="lg"
-                  onClick={startGame}
-                  className="text-lg px-8"
-                  disabled={isLoading}
-                >
-                  Commencer le défi
-                </Button>
-              </div>
-            </div>
+            <WaitingScreen onStart={startGame} isLoading={isLoading} />
           ) : gameState.status === "playing" && questions ? (
             <div className="space-y-6">
               <TeamScoreDisplay 
@@ -175,31 +77,12 @@ const TeamChallengePage = () => {
               
               <QuestionDisplay
                 question={questions[gameState.currentQuestionIndex]}
-                onAnswer={handleAnswer}
+                onAnswer={answer => handleAnswer(questions[gameState.currentQuestionIndex], answer)}
                 timeLeft={gameState.timeLeft}
               />
             </div>
           ) : (
-            <div className="text-center space-y-6">
-              <h2 className="text-2xl font-semibold">Partie terminée !</h2>
-              <Trophy className="w-16 h-16 text-primary mx-auto" />
-              <div className="space-y-4">
-                <p className="text-xl">
-                  L'équipe {
-                    Object.entries(gameState.scores).reduce((a, b) => 
-                      gameState.scores[Number(a)] > gameState.scores[Number(b)] ? a : b
-                    )
-                  } remporte la victoire !
-                </p>
-                <Button
-                  onClick={() => navigate("/challenges")}
-                  variant="outline"
-                  size="lg"
-                >
-                  Retour aux défis
-                </Button>
-              </div>
-            </div>
+            <GameOverScreen scores={gameState.scores} />
           )}
         </motion.div>
       </div>
