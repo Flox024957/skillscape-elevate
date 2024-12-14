@@ -60,20 +60,20 @@ export const SaveStructureDialog = ({
         action_concrete: skill.action_concrete,
         exemples: skill.exemples,
         category_id: skill.category_id,
-        // Convert the categories object to a simple format that matches Json type
-        categories: skill.categories ? {
+        category: skill.categories ? {
           id: skill.categories.id,
           name: skill.categories.name,
           description: skill.categories.description
         } : null
-      })) as unknown as Json[];
+      }));
 
+      // Explicitly cast the converted skills array to Json[]
       const { error } = await supabase
         .from('skill_builder_structures')
         .insert({
           name: structureName,
           user_id: user.id,
-          skills: skillsForStorage,
+          skills: skillsForStorage as Json[],
           score: score,
         });
 
