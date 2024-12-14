@@ -2,11 +2,14 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Trophy, Save } from "lucide-react";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 import type { Skill } from "@/types/skills";
 import type { Json } from "@/integrations/supabase/types";
+import { motion } from "framer-motion";
+import { Trophy, Save } from "lucide-react";
 
 interface SaveStructureDialogProps {
   isOpen: boolean;
@@ -24,17 +27,9 @@ export const SaveStructureDialog = ({
   const [structureName, setStructureName] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleSave = async () => {
-    if (!structureName.trim()) {
-      toast({
-        title: "Nom requis",
-        description: "Veuillez donner un nom à votre structure",
-        variant: "destructive",
-      });
-      return;
-    }
-
     try {
       setIsSaving(true);
 
@@ -44,14 +39,14 @@ export const SaveStructureDialog = ({
 
       if (!user) {
         toast({
-          title: "Non connecté",
-          description: "Vous devez être connecté pour sauvegarder une structure",
+          title: "Erreur",
+          description: "Vous devez être connecté pour sauvegarder une structure.",
           variant: "destructive",
         });
         return;
       }
 
-      // Convert skills array to a format compatible with Supabase's Json type
+      // Convert skills to a format compatible with Supabase's Json type
       const skillsForStorage = skills.map(skill => ({
         id: skill.id,
         titre: skill.titre,
@@ -67,13 +62,12 @@ export const SaveStructureDialog = ({
         } : null
       }));
 
-      // Explicitly cast the converted skills array to Json[]
       const { error } = await supabase
         .from('skill_builder_structures')
         .insert({
           name: structureName,
           user_id: user.id,
-          skills: skillsForStorage as Json[],
+          skills: skillsForStorage as unknown as Json[],
           score: score,
         });
 
@@ -81,19 +75,27 @@ export const SaveStructureDialog = ({
 
       toast({
         title: "Structure sauvegardée !",
-        description: `"${structureName}" a été sauvegardée avec succès.`,
+        description: `Votre structure "${structureName}" a été sauvegardée avec succès.`,
       });
 
-      onClose();
+      // Navigate to dashboard after successful save
+      navigate("/dashboard", { 
+        state: { 
+          savedStructure: true,
+          structureName,
+          score 
+        } 
+      });
     } catch (error) {
       console.error("Error saving structure:", error);
       toast({
         title: "Erreur",
-        description: "Impossible de sauvegarder la structure. Veuillez réessayer.",
+        description: "Une erreur est survenue lors de la sauvegarde.",
         variant: "destructive",
       });
     } finally {
       setIsSaving(false);
+      onClose();
     }
   };
 
@@ -101,43 +103,74 @@ export const SaveStructureDialog = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-2xl">
-            <Trophy className="w-6 h-6 text-primary" />
-            Sauvegarder la Structure
+          <DialogTitle className="flex items-center gap-2">
+            <Trophy className="w-5 h-5 text-primary" />
+            Sauvegarder votre structure
           </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6 py-4">
-          <div className="flex items-center gap-4 p-4 bg-primary/10 rounded-lg">
-            <Trophy className="w-8 h-8 text-primary" />
-            <div>
-              <p className="text-sm font-medium">Score Final</p>
-              <p className="text-2xl font-bold text-primary">{score} points</p>
+          <div className="flex items-center gap-4">
+            <div className="flex-1">
+              <Label htmlFor="structureName">Nom de la structure</Label>
+              <Input
+                id="structureName"
+                value={structureName}
+                onChange={(e) => setStructureName(e.target.value)}
+                placeholder="Ma structure de compétences"
+                className="mt-1"
+              />
+            </div>
+            <div className="text-right">
+              <Label>Score</Label>
+              <div className="text-2xl font-bold text-primary mt-1">{score}</div>
             </div>
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="structureName" className="text-sm font-medium">
-              Nom de la Structure
-            </label>
-            <Input
-              id="structureName"
-              value={structureName}
-              onChange={(e) => setStructureName(e.target.value)}
-              placeholder="Ma super structure"
-              className="w-full"
-            />
+            <Label>Compétences incluses</Label>
+            <motion.div 
+              className="space-y-2 max-h-48 overflow-y-auto pr-2"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              {skills.map((skill, index) => (
+                <motion.div
+                  key={skill.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="p-2 bg-muted/50 rounded-lg text-sm"
+                >
+                  {skill.titre}
+                </motion.div>
+              ))}
+            </motion.div>
           </div>
+        </div>
 
-          <div className="flex justify-end gap-4">
-            <Button variant="outline" onClick={onClose} disabled={isSaving}>
-              Annuler
-            </Button>
-            <Button onClick={handleSave} disabled={isSaving} className="gap-2">
-              <Save className="w-4 h-4" />
-              {isSaving ? "Sauvegarde..." : "Sauvegarder"}
-            </Button>
-          </div>
+        <div className="flex justify-end gap-4 mt-4">
+          <Button variant="outline" onClick={onClose}>
+            Annuler
+          </Button>
+          <Button 
+            onClick={handleSave} 
+            disabled={!structureName || isSaving}
+            className="bg-gradient-to-r from-primary to-primary-foreground hover:opacity-90"
+          >
+            {isSaving ? (
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+              >
+                <Save className="w-4 h-4 mr-2" />
+              </motion.div>
+            ) : (
+              <Save className="w-4 h-4 mr-2" />
+            )}
+            Sauvegarder
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
