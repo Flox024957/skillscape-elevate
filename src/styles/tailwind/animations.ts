@@ -63,6 +63,17 @@ export const animations = {
         transform: "scale(1.2)",
       }
     },
+    "wave": {
+      "0%": {
+        transform: "translateX(-100%) translateY(-10%)",
+      },
+      "50%": {
+        transform: "translateX(0%) translateY(0%)",
+      },
+      "100%": {
+        transform: "translateX(100%) translateY(-10%)",
+      }
+    }
   },
   animation: {
     "float-slow": "float-slow 20s ease-in-out infinite",
@@ -71,5 +82,6 @@ export const animations = {
     "pulse-slow": "pulse-slow 15s ease-in-out infinite",
     "pulse-medium": "pulse-medium 10s ease-in-out infinite",
     "pulse-fast": "pulse-fast 8s ease-in-out infinite",
+    "wave": "wave 20s ease-in-out infinite",
   },
 };
