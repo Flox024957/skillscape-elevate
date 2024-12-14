@@ -10,6 +10,10 @@ interface Question {
   question: string;
   options: string[];
   correct_answer: string;
+  category: string;
+  difficulty: number;
+  created_at: string;
+  updated_at: string;
 }
 
 export const GameContainer = () => {
@@ -26,18 +30,12 @@ export const GameContainer = () => {
         const { data, error } = await supabase
           .from("game_questions")
           .select("*")
-          .limit(10);
+          .limit(10) as { data: Question[] | null; error: Error | null };
 
         if (error) throw error;
 
         if (data) {
-          const formattedQuestions = data.map(q => ({
-            id: q.id,
-            question: q.question,
-            options: q.options,
-            correct_answer: q.correct_answer
-          }));
-          setQuestions(formattedQuestions);
+          setQuestions(data);
         }
       } catch (error) {
         console.error("Error fetching questions:", error);
