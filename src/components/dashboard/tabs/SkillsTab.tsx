@@ -10,9 +10,13 @@ import {
   useSensors,
   DragEndEvent,
 } from '@dnd-kit/core';
+import { 
+  sortableKeyboardCoordinates 
+} from '@dnd-kit/sortable';
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { UserSkill } from "@/types/skills";
+import { Json } from "@/integrations/supabase/types";
 import { normalizeExamples } from "@/utils/skillHelpers";
 import SkillsList from "./skills/SkillsList";
 

@@ -1,5 +1,6 @@
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { UserSkill } from "@/types/skills";
+import { Json } from "@/integrations/supabase/types";
 import SortableSkillItem from "./SortableSkillItem";
 import { Collapsible } from "@/components/ui/collapsible";
 import SkillHeader from "./SkillHeader";
@@ -43,7 +44,7 @@ const SkillsList = ({
               summary={userSkill.skills.resume}
               explanation={userSkill.skills.description}
               concreteAction={userSkill.skills.action_concrete}
-              examples={userSkill.skills.exemples}
+              examples={Array.isArray(userSkill.skills.exemples) ? userSkill.skills.exemples : []}
               onAdd={handleAddSkillSection}
             />
           </Collapsible>
