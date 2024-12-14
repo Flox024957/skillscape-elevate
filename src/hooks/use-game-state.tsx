@@ -49,11 +49,11 @@ export const useGameState = () => {
       .select('score')
       .eq('game_type', 'speed_learning')
       .order('score', { ascending: false })
-      .limit(1)
-      .single();
+      .limit(1);
 
-    if (leaderboard) {
-      setHighScore(leaderboard.score);
+    // Si des données existent, on prend le premier score, sinon on garde 0
+    if (leaderboard && leaderboard.length > 0) {
+      setHighScore(leaderboard[0].score);
     }
   };
 
@@ -76,24 +76,24 @@ export const useGameState = () => {
       .from('game_leaderboards')
       .select('*')
       .eq('game_type', 'speed_learning')
-      .single();
+      .limit(1);
 
-    if (existingEntry) {
-      if (finalScore > existingEntry.score) {
+    if (existingEntry && existingEntry.length > 0) {
+      if (finalScore > existingEntry[0].score) {
         await supabase
           .from('game_leaderboards')
           .update({ 
             score: finalScore,
-            games_played: existingEntry.games_played + 1 
+            games_played: existingEntry[0].games_played + 1 
           })
-          .eq('id', existingEntry.id);
+          .eq('id', existingEntry[0].id);
       } else {
         await supabase
           .from('game_leaderboards')
           .update({ 
-            games_played: existingEntry.games_played + 1 
+            games_played: existingEntry[0].games_played + 1 
           })
-          .eq('id', existingEntry.id);
+          .eq('id', existingEntry[0].id);
       }
     } else {
       await supabase
