@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import { AppRoutes } from "@/routes/AppRoutes";
+import { PageContainer } from "@/components/layout/PageContainer";
 
 const queryClient = new QueryClient();
 
@@ -37,17 +38,14 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <BrowserRouter>
-          <div className="min-h-screen bg-background">
+          <PageContainer className={cn(isAuthenticated && "pt-16")}>
             {isAuthenticated && <Navbar />}
-            <main className={cn(
-              "relative w-full",
-              isAuthenticated && "pt-16"
-            )}>
+            <main className="relative w-full">
               <Toaster />
               <Sonner />
               <AppRoutes isAuthenticated={isAuthenticated} />
             </main>
-          </div>
+          </PageContainer>
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
