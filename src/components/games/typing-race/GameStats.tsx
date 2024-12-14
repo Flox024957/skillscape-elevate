@@ -10,51 +10,131 @@ interface GameStatsProps {
 }
 
 export const GameStats = ({ score, timeLeft, accuracy, wpm, streak = 0 }: GameStatsProps) => {
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
+  };
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
+      variants={container}
+      initial="hidden"
+      animate="show"
       className="grid grid-cols-2 md:grid-cols-5 gap-4"
     >
-      <div className="bg-card p-4 rounded-lg shadow-lg">
+      <motion.div 
+        variants={item}
+        className="bg-card p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow"
+        whileHover={{ scale: 1.02 }}
+      >
         <div className="flex items-center gap-2 text-primary mb-2">
           <Zap className="w-5 h-5" />
           <span className="font-medium">Score</span>
         </div>
-        <span className="text-2xl font-bold">{score}</span>
-      </div>
+        <motion.span 
+          key={score}
+          initial={{ scale: 1.2 }}
+          animate={{ scale: 1 }}
+          className="text-2xl font-bold"
+        >
+          {score}
+        </motion.span>
+      </motion.div>
 
-      <div className="bg-card p-4 rounded-lg shadow-lg">
+      <motion.div 
+        variants={item}
+        className="bg-card p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow"
+        whileHover={{ scale: 1.02 }}
+      >
         <div className="flex items-center gap-2 text-primary mb-2">
           <Timer className="w-5 h-5" />
           <span className="font-medium">Temps</span>
         </div>
-        <span className="text-2xl font-bold">{timeLeft}s</span>
-      </div>
+        <motion.span 
+          key={timeLeft}
+          initial={{ scale: 1.2 }}
+          animate={{ scale: 1 }}
+          className={cn(
+            "text-2xl font-bold",
+            timeLeft <= 10 && "text-red-500 animate-pulse"
+          )}
+        >
+          {timeLeft}s
+        </motion.span>
+      </motion.div>
 
-      <div className="bg-card p-4 rounded-lg shadow-lg">
+      <motion.div 
+        variants={item}
+        className="bg-card p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow"
+        whileHover={{ scale: 1.02 }}
+      >
         <div className="flex items-center gap-2 text-primary mb-2">
           <Target className="w-5 h-5" />
           <span className="font-medium">Précision</span>
         </div>
-        <span className="text-2xl font-bold">{accuracy}%</span>
-      </div>
+        <motion.span 
+          key={accuracy}
+          initial={{ scale: 1.2 }}
+          animate={{ scale: 1 }}
+          className="text-2xl font-bold"
+        >
+          {accuracy}%
+        </motion.span>
+      </motion.div>
 
-      <div className="bg-card p-4 rounded-lg shadow-lg">
+      <motion.div 
+        variants={item}
+        className="bg-card p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow"
+        whileHover={{ scale: 1.02 }}
+      >
         <div className="flex items-center gap-2 text-primary mb-2">
           <Zap className="w-5 h-5" />
           <span className="font-medium">MPM</span>
         </div>
-        <span className="text-2xl font-bold">{wpm}</span>
-      </div>
+        <motion.span 
+          key={wpm}
+          initial={{ scale: 1.2 }}
+          animate={{ scale: 1 }}
+          className="text-2xl font-bold"
+        >
+          {wpm}
+        </motion.span>
+      </motion.div>
 
-      <div className="bg-card p-4 rounded-lg shadow-lg">
+      <motion.div 
+        variants={item}
+        className="bg-card p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow"
+        whileHover={{ scale: 1.02 }}
+      >
         <div className="flex items-center gap-2 text-primary mb-2">
-          <Flame className="w-5 h-5" />
+          <Flame className={cn(
+            "w-5 h-5",
+            streak >= 3 && "animate-pulse text-orange-500"
+          )} />
           <span className="font-medium">Combo</span>
         </div>
-        <span className="text-2xl font-bold">x{Math.floor(streak / 3)}</span>
-      </div>
+        <motion.span 
+          key={streak}
+          initial={{ scale: 1.2 }}
+          animate={{ scale: 1 }}
+          className={cn(
+            "text-2xl font-bold",
+            streak >= 3 && "text-orange-500"
+          )}
+        >
+          x{Math.floor(streak / 3)}
+        </motion.span>
+      </motion.div>
     </motion.div>
   );
 };
