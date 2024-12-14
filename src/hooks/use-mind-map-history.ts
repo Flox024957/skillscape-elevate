@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import type { MindMapHistory, MindMapAction } from '@/types/mind-map';
+import type { MindMapHistory, MindMapAction } from '@/types/database/mind-map';
 
 export const useMindMapHistory = (mindMapId: string) => {
   const [history, setHistory] = useState<MindMapHistory[]>([]);
@@ -20,12 +20,23 @@ export const useMindMapHistory = (mindMapId: string) => {
 
       if (error) throw error;
 
-      // Truncate history after current index
       const newHistory = history.slice(0, currentIndex + 1);
-      setHistory([...newHistory, { action: action.type, data: action.payload } as MindMapHistory]);
+      setHistory([...newHistory, { 
+        id: '', // Will be set by Supabase
+        mind_map_id: mindMapId,
+        user_id: '', // Will be set by RLS
+        action: action.type,
+        data: action.payload,
+        created_at: new Date().toISOString()
+      }]);
       setCurrentIndex(currentIndex + 1);
     } catch (error) {
       console.error('Error adding to history:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible d'ajouter à l'historique",
+        variant: "destructive"
+      });
     }
   };
 
@@ -54,9 +65,10 @@ export const useMindMapHistory = (mindMapId: string) => {
         .order('created_at', { ascending: true });
 
       if (error) throw error;
-      setHistory(data);
+      setHistory(data as MindMapHistory[]);
       setCurrentIndex(data.length - 1);
     } catch (error) {
+      console.error('Error loading history:', error);
       toast({
         title: "Erreur",
         description: "Impossible de charger l'historique",

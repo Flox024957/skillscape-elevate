@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import type { MindMapCollaborator } from '@/types/mind-map';
+import type { MindMapCollaborator } from '@/types/database/mind-map';
+import type { RealtimeChannel } from '@supabase/supabase-js';
 
 export const useMindMapCollaboration = (mindMapId: string) => {
   const [collaborators, setCollaborators] = useState<MindMapCollaborator[]>([]);
@@ -11,10 +12,8 @@ export const useMindMapCollaboration = (mindMapId: string) => {
   useEffect(() => {
     if (!mindMapId) return;
 
-    // Load initial collaborators
     loadCollaborators();
 
-    // Subscribe to collaborators changes
     const channel = supabase
       .channel(`mindmap:${mindMapId}`)
       .on('presence', { event: 'sync' }, () => {
@@ -56,8 +55,9 @@ export const useMindMapCollaboration = (mindMapId: string) => {
         .eq('mind_map_id', mindMapId);
 
       if (error) throw error;
-      setCollaborators(data);
+      setCollaborators(data as MindMapCollaborator[]);
     } catch (error) {
+      console.error('Error loading collaborators:', error);
       toast({
         title: "Erreur",
         description: "Impossible de charger les collaborateurs",
@@ -85,6 +85,7 @@ export const useMindMapCollaboration = (mindMapId: string) => {
       
       loadCollaborators();
     } catch (error) {
+      console.error('Error adding collaborator:', error);
       toast({
         title: "Erreur",
         description: "Impossible d'ajouter le collaborateur",
@@ -110,6 +111,7 @@ export const useMindMapCollaboration = (mindMapId: string) => {
       
       loadCollaborators();
     } catch (error) {
+      console.error('Error removing collaborator:', error);
       toast({
         title: "Erreur",
         description: "Impossible de retirer le collaborateur",

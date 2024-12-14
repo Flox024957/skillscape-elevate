@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import type { MindMap, MindMapNodeType } from '@/types/mind-map';
+import type { MindMap, MindMapNode } from '@/types/database/mind-map';
 
 export const useMindMapPersistence = (mindMapId?: string) => {
   const [mindMap, setMindMap] = useState<MindMap | null>(null);
@@ -24,8 +24,9 @@ export const useMindMapPersistence = (mindMapId?: string) => {
         .single();
 
       if (error) throw error;
-      setMindMap(data);
+      setMindMap(data as MindMap);
     } catch (error) {
+      console.error('Error loading mind map:', error);
       toast({
         title: "Erreur lors du chargement",
         description: "Impossible de charger la carte mentale",
@@ -34,7 +35,7 @@ export const useMindMapPersistence = (mindMapId?: string) => {
     }
   };
 
-  const saveMindMap = async (title: string, nodes: MindMapNodeType[], isTemplate = false) => {
+  const saveMindMap = async (title: string, nodes: MindMapNode[], isTemplate = false) => {
     try {
       if (mindMapId) {
         const { error } = await supabase
@@ -59,7 +60,7 @@ export const useMindMapPersistence = (mindMapId?: string) => {
           .single();
 
         if (error) throw error;
-        setMindMap(data);
+        setMindMap(data as MindMap);
       }
 
       toast({
@@ -67,6 +68,7 @@ export const useMindMapPersistence = (mindMapId?: string) => {
         description: "Votre carte mentale a été sauvegardée"
       });
     } catch (error) {
+      console.error('Error saving mind map:', error);
       toast({
         title: "Erreur lors de la sauvegarde",
         description: "Impossible de sauvegarder la carte mentale",
