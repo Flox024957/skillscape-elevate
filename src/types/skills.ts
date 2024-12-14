@@ -1,15 +1,22 @@
 import { Json } from "@/integrations/supabase/types";
 
+export interface Category {
+  id: string;
+  name: string;
+  description?: string | null;
+}
+
 export interface Skill {
   id: string;
   titre: string;
-  resume: string | null;
-  description: string | null;
-  action_concrete: string | null;
-  exemples: Json[] | null;
+  resume: string;
+  description: string;
+  action_concrete: string;
+  exemples: Json;
   category_id: string | null;
   created_at: string;
   updated_at: string;
+  categories?: Category | null;
 }
 
 export interface UserSkill {
@@ -41,4 +48,5 @@ export const transformSkill = (skill: Skill) => ({
   category_id: skill.category_id,
   created_at: skill.created_at,
   updated_at: skill.updated_at,
+  category: skill.categories,
 });

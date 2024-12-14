@@ -30,6 +30,8 @@ export const GameArea = () => {
           action_concrete,
           exemples,
           category_id,
+          created_at,
+          updated_at,
           categories (
             id,
             name
@@ -38,7 +40,7 @@ export const GameArea = () => {
         .limit(10);
 
       if (error) throw error;
-      return data as Skill[];
+      return data as unknown as Skill[];
     },
   });
 
