@@ -1,4 +1,3 @@
-import { Trophy, Gamepad, Users, Brain, Rocket, Timer, Crown } from "lucide-react";
 import type { Game } from "@/types/games";
 
 export const games: Game[] = [
@@ -9,7 +8,7 @@ export const games: Game[] = [
     description: "Affrontez d'autres joueurs dans une bataille de connaissances rapide !",
     type: "speed",
     players: "2-4 joueurs",
-    icon: <Timer className="w-6 h-6" />,
+    icon: "Timer",
     color: "from-orange-500 to-pink-500",
     route: "/games/speed-learning"
   },
@@ -19,7 +18,7 @@ export const games: Game[] = [
     description: "Course de frappe avec des termes techniques. Soyez le plus rapide !",
     type: "speed",
     players: "2-6 joueurs",
-    icon: <Rocket className="w-6 h-6" />,
+    icon: "Rocket",
     color: "from-blue-500 to-purple-500",
     route: "/games/typing-race"
   },
@@ -29,7 +28,7 @@ export const games: Game[] = [
     description: "Mémorisez et répondez en équipe aux cartes-éclair !",
     type: "speed",
     players: "2-4 joueurs",
-    icon: <Brain className="w-6 h-6" />,
+    icon: "Brain",
     color: "from-green-500 to-teal-500",
     route: "/games/flash-cards"
   },
@@ -39,7 +38,7 @@ export const games: Game[] = [
     description: "Éclatez les bulles en équipe et battez des records !",
     type: "speed",
     players: "2-4 joueurs",
-    icon: <Gamepad className="w-6 h-6" />,
+    icon: "Gamepad",
     color: "from-purple-500 to-indigo-500",
     route: "/games/bubble-pop"
   },
@@ -50,7 +49,7 @@ export const games: Game[] = [
     description: "Construisez ensemble la structure parfaite !",
     type: "construction",
     players: "2-3 joueurs",
-    icon: <Users className="w-6 h-6" />,
+    icon: "Users",
     color: "from-yellow-500 to-orange-500",
     route: "/games/skill-builder"
   },
@@ -60,7 +59,7 @@ export const games: Game[] = [
     description: "Créez la meilleure carte mentale en collaboration !",
     type: "construction",
     players: "2-4 joueurs",
-    icon: <Brain className="w-6 h-6" />,
+    icon: "Brain",
     color: "from-cyan-500 to-blue-500",
     route: "/games/mind-map"
   },
@@ -71,7 +70,7 @@ export const games: Game[] = [
     description: "Relevez des défis en équipe contre d'autres équipes !",
     type: "collaborative",
     players: "4-8 joueurs",
-    icon: <Users className="w-6 h-6" />,
+    icon: "Users",
     color: "from-red-500 to-orange-500",
     route: "/games/team-challenge"
   },
@@ -81,7 +80,7 @@ export const games: Game[] = [
     description: "Créez la plus longue chaîne de compétences en équipe !",
     type: "collaborative",
     players: "3-6 joueurs",
-    icon: <Crown className="w-6 h-6" />,
+    icon: "Crown",
     color: "from-emerald-500 to-green-500",
     route: "/games/skill-chain"
   },
@@ -91,7 +90,7 @@ export const games: Game[] = [
     description: "Course de connaissances entre équipes !",
     type: "collaborative",
     players: "4-8 joueurs",
-    icon: <Trophy className="w-6 h-6" />,
+    icon: "Trophy",
     color: "from-violet-500 to-purple-500",
     route: "/games/knowledge-race"
   },
