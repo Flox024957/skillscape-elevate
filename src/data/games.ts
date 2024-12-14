@@ -21,7 +21,7 @@ export const games: Game[] = [
     icon: "Keyboard",
     color: "#4ECDC4",
     route: "/games/typing-race",
-    available: false
+    available: true
   },
   {
     id: "flash-cards",
@@ -32,7 +32,7 @@ export const games: Game[] = [
     icon: "ScrollText",
     color: "#45B7D1",
     route: "/games/flash-cards",
-    available: false
+    available: true
   },
   {
     id: "bubble-pop",
@@ -43,7 +43,7 @@ export const games: Game[] = [
     icon: "Circle",
     color: "#96CEB4",
     route: "/games/bubble-pop",
-    available: false
+    available: true
   },
   {
     id: "skill-builder",
@@ -54,7 +54,7 @@ export const games: Game[] = [
     icon: "TreePine",
     color: "#D4A373",
     route: "/games/skill-builder",
-    available: false
+    available: true
   },
   {
     id: "mind-map",
@@ -65,7 +65,7 @@ export const games: Game[] = [
     icon: "Network",
     color: "#FFB4A2",
     route: "/games/mind-map",
-    available: false
+    available: true
   },
   {
     id: "skill-chain",
@@ -76,7 +76,7 @@ export const games: Game[] = [
     icon: "Link",
     color: "#E9C46A",
     route: "/games/skill-chain",
-    available: false
+    available: true
   },
   {
     id: "team-challenge",
@@ -87,7 +87,7 @@ export const games: Game[] = [
     icon: "Users",
     color: "#2A9D8F",
     route: "/games/team-challenge",
-    available: false
+    available: true
   },
   {
     id: "knowledge-race",
@@ -98,6 +98,6 @@ export const games: Game[] = [
     icon: "Flag",
     color: "#E76F51",
     route: "/games/knowledge-race",
-    available: false
+    available: true
   }
 ];
