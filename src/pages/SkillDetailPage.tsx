@@ -4,14 +4,14 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { SkillDetailContent } from "@/components/skill-detail/SkillDetailContent";
-import { Skill } from "@/types/skills";
 import { toast } from "sonner";
 
 const SkillDetailPage = () => {
   const { skillId } = useParams<{ skillId: string }>();
   const navigate = useNavigate();
-
   const { data: skill, isLoading, error } = useSkillQuery(skillId);
+
+  console.log('SkillDetailPage rendering with:', { skillId, skill, isLoading, error });
 
   if (isLoading) {
     return (

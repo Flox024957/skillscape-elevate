@@ -1,11 +1,23 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Database } from "@/integrations/supabase/types";
 import { toast } from "sonner";
 
-type Skill = Database['public']['Tables']['skills']['Row'] & {
-  categories: Database['public']['Tables']['categories']['Row'] | null;
-};
+export interface Skill {
+  id: string;
+  titre: string;
+  resume: string;
+  description: string;
+  action_concrete: string;
+  exemples: any[];
+  category_id: string;
+  created_at?: string;
+  updated_at?: string;
+  categories?: {
+    id: string;
+    name: string;
+    description: string;
+  } | null;
+}
 
 const isValidUUID = (uuid: string) => {
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
