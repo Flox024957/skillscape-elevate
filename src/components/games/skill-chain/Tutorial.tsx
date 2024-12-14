@@ -2,7 +2,11 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 
-const Tutorial = () => {
+interface TutorialProps {
+  onClose: () => void;
+}
+
+const Tutorial = ({ onClose }: TutorialProps) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -14,7 +18,7 @@ const Tutorial = () => {
       <p className="mb-4">
         Welcome to the Skill Chain game! In this game, you will connect different skills to progress.
       </p>
-      <Button variant="primary" onClick={() => console.log("Start Game")}>
+      <Button variant="default" onClick={onClose}>
         Start Game
       </Button>
     </motion.div>

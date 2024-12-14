@@ -6,39 +6,66 @@ import { useSkillValidation } from "./skill-chain/use-skill-validation";
 import { useScoring } from "./skill-chain/use-scoring";
 import type { Achievement } from "@/types/achievements";
 
+interface Skill {
+  id: string;
+  name: string;
+  category: string;
+}
+
 export const useSkillChainGame = () => {
   const user = useUser();
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(0);
-  const { checkAchievements, unlockAchievement } = useAchievements();
-  const { validateConnection } = useSkillValidation();
-  const { calculateScore } = useScoring();
+  const [chain, setChain] = useState<Skill[]>([]);
+  const [timeLeft, setTimeLeft] = useState(60);
+  const [combo, setCombo] = useState(0);
+  const [skills, setSkills] = useState<Skill[]>([]);
+  
+  const { checkAchievements } = useAchievements();
+  const { isValidConnection } = useSkillValidation();
+  const { calculatePoints } = useScoring();
 
   const checkAndUnlockAchievements = () => {
     if (user?.id) {
-      checkAchievements(user.id, score);
+      checkAchievements(score, combo, chain.length);
     }
   };
 
   useEffect(() => {
     checkAndUnlockAchievements();
-  }, [score, user?.id, checkAchievements]);
+  }, [score, user?.id]);
+
+  const handleAddSkill = (skill: Skill) => {
+    setChain(prev => [...prev, skill]);
+    setCombo(prev => prev + 1);
+  };
 
   return {
     gameOver,
     score,
+    chain,
+    timeLeft,
+    combo,
+    skills,
     handleGameOver: () => setGameOver(true),
     handleRestart: () => {
       setGameOver(false);
       setScore(0);
+      setChain([]);
+      setTimeLeft(60);
+      setCombo(0);
     },
     handleValidConnection: (sourceId: string, targetId: string) => {
-      const isValid = validateConnection(sourceId, targetId);
-      if (isValid) {
-        const points = calculateScore(sourceId, targetId);
-        setScore((prev) => prev + points);
+      const sourceSkill = skills.find(s => s.id === sourceId);
+      const targetSkill = skills.find(s => s.id === targetId);
+      
+      if (sourceSkill && targetSkill && isValidConnection(sourceSkill, targetSkill)) {
+        const points = calculatePoints(chain.length, combo, timeLeft);
+        setScore(prev => prev + points);
+        return true;
       }
-      return isValid;
+      return false;
     },
+    handleAddSkill,
   };
 };

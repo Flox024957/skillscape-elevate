@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Link } from "lucide-react";
-import { Tutorial } from "./Tutorial";
+import Tutorial from "./Tutorial";
 import { Leaderboard } from "./Leaderboard";
 
 export const StartScreen = ({ onStart }: { onStart: () => void }) => {
