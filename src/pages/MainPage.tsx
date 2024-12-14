@@ -39,11 +39,15 @@ const MainPage = () => {
         name: category.name,
         description: category.description || "",
         skills: category.skills?.map(skill => ({
-          ...skill,
+          id: skill.id,
           titre: skill.titre,
           resume: skill.resume,
+          description: skill.description,
+          action_concrete: skill.action_concrete,
           exemples: skill.exemples,
-          action_concrete: skill.action_concrete
+          category_id: skill.category_id,
+          created_at: skill.created_at,
+          updated_at: skill.updated_at
         })) || []
       })) || [];
 

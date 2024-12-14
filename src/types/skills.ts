@@ -42,21 +42,7 @@ export interface MasteredSkill {
   };
 }
 
-// Helper function to transform French column names to English for UI
-export const transformSkill = (skill: Skill) => ({
-  id: skill.id,
-  titre: skill.titre,
-  resume: skill.resume,
-  description: skill.description,
-  action_concrete: skill.action_concrete,
-  exemples: skill.exemples,
-  category_id: skill.category_id,
-  created_at: skill.created_at,
-  updated_at: skill.updated_at,
-  category: skill.categories,
-});
-
-// Helper function to transform examples array
+// Helper function to normalize examples array
 export const normalizeExamples = (examples: Json): Json[] => {
   if (Array.isArray(examples)) {
     return examples;
