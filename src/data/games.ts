@@ -27,7 +27,7 @@ export const games: Game[] = [
     description: "Mémorisez efficacement",
     type: "speed",
     players: "1 joueur",
-    icon: "Cards",
+    icon: "ScrollText",
     color: "#45B7D1",
     route: "/games/flash-cards"
   },
