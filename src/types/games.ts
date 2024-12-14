@@ -1,5 +1,5 @@
-import type { LucideIcon } from "lucide-react";
-import * as LucideIcons from "lucide-react";
+import type { LucideProps } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
 
 export interface Game {
   id: string;
