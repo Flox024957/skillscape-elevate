@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { Skill } from "@/types/skills";
+import type { Json } from "@/integrations/supabase/types";
 
 interface SaveStructureDialogProps {
   isOpen: boolean;
@@ -54,11 +55,23 @@ export const SaveStructureDialog = ({
         return;
       }
 
+      // Convert skills array to a format compatible with Supabase's Json type
+      const skillsForStorage = skills.map(skill => ({
+        id: skill.id,
+        titre: skill.titre,
+        resume: skill.resume,
+        description: skill.description,
+        action_concrete: skill.action_concrete,
+        exemples: skill.exemples,
+        category_id: skill.category_id,
+        categories: skill.categories
+      })) as Json[];
+
       const { error } = await supabase
         .from('skill_builder_structures')
         .insert({
           name: structureName,
-          skills: skills,
+          skills: skillsForStorage,
           score: score,
           user_id: user.id
         });
