@@ -16,12 +16,22 @@ export const useGameState = () => {
 
   useEffect(() => {
     const fetchQuestions = async () => {
-      const { data, error } = await supabase
-        .from('game_questions')
-        .select('*')
+      // Récupérer d'abord les skills avec leurs catégories
+      const { data: skills, error: skillsError } = await supabase
+        .from('skills')
+        .select(`
+          id,
+          titre,
+          resume,
+          description,
+          action_concrete,
+          categories (
+            name
+          )
+        `)
         .limit(10);
 
-      if (error) {
+      if (skillsError) {
         toast({
           title: "Erreur",
           description: "Impossible de charger les questions",
@@ -30,11 +40,29 @@ export const useGameState = () => {
         return;
       }
 
-      if (data) {
-        const formattedQuestions = data.map(q => ({
-          ...q,
-          options: Array.isArray(q.options) ? q.options : JSON.parse(q.options as string)
-        }));
+      if (skills) {
+        // Transformer les skills en questions
+        const formattedQuestions: Question[] = skills.map(skill => {
+          // Créer des options basées sur différents aspects du skill
+          const options = [
+            skill.resume || "",
+            skill.description || "",
+            skill.action_concrete || "",
+            `Aucune de ces réponses n'est correcte`
+          ].filter(Boolean);
+
+          return {
+            id: skill.id,
+            category: skill.categories?.name || "Général",
+            question: `Quel est le résumé de la compétence "${skill.titre}" ?`,
+            options: options,
+            correct_answer: skill.resume || "",
+            difficulty: 1,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          };
+        });
+
         setQuestions(formattedQuestions);
       }
     };
@@ -51,7 +79,6 @@ export const useGameState = () => {
       .order('score', { ascending: false })
       .limit(1);
 
-    // Si des données existent, on prend le premier score, sinon on garde 0
     if (leaderboard && leaderboard.length > 0) {
       setHighScore(leaderboard[0].score);
     }
