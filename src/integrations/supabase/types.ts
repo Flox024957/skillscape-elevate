@@ -355,6 +355,78 @@ export type Database = {
           },
         ]
       }
+      mind_map_node_comments: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          mind_map_id: string | null
+          node_id: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          mind_map_id?: string | null
+          node_id: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          mind_map_id?: string | null
+          node_id?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mind_map_node_comments_mind_map_id_fkey"
+            columns: ["mind_map_id"]
+            isOneToOne: false
+            referencedRelation: "mind_maps"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mind_map_node_comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mind_map_templates: {
+        Row: {
+          category: string
+          created_at: string
+          data: Json
+          description: string | null
+          id: string
+          title: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          data?: Json
+          description?: string | null
+          id?: string
+          title: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          data?: Json
+          description?: string | null
+          id?: string
+          title?: string
+        }
+        Relationships: []
+      }
       mind_maps: {
         Row: {
           created_at: string
