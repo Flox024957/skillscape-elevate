@@ -64,8 +64,13 @@ export const SaveStructureDialog = ({
         action_concrete: skill.action_concrete,
         exemples: skill.exemples,
         category_id: skill.category_id,
-        categories: skill.categories
-      })) as Json[];
+        // Convert the categories object to a simple format that matches Json type
+        categories: skill.categories ? {
+          id: skill.categories.id,
+          name: skill.categories.name,
+          description: skill.categories.description
+        } : null
+      })) as unknown as Json[];
 
       const { error } = await supabase
         .from('skill_builder_structures')
