@@ -1,84 +1,40 @@
-import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import type { MindMapNodeType } from "./types";
 
-const colors = [
-  "from-blue-500 to-cyan-500",
-  "from-purple-500 to-pink-500",
-  "from-green-500 to-emerald-500",
-  "from-orange-500 to-red-500",
-  "from-indigo-500 to-violet-500"
-];
-
 export const useMindMap = () => {
-  const [nodes, setNodes] = useState<MindMapNodeType[]>([
-    { 
-      id: "root", 
-      content: "Idée principale", 
-      parentId: null,
-      color: "from-primary to-primary-foreground"
-    },
-  ]);
+  const addNode = (nodes: MindMapNodeType[], parentId: string | null): MindMapNodeType => {
+    return {
+      id: uuidv4(),
+      content: "Nouvelle idée",
+      parentId,
+    };
+  };
 
-  const handleContentChange = (id: string, content: string) => {
-    setNodes((prev) =>
-      prev.map((node) => (node.id === id ? { ...node, content } : node))
+  const updateNode = (nodes: MindMapNodeType[], nodeId: string, content: string): MindMapNodeType[] => {
+    return nodes.map((node) =>
+      node.id === nodeId ? { ...node, content } : node
     );
   };
 
-  const handleAddChild = (parentId: string) => {
-    const parentNode = nodes.find(node => node.id === parentId);
-    const childrenCount = nodes.filter(node => node.parentId === parentId).length;
-    const colorIndex = childrenCount % colors.length;
-    
-    const newNode: MindMapNodeType = {
-      id: uuidv4(),
-      content: "",
-      parentId,
-      color: parentNode?.parentId === null ? colors[colorIndex] : parentNode?.color
-    };
-    setNodes((prev) => [...prev, newNode]);
+  const deleteNode = (nodes: MindMapNodeType[], nodeId: string): MindMapNodeType[] => {
+    const childrenIds = getAllChildrenIds(nodes, nodeId);
+    return nodes.filter(
+      (node) => node.id !== nodeId && !childrenIds.includes(node.id)
+    );
   };
 
-  const handleDeleteNode = (id: string) => {
-    setNodes((prev) => {
-      const nodesToDelete = [id];
-      let currentIds = [id];
-
-      while (currentIds.length > 0) {
-        const childNodes = prev.filter((node) =>
-          currentIds.includes(node.parentId || "")
-        );
-        const childIds = childNodes.map((node) => node.id);
-        nodesToDelete.push(...childIds);
-        currentIds = childIds;
-      }
-
-      return prev.filter((node) => !nodesToDelete.includes(node.id));
-    });
-  };
-
-  const resetNodes = () => {
-    setNodes([
-      { 
-        id: "root", 
-        content: "Idée principale", 
-        parentId: null,
-        color: "from-primary to-primary-foreground"
-      },
-    ]);
-  };
-
-  const setNodesData = (newNodes: MindMapNodeType[]) => {
-    setNodes(newNodes);
+  const getAllChildrenIds = (nodes: MindMapNodeType[], nodeId: string): string[] => {
+    const children = nodes.filter((node) => node.parentId === nodeId);
+    const childrenIds = children.map((child) => child.id);
+    const descendantIds = children.flatMap((child) =>
+      getAllChildrenIds(nodes, child.id)
+    );
+    return [...childrenIds, ...descendantIds];
   };
 
   return {
-    nodes,
-    handleContentChange,
-    handleAddChild,
-    handleDeleteNode,
-    resetNodes,
-    setNodesData,
+    addNode,
+    updateNode,
+    deleteNode,
   };
 };
