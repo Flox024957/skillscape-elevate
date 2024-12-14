@@ -361,6 +361,8 @@ export type Database = {
           data: Json
           id: string
           is_template: boolean | null
+          score: number | null
+          skills_metadata: Json | null
           title: string
           updated_at: string
           user_id: string | null
@@ -370,6 +372,8 @@ export type Database = {
           data?: Json
           id?: string
           is_template?: boolean | null
+          score?: number | null
+          skills_metadata?: Json | null
           title?: string
           updated_at?: string
           user_id?: string | null
@@ -379,6 +383,8 @@ export type Database = {
           data?: Json
           id?: string
           is_template?: boolean | null
+          score?: number | null
+          skills_metadata?: Json | null
           title?: string
           updated_at?: string
           user_id?: string | null

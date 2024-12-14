@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import { MindMapNode } from "./MindMapNode";
 import { MindMapToolbar } from "./MindMapToolbar";
-import { MindMapNodeList } from "./MindMapNodeList";
+import { CollaborativeToolbar } from "./CollaborativeToolbar";
+import { MindMapCollaborators } from "./MindMapCollaborators";
 import { useMindMapHistory } from "@/hooks/use-mind-map-history";
 import { useMindMapPersistence } from "@/hooks/use-mind-map-persistence";
 import { useMindMapCollaboration } from "@/hooks/use-mind-map-collaboration";
 import type { MindMapNodeType } from "./types";
-import { toast } from "sonner";
 
 export const MindMapArea = () => {
   const [nodes, setNodes] = useState<MindMapNodeType[]>([]);
@@ -35,9 +36,13 @@ export const MindMapArea = () => {
     },
   });
 
+  // Hooks pour la collaboration et la persistence
+  const { history, addToHistory, undo, redo } = useMindMapHistory("temp-id");
+  const { mindMap, saveMindMap, updateMindMap } = useMindMapPersistence("temp-id");
+  const { collaborators, activeUsers, addCollaborator, removeCollaborator } = useMindMapCollaboration("temp-id");
+
   useEffect(() => {
     if (categories && categories.length > 0) {
-      // Créer le nœud racine avec la première catégorie
       const rootNode: MindMapNodeType = {
         id: categories[0].id,
         content: categories[0].name,
@@ -72,6 +77,8 @@ export const MindMapArea = () => {
         }))
       };
       setNodes([...nodes, newNode]);
+      addToHistory({ type: 'ADD_NODE', payload: newNode });
+      updateMindMap(nodes);
       toast.success("Nouvelle catégorie ajoutée !");
     }
   };
@@ -99,6 +106,8 @@ export const MindMapArea = () => {
           return node;
         });
         setNodes(updatedNodes);
+        addToHistory({ type: 'ADD_NODE', payload: newChild });
+        updateMindMap(updatedNodes);
         toast.success("Nouvelle compétence ajoutée !");
       }
     }
@@ -120,6 +129,8 @@ export const MindMapArea = () => {
       return node;
     });
     setNodes(updatedNodes);
+    addToHistory({ type: 'UPDATE_NODE', payload: { id: nodeId, content } });
+    updateMindMap(updatedNodes);
   };
 
   const handleDeleteNode = (nodeId: string) => {
@@ -129,21 +140,46 @@ export const MindMapArea = () => {
         children: node.children.filter(child => child.id !== nodeId)
       }));
     setNodes(updatedNodes);
+    addToHistory({ type: 'DELETE_NODE', payload: { id: nodeId } });
+    updateMindMap(updatedNodes);
     toast.success("Élément supprimé !");
   };
 
-  const { history, addToHistory, undo, redo } = useMindMapHistory("temp-id");
-  const { mindMap, saveMindMap } = useMindMapPersistence("temp-id");
-  const { collaborators } = useMindMapCollaboration("temp-id");
+  const handleSave = async () => {
+    try {
+      await saveMindMap("Ma carte mentale", nodes);
+      toast.success("Carte mentale sauvegardée !");
+    } catch (error) {
+      toast.error("Erreur lors de la sauvegarde");
+    }
+  };
 
   return (
     <div className="min-h-[600px] bg-black/5 backdrop-blur-sm rounded-xl border border-white/10 p-8">
-      <MindMapToolbar
-        onAddNode={handleAddNode}
-        onUndo={undo}
-        onRedo={redo}
-        canUndo={history.length > 0}
-        canRedo={false}
+      <div className="flex items-center justify-between mb-6">
+        <MindMapToolbar
+          onAddNode={handleAddNode}
+          onUndo={undo}
+          onRedo={redo}
+          canUndo={history.length > 0}
+          canRedo={false}
+        />
+        
+        <CollaborativeToolbar
+          mindMapId="temp-id"
+          onSave={handleSave}
+          onUndo={undo}
+          onRedo={redo}
+          canUndo={history.length > 0}
+          canRedo={false}
+        />
+      </div>
+
+      <MindMapCollaborators
+        collaborators={collaborators}
+        activeUsers={activeUsers}
+        onAddCollaborator={addCollaborator}
+        onRemoveCollaborator={removeCollaborator}
       />
       
       <div className="mt-8 relative">
