@@ -3,7 +3,7 @@ import { CategoriesGrid } from "@/components/categories/CategoriesGrid";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
-import { Category, Skill } from "@/types/skills";
+import { Category } from "@/types/skills";
 
 const MainPage = () => {
   const { data: categories, isLoading, error } = useQuery({
@@ -13,7 +13,10 @@ const MainPage = () => {
       const { data: categoriesData, error: categoriesError } = await supabase
         .from('categories')
         .select(`
-          *,
+          id,
+          name,
+          description,
+          created_at,
           skills (
             id,
             titre,
@@ -31,7 +34,7 @@ const MainPage = () => {
       }
       
       console.log('Categories fetched:', categoriesData);
-      return (categoriesData || []) as Category[];
+      return categoriesData as Category[];
     },
   });
 
@@ -45,7 +48,7 @@ const MainPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-background/95">
+    <div className="min-h-screen bg-gradient-to-b from-background/80 to-background/95">
       <div className="container mx-auto px-4 py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
