@@ -7,6 +7,8 @@ export const useMindMap = () => {
       id: uuidv4(),
       content: "Nouvelle idée",
       parentId,
+      color: "from-blue-400 to-cyan-400", // Default color for new nodes
+      children: [] // Initialize with empty children array
     };
   };
 
