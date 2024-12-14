@@ -26,14 +26,16 @@ export default function AppRoutes({ isAuthenticated }: { isAuthenticated: boolea
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/auth" element={<Auth />} />
-      <Route
-        path="/app"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <MainPage />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/main" element={
+        <ProtectedRoute isAuthenticated={isAuthenticated}>
+          <MainPage />
+        </ProtectedRoute>
+      } />
+      <Route path="/app" element={
+        <ProtectedRoute isAuthenticated={isAuthenticated}>
+          <MainPage />
+        </ProtectedRoute>
+      } />
       <Route
         path="/dashboard"
         element={

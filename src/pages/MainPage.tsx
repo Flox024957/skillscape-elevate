@@ -3,7 +3,8 @@ import { CategoriesGrid } from "@/components/categories/CategoriesGrid";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
-import { Category, Skill } from "@/types/skills";
+import { Category } from "@/types/skills";
+import { toast } from "sonner";
 
 const MainPage = () => {
   const { data: categories, isLoading, error } = useQuery({
@@ -30,10 +31,18 @@ const MainPage = () => {
       
       if (categoriesError) {
         console.error('Error fetching categories:', categoriesError);
+        toast.error("Erreur lors du chargement des catégories");
         throw categoriesError;
       }
       
-      const transformedCategories: Category[] = categoriesData?.map(category => ({
+      if (!categoriesData || categoriesData.length === 0) {
+        console.log('No categories found');
+        return [];
+      }
+
+      console.log('Categories data:', categoriesData);
+      
+      const transformedCategories: Category[] = categoriesData.map(category => ({
         id: category.id,
         name: category.name,
         description: category.description || "",
@@ -48,7 +57,7 @@ const MainPage = () => {
           created_at: skill.created_at,
           updated_at: skill.updated_at
         })) || []
-      })) || [];
+      }));
 
       console.log('Categories transformed:', transformedCategories);
       return transformedCategories;
@@ -58,7 +67,7 @@ const MainPage = () => {
   if (error) {
     console.error('Error in categories query:', error);
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-red-500">Une erreur est survenue lors du chargement des catégories.</div>
       </div>
     );
@@ -86,8 +95,12 @@ const MainPage = () => {
             <div className="flex items-center justify-center py-12">
               <Loader2 className="w-8 h-8 animate-spin text-primary" />
             </div>
+          ) : categories && categories.length > 0 ? (
+            <CategoriesGrid categories={categories} />
           ) : (
-            <CategoriesGrid categories={categories || []} />
+            <div className="text-center py-12 text-muted-foreground">
+              Aucune catégorie disponible pour le moment.
+            </div>
           )}
         </motion.div>
       </div>
