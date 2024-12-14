@@ -7,46 +7,45 @@ import { Category } from "@/types/skills";
 import { toast } from "sonner";
 
 const MainPage = () => {
+  console.log('Rendu initial de MainPage');
+  
   const { data: categories, isLoading, error } = useQuery({
     queryKey: ['categories'],
     queryFn: async () => {
       console.log('Début de la requête des catégories');
-      const { data: categoriesData, error: categoriesError } = await supabase
-        .from('categories')
-        .select(`
-          id,
-          name,
-          description,
-          created_at,
-          skills (
-            id,
-            titre,
-            resume,
-            description,
-            exemples,
-            action_concrete
-          )
-        `)
-        .order('name');
-      
-      if (categoriesError) {
-        console.error('Erreur lors de la récupération des catégories:', categoriesError);
-        toast.error("Erreur lors du chargement des catégories");
-        throw categoriesError;
+      try {
+        const { data: categoriesData, error: categoriesError } = await supabase
+          .from('categories')
+          .select('*')
+          .order('name');
+        
+        console.log('Réponse brute de Supabase:', { categoriesData, categoriesError });
+        
+        if (categoriesError) {
+          console.error('Erreur Supabase:', categoriesError);
+          toast.error("Erreur lors du chargement des catégories");
+          throw categoriesError;
+        }
+        
+        if (!categoriesData) {
+          console.log('Pas de données reçues de Supabase');
+          return [];
+        }
+        
+        console.log('Données des catégories reçues:', categoriesData);
+        return categoriesData as Category[];
+      } catch (error) {
+        console.error('Erreur lors de la requête:', error);
+        toast.error("Erreur inattendue lors du chargement");
+        throw error;
       }
-      
-      if (!categoriesData || categoriesData.length === 0) {
-        console.log('Aucune catégorie trouvée');
-      } else {
-        console.log('Catégories récupérées:', categoriesData);
-      }
-      
-      return categoriesData as Category[];
     },
   });
 
+  console.log('État actuel:', { isLoading, error, categoriesCount: categories?.length });
+
   if (isLoading) {
-    console.log('Chargement des catégories...');
+    console.log('Affichage du loader');
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
@@ -55,7 +54,7 @@ const MainPage = () => {
   }
 
   if (error) {
-    console.error('Erreur dans la requête des catégories:', error);
+    console.error('Erreur détectée:', error);
     return (
       <div className="min-h-screen flex items-center justify-center text-foreground">
         <div className="text-red-500">Une erreur est survenue lors du chargement des catégories.</div>
@@ -64,7 +63,7 @@ const MainPage = () => {
   }
 
   if (!categories || categories.length === 0) {
-    console.log('Aucune catégorie à afficher');
+    console.log('Aucune catégorie trouvée');
     return (
       <div className="min-h-screen flex items-center justify-center text-foreground">
         <div>Aucune catégorie disponible.</div>
@@ -72,7 +71,7 @@ const MainPage = () => {
     );
   }
 
-  console.log('Rendu des catégories:', categories);
+  console.log('Rendu du composant avec les catégories:', categories);
 
   return (
     <main className="min-h-screen bg-background text-foreground">
