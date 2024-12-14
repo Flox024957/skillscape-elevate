@@ -16,13 +16,13 @@ export const useSkillChainGame = () => {
   const [combo, setCombo] = useState(0);
   const [skills, setSkills] = useState<Skill[]>([]);
   
-  const { checkAchievements } = useAchievements();
+  const { checkAchievements } = useAchievements(user?.id);
   const { isValidConnection } = useSkillValidation();
   const { calculatePoints } = useScoring();
 
   const checkAndUnlockAchievements = () => {
     if (user?.id) {
-      checkAchievements(score);
+      checkAchievements(score, combo, chain.length);
     }
   };
 
