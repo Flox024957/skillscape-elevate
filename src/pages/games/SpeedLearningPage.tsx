@@ -1,173 +1,23 @@
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import type { Question } from "@/types/game";
 import { GameHeader } from "@/components/games/speed-learning/GameHeader";
 import { GameStats } from "@/components/games/speed-learning/GameStats";
 import { QuestionCard } from "@/components/games/speed-learning/QuestionCard";
 import { GameOver } from "@/components/games/speed-learning/GameOver";
 import { StartScreen } from "@/components/games/speed-learning/StartScreen";
+import { useGameState } from "@/hooks/use-game-state";
 
 export default function SpeedLearningPage() {
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(30);
-  const [gameStarted, setGameStarted] = useState(false);
-  const [gameOver, setGameOver] = useState(false);
-  const [streak, setStreak] = useState(0);
-  const [highScore, setHighScore] = useState(0);
-  
-  const { toast } = useToast();
-
-  useEffect(() => {
-    const fetchQuestions = async () => {
-      const { data, error } = await supabase
-        .from('game_questions')
-        .select('*')
-        .limit(10);
-
-      if (error) {
-        toast({
-          title: "Erreur",
-          description: "Impossible de charger les questions",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      if (data) {
-        const formattedQuestions = data.map(q => ({
-          ...q,
-          options: Array.isArray(q.options) ? q.options : JSON.parse(q.options as string)
-        }));
-        setQuestions(formattedQuestions);
-      }
-    };
-
-    fetchQuestions();
-    loadHighScore();
-  }, [toast]);
-
-  const loadHighScore = async () => {
-    const { data: leaderboard } = await supabase
-      .from('game_leaderboards')
-      .select('score')
-      .eq('game_type', 'speed_learning')
-      .order('score', { ascending: false })
-      .limit(1)
-      .single();
-
-    if (leaderboard) {
-      setHighScore(leaderboard.score);
-    }
-  };
-
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    
-    if (gameStarted && !gameOver && timeLeft > 0) {
-      timer = setInterval(() => {
-        setTimeLeft((prev) => {
-          if (prev <= 1) {
-            setGameOver(true);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    }
-
-    return () => {
-      if (timer) clearInterval(timer);
-    };
-  }, [gameStarted, gameOver, timeLeft]);
-
-  const handleStartGame = () => {
-    setGameStarted(true);
-    setTimeLeft(30);
-    setScore(0);
-    setStreak(0);
-    setCurrentQuestionIndex(0);
-    setGameOver(false);
-  };
-
-  const updateLeaderboard = async (finalScore: number) => {
-    const { data: existingEntry } = await supabase
-      .from('game_leaderboards')
-      .select('*')
-      .eq('game_type', 'speed_learning')
-      .single();
-
-    if (existingEntry) {
-      if (finalScore > existingEntry.score) {
-        await supabase
-          .from('game_leaderboards')
-          .update({ 
-            score: finalScore,
-            games_played: existingEntry.games_played + 1 
-          })
-          .eq('id', existingEntry.id);
-      } else {
-        await supabase
-          .from('game_leaderboards')
-          .update({ 
-            games_played: existingEntry.games_played + 1 
-          })
-          .eq('id', existingEntry.id);
-      }
-    } else {
-      await supabase
-        .from('game_leaderboards')
-        .insert({
-          game_type: 'speed_learning',
-          score: finalScore,
-          games_played: 1
-        });
-    }
-  };
-
-  const handleAnswer = async (selectedAnswer: string) => {
-    if (gameOver) return;
-
-    const currentQuestion = questions[currentQuestionIndex];
-    const isCorrect = selectedAnswer === currentQuestion.correct_answer;
-    let pointsEarned = 0;
-
-    if (isCorrect) {
-      // Points calculation based on streak and time left
-      const basePoints = 10;
-      const streakBonus = Math.floor(streak * 0.5);
-      const timeBonus = Math.floor(timeLeft * 0.2);
-      pointsEarned = basePoints + streakBonus + timeBonus;
-
-      setScore((prev) => prev + pointsEarned);
-      setStreak((prev) => prev + 1);
-
-      toast({
-        title: "Bonne réponse !",
-        description: `+${pointsEarned} points ${streak > 0 ? `(Série: ${streak + 1})` : ''}`,
-        variant: "default",
-      });
-    } else {
-      setStreak(0);
-      toast({
-        title: "Mauvaise réponse",
-        description: "La bonne réponse était : " + currentQuestion.correct_answer,
-        variant: "destructive",
-      });
-    }
-
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex((prev) => prev + 1);
-    } else {
-      setGameOver(true);
-      await updateLeaderboard(score + (isCorrect ? pointsEarned : 0));
-    }
-  };
-
-  const currentQuestion = questions[currentQuestionIndex];
+  const {
+    currentQuestion,
+    score,
+    timeLeft,
+    gameStarted,
+    gameOver,
+    streak,
+    highScore,
+    handleStartGame,
+    handleAnswer
+  } = useGameState();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/80 pt-24">
