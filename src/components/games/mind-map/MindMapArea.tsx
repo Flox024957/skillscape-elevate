@@ -1,11 +1,21 @@
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { MindMapToolbar } from "./MindMapToolbar";
 import { MindMapNodeList } from "./MindMapNodeList";
+import { MindMapCollaborators } from "./MindMapCollaborators";
 import { useMindMap } from "./useMindMap";
+import { useMindMapPersistence } from "@/hooks/use-mind-map-persistence";
+import { useMindMapCollaboration } from "@/hooks/use-mind-map-collaboration";
+import { useMindMapHistory } from "@/hooks/use-mind-map-history";
+import type { MindMapNodeType } from "./types";
 
-export const MindMapArea = () => {
+interface MindMapAreaProps {
+  id?: string;
+}
+
+export const MindMapArea = ({ id }: MindMapAreaProps) => {
   const { toast } = useToast();
   const {
     nodes,
@@ -16,17 +26,29 @@ export const MindMapArea = () => {
     setNodesData,
   } = useMindMap();
 
-  const handleSave = () => {
-    const mindMapData = JSON.stringify(nodes);
-    localStorage.setItem("mindMap", mindMapData);
-    toast({
-      title: "Carte mentale sauvegardée",
-      description: "Votre carte mentale a été sauvegardée localement",
+  const { mindMap, isLoading, saveMindMap } = useMindMapPersistence(id);
+  const { collaborators, activeUsers, addCollaborator, removeCollaborator } = useMindMapCollaboration(id || '');
+  const { addToHistory, undo, redo } = useMindMapHistory(id || '');
+
+  const [title, setTitle] = useState("Nouvelle carte mentale");
+
+  useEffect(() => {
+    if (mindMap) {
+      setTitle(mindMap.title);
+      setNodesData(mindMap.data);
+    }
+  }, [mindMap]);
+
+  const handleSave = async () => {
+    await saveMindMap(title, nodes);
+    addToHistory({
+      type: 'UPDATE_NODE',
+      payload: { nodes }
     });
   };
 
   const handleExport = () => {
-    const dataStr = JSON.stringify(nodes, null, 2);
+    const dataStr = JSON.stringify({ title, nodes }, null, 2);
     const dataUri = "data:application/json;charset=utf-8," + encodeURIComponent(dataStr);
     const exportFileDefaultName = "mind-map.json";
 
@@ -47,8 +69,9 @@ export const MindMapArea = () => {
       const reader = new FileReader();
       reader.onload = (e) => {
         try {
-          const importedNodes = JSON.parse(e.target?.result as string);
-          setNodesData(importedNodes);
+          const importedData = JSON.parse(e.target?.result as string);
+          setTitle(importedData.title);
+          setNodesData(importedData.nodes);
           toast({
             title: "Import réussi",
             description: "Votre carte mentale a été importée avec succès",
@@ -67,11 +90,30 @@ export const MindMapArea = () => {
 
   const handleReset = () => {
     resetNodes();
+    setTitle("Nouvelle carte mentale");
     toast({
       title: "Réinitialisation",
       description: "La carte mentale a été réinitialisée",
     });
   };
+
+  const handleUndo = () => {
+    const previousState = undo();
+    if (previousState) {
+      setNodesData(previousState.data.nodes);
+    }
+  };
+
+  const handleRedo = () => {
+    const nextState = redo();
+    if (nextState) {
+      setNodesData(nextState.data.nodes);
+    }
+  };
+
+  if (isLoading) {
+    return <div>Chargement...</div>;
+  }
 
   return (
     <motion.div
@@ -83,11 +125,24 @@ export const MindMapArea = () => {
       <Card className="p-6 bg-background/50 backdrop-blur-sm border-2 border-primary/20">
         <div className="space-y-6">
           <MindMapToolbar
+            title={title}
+            onTitleChange={setTitle}
             onSave={handleSave}
             onExport={handleExport}
             onImport={handleImport}
             onReset={handleReset}
+            onUndo={handleUndo}
+            onRedo={handleRedo}
           />
+
+          {id && (
+            <MindMapCollaborators
+              collaborators={collaborators}
+              activeUsers={activeUsers}
+              onAddCollaborator={addCollaborator}
+              onRemoveCollaborator={removeCollaborator}
+            />
+          )}
 
           <div className="min-h-[400px] p-4 bg-background/30 rounded-lg border border-primary/10">
             <MindMapNodeList
