@@ -22,6 +22,7 @@ interface UserProfileProps {
 }
 
 export const UserProfile = ({ userId }: UserProfileProps) => {
+  console.log('UserProfile component mounted with userId:', userId);
   const [isCurrentUser, setIsCurrentUser] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const { toast } = useToast();
@@ -29,7 +30,7 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
   useEffect(() => {
     const checkCurrentUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      console.log('Current user:', user);
+      console.log('Current user data:', user);
       setCurrentUserId(user?.id || null);
       setIsCurrentUser(user?.id === userId);
     };
@@ -39,7 +40,7 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
   const { data: profile, isLoading: profileLoading, error } = useQuery({
     queryKey: ['profile', userId],
     queryFn: async () => {
-      console.log('Fetching profile for userId:', userId);
+      console.log('Starting profile fetch for userId:', userId);
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -50,13 +51,13 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
         console.error('Error fetching profile:', error);
         toast({
           title: "Erreur",
-          description: "Impossible de charger le profil",
+          description: "Impossible de charger le profil: " + error.message,
           variant: "destructive",
         });
         throw error;
       }
 
-      console.log('Raw profile data:', data);
+      console.log('Profile data received:', data);
       return {
         ...data,
         education: data?.education || [],
@@ -70,9 +71,14 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
 
   const { data: friendshipStatus } = useFriendshipStatus(userId, currentUserId);
 
-  console.log('Rendered profile:', profile);
-  console.log('Loading state:', profileLoading);
-  console.log('Error state:', error);
+  console.log('Component state:', {
+    profile,
+    profileLoading,
+    error,
+    isCurrentUser,
+    currentUserId,
+    friendshipStatus
+  });
 
   if (profileLoading) {
     return (
@@ -100,6 +106,9 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
           <h2 className="text-2xl font-bold text-destructive">Profil introuvable</h2>
           <p className="text-muted-foreground">
             Le profil que vous recherchez n'existe pas ou a été supprimé.
+          </p>
+          <p className="text-sm text-muted-foreground">
+            ID utilisateur: {userId}
           </p>
         </motion.div>
       </div>
