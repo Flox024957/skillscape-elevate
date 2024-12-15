@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { useSkillQuery } from "@/hooks/useSkillQuery";
 import { SkillDetailContent } from "@/components/skill-detail/SkillDetailContent";
 import { toast } from "sonner";
