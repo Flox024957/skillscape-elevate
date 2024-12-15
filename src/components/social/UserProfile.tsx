@@ -53,6 +53,8 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
     },
   });
 
+  const { data: friendshipStatus } = useFriendshipStatus(userId, currentUserId);
+
   if (profileLoading) {
     return <div className="animate-pulse space-y-4">
       <div className="h-48 bg-muted rounded-lg"></div>
