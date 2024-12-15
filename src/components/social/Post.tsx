@@ -188,6 +188,7 @@ export const Post = ({ post, currentUserId }: PostProps) => {
         onToggleComments={() => setShowComments(!showComments)}
         postId={post.id}
         postUrl={postUrl}
+        userId={currentUserId}
       />
 
       <AnimatePresence>
