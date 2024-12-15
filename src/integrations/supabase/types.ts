@@ -30,6 +30,45 @@ export type Database = {
         }
         Relationships: []
       }
+      friend_suggestions: {
+        Row: {
+          created_at: string
+          id: string
+          score: number | null
+          suggested_friend_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          score?: number | null
+          suggested_friend_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          score?: number | null
+          suggested_friend_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "friend_suggestions_suggested_friend_id_fkey"
+            columns: ["suggested_friend_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "friend_suggestions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       friendships: {
         Row: {
           created_at: string
@@ -494,6 +533,44 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "mind_maps_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          link: string | null
+          read: boolean | null
+          type: string
+          user_id: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          link?: string | null
+          read?: boolean | null
+          type: string
+          user_id?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          link?: string | null
+          read?: boolean | null
+          type?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"

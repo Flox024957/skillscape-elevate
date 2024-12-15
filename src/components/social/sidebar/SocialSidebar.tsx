@@ -6,10 +6,11 @@ import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Book, BookOpen, Users, MessageSquare, User } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { SocialActivity } from "@/components/dashboard/SocialActivity";
+import { Book, BookOpen, Users, MessageCircle, User } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { SocialActivity } from "@/components/dashboard/SocialActivity";
+import { NotificationsList } from '../notifications/NotificationsList';
+import { FriendSuggestions } from '../friends/FriendSuggestions';
 
 export const SocialSidebar = () => {
   const navigate = useNavigate();
@@ -75,19 +76,22 @@ export const SocialSidebar = () => {
 
   return (
     <aside className="hidden md:flex flex-col w-80 min-h-screen bg-card/50 border-r border-border p-4 space-y-6 sticky top-16">
-      {/* Profile Section */}
-      <div className="flex flex-col items-center space-y-3">
-        <Avatar className="w-20 h-20">
-          <img 
-            src={currentUser?.image_profile || '/placeholder.svg'} 
-            alt={currentUser?.pseudo || 'Profile'} 
-            className="object-cover"
-          />
-        </Avatar>
-        <div className="text-center">
-          <h3 className="font-medium">{currentUser?.pseudo}</h3>
-          <p className="text-sm text-muted-foreground">{currentUser?.current_job}</p>
+      {/* Profile Section with Notifications */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-3">
+          <Avatar className="w-12 h-12">
+            <img 
+              src={currentUser?.image_profile || '/placeholder.svg'} 
+              alt={currentUser?.pseudo || 'Profile'} 
+              className="object-cover"
+            />
+          </Avatar>
+          <div>
+            <h3 className="font-medium">{currentUser?.pseudo}</h3>
+            <p className="text-sm text-muted-foreground">{currentUser?.current_job}</p>
+          </div>
         </div>
+        {currentUser && <NotificationsList userId={currentUser.id} />}
       </div>
 
       <Separator />
@@ -108,7 +112,7 @@ export const SocialSidebar = () => {
           className="w-full justify-start"
           onClick={() => navigate('/messages')}
         >
-          <MessageSquare className="mr-2 h-4 w-4" />
+          <MessageCircle className="mr-2 h-4 w-4" />
           Messages
         </Button>
         
@@ -121,6 +125,11 @@ export const SocialSidebar = () => {
           Mon profil
         </Button>
       </div>
+
+      <Separator />
+
+      {/* Friend Suggestions Section */}
+      {currentUser && <FriendSuggestions userId={currentUser.id} />}
 
       <Separator />
 
