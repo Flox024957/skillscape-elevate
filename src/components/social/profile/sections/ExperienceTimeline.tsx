@@ -17,23 +17,8 @@ interface ExperienceTimelineProps {
 export const ExperienceTimeline = ({ experience }: ExperienceTimelineProps) => {
   if (!experience?.length) return null;
 
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const item = {
-    hidden: { opacity: 0, x: -20 },
-    show: { opacity: 1, x: 0 }
-  };
-
   return (
-    <Card className="overflow-hidden backdrop-blur-sm bg-card/30">
+    <Card className="overflow-hidden backdrop-blur-sm bg-card/30 border-primary/10 hover:border-primary/20 transition-colors">
       <CardHeader>
         <CardTitle className="text-xl font-semibold flex items-center gap-2">
           <Briefcase className="w-5 h-5" />
@@ -41,16 +26,13 @@ export const ExperienceTimeline = ({ experience }: ExperienceTimelineProps) => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <motion.div 
-          variants={container}
-          initial="hidden"
-          animate="show"
-          className="relative space-y-8"
-        >
+        <div className="relative space-y-8">
           {experience.map((exp, index) => (
             <motion.div 
               key={index}
-              variants={item}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.1 }}
               className="flex gap-4 group"
             >
               <div className="flex flex-col items-center">
@@ -63,7 +45,7 @@ export const ExperienceTimeline = ({ experience }: ExperienceTimelineProps) => {
                 <h3 className="font-medium text-lg group-hover:text-primary transition-colors">
                   {exp.title}
                 </h3>
-                <p className="text-muted-foreground">
+                <p className="text-primary">
                   {exp.company}
                 </p>
                 <p className="text-sm text-muted-foreground">
@@ -77,7 +59,7 @@ export const ExperienceTimeline = ({ experience }: ExperienceTimelineProps) => {
               </div>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
       </CardContent>
     </Card>
   );
