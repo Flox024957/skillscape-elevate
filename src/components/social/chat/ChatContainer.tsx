@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import { Message } from '@/integrations/supabase/types/messages';
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageList } from './MessageList';
 import { MessageInput } from './MessageInput';
 
@@ -18,15 +18,6 @@ export const ChatContainer = ({
   friendName,
   onSendMessage
 }: ChatContainerProps) => {
-  const [message, setMessage] = useState('');
-
-  const handleSendMessage = () => {
-    if (message.trim()) {
-      onSendMessage(message);
-      setMessage('');
-    }
-  };
-
   return (
     <div className="flex-1 glass-panel">
       {selectedFriend ? (
