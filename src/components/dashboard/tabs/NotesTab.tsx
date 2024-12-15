@@ -7,7 +7,11 @@ import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
-const NotesTab = () => {
+interface NotesTabProps {
+  userId: string;
+}
+
+const NotesTab = ({ userId }: NotesTabProps) => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [note, setNote] = useState("");
   const { toast } = useToast();
@@ -15,26 +19,10 @@ const NotesTab = () => {
   const { data: userNotes, refetch } = useQuery({
     queryKey: ['userNotes'],
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return [];
-      
-      // First, ensure the user has a profile
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('id', user.id)
-        .single();
-
-      if (profileError) {
-        console.error('Profile error:', profileError);
-        return [];
-      }
-
-      // Now fetch the notes
       const { data, error } = await supabase
         .from('user_notes')
         .select('*')
-        .eq('user_id', profile.id)
+        .eq('user_id', userId)
         .order('created_at', { ascending: false });
       
       if (error) {
@@ -56,36 +44,10 @@ const NotesTab = () => {
       return;
     }
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      toast({
-        title: "Error",
-        description: "You must be logged in to add notes",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // First, ensure the user has a profile
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('id', user.id)
-      .single();
-
-    if (profileError) {
-      toast({
-        title: "Error",
-        description: "Could not verify user profile",
-        variant: "destructive",
-      });
-      return;
-    }
-
     const { error } = await supabase
       .from('user_notes')
       .insert([{
-        user_id: profile.id,
+        user_id: userId,
         content: note.trim(),
       }]);
 

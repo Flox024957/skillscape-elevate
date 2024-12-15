@@ -11,6 +11,8 @@ interface DashboardTabsProps {
 }
 
 export const DashboardTabs = ({ user }: DashboardTabsProps) => {
+  if (!user) return null;
+
   return (
     <Tabs defaultValue="skills" className="space-y-4">
       <TabsList>

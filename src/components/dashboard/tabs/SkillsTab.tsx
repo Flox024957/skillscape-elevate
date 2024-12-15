@@ -24,7 +24,11 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { UserSkill } from "@/types/skills";
 import { Json } from "@/integrations/supabase/types";
 
-const SkillsTab = () => {
+interface SkillsTabProps {
+  userId: string;
+}
+
+const SkillsTab = ({ userId }: SkillsTabProps) => {
   const [openSections, setOpenSections] = useState<string[]>([]);
   const { toast } = useToast();
   const isMobile = useIsMobile();
