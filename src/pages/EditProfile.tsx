@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -17,31 +17,41 @@ const EditProfile = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [defaultValues, setDefaultValues] = useState<ProfileFormValues>({
+    pseudo: '',
+    description: '',
+    current_job: '',
+    dream_job: '',
+    image_profile: ''
+  });
 
-  const loadDefaultValues = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return {
-      pseudo: '',
-      description: '',
-      current_job: '',
-      dream_job: '',
-      image_profile: ''
+  useEffect(() => {
+    const loadDefaultValues = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setDefaultValues({
+          pseudo: '',
+          description: '',
+          current_job: '',
+          dream_job: '',
+          image_profile: ''
+        });
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('pseudo, description, current_job, dream_job, image_profile')
+        .eq('id', user.id)
+        .single();
+
+      if (profile) {
+        setDefaultValues(profile);
+      }
     };
 
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('pseudo, description, current_job, dream_job, image_profile')
-      .eq('id', user.id)
-      .single();
-
-    return profile || {
-      pseudo: '',
-      description: '',
-      current_job: '',
-      dream_job: '',
-      image_profile: ''
-    };
-  };
+    loadDefaultValues();
+  }, []);
 
   const onSubmit = async (values: ProfileFormValues) => {
     try {
@@ -108,7 +118,7 @@ const EditProfile = () => {
         </div>
 
         <EditProfileForm
-          defaultValues={await loadDefaultValues()}
+          defaultValues={defaultValues}
           onSubmit={onSubmit}
           isLoading={isLoading}
         />
