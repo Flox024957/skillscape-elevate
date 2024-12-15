@@ -12,6 +12,7 @@ import { ExperienceTimeline } from './profile/sections/ExperienceTimeline';
 import { EducationSection } from './profile/sections/EducationSection';
 import { BadgesSection } from './profile/sections/BadgesSection';
 import { UserSkills } from './UserSkills';
+import { Profile } from '@/integrations/supabase/types/profiles';
 
 interface UserProfileProps {
   userId: string;
@@ -40,7 +41,7 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
         .single();
 
       if (error) throw error;
-      return data;
+      return data as Profile;
     },
   });
 

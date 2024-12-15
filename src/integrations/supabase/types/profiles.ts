@@ -8,6 +8,26 @@ export type Profile = {
   personal_goals: Json | null;
   created_at: string;
   updated_at: string;
+  education: Education[];
+  experience: Experience[];
+  banner_image: string | null;
+};
+
+export type Experience = {
+  title: string;
+  company: string;
+  start_date: string;
+  end_date?: string;
+  description?: string;
+};
+
+export type Education = {
+  school: string;
+  degree: string;
+  field: string;
+  start_date: string;
+  end_date?: string;
+  description?: string;
 };
 
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
