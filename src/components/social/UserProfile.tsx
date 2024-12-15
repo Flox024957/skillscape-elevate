@@ -7,6 +7,7 @@ import { LoadingProfile } from './profile/LoadingProfile';
 import { ErrorProfile } from './profile/ErrorProfile';
 import { ProfileContent } from './profile/ProfileContent';
 import { AnimatePresence } from 'framer-motion';
+import { Profile, Education, Experience } from '@/integrations/supabase/types/profiles';
 
 interface UserProfileProps {
   userId: string;
@@ -48,15 +49,30 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
         throw error;
       }
 
-      console.log('Profile data received:', data);
-      return {
+      console.log('Raw profile data received:', data);
+
+      // Ensure the data matches our Profile type
+      const formattedProfile: Profile = {
         ...data,
-        education: data?.education || [],
-        experience: data?.experience || [],
-        interests: data?.interests || [],
-        languages: data?.languages || [],
+        education: Array.isArray(data?.education) ? data.education as Education[] : [],
+        experience: Array.isArray(data?.experience) ? data.experience as Experience[] : [],
+        interests: Array.isArray(data?.interests) ? data.interests : [],
+        languages: Array.isArray(data?.languages) ? data.languages : [],
         social_links: data?.social_links || {},
+        personal_goals: data?.personal_goals || [],
+        theme_preferences: data?.theme_preferences || {},
+        achievements: data?.achievements || [],
+        privacy_settings: data?.privacy_settings || {
+          show_email: false,
+          show_skills: true,
+          show_friends: true,
+          show_activity: true
+        },
+        certifications: data?.certifications || []
       };
+
+      console.log('Formatted profile data:', formattedProfile);
+      return formattedProfile;
     },
   });
 
