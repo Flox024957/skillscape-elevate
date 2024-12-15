@@ -4,6 +4,7 @@ import { useSkillQuery } from "@/hooks/useSkillQuery";
 import { SkillDetailContent } from "@/components/skill-detail/SkillDetailContent";
 import { toast } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { supabase } from "@/integrations/supabase/client";
 
 const SkillDetailPage = () => {
   const { skillId } = useParams<{ skillId: string }>();
@@ -19,6 +20,40 @@ const SkillDetailPage = () => {
       navigate(-1);
     }
   }, [skillId, skill, isLoading, error, navigate]);
+
+  const handleAddToDashboard = async (type: string, content: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("Vous devez être connecté pour ajouter une compétence");
+        return;
+      }
+
+      if (!skillId) {
+        toast.error("ID de compétence invalide");
+        return;
+      }
+
+      const { error: upsertError } = await supabase
+        .from('user_skills')
+        .upsert({
+          user_id: user.id,
+          skill_id: skillId,
+          sections_selectionnees: [type]
+        });
+
+      if (upsertError) {
+        console.error('Error adding to dashboard:', upsertError);
+        toast.error("Erreur lors de l'ajout au tableau de bord");
+        return;
+      }
+
+      toast.success("Ajouté au tableau de bord avec succès");
+    } catch (err) {
+      console.error('Error:', err);
+      toast.error("Une erreur est survenue");
+    }
+  };
 
   if (isLoading) {
     return (
@@ -52,7 +87,7 @@ const SkillDetailPage = () => {
   }
 
   return (
-    <TooltipProvider>
+    <TooltipProvider delayDuration={0}>
       <SkillDetailContent 
         skill={skill}
         onNavigateBack={() => navigate(-1)}
