@@ -11,6 +11,12 @@ export type Profile = {
   education: Education[];
   experience: Experience[];
   banner_image: string | null;
+  // Add missing properties
+  location: string | null;
+  website: string | null;
+  interests: string[] | null;
+  languages: string[] | null;
+  social_links: Json | null;
 };
 
 export type Experience = {
