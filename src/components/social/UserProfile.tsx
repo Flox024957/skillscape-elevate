@@ -38,10 +38,12 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
   // Fetch friendship status
   const { data: friendshipStatus } = useFriendshipStatus(userId, currentUserId);
 
-  // Fetch profile stats
+  // Fetch profile stats with proper error handling
   const { data: stats } = useQuery({
     queryKey: ['profile-stats', userId],
     queryFn: async () => {
+      console.log('Fetching stats for userId:', userId);
+      
       const [friendsCount, skillsCount, achievementsCount] = await Promise.all([
         supabase
           .from('friendships')
@@ -64,13 +66,7 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
       return { friendsCount, skillsCount, achievementsCount };
     },
     meta: {
-      onError: () => {
-        toast({
-          title: "Erreur",
-          description: "Impossible de charger les statistiques du profil",
-          variant: "destructive",
-        });
-      }
+      errorMessage: "Impossible de charger les statistiques du profil"
     }
   });
 
