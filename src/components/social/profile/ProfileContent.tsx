@@ -10,6 +10,7 @@ import { UserSkills } from '../UserSkills';
 import { BadgesSection } from './sections/BadgesSection';
 import { ProfileTabs } from './ProfileTabs';
 import { ProfileBanner } from './sections/ProfileBanner';
+import { ProfileStats } from './sections/ProfileStats';
 
 interface ProfileContentProps {
   profile: Profile;
@@ -17,6 +18,11 @@ interface ProfileContentProps {
   isCurrentUser: boolean;
   currentUserId: string | null;
   friendshipStatus: any;
+  stats?: {
+    friendsCount: number;
+    skillsCount: number;
+    achievementsCount: number;
+  };
 }
 
 export const ProfileContent = ({ 
@@ -24,7 +30,8 @@ export const ProfileContent = ({
   userId, 
   isCurrentUser, 
   currentUserId,
-  friendshipStatus 
+  friendshipStatus,
+  stats 
 }: ProfileContentProps) => {
   return (
     <motion.div 
@@ -60,6 +67,14 @@ export const ProfileContent = ({
               friendshipStatus={friendshipStatus}
             />
           </motion.div>
+        )}
+
+        {stats && (
+          <ProfileStats 
+            friendsCount={stats.friendsCount}
+            skillsCount={stats.skillsCount}
+            achievementsCount={stats.achievementsCount}
+          />
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
