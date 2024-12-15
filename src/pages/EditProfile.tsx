@@ -1,19 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useForm } from "react-hook-form";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
+import { EditProfileForm } from '@/components/profile/edit/EditProfileForm';
 
 interface ProfileFormValues {
   pseudo: string;
@@ -28,32 +18,30 @@ const EditProfile = () => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
-  const form = useForm<ProfileFormValues>({
-    defaultValues: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return {
-        pseudo: '',
-        description: '',
-        current_job: '',
-        dream_job: '',
-        image_profile: ''
-      };
+  const loadDefaultValues = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return {
+      pseudo: '',
+      description: '',
+      current_job: '',
+      dream_job: '',
+      image_profile: ''
+    };
 
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('pseudo, description, current_job, dream_job, image_profile')
-        .eq('id', user.id)
-        .single();
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('pseudo, description, current_job, dream_job, image_profile')
+      .eq('id', user.id)
+      .single();
 
-      return profile || {
-        pseudo: '',
-        description: '',
-        current_job: '',
-        dream_job: '',
-        image_profile: ''
-      };
-    }
-  });
+    return profile || {
+      pseudo: '',
+      description: '',
+      current_job: '',
+      dream_job: '',
+      image_profile: ''
+    };
+  };
 
   const onSubmit = async (values: ProfileFormValues) => {
     try {
@@ -119,87 +107,11 @@ const EditProfile = () => {
           </p>
         </div>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="pseudo"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Pseudo</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Votre pseudo" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="image_profile"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>URL de l'image de profil</FormLabel>
-                  <FormControl>
-                    <Input placeholder="URL de votre image de profil" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="Parlez-nous un peu de vous" 
-                      className="resize-none" 
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="current_job"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Emploi actuel</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Votre emploi actuel" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="dream_job"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Emploi rêvé</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Votre emploi rêvé" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Mise à jour..." : "Enregistrer les modifications"}
-            </Button>
-          </form>
-        </Form>
+        <EditProfileForm
+          defaultValues={await loadDefaultValues()}
+          onSubmit={onSubmit}
+          isLoading={isLoading}
+        />
       </div>
     </div>
   );
