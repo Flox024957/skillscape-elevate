@@ -1,42 +1,45 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import SkillsTab from "./tabs/SkillsTab";
-import NotesTab from "./tabs/NotesTab";
-import CanvasTab from "./tabs/CanvasTab";
-import AudioTab from "./tabs/AudioTab";
-import MasteredSkillsSection from "./tabs/skills/MasteredSkillsSection";
+import { AudioTab } from "./tabs/AudioTab";
+import { CanvasTab } from "./tabs/CanvasTab";
+import { NotesTab } from "./tabs/NotesTab";
+import { SkillsTab } from "./tabs/SkillsTab";
+import { SocialActivity } from "./SocialActivity";
+import { User } from "@supabase/supabase-js";
 
-const DashboardTabs = () => {
+interface DashboardTabsProps {
+  user: User;
+}
+
+export const DashboardTabs = ({ user }: DashboardTabsProps) => {
   return (
     <Tabs defaultValue="skills" className="space-y-4">
-      <TabsList className="grid grid-cols-5 gap-4">
-        <TabsTrigger value="skills">Compétences & Actions</TabsTrigger>
-        <TabsTrigger value="mastered">Compétences Maîtrisées</TabsTrigger>
-        <TabsTrigger value="notes">Notes & Calendrier</TabsTrigger>
-        <TabsTrigger value="canvas">Canevas</TabsTrigger>
-        <TabsTrigger value="audio">Lecteur Audio</TabsTrigger>
+      <TabsList>
+        <TabsTrigger value="skills">Compétences</TabsTrigger>
+        <TabsTrigger value="notes">Notes</TabsTrigger>
+        <TabsTrigger value="canvas">Canvas</TabsTrigger>
+        <TabsTrigger value="audio">Audio</TabsTrigger>
+        <TabsTrigger value="social">Social</TabsTrigger>
       </TabsList>
 
-      <TabsContent value="skills">
-        <SkillsTab />
-      </TabsContent>
-
-      <TabsContent value="mastered">
-        <MasteredSkillsSection />
+      <TabsContent value="skills" className="space-y-4">
+        <SkillsTab userId={user.id} />
       </TabsContent>
 
       <TabsContent value="notes">
-        <NotesTab />
+        <NotesTab userId={user.id} />
       </TabsContent>
 
       <TabsContent value="canvas">
-        <CanvasTab />
+        <CanvasTab userId={user.id} />
       </TabsContent>
 
       <TabsContent value="audio">
         <AudioTab />
       </TabsContent>
+
+      <TabsContent value="social">
+        <SocialActivity userId={user.id} />
+      </TabsContent>
     </Tabs>
   );
 };
-
-export default DashboardTabs;
