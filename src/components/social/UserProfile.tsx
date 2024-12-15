@@ -11,7 +11,7 @@ import { ExperienceTimeline } from './profile/sections/ExperienceTimeline';
 import { EducationSection } from './profile/sections/EducationSection';
 import { BadgesSection } from './profile/sections/BadgesSection';
 import { UserSkills } from './UserSkills';
-import { Profile } from '@/integrations/supabase/types/profiles';
+import { Profile, Education, Experience } from '@/integrations/supabase/types/profiles';
 import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
