@@ -11,11 +11,11 @@ import { ExperienceTimeline } from './profile/sections/ExperienceTimeline';
 import { EducationSection } from './profile/sections/EducationSection';
 import { BadgesSection } from './profile/sections/BadgesSection';
 import { UserSkills } from './UserSkills';
-import { Profile, Education, Experience } from '@/integrations/supabase/types/profiles';
+import { ProfileInfoSection } from './profile/sections/ProfileInfoSection';
+import { Profile } from '@/integrations/supabase/types/profiles';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, MapPin, Briefcase, GraduationCap, Globe, Heart } from 'lucide-react';
-import { Card } from '@/components/ui/card';
+import { Loader2 } from 'lucide-react';
 
 interface UserProfileProps {
   userId: string;
@@ -53,13 +53,7 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
         throw error;
       }
 
-      const transformedData: Profile = {
-        ...data,
-        education: (data.education || []) as Education[],
-        experience: (data.experience || []) as Experience[],
-      };
-
-      return transformedData;
+      return data as Profile;
     },
   });
 
@@ -139,54 +133,7 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
               transition={{ delay: 0.3 }}
               className="lg:col-span-2 space-y-6"
             >
-              <Card className="overflow-hidden backdrop-blur-sm bg-card/30 border-primary/10 hover:border-primary/20 transition-colors">
-                <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {profile.location && (
-                    <div className="flex items-center gap-3">
-                      <MapPin className="h-5 w-5 text-primary" />
-                      <div>
-                        <h3 className="font-medium">Localisation</h3>
-                        <p className="text-muted-foreground">{profile.location}</p>
-                      </div>
-                    </div>
-                  )}
-                  {profile.current_job && (
-                    <div className="flex items-center gap-3">
-                      <Briefcase className="h-5 w-5 text-primary" />
-                      <div>
-                        <h3 className="font-medium">Emploi actuel</h3>
-                        <p className="text-muted-foreground">{profile.current_job}</p>
-                      </div>
-                    </div>
-                  )}
-                  {profile.dream_job && (
-                    <div className="flex items-center gap-3">
-                      <GraduationCap className="h-5 w-5 text-primary" />
-                      <div>
-                        <h3 className="font-medium">Objectif professionnel</h3>
-                        <p className="text-muted-foreground">{profile.dream_job}</p>
-                      </div>
-                    </div>
-                  )}
-                  {profile.website && (
-                    <div className="flex items-center gap-3">
-                      <Globe className="h-5 w-5 text-primary" />
-                      <div>
-                        <h3 className="font-medium">Site web</h3>
-                        <a 
-                          href={profile.website}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-primary hover:underline"
-                        >
-                          {profile.website}
-                        </a>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </Card>
-
+              <ProfileInfoSection profile={profile} />
               <AboutSection profile={profile} />
               <ExperienceTimeline experience={profile.experience} />
               <EducationSection education={profile.education} />
@@ -199,29 +146,6 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
               transition={{ delay: 0.4 }}
               className="space-y-6"
             >
-              {profile.interests && profile.interests.length > 0 && (
-                <Card className="overflow-hidden backdrop-blur-sm bg-card/30 border-primary/10 hover:border-primary/20 transition-colors">
-                  <div className="p-6">
-                    <div className="flex items-center gap-2 mb-4">
-                      <Heart className="h-5 w-5 text-primary" />
-                      <h3 className="font-semibold">Centres d'intérêt</h3>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {profile.interests.map((interest, index) => (
-                        <motion.span
-                          key={index}
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ delay: index * 0.1 }}
-                          className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm"
-                        >
-                          {interest}
-                        </motion.span>
-                      ))}
-                    </div>
-                  </div>
-                </Card>
-              )}
               <BadgesSection userId={userId} />
               <ProfileTabs isCurrentUser={isCurrentUser} />
             </motion.div>
