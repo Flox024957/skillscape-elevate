@@ -12,27 +12,12 @@ const SkillDetailPage = () => {
 
   useEffect(() => {
     console.log('SkillDetailPage rendering with:', { skillId, skill, isLoading, error });
-  }, [skillId, skill, isLoading, error]);
-
-  if (!skillId) {
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="container px-4 py-8">
-          <div className="max-w-2xl mx-auto text-center space-y-6">
-            <h1 className="text-3xl font-bold text-red-500">
-              ID de compétence manquant
-            </h1>
-            <button 
-              onClick={() => navigate(-1)}
-              className="text-primary hover:underline"
-            >
-              Retourner à la page précédente
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+    
+    if (!skillId) {
+      toast.error("ID de compétence manquant");
+      navigate(-1);
+    }
+  }, [skillId, skill, isLoading, error, navigate]);
 
   if (isLoading) {
     return (
@@ -65,13 +50,15 @@ const SkillDetailPage = () => {
     );
   }
 
+  const handleAddToDashboard = (type: string, content: string) => {
+    toast.success(`${type} ajouté au tableau de bord`);
+  };
+
   return (
     <SkillDetailContent 
       skill={skill}
       onNavigateBack={() => navigate(-1)}
-      onAddToDashboard={(type: string, content: string) => {
-        toast.success(`${type} ajouté au tableau de bord`);
-      }}
+      onAddToDashboard={handleAddToDashboard}
     />
   );
 };
