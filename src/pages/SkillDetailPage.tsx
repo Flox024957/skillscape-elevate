@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { useSkillQuery } from "@/hooks/useSkillQuery";
 import { SkillDetailContent } from "@/components/skill-detail/SkillDetailContent";
 import { toast } from "sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { supabase } from "@/integrations/supabase/client";
 
 const SkillDetailPage = () => {
@@ -87,15 +86,11 @@ const SkillDetailPage = () => {
   }
 
   return (
-    <div>
-      <TooltipProvider delayDuration={0}>
-        <SkillDetailContent 
-          skill={skill}
-          onNavigateBack={() => navigate(-1)}
-          onAddToDashboard={handleAddToDashboard}
-        />
-      </TooltipProvider>
-    </div>
+    <SkillDetailContent 
+      skill={skill}
+      onNavigateBack={() => navigate(-1)}
+      onAddToDashboard={handleAddToDashboard}
+    />
   );
 };
 
