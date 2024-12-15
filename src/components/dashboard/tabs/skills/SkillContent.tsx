@@ -28,8 +28,10 @@ const SkillContent = ({
   const isMobile = useIsMobile();
   const navigate = useNavigate();
 
-  const handleSkillClick = () => {
-    console.log("Navigating to skill:", skillId);
+  const handleSkillClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log("Navigating to skill with ID:", skillId);
     navigate(`/skill/${skillId}`);
   };
 

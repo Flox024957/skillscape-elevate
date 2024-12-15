@@ -2,11 +2,11 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useSkillQuery } from "@/hooks/useSkillQuery";
 import { SkillDetailContent } from "@/components/skill-detail/SkillDetailContent";
 import { toast } from "sonner";
-import { useEffect } from "react";
 
 const SkillDetailPage = () => {
   const { skillId } = useParams<{ skillId: string }>();
   const navigate = useNavigate();
+  
   const { data: skill, isLoading, error } = useSkillQuery(skillId);
 
   useEffect(() => {
@@ -14,7 +14,6 @@ const SkillDetailPage = () => {
   }, [skillId, skill, isLoading, error]);
 
   if (!skillId) {
-    toast.error("ID de compétence manquant");
     return (
       <div className="min-h-screen bg-background">
         <div className="container px-4 py-8">
