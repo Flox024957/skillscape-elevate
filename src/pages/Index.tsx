@@ -20,18 +20,15 @@ const Index = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
-        navigate("/app");
+        navigate("/dashboard");
       }
-    };
+    });
 
-    checkAuth();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        navigate("/app");
+        navigate("/dashboard");
       }
     });
 
@@ -40,7 +37,9 @@ const Index = () => {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-background to-background/95">
+      {/* Enhanced darker animated background effects */}
       <div className="absolute inset-0 z-0">
+        {/* Large cosmic waves */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-r from-[#000A14] via-[#001428] to-[#001E3C] 
                         animate-cosmic-wave-1 transform-gpu opacity-40"></div>
@@ -50,18 +49,22 @@ const Index = () => {
                         animate-cosmic-wave-3 transform-gpu opacity-20 delay-2000"></div>
         </div>
 
+        {/* New Animated Circle */}
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-[500px] h-[500px] border-4 border-[#001E3C]/50 
                        animate-circle-pulse transform-gpu 
                        shadow-[0_0_100px_rgba(0,30,60,0.6)] backdrop-blur-sm"></div>
         </div>
 
+        {/* Geometric shapes */}
         <div className="absolute inset-0">
+          {/* Hexagons */}
           <div className="absolute top-1/4 left-1/4 w-[300px] h-[300px] border-2 border-[#001E3C]/30 
                         animate-hexagon-spin transform-gpu rotate-45"></div>
           <div className="absolute bottom-1/4 right-1/4 w-[200px] h-[200px] border-2 border-[#001E3C]/20 
                         animate-hexagon-spin-reverse transform-gpu rotate-45 delay-1000"></div>
           
+          {/* Triangles */}
           <div className="absolute top-1/3 right-1/3 w-0 h-0 
                         border-l-[100px] border-l-transparent
                         border-b-[173.2px] border-b-[#001E3C]/20
@@ -74,11 +77,13 @@ const Index = () => {
                         animate-triangle-float-reverse transform-gpu delay-500"></div>
         </div>
 
+        {/* Dynamic energy pulses */}
         <div className="absolute inset-0">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1500px] h-[1500px] 
                         bg-[#001E3C]/20 rounded-full filter blur-[100px] animate-energy-pulse transform-gpu"></div>
         </div>
 
+        {/* Orbital rings with enhanced glow */}
         <div className="absolute inset-0">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[1200px] 
                         border-2 border-[#001E3C]/30 rounded-full animate-orbital-spin-1 transform-gpu
@@ -88,6 +93,7 @@ const Index = () => {
                         shadow-[0_0_20px_#000A14] delay-500"></div>
         </div>
 
+        {/* Nebula clusters with enhanced glow */}
         <div className="absolute inset-0">
           <div className="absolute top-0 left-0 w-[1000px] h-[1000px] bg-[#000A14]/30 rounded-full 
                         filter blur-[180px] animate-nebula-pulse-1 transform-gpu
@@ -97,6 +103,7 @@ const Index = () => {
                         shadow-[inset_0_0_50px_#001428]"></div>
         </div>
 
+        {/* Stellar flares with enhanced glow */}
         <div className="absolute inset-0">
           <div className="absolute top-1/4 right-1/4 w-[800px] h-[800px] bg-[#001832]/20 rounded-full 
                         filter blur-[150px] animate-flare-burst-1 transform-gpu
@@ -106,6 +113,11 @@ const Index = () => {
                         shadow-[0_0_100px_#000A14]"></div>
         </div>
       </div>
+
+      {/* Enhanced neon border effect */}
+      <div className="absolute inset-0 border border-[#8B5CF6]/30 
+                    shadow-[inset_0_0_150px_rgba(139,92,246,0.6),0_0_70px_rgba(139,92,246,0.4)] 
+                    pointer-events-none"></div>
 
       <div className="container relative z-10 px-4 py-12 mx-auto">
         <motion.div 

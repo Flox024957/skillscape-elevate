@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { Collapsible } from "@/components/ui/collapsible";
 import { useState } from "react";
 import {
   DndContext,
@@ -10,15 +11,18 @@ import {
   useSensors,
   DragEndEvent,
 } from '@dnd-kit/core';
-import { 
-  sortableKeyboardCoordinates 
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
+import SortableSkillItem from "./skills/SortableSkillItem";
 import { useToast } from "@/hooks/use-toast";
+import SkillHeader from "./skills/SkillHeader";
+import SkillContent from "./skills/SkillContent";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { UserSkill } from "@/types/skills";
 import { Json } from "@/integrations/supabase/types";
-import { normalizeExamples } from "@/utils/skillHelpers";
-import SkillsList from "./skills/SkillsList";
 
 const SkillsTab = () => {
   const [openSections, setOpenSections] = useState<string[]>([]);
@@ -71,7 +75,7 @@ const SkillsTab = () => {
         is_mastered: masteredSkillIds.has(skill.skill_id),
         skills: {
           ...skill.skills,
-          exemples: normalizeExamples(skill.skills.exemples)
+          exemples: Array.isArray(skill.skills.exemples) ? skill.skills.exemples : []
         }
       }));
     },
@@ -148,12 +152,37 @@ const SkillsTab = () => {
       onDragEnd={handleDragEnd}
     >
       <div className={`space-y-4 ${isMobile ? 'px-2' : ''}`}>
-        <SkillsList
-          userSkills={userSkills}
-          openSections={openSections}
-          toggleSection={toggleSection}
-          handleAddSkillSection={handleAddSkillSection}
-        />
+        <SortableContext
+          items={userSkills.map(skill => skill.skill_id)}
+          strategy={verticalListSortingStrategy}
+        >
+          {userSkills.map((userSkill) => (
+            <SortableSkillItem key={userSkill.skill_id} id={userSkill.skill_id}>
+              <Collapsible
+                open={openSections.includes(userSkill.skill_id)}
+                onOpenChange={() => toggleSection(userSkill.skill_id)}
+                className="bg-card rounded-lg border border-border overflow-hidden flex-1"
+              >
+                <SkillHeader
+                  title={userSkill.skills.titre}
+                  selectedSections={userSkill.sections_selectionnees}
+                  skillId={userSkill.skill_id}
+                  onAdd={handleAddSkillSection}
+                  isMastered={userSkill.is_mastered}
+                />
+                <SkillContent
+                  skillId={userSkill.skill_id}
+                  selectedSections={userSkill.sections_selectionnees}
+                  summary={userSkill.skills.resume}
+                  explanation={userSkill.skills.description}
+                  concreteAction={userSkill.skills.action_concrete}
+                  examples={userSkill.skills.exemples}
+                  onAdd={handleAddSkillSection}
+                />
+              </Collapsible>
+            </SortableSkillItem>
+          ))}
+        </SortableContext>
       </div>
     </DndContext>
   );

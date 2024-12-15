@@ -1,6 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Skill } from "@/types/skills";
+import { Database } from "@/integrations/supabase/types";
+
+type Skill = Database['public']['Tables']['skills']['Row'] & {
+  categories: Database['public']['Tables']['categories']['Row'] | null;
+};
 
 const isValidUUID = (uuid: string) => {
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -41,7 +45,7 @@ export const useSkillQuery = (id: string | undefined) => {
         throw new Error('Skill not found');
       }
 
-      console.log('Skill data fetched successfully:', skillData);
+      console.log('Skill data:', skillData);
       return skillData as Skill;
     },
     enabled: Boolean(id) && isValidUUID(id),

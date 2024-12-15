@@ -5,9 +5,10 @@ import type { Game } from "@/types/games";
 interface GameSectionProps {
   type: "speed" | "construction" | "collaborative";
   games: Game[];
+  onPlay: (route: string) => void;
 }
 
-export const GameSection = ({ type, games }: GameSectionProps) => {
+export const GameSection = ({ type, games, onPlay }: GameSectionProps) => {
   const getTitle = () => {
     switch (type) {
       case "speed":
@@ -57,7 +58,7 @@ export const GameSection = ({ type, games }: GameSectionProps) => {
         {games
           .filter((game) => game.type === type)
           .map((game) => (
-            <GameCard key={game.id} {...game} />
+            <GameCard key={game.id} {...game} onPlay={onPlay} />
           ))}
       </motion.div>
     </motion.div>

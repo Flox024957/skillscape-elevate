@@ -18,8 +18,6 @@ export const SkillDetailContent = ({
   const examples = Array.isArray(skill.exemples) ? skill.exemples : [];
   const illustrationUrl = getSkillIllustration(skill.category_id);
 
-  console.log('Rendering skill content:', { skill, examples });
-
   return (
     <div className="container max-w-6xl px-4 py-8 relative overflow-hidden">
       {/* Background Illustration */}

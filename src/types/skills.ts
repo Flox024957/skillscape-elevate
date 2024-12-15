@@ -1,27 +1,15 @@
 import { Json } from "@/integrations/supabase/types";
 
-export interface Category {
-  id: string;
-  name: string;
-  description: string;
-  skills: Skill[];
-}
-
 export interface Skill {
   id: string;
   titre: string;
-  resume: string;
-  description: string;
-  action_concrete: string;
-  exemples: Json;
-  category_id?: string;
-  created_at?: string;
-  updated_at?: string;
-  categories?: {
-    id: string;
-    name: string;
-    description?: string;
-  } | null;
+  resume: string | null;
+  description: string | null;
+  action_concrete: string | null;
+  exemples: Json[] | null;
+  category_id: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface UserSkill {
@@ -42,10 +30,15 @@ export interface MasteredSkill {
   };
 }
 
-// Helper function to normalize examples array
-export const normalizeExamples = (examples: Json): Json[] => {
-  if (Array.isArray(examples)) {
-    return examples;
-  }
-  return [];
-};
+// Helper function to transform French column names to English for UI
+export const transformSkill = (skill: Skill) => ({
+  id: skill.id,
+  title: skill.titre,
+  summary: skill.resume,
+  description: skill.description,
+  concrete_action: skill.action_concrete,
+  examples: skill.exemples,
+  category_id: skill.category_id,
+  created_at: skill.created_at,
+  updated_at: skill.updated_at,
+});

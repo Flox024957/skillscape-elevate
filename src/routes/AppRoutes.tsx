@@ -1,41 +1,31 @@
 import { Routes, Route } from "react-router-dom";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
-import MainPage from "@/pages/MainPage";
 import Dashboard from "@/pages/Dashboard";
 import Social from "@/pages/Social";
-import PublicProfile from "@/pages/PublicProfile";
 import EditProfile from "@/pages/EditProfile";
+import PublicProfile from "@/pages/PublicProfile";
 import CategoryPage from "@/pages/CategoryPage";
 import SkillDetailPage from "@/pages/SkillDetailPage";
 import AudioPage from "@/pages/AudioPage";
 import ChallengesPage from "@/pages/ChallengesPage";
-import SpeedLearningPage from "@/pages/games/SpeedLearningPage";
-import TypingRacePage from "@/pages/games/TypingRacePage";
-import FlashCardsPage from "@/pages/games/FlashCardsPage";
-import BubblePopPage from "@/pages/games/BubblePopPage";
-import SkillBuilderPage from "@/pages/games/SkillBuilderPage";
-import MindMapPage from "@/pages/games/MindMapPage";
-import TeamChallengePage from "@/pages/games/TeamChallengePage";
-import SkillChainPage from "@/pages/games/SkillChainPage";
-import KnowledgeRacePage from "@/pages/games/KnowledgeRacePage";
+import MainPage from "@/pages/MainPage";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
-export const AppRoutes = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
+interface AppRoutesProps {
+  isAuthenticated: boolean;
+}
+
+export const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
   return (
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/auth" element={<Auth />} />
-      <Route path="/main" element={
-        <ProtectedRoute isAuthenticated={isAuthenticated}>
-          <MainPage />
-        </ProtectedRoute>
-      } />
-      <Route path="/app" element={
-        <ProtectedRoute isAuthenticated={isAuthenticated}>
-          <MainPage />
-        </ProtectedRoute>
-      } />
+      <Route path="/main" element={<MainPage />} />
+      <Route path="/audio" element={<AudioPage />} />
+      <Route path="/challenges" element={<ChallengesPage />} />
+      <Route path="/category/:id" element={<CategoryPage />} />
+      <Route path="/skill/:skillId" element={<SkillDetailPage />} />
       <Route
         path="/dashboard"
         element={
@@ -53,14 +43,6 @@ export const AppRoutes = ({ isAuthenticated }: { isAuthenticated: boolean }) => 
         }
       />
       <Route
-        path="/profile/:id"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <PublicProfile />
-          </ProtectedRoute>
-        }
-      />
-      <Route
         path="/edit-profile"
         element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
@@ -68,110 +50,7 @@ export const AppRoutes = ({ isAuthenticated }: { isAuthenticated: boolean }) => 
           </ProtectedRoute>
         }
       />
-      <Route
-        path="/category/:id"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <CategoryPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/skill/:id"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <SkillDetailPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/audio"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <AudioPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/challenges"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <ChallengesPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/games/speed-learning"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <SpeedLearningPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/games/typing-race"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <TypingRacePage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/games/flash-cards"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <FlashCardsPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/games/bubble-pop"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <BubblePopPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/games/skill-builder"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <SkillBuilderPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/games/mind-map"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <MindMapPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/games/skill-chain"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <SkillChainPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/games/team-challenge"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <TeamChallengePage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/games/knowledge-race"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <KnowledgeRacePage />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/profile/:userId" element={<PublicProfile />} />
     </Routes>
   );
 };

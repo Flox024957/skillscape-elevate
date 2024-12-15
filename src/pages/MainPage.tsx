@@ -2,12 +2,9 @@ import { motion } from "framer-motion";
 import { CategoriesGrid } from "@/components/categories/CategoriesGrid";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2 } from "lucide-react";
-import { Category } from "@/types/skills";
-import { toast } from "sonner";
 
 const MainPage = () => {
-  const { data: categories, isLoading, error } = useQuery({
+  const { data: categories, isLoading } = useQuery({
     queryKey: ['categories'],
     queryFn: async () => {
       console.log('Fetching categories...');
@@ -18,64 +15,39 @@ const MainPage = () => {
           skills (
             id,
             titre,
-            resume,
-            description,
-            exemples,
-            action_concrete,
-            category_id,
-            created_at,
-            updated_at
+            resume
           )
         `)
         .order('name');
       
       if (categoriesError) {
         console.error('Error fetching categories:', categoriesError);
-        toast.error("Erreur lors du chargement des catégories");
         throw categoriesError;
       }
       
-      if (!categoriesData || categoriesData.length === 0) {
-        console.log('No categories found');
-        return [];
-      }
-
-      console.log('Categories data:', categoriesData);
-      
-      const transformedCategories: Category[] = categoriesData.map(category => ({
-        id: category.id,
-        name: category.name,
-        description: category.description || "",
+      // Transform the data to match the expected interface
+      const transformedCategories = categoriesData?.map(category => ({
+        ...category,
         skills: category.skills?.map(skill => ({
           id: skill.id,
-          titre: skill.titre,
-          resume: skill.resume,
-          description: skill.description,
-          action_concrete: skill.action_concrete,
-          exemples: skill.exemples,
-          category_id: skill.category_id,
-          created_at: skill.created_at,
-          updated_at: skill.updated_at
-        })) || []
+          title: skill.titre,
+          summary: skill.resume
+        }))
       }));
-
-      console.log('Categories transformed:', transformedCategories);
+      
+      console.log('Categories fetched:', transformedCategories);
       return transformedCategories;
     },
   });
 
-  if (error) {
-    console.error('Error in categories query:', error);
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-red-500">Une erreur est survenue lors du chargement des catégories.</div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-b from-black to-purple-900/20">
+      <div 
+        className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1518770660439-4636190af475')] 
+                   bg-cover bg-center opacity-10 pointer-events-none"
+      />
+      
+      <div className="container mx-auto px-4 py-8 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -86,21 +58,15 @@ const MainPage = () => {
                          bg-gradient-to-r from-purple-400 to-pink-600">
               Bienvenue sur FLAP
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
               Explorez nos catégories et commencez votre voyage de développement personnel
             </p>
           </div>
 
           {isLoading ? (
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="w-8 h-8 animate-spin text-primary" />
-            </div>
-          ) : categories && categories.length > 0 ? (
-            <CategoriesGrid categories={categories} />
+            <div className="text-center text-gray-300">Chargement des catégories...</div>
           ) : (
-            <div className="text-center py-12 text-muted-foreground">
-              Aucune catégorie disponible pour le moment.
-            </div>
+            <CategoriesGrid categories={categories || []} />
           )}
         </motion.div>
       </div>

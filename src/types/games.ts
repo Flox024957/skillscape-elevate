@@ -1,5 +1,5 @@
-import type { LucideProps } from 'lucide-react';
-import * as LucideIcons from 'lucide-react';
+import type { LucideProps } from "lucide-react";
+import * as LucideIcons from "lucide-react";
 
 export interface Game {
   id: string;
@@ -10,5 +10,4 @@ export interface Game {
   icon: keyof typeof LucideIcons;
   color: string;
   route: string;
-  available?: boolean;
 }

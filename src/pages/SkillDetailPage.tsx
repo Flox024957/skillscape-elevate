@@ -1,58 +1,17 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 import { useSkillQuery } from "@/hooks/useSkillQuery";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 import { SkillDetailContent } from "@/components/skill-detail/SkillDetailContent";
+import { Skill } from "@/types/skills";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 
 const SkillDetailPage = () => {
   const { skillId } = useParams<{ skillId: string }>();
   const navigate = useNavigate();
-  
+
   const { data: skill, isLoading, error } = useSkillQuery(skillId);
-
-  useEffect(() => {
-    console.log('SkillDetailPage rendering with:', { skillId, skill, isLoading, error });
-    
-    if (!skillId) {
-      toast.error("ID de compétence manquant");
-      navigate(-1);
-    }
-  }, [skillId, skill, isLoading, error, navigate]);
-
-  const handleAddToDashboard = async (type: string, content: string) => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast.error("Vous devez être connecté pour ajouter une compétence");
-        return;
-      }
-
-      if (!skillId) {
-        toast.error("ID de compétence invalide");
-        return;
-      }
-
-      const { error: upsertError } = await supabase
-        .from('user_skills')
-        .upsert({
-          user_id: user.id,
-          skill_id: skillId,
-          sections_selectionnees: [type]
-        });
-
-      if (upsertError) {
-        console.error('Error adding to dashboard:', upsertError);
-        toast.error("Erreur lors de l'ajout au tableau de bord");
-        return;
-      }
-
-      toast.success("Ajouté au tableau de bord avec succès");
-    } catch (err) {
-      console.error('Error:', err);
-      toast.error("Une erreur est survenue");
-    }
-  };
 
   if (isLoading) {
     return (
@@ -73,24 +32,36 @@ const SkillDetailPage = () => {
             <p className="text-muted-foreground">
               Veuillez vérifier l'URL ou retourner à la page précédente.
             </p>
-            <button 
-              onClick={() => navigate(-1)}
-              className="text-primary hover:underline"
-            >
-              Retourner à la page précédente
-            </button>
+            <Button onClick={() => navigate(-1)} variant="outline" size="lg">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Retour
+            </Button>
           </div>
         </div>
       </div>
     );
   }
 
+  const handleNavigateBack = () => {
+    if (skill.category_id) {
+      navigate(`/category/${skill.category_id}`);
+    } else {
+      navigate('/');
+    }
+  };
+
+  const handleAddToDashboard = (type: string, content: string) => {
+    toast.success(`${type} ajouté au tableau de bord`);
+  };
+
   return (
-    <SkillDetailContent 
-      skill={skill}
-      onNavigateBack={() => navigate(-1)}
-      onAddToDashboard={handleAddToDashboard}
-    />
+    <div className="min-h-screen bg-background">
+      <SkillDetailContent 
+        skill={skill as Skill}
+        onNavigateBack={handleNavigateBack}
+        onAddToDashboard={handleAddToDashboard}
+      />
+    </div>
   );
 };
 

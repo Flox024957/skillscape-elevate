@@ -1,6 +1,18 @@
 import { CategoryCard } from "./CategoryCard";
 import { getCategoryImage, getImagePosition } from "@/utils/categoryUtils";
-import { Category } from "@/types/skills";
+
+interface Skill {
+  id: string;
+  title: string;
+  summary?: string;
+}
+
+interface Category {
+  id: string;
+  name: string;
+  description: string;
+  skills: Skill[];
+}
 
 interface CategoriesGridProps {
   categories: Category[];

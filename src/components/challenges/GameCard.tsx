@@ -1,70 +1,91 @@
-import React from "react";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import * as LucideIcons from "lucide-react";
-import { LucideProps } from "lucide-react";
-import { Game } from "@/types/games";
-import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
+import { LucideIcon } from "lucide-react";
 
-interface GameCardProps extends Game {
-  onClick?: () => void;
+interface GameCardProps {
+  id: string;
+  title: string;
+  description: string;
+  type: "speed" | "construction" | "collaborative";
+  players: string;
+  icon: keyof typeof LucideIcons;
+  color: string;
+  route: string;
+  onPlay: (route: string) => void;
 }
 
-type IconType = keyof typeof LucideIcons;
+export const GameCard = ({
+  title,
+  description,
+  players,
+  icon,
+  color,
+  route,
+  onPlay,
+}: GameCardProps) => {
+  const IconComponent = LucideIcons[icon] as LucideIcon;
 
-export const GameCard = ({ title, description, players, icon, color, route, available = true }: GameCardProps) => {
-  const navigate = useNavigate();
-  const { toast } = useToast();
-  const IconComponent = icon ? (LucideIcons[icon as IconType] as React.ComponentType<LucideProps>) : null;
-
-  const handleClick = () => {
-    if (!available) {
-      toast({
-        title: "Jeu non disponible",
-        description: "Ce jeu sera disponible lors d'une prochaine mise à jour",
-        variant: "default",
-      });
-      return;
-    }
-    
-    if (route) {
-      try {
-        navigate(route);
-      } catch (error) {
-        console.error("Navigation error:", error);
-        toast({
-          title: "Erreur",
-          description: "Impossible de lancer le jeu pour le moment",
-          variant: "destructive",
-        });
+  const item = {
+    hidden: { opacity: 0, scale: 0.8, y: 20 },
+    show: { 
+      opacity: 1, 
+      scale: 1, 
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 15
       }
     }
   };
 
   return (
     <motion.div
-      whileHover={{ scale: available ? 1.02 : 1 }}
-      whileTap={{ scale: available ? 0.98 : 1 }}
-      className={`relative overflow-hidden rounded-xl border bg-card p-6 shadow-lg transition-colors ${
-        available ? 'hover:bg-accent/10 cursor-pointer' : 'opacity-50 cursor-not-allowed'
-      }`}
-      style={{ borderColor: color + '20' }}
-      onClick={handleClick}
+      variants={item}
+      whileHover={{ 
+        scale: 1.03, 
+        transition: { duration: 0.2 },
+        boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.2), 0 8px 10px -6px rgb(0 0 0 / 0.2)"
+      }}
+      whileTap={{ scale: 0.98 }}
+      className={cn(
+        "relative overflow-hidden rounded-xl bg-gradient-to-br shadow-lg hover:shadow-xl transition-all duration-300",
+        color
+      )}
     >
-      <div className="flex items-start justify-between">
-        <div className="space-y-2">
-          <h3 className="text-xl font-semibold">{title}</h3>
-          <p className="text-sm text-muted-foreground">{description}</p>
-          <p className="text-xs text-muted-foreground">{players}</p>
-        </div>
-        {IconComponent && (
-          <div
-            className="rounded-full p-2"
-            style={{ backgroundColor: color + '10' }}
+      <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
+      <div className="relative p-8 space-y-4">
+        <div className="flex items-center gap-4">
+          <motion.div 
+            whileHover={{ rotate: 360 }}
+            transition={{ duration: 0.5 }}
+            className="p-3 bg-white/20 rounded-xl backdrop-blur-sm ring-1 ring-white/30"
           >
-            <IconComponent className="h-6 w-6" style={{ color }} />
-          </div>
-        )}
+            {IconComponent && <IconComponent className="w-7 h-7 text-white" />}
+          </motion.div>
+          <h3 className="text-2xl font-bold text-white">
+            {title}
+          </h3>
+        </div>
+        
+        <p className="text-white/90 line-clamp-2 text-lg">
+          {description}
+        </p>
+        
+        <div className="flex items-center justify-between pt-2">
+          <span className="text-sm font-medium text-white/90 bg-black/30 px-4 py-1.5 rounded-full backdrop-blur-sm ring-1 ring-white/20">
+            {players}
+          </span>
+          <Button
+            onClick={() => onPlay(route)}
+            variant="secondary"
+            className="bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 px-6 py-2 text-lg font-medium"
+          >
+            Jouer
+          </Button>
+        </div>
       </div>
     </motion.div>
   );
