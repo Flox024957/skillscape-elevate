@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Camera, Edit } from "lucide-react";
+import { Camera } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { motion } from "framer-motion";
 
 interface ProfileBannerProps {
   userId: string;
@@ -54,9 +55,17 @@ export const ProfileBanner = ({ userId, bannerUrl, isCurrentUser }: ProfileBanne
   };
 
   return (
-    <div className="relative w-full h-48 md:h-64 bg-gradient-to-r from-primary/10 to-primary/20 rounded-t-lg overflow-hidden">
+    <motion.div 
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="relative w-full h-48 md:h-64 bg-gradient-to-r from-primary/10 to-primary/20 rounded-t-lg overflow-hidden"
+    >
       {bannerUrl && (
-        <img
+        <motion.img
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.5 }}
           src={bannerUrl}
           alt="Bannière de profil"
           className="w-full h-full object-cover"
@@ -89,6 +98,6 @@ export const ProfileBanner = ({ userId, bannerUrl, isCurrentUser }: ProfileBanne
           </label>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };

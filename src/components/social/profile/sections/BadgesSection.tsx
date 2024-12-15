@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Award } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { motion } from "framer-motion";
 
 interface BadgesSectionProps {
   userId: string;
@@ -24,7 +25,7 @@ export const BadgesSection = ({ userId }: BadgesSectionProps) => {
   if (!badges?.length) return null;
 
   return (
-    <Card>
+    <Card className="overflow-hidden backdrop-blur-sm bg-card/30">
       <CardHeader>
         <CardTitle className="text-xl font-semibold flex items-center gap-2">
           <Award className="w-5 h-5" />
@@ -32,11 +33,17 @@ export const BadgesSection = ({ userId }: BadgesSectionProps) => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"
+        >
           {badges.map((badge) => (
-            <div
+            <motion.div
               key={badge.id}
-              className="flex flex-col items-center text-center p-4 rounded-lg bg-muted/50"
+              whileHover={{ scale: 1.05 }}
+              className="flex flex-col items-center text-center p-4 rounded-lg bg-primary/5 hover:bg-primary/10 transition-colors"
             >
               {badge.icon_url ? (
                 <img
@@ -53,9 +60,9 @@ export const BadgesSection = ({ userId }: BadgesSectionProps) => {
                   {badge.description}
                 </p>
               )}
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </CardContent>
     </Card>
   );
