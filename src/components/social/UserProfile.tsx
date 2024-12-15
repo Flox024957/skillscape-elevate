@@ -63,12 +63,14 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
 
       return { friendsCount, skillsCount, achievementsCount };
     },
-    onError: () => {
-      toast({
-        title: "Erreur",
-        description: "Impossible de charger les statistiques du profil",
-        variant: "destructive",
-      });
+    meta: {
+      onError: () => {
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger les statistiques du profil",
+          variant: "destructive",
+        });
+      }
     }
   });
 
