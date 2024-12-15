@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Book, BookOpen, Users, MessageSquare, User } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SocialActivity } from "@/components/dashboard/SocialActivity";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export const SocialSidebar = () => {
   const navigate = useNavigate();
@@ -72,7 +74,7 @@ export const SocialSidebar = () => {
   });
 
   return (
-    <aside className="hidden md:flex flex-col w-64 min-h-screen bg-card/50 border-r border-border p-4 space-y-6 sticky top-16">
+    <aside className="hidden md:flex flex-col w-80 min-h-screen bg-card/50 border-r border-border p-4 space-y-6 sticky top-16">
       {/* Profile Section */}
       <div className="flex flex-col items-center space-y-3">
         <Avatar className="w-20 h-20">
@@ -87,6 +89,45 @@ export const SocialSidebar = () => {
           <p className="text-sm text-muted-foreground">{currentUser?.current_job}</p>
         </div>
       </div>
+
+      <Separator />
+
+      {/* Navigation Buttons */}
+      <div className="space-y-2">
+        <Button 
+          variant="ghost" 
+          className="w-full justify-start" 
+          onClick={() => navigate('/friends')}
+        >
+          <Users className="mr-2 h-4 w-4" />
+          Amis
+        </Button>
+        
+        <Button 
+          variant="ghost" 
+          className="w-full justify-start"
+          onClick={() => navigate('/messages')}
+        >
+          <MessageSquare className="mr-2 h-4 w-4" />
+          Messages
+        </Button>
+        
+        <Button 
+          variant="ghost" 
+          className="w-full justify-start"
+          onClick={() => navigate(`/profile/${currentUser?.id}`)}
+        >
+          <User className="mr-2 h-4 w-4" />
+          Mon profil
+        </Button>
+      </div>
+
+      <Separator />
+
+      {/* Social Activity Section */}
+      <ScrollArea className="flex-1">
+        {currentUser && <SocialActivity userId={currentUser.id} />}
+      </ScrollArea>
 
       <Separator />
 
@@ -123,38 +164,6 @@ export const SocialSidebar = () => {
             ))}
           </div>
         </div>
-      </div>
-
-      <Separator />
-
-      {/* Navigation Buttons */}
-      <div className="space-y-2">
-        <Button 
-          variant="ghost" 
-          className="w-full justify-start" 
-          onClick={() => navigate('/friends')}
-        >
-          <Users className="mr-2 h-4 w-4" />
-          Amis
-        </Button>
-        
-        <Button 
-          variant="ghost" 
-          className="w-full justify-start"
-          onClick={() => navigate('/messages')}
-        >
-          <MessageSquare className="mr-2 h-4 w-4" />
-          Messages
-        </Button>
-        
-        <Button 
-          variant="ghost" 
-          className="w-full justify-start"
-          onClick={() => navigate(`/profile/${currentUser?.id}`)}
-        >
-          <User className="mr-2 h-4 w-4" />
-          Mon profil
-        </Button>
       </div>
     </aside>
   );
