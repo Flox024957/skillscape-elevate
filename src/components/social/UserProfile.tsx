@@ -44,30 +44,47 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
     queryFn: async () => {
       console.log('Fetching stats for userId:', userId);
       
-      const [friendsCount, skillsCount, achievementsCount] = await Promise.all([
-        supabase
-          .from('friendships')
-          .select('*', { count: 'exact', head: true })
-          .eq('status', 'accepted')
-          .or(`user_id.eq.${userId},friend_id.eq.${userId}`)
-          .then(({ count }) => count || 0),
-        supabase
-          .from('user_skills')
-          .select('*', { count: 'exact', head: true })
-          .eq('user_id', userId)
-          .then(({ count }) => count || 0),
-        supabase
-          .from('user_achievements')
-          .select('*', { count: 'exact', head: true })
-          .eq('user_id', userId)
-          .then(({ count }) => count || 0)
-      ]);
+      try {
+        const [friendsCount, skillsCount, achievementsCount] = await Promise.all([
+          supabase
+            .from('friendships')
+            .select('*', { count: 'exact', head: true })
+            .eq('status', 'accepted')
+            .or(`user_id.eq.${userId},friend_id.eq.${userId}`)
+            .then(({ count, error }) => {
+              if (error) throw error;
+              return count || 0;
+            }),
+          supabase
+            .from('user_skills')
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', userId)
+            .then(({ count, error }) => {
+              if (error) throw error;
+              return count || 0;
+            }),
+          supabase
+            .from('user_achievements')
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', userId)
+            .then(({ count, error }) => {
+              if (error) throw error;
+              return count || 0;
+            })
+        ]);
 
-      return { friendsCount, skillsCount, achievementsCount };
+        return { friendsCount, skillsCount, achievementsCount };
+      } catch (error) {
+        console.error('Error fetching stats:', error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger les statistiques du profil",
+          variant: "destructive",
+        });
+        throw error;
+      }
     },
-    meta: {
-      errorMessage: "Impossible de charger les statistiques du profil"
-    }
+    retry: 1,
   });
 
   if (profileLoading) {
