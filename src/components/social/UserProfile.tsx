@@ -51,11 +51,30 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
 
       console.log('Raw profile data received:', data);
 
-      // Ensure the data matches our Profile type
+      // Ensure arrays are properly typed
+      const education = Array.isArray(data?.education) 
+        ? data.education as Education[]
+        : [];
+      
+      const experience = Array.isArray(data?.experience)
+        ? data.experience as Experience[]
+        : [];
+
+      // Format the profile data with proper typing
       const formattedProfile: Profile = {
-        ...data,
-        education: Array.isArray(data?.education) ? data.education as Education[] : [],
-        experience: Array.isArray(data?.experience) ? data.experience as Experience[] : [],
+        id: data.id,
+        pseudo: data.pseudo,
+        image_profile: data.image_profile,
+        created_at: data.created_at,
+        updated_at: data.updated_at,
+        description: data.description,
+        current_job: data.current_job,
+        dream_job: data.dream_job,
+        education: education,
+        experience: experience,
+        banner_image: data.banner_image,
+        location: data.location,
+        website: data.website,
         interests: Array.isArray(data?.interests) ? data.interests : [],
         languages: Array.isArray(data?.languages) ? data.languages : [],
         social_links: data?.social_links || {},
@@ -68,7 +87,8 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
           show_friends: true,
           show_activity: true
         },
-        certifications: data?.certifications || []
+        certifications: data?.certifications || [],
+        availability_status: data?.availability_status || 'online'
       };
 
       console.log('Formatted profile data:', formattedProfile);
