@@ -14,7 +14,6 @@ export const useSkillQuery = (id: string | undefined) => {
     queryFn: async () => {
       if (!id || !isValidUUID(id)) {
         console.error('Invalid skill ID:', id);
-        toast.error("ID de compétence invalide");
         throw new Error('Invalid skill ID');
       }
 
@@ -35,13 +34,11 @@ export const useSkillQuery = (id: string | undefined) => {
 
       if (skillError) {
         console.error('Error fetching skill:', skillError);
-        toast.error("Erreur lors du chargement de la compétence");
         throw skillError;
       }
 
       if (!skillData) {
         console.error('No skill found with ID:', id);
-        toast.error("Compétence non trouvée");
         throw new Error('Skill not found');
       }
 

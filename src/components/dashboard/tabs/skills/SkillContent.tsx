@@ -4,6 +4,7 @@ import ExamplesSection from "./ExamplesSection";
 import { Json } from "@/integrations/supabase/types";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 interface SkillContentProps {
   skillId: string;
@@ -25,6 +26,12 @@ const SkillContent = ({
   onAdd,
 }: SkillContentProps) => {
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
+
+  const handleSkillClick = () => {
+    console.log("Navigating to skill:", skillId);
+    navigate(`/skill/${skillId}`);
+  };
 
   return (
     <CollapsibleContent>
@@ -32,7 +39,8 @@ const SkillContent = ({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3 }}
-        className={`p-6 space-y-6 ${isMobile ? 'text-sm' : ''}`}
+        className={`p-6 space-y-6 ${isMobile ? 'text-sm' : ''} cursor-pointer`}
+        onClick={handleSkillClick}
       >
         {(!selectedSections || selectedSections.includes('Summary')) && (
           <SkillSection

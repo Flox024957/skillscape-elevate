@@ -2,13 +2,37 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useSkillQuery } from "@/hooks/useSkillQuery";
 import { SkillDetailContent } from "@/components/skill-detail/SkillDetailContent";
 import { toast } from "sonner";
+import { useEffect } from "react";
 
 const SkillDetailPage = () => {
   const { skillId } = useParams<{ skillId: string }>();
   const navigate = useNavigate();
   const { data: skill, isLoading, error } = useSkillQuery(skillId);
 
-  console.log('SkillDetailPage rendering with:', { skillId, skill, isLoading, error });
+  useEffect(() => {
+    console.log('SkillDetailPage rendering with:', { skillId, skill, isLoading, error });
+  }, [skillId, skill, isLoading, error]);
+
+  if (!skillId) {
+    toast.error("ID de compétence manquant");
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container px-4 py-8">
+          <div className="max-w-2xl mx-auto text-center space-y-6">
+            <h1 className="text-3xl font-bold text-red-500">
+              ID de compétence manquant
+            </h1>
+            <button 
+              onClick={() => navigate(-1)}
+              className="text-primary hover:underline"
+            >
+              Retourner à la page précédente
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -30,6 +54,12 @@ const SkillDetailPage = () => {
             <p className="text-muted-foreground">
               Veuillez vérifier l'URL ou retourner à la page précédente.
             </p>
+            <button 
+              onClick={() => navigate(-1)}
+              className="text-primary hover:underline"
+            >
+              Retourner à la page précédente
+            </button>
           </div>
         </div>
       </div>
