@@ -840,37 +840,76 @@ export type Database = {
       }
       profiles: {
         Row: {
+          achievements: Json | null
+          availability_status: string | null
+          banner_image: string | null
+          certifications: Json | null
           created_at: string
           current_job: string | null
           description: string | null
           dream_job: string | null
+          education: Json | null
+          experience: Json | null
           id: string
           image_profile: string | null
+          interests: string[] | null
+          languages: string[] | null
+          location: string | null
           personal_goals: Json | null
+          privacy_settings: Json | null
           pseudo: string | null
+          social_links: Json | null
+          theme_preferences: Json | null
           updated_at: string
+          website: string | null
         }
         Insert: {
+          achievements?: Json | null
+          availability_status?: string | null
+          banner_image?: string | null
+          certifications?: Json | null
           created_at?: string
           current_job?: string | null
           description?: string | null
           dream_job?: string | null
+          education?: Json | null
+          experience?: Json | null
           id: string
           image_profile?: string | null
+          interests?: string[] | null
+          languages?: string[] | null
+          location?: string | null
           personal_goals?: Json | null
+          privacy_settings?: Json | null
           pseudo?: string | null
+          social_links?: Json | null
+          theme_preferences?: Json | null
           updated_at?: string
+          website?: string | null
         }
         Update: {
+          achievements?: Json | null
+          availability_status?: string | null
+          banner_image?: string | null
+          certifications?: Json | null
           created_at?: string
           current_job?: string | null
           description?: string | null
           dream_job?: string | null
+          education?: Json | null
+          experience?: Json | null
           id?: string
           image_profile?: string | null
+          interests?: string[] | null
+          languages?: string[] | null
+          location?: string | null
           personal_goals?: Json | null
+          privacy_settings?: Json | null
           pseudo?: string | null
+          social_links?: Json | null
+          theme_preferences?: Json | null
           updated_at?: string
+          website?: string | null
         }
         Relationships: []
       }
@@ -1056,6 +1095,41 @@ export type Database = {
           },
           {
             foreignKeyName: "user_achievements_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_badges: {
+        Row: {
+          created_at: string
+          description: string | null
+          icon_url: string | null
+          id: string
+          name: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          icon_url?: string | null
+          id?: string
+          name: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          icon_url?: string | null
+          id?: string
+          name?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_badges_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
