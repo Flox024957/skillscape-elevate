@@ -4,6 +4,7 @@ import { useSkillQuery } from "@/hooks/useSkillQuery";
 import { SkillDetailContent } from "@/components/skill-detail/SkillDetailContent";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { TooltipWrapper } from "@/components/ui/TooltipWrapper";
 
 const SkillDetailPage = () => {
   const { skillId } = useParams<{ skillId: string }>();
@@ -86,11 +87,13 @@ const SkillDetailPage = () => {
   }
 
   return (
-    <SkillDetailContent 
-      skill={skill}
-      onNavigateBack={() => navigate(-1)}
-      onAddToDashboard={handleAddToDashboard}
-    />
+    <TooltipWrapper>
+      <SkillDetailContent 
+        skill={skill}
+        onNavigateBack={() => navigate(-1)}
+        onAddToDashboard={handleAddToDashboard}
+      />
+    </TooltipWrapper>
   );
 };
 
