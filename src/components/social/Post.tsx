@@ -6,11 +6,21 @@ import { PostHeader } from './post/PostHeader';
 import { PostActions } from './post/PostActions';
 import { CommentSection } from './post/CommentSection';
 import { motion } from 'framer-motion';
+import { FileIcon, FileTextIcon, ImageIcon, MusicIcon, VideoIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface PostProps {
   post: any;
   currentUserId: string;
 }
+
+const getFileIcon = (type: string) => {
+  if (type.startsWith('image/')) return ImageIcon;
+  if (type.startsWith('video/')) return VideoIcon;
+  if (type.startsWith('audio/')) return MusicIcon;
+  if (type.startsWith('text/')) return FileTextIcon;
+  return FileIcon;
+};
 
 export const Post = ({ post, currentUserId }: PostProps) => {
   const [showComments, setShowComments] = useState(false);
@@ -94,6 +104,24 @@ export const Post = ({ post, currentUserId }: PostProps) => {
     }
   };
 
+  const FileAttachment = () => {
+    if (!post.attachment_url || !post.attachment_type) return null;
+    
+    const Icon = getFileIcon(post.attachment_type);
+    const fileName = post.attachment_url.split('/').pop();
+
+    return (
+      <Button
+        variant="outline"
+        className="w-full justify-start gap-2 bg-background/50"
+        onClick={() => window.open(post.attachment_url, '_blank')}
+      >
+        <Icon className="h-4 w-4" />
+        <span className="truncate">{fileName}</span>
+      </Button>
+    );
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -118,6 +146,8 @@ export const Post = ({ post, currentUserId }: PostProps) => {
           />
         </div>
       )}
+
+      <FileAttachment />
 
       <PostActions
         isLiked={isLiked}
