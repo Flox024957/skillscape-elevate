@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useSkillQuery } from "@/hooks/useSkillQuery";
 import { SkillDetailContent } from "@/components/skill-detail/SkillDetailContent";
 import { toast } from "sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const SkillDetailPage = () => {
   const { skillId } = useParams<{ skillId: string }>();
@@ -50,16 +51,14 @@ const SkillDetailPage = () => {
     );
   }
 
-  const handleAddToDashboard = (type: string, content: string) => {
-    toast.success(`${type} ajouté au tableau de bord`);
-  };
-
   return (
-    <SkillDetailContent 
-      skill={skill}
-      onNavigateBack={() => navigate(-1)}
-      onAddToDashboard={handleAddToDashboard}
-    />
+    <TooltipProvider>
+      <SkillDetailContent 
+        skill={skill}
+        onNavigateBack={() => navigate(-1)}
+        onAddToDashboard={handleAddToDashboard}
+      />
+    </TooltipProvider>
   );
 };
 
