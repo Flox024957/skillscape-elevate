@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { PostHeader } from './post/PostHeader';
 import { PostActions } from './post/PostActions';
 import { CommentSection } from './post/CommentSection';
+import { motion } from 'framer-motion';
 
 interface PostProps {
   post: any;
@@ -19,6 +20,28 @@ export const Post = ({ post, currentUserId }: PostProps) => {
   const isLiked = post.post_likes?.some(
     (like: any) => like.user_id === currentUserId
   );
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('post_updates')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'post_likes',
+          filter: `post_id=eq.${post.id}`
+        },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ['posts'] });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [post.id, queryClient]);
 
   const handleLike = async () => {
     try {
@@ -43,7 +66,7 @@ export const Post = ({ post, currentUserId }: PostProps) => {
     }
   };
 
-  const handleAddComment = async (content: string) => {
+  const handleAddComment = async (content: string, parentId?: string) => {
     try {
       await supabase
         .from('post_comments')
@@ -51,9 +74,17 @@ export const Post = ({ post, currentUserId }: PostProps) => {
           post_id: post.id,
           user_id: currentUserId,
           content,
+          parent_id: parentId
         }]);
 
       queryClient.invalidateQueries({ queryKey: ['posts'] });
+      
+      if (parentId) {
+        toast({
+          title: "Succès",
+          description: "Réponse ajoutée",
+        });
+      }
     } catch (error) {
       toast({
         title: "Erreur",
@@ -64,7 +95,12 @@ export const Post = ({ post, currentUserId }: PostProps) => {
   };
 
   return (
-    <div className="bg-card rounded-lg p-4 space-y-4">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      className="bg-card/50 backdrop-blur-sm rounded-lg p-4 space-y-4 border border-border/50"
+    >
       <PostHeader 
         profile={post.profiles}
         createdAt={post.created_at}
@@ -97,6 +133,6 @@ export const Post = ({ post, currentUserId }: PostProps) => {
           onAddComment={handleAddComment}
         />
       )}
-    </div>
+    </motion.div>
   );
 };

@@ -1,7 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from "@/integrations/supabase/client";
 import { Post } from '@/components/social/Post';
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useToast } from "@/hooks/use-toast";
 
 interface PostType {
   id: string;
@@ -35,6 +37,8 @@ interface NewsFeedProps {
 const MemoizedPost = memo(Post);
 
 export const NewsFeed = ({ userId }: NewsFeedProps) => {
+  const { toast } = useToast();
+  
   const { data: posts, isLoading } = useQuery({
     queryKey: ['posts'],
     queryFn: async () => {
@@ -53,6 +57,7 @@ export const NewsFeed = ({ userId }: NewsFeedProps) => {
             id,
             content,
             created_at,
+            parent_id,
             profiles (
               pseudo,
               image_profile
@@ -64,13 +69,39 @@ export const NewsFeed = ({ userId }: NewsFeedProps) => {
       if (error) throw error;
       return data as PostType[];
     },
-    staleTime: 30000, // Cache pendant 30 secondes
+    staleTime: 30000,
   });
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('new_posts')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'posts'
+        },
+        (payload) => {
+          toast({
+            title: "Nouvelle publication",
+            description: "Une nouvelle publication a été ajoutée",
+          });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [toast]);
 
   if (isLoading) {
     return (
-      <div className="p-4 text-center neon-text animate-pulse">
-        Chargement des publications...
+      <div className="p-4 text-center animate-pulse space-y-4">
+        <div className="h-48 bg-accent/20 rounded-lg"></div>
+        <div className="h-48 bg-accent/20 rounded-lg"></div>
+        <div className="h-48 bg-accent/20 rounded-lg"></div>
       </div>
     );
   }
@@ -85,9 +116,18 @@ export const NewsFeed = ({ userId }: NewsFeedProps) => {
 
   return (
     <div className="space-y-4 p-4">
-      {posts.map((post) => (
-        <MemoizedPost key={post.id} post={post} currentUserId={userId} />
-      ))}
+      <AnimatePresence>
+        {posts.map((post) => (
+          <motion.div
+            key={post.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+          >
+            <MemoizedPost post={post} currentUserId={userId} />
+          </motion.div>
+        ))}
+      </AnimatePresence>
     </div>
   );
 };
