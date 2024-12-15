@@ -21,7 +21,7 @@ import TeamChallengePage from "@/pages/games/TeamChallengePage";
 import SkillChainPage from "@/pages/games/SkillChainPage";
 import KnowledgeRacePage from "@/pages/games/KnowledgeRacePage";
 
-const AppRoutes = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
+export const AppRoutes = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
   return (
     <Routes>
       <Route path="/" element={<Index />} />
@@ -101,10 +101,10 @@ const AppRoutes = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
         }
       />
       <Route
-        path="/games/knowledge-race"
+        path="/games/speed-learning"
         element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <KnowledgeRacePage />
+            <SpeedLearningPage />
           </ProtectedRoute>
         }
       />
@@ -164,8 +164,14 @@ const AppRoutes = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/games/knowledge-race"
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <KnowledgeRacePage />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 };
-
-export default AppRoutes;
