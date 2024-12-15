@@ -33,17 +33,18 @@ interface PostType {
 
 interface NewsFeedProps {
   userId: string;
+  profileFeed?: boolean;
 }
 
 const MemoizedPost = memo(Post);
 
-export const NewsFeed = ({ userId }: NewsFeedProps) => {
+export const NewsFeed = ({ userId, profileFeed = false }: NewsFeedProps) => {
   const { toast } = useToast();
   
   const { data: posts, isLoading } = useQuery({
-    queryKey: ['posts'],
+    queryKey: ['posts', userId, profileFeed],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from('posts')
         .select(`
           *,
@@ -66,6 +67,12 @@ export const NewsFeed = ({ userId }: NewsFeedProps) => {
           )
         `)
         .order('created_at', { ascending: false });
+
+      if (profileFeed) {
+        query = query.eq('user_id', userId);
+      }
+
+      const { data, error } = await query;
 
       if (error) throw error;
       return data as PostType[];

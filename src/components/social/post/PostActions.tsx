@@ -1,6 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Heart, MessageCircle, Share2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useToast } from "@/hooks/use-toast";
 
 interface PostActionsProps {
   isLiked: boolean;
@@ -8,7 +16,8 @@ interface PostActionsProps {
   commentsCount: number;
   onLike: () => void;
   onToggleComments: () => void;
-  onShare?: () => void;
+  postId: string;
+  postUrl: string;
 }
 
 export const PostActions = ({ 
@@ -17,13 +26,31 @@ export const PostActions = ({
   commentsCount, 
   onLike, 
   onToggleComments,
-  onShare
+  postId,
+  postUrl
 }: PostActionsProps) => {
+  const { toast } = useToast();
+  const [isSharing, setIsSharing] = useState(false);
+
+  const handleShare = async () => {
+    try {
+      await navigator.clipboard.writeText(postUrl);
+      toast({
+        title: "Lien copié",
+        description: "Le lien de la publication a été copié dans le presse-papier",
+      });
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de copier le lien",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="flex items-center gap-4">
-      <motion.div
-        whileTap={{ scale: 0.9 }}
-      >
+      <motion.div whileTap={{ scale: 0.9 }}>
         <Button
           variant="ghost"
           size="sm"
@@ -35,9 +62,7 @@ export const PostActions = ({
         </Button>
       </motion.div>
       
-      <motion.div
-        whileTap={{ scale: 0.9 }}
-      >
+      <motion.div whileTap={{ scale: 0.9 }}>
         <Button
           variant="ghost"
           size="sm"
@@ -49,20 +74,25 @@ export const PostActions = ({
         </Button>
       </motion.div>
 
-      {onShare && (
-        <motion.div
-          whileTap={{ scale: 0.9 }}
-        >
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onShare}
-            className="transition-colors duration-200 hover:text-primary"
-          >
-            <Share2 className="h-4 w-4" />
-          </Button>
-        </motion.div>
-      )}
+      <motion.div whileTap={{ scale: 0.9 }}>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="transition-colors duration-200 hover:text-primary"
+            >
+              <Share2 className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem onClick={handleShare}>
+              Copier le lien
+            </DropdownMenuItem>
+            {/* Ajoutez d'autres options de partage ici */}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </motion.div>
     </div>
   );
 };

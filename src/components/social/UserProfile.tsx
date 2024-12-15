@@ -6,8 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { ProfileHeader } from './profile/ProfileHeader';
 import { ProfileInfo } from './profile/ProfileInfo';
 import { FriendshipButton } from './profile/FriendshipButton';
-import { useFriendshipStatus } from './profile/useFriendshipStatus';
-import { NewsFeed } from './NewsFeed';
+import { ProfileTabs } from './profile/ProfileTabs';
 
 interface UserProfileProps {
   userId: string;
@@ -48,8 +47,6 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
     },
   });
 
-  const { data: friendshipStatus, isLoading: friendshipLoading } = useFriendshipStatus(userId, currentUserId);
-
   if (profileLoading) {
     return <div className="animate-pulse space-y-4">
       <div className="h-48 bg-muted rounded-lg"></div>
@@ -83,27 +80,22 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
               value={profile.dream_job} 
             />
           )}
-          {!isCurrentUser && !friendshipLoading && currentUserId && (
+          {!isCurrentUser && currentUserId && (
             <FriendshipButton
               currentUserId={currentUserId}
-              friendshipStatus={friendshipStatus}
               targetUserId={userId}
             />
           )}
         </CardContent>
       </Card>
       
-      <UserSkills userId={userId} />
-      
-      {/* Ajout du fil d'actualité personnel */}
       <Card>
-        <CardHeader>
-          <h3 className="text-lg font-semibold">Publications</h3>
-        </CardHeader>
-        <CardContent>
-          <NewsFeed userId={userId} />
+        <CardContent className="pt-6">
+          <ProfileTabs isCurrentUser={isCurrentUser} />
         </CardContent>
       </Card>
+      
+      <UserSkills userId={userId} />
     </div>
   );
 };
