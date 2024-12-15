@@ -104,7 +104,7 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="space-y-6 pb-20"
+        className="space-y-6 pb-20 max-w-7xl mx-auto px-4"
       >
         <ProfileBanner
           userId={userId}
@@ -112,13 +112,15 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
           isCurrentUser={isCurrentUser}
         />
 
-        <div className="px-4 -mt-16 relative z-10">
+        <div className="relative z-10">
           {profile && (
             <>
-              <ProfileHeader 
-                isCurrentUser={isCurrentUser} 
-                profile={profile}
-              />
+              <div className="-mt-16">
+                <ProfileHeader 
+                  isCurrentUser={isCurrentUser} 
+                  profile={profile}
+                />
+              </div>
 
               {!isCurrentUser && currentUserId && (
                 <motion.div 
