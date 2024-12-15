@@ -87,13 +87,15 @@ const SkillDetailPage = () => {
   }
 
   return (
-    <TooltipProvider delayDuration={0}>
-      <SkillDetailContent 
-        skill={skill}
-        onNavigateBack={() => navigate(-1)}
-        onAddToDashboard={handleAddToDashboard}
-      />
-    </TooltipProvider>
+    <div>
+      <TooltipProvider delayDuration={0}>
+        <SkillDetailContent 
+          skill={skill}
+          onNavigateBack={() => navigate(-1)}
+          onAddToDashboard={handleAddToDashboard}
+        />
+      </TooltipProvider>
+    </div>
   );
 };
 
