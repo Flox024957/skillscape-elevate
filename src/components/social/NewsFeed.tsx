@@ -23,6 +23,7 @@ interface PostType {
     id: string;
     content: string;
     created_at: string;
+    parent_id: string | null;
     profiles: {
       pseudo: string;
       image_profile: string;
