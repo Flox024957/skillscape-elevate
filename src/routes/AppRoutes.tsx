@@ -21,7 +21,7 @@ import TeamChallengePage from "@/pages/games/TeamChallengePage";
 import SkillChainPage from "@/pages/games/SkillChainPage";
 import KnowledgeRacePage from "@/pages/games/KnowledgeRacePage";
 
-export const AppRoutes = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
+const AppRoutes = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
   return (
     <Routes>
       <Route path="/" element={<Index />} />
@@ -167,3 +167,5 @@ export const AppRoutes = ({ isAuthenticated }: { isAuthenticated: boolean }) => 
     </Routes>
   );
 };
+
+export default AppRoutes;
