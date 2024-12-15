@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from '@tanstack/react-query';
 import { ProfileHeader } from './profile/ProfileHeader';
-import { ProfileInfo } from './profile/ProfileInfo';
 import { FriendshipButton } from './profile/FriendshipButton';
 import { ProfileTabs } from './profile/ProfileTabs';
 import { useFriendshipStatus } from './profile/useFriendshipStatus';
@@ -12,7 +11,10 @@ import { ExperienceTimeline } from './profile/sections/ExperienceTimeline';
 import { EducationSection } from './profile/sections/EducationSection';
 import { BadgesSection } from './profile/sections/BadgesSection';
 import { UserSkills } from './UserSkills';
-import { Profile, Education, Experience } from '@/integrations/supabase/types/profiles';
+import { Profile } from '@/integrations/supabase/types/profiles';
+import { motion } from 'framer-motion';
+import { useToast } from '@/hooks/use-toast';
+import { Loader2 } from 'lucide-react';
 
 interface UserProfileProps {
   userId: string;
@@ -21,6 +23,7 @@ interface UserProfileProps {
 export const UserProfile = ({ userId }: UserProfileProps) => {
   const [isCurrentUser, setIsCurrentUser] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     const checkCurrentUser = async () => {
@@ -40,7 +43,14 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
         .eq('id', userId)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger le profil",
+          variant: "destructive",
+        });
+        throw error;
+      }
 
       // Transform the raw data to match our Profile type
       const transformedData: Profile = {
@@ -56,18 +66,36 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
   const { data: friendshipStatus } = useFriendshipStatus(userId, currentUserId);
 
   if (profileLoading) {
-    return <div className="animate-pulse space-y-4">
-      <div className="h-48 bg-muted rounded-lg"></div>
-      <div className="h-24 bg-muted rounded-lg"></div>
-    </div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-muted-foreground">Chargement du profil...</p>
+        </div>
+      </div>
+    );
   }
 
   if (!profile) {
-    return <div className="text-center text-muted-foreground">Profil introuvable</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <h2 className="text-2xl font-bold text-destructive">Profil introuvable</h2>
+          <p className="text-muted-foreground">
+            Le profil que vous recherchez n'existe pas ou a été supprimé.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="space-y-6">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="space-y-6 pb-20"
+    >
       <ProfileBanner
         userId={userId}
         bannerUrl={profile.banner_image}
@@ -81,29 +109,44 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
         />
 
         {!isCurrentUser && currentUserId && (
-          <div className="mt-4">
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="mt-4"
+          >
             <FriendshipButton
               currentUserId={currentUserId}
               targetUserId={userId}
               friendshipStatus={friendshipStatus}
             />
-          </div>
+          </motion.div>
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-          <div className="lg:col-span-2 space-y-6">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+            className="lg:col-span-2 space-y-6"
+          >
             <AboutSection profile={profile} />
             <ExperienceTimeline experience={profile.experience} />
             <EducationSection education={profile.education} />
             <UserSkills userId={userId} />
-          </div>
+          </motion.div>
 
-          <div className="space-y-6">
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4 }}
+            className="space-y-6"
+          >
             <BadgesSection userId={userId} />
             <ProfileTabs isCurrentUser={isCurrentUser} />
-          </div>
+          </motion.div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
