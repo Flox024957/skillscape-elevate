@@ -26,11 +26,7 @@ export const ChatContainer = ({
             <h2 className="font-semibold neon-text">{friendName}</h2>
           </div>
           <MessageList messages={messages} currentUserId={currentUserId} />
-          <MessageInput 
-            message={message}
-            onChange={setMessage}
-            onSend={handleSendMessage}
-          />
+          <MessageInput onSend={onSendMessage} />
         </>
       ) : (
         <div className="h-full flex items-center justify-center text-muted-foreground">
