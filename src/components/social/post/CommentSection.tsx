@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, Reply, MessageCircle } from 'lucide-react';
+import { Send, Reply } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -24,7 +24,7 @@ interface CommentSectionProps {
 }
 
 export const CommentSection = ({ comments, onAddComment }: CommentSectionProps) => {
-  const [comment, setComment] = useState('');
+  const [commentContent, setCommentContent] = useState('');
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -42,11 +42,11 @@ export const CommentSection = ({ comments, onAddComment }: CommentSectionProps) 
   }, { root: [] as Comment[], replies: {} as Record<string, Comment[]> });
 
   const handleSubmit = async () => {
-    if (!comment.trim()) return;
+    if (!commentContent.trim()) return;
     setIsSubmitting(true);
     try {
-      await onAddComment(comment, replyingTo);
-      setComment('');
+      await onAddComment(commentContent, replyingTo);
+      setCommentContent('');
       setReplyingTo(null);
     } finally {
       setIsSubmitting(false);
@@ -96,13 +96,13 @@ export const CommentSection = ({ comments, onAddComment }: CommentSectionProps) 
               <div className="mt-2 flex gap-2">
                 <Textarea
                   placeholder="Écrire une réponse..."
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
+                  value={commentContent}
+                  onChange={(e) => setCommentContent(e.target.value)}
                   className="min-h-[60px] bg-background/50 backdrop-blur-sm"
                 />
                 <Button 
                   onClick={handleSubmit} 
-                  disabled={isSubmitting || !comment.trim()}
+                  disabled={isSubmitting || !commentContent.trim()}
                   size="sm"
                   className="self-end"
                 >
@@ -126,13 +126,13 @@ export const CommentSection = ({ comments, onAddComment }: CommentSectionProps) 
       <div className="flex gap-2">
         <Textarea
           placeholder="Ajouter un commentaire..."
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
+          value={commentContent}
+          onChange={(e) => setCommentContent(e.target.value)}
           className="min-h-[60px] bg-background/50 backdrop-blur-sm"
         />
         <Button 
-          onClick={() => handleSubmit()} 
-          disabled={isSubmitting || !comment.trim()}
+          onClick={handleSubmit} 
+          disabled={isSubmitting || !commentContent.trim()}
           className="self-end"
         >
           <Send className="h-4 w-4" />
