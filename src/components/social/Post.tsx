@@ -31,6 +31,9 @@ export const Post = ({ post, currentUserId }: PostProps) => {
     (like: any) => like.user_id === currentUserId
   );
 
+  // Generate post URL
+  const postUrl = `${window.location.origin}/post/${post.id}`;
+
   useEffect(() => {
     const channel = supabase
       .channel('post_updates')
@@ -155,6 +158,8 @@ export const Post = ({ post, currentUserId }: PostProps) => {
         commentsCount={post.post_comments?.length || 0}
         onLike={handleLike}
         onToggleComments={() => setShowComments(!showComments)}
+        postId={post.id}
+        postUrl={postUrl}
       />
 
       {showComments && (

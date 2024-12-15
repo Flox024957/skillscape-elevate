@@ -7,6 +7,7 @@ import { ProfileHeader } from './profile/ProfileHeader';
 import { ProfileInfo } from './profile/ProfileInfo';
 import { FriendshipButton } from './profile/FriendshipButton';
 import { ProfileTabs } from './profile/ProfileTabs';
+import { useFriendshipStatus } from './profile/useFriendshipStatus';
 
 interface UserProfileProps {
   userId: string;
@@ -47,6 +48,8 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
     },
   });
 
+  const { data: friendshipStatus } = useFriendshipStatus(userId, currentUserId);
+
   if (profileLoading) {
     return <div className="animate-pulse space-y-4">
       <div className="h-48 bg-muted rounded-lg"></div>
@@ -84,6 +87,7 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
             <FriendshipButton
               currentUserId={currentUserId}
               targetUserId={userId}
+              friendshipStatus={friendshipStatus}
             />
           )}
         </CardContent>
