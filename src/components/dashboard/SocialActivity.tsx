@@ -11,6 +11,12 @@ interface SocialActivityProps {
   userId: string;
 }
 
+interface Profile {
+  id: string;
+  pseudo: string;
+  image_profile: string;
+}
+
 export const SocialActivity = ({ userId }: SocialActivityProps) => {
   const navigate = useNavigate();
   
@@ -25,6 +31,7 @@ export const SocialActivity = ({ userId }: SocialActivityProps) => {
             created_at,
             posts!inner(user_id),
             profiles!post_likes_user_id_fkey(
+              id,
               pseudo,
               image_profile
             )
@@ -41,6 +48,7 @@ export const SocialActivity = ({ userId }: SocialActivityProps) => {
             content,
             posts!inner(user_id),
             profiles!post_comments_user_id_fkey(
+              id,
               pseudo,
               image_profile
             )
@@ -56,6 +64,7 @@ export const SocialActivity = ({ userId }: SocialActivityProps) => {
             created_at,
             status,
             profiles!friendships_friend_id_fkey(
+              id,
               pseudo,
               image_profile
             )
@@ -69,18 +78,18 @@ export const SocialActivity = ({ userId }: SocialActivityProps) => {
         ...(likes.data || []).map(like => ({
           type: 'like',
           created_at: like.created_at,
-          profile: like.profiles,
+          profile: like.profiles as Profile,
         })),
         ...(comments.data || []).map(comment => ({
           type: 'comment',
           created_at: comment.created_at,
-          profile: comment.profiles,
+          profile: comment.profiles as Profile,
           content: comment.content
         })),
         ...(friendships.data || []).map(friendship => ({
           type: 'friendship',
           created_at: friendship.created_at,
-          profile: friendship.profiles,
+          profile: friendship.profiles as Profile,
           status: friendship.status
         }))
       ].sort((a, b) => 

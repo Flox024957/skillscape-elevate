@@ -1,8 +1,8 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AudioTab } from "./tabs/AudioTab";
-import { CanvasTab } from "./tabs/CanvasTab";
-import { NotesTab } from "./tabs/NotesTab";
-import { SkillsTab } from "./tabs/SkillsTab";
+import AudioTab from "./tabs/AudioTab";
+import CanvasTab from "./tabs/CanvasTab";
+import NotesTab from "./tabs/NotesTab";
+import SkillsTab from "./tabs/SkillsTab";
 import { SocialActivity } from "./SocialActivity";
 import { User } from "@supabase/supabase-js";
 

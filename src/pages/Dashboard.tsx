@@ -1,5 +1,4 @@
-import ProfileSection from "@/components/dashboard/ProfileSection";
-import DashboardTabs from "@/components/dashboard/DashboardTabs";
+import { DashboardTabs } from "@/components/dashboard/DashboardTabs";
 
 const Dashboard = () => {
   return (
