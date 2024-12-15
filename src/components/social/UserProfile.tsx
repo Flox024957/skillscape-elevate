@@ -72,7 +72,10 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
     error,
     isCurrentUser,
     currentUserId,
-    friendshipStatus
+    friendshipStatus,
+    friendsCount,
+    skillsCount,
+    achievementsCount
   });
 
   if (profileLoading) {
