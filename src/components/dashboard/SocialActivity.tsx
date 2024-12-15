@@ -4,8 +4,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
-import { Heart, MessageCircle, UserPlus } from "lucide-react";
+import { Heart, MessageCircle, UserPlus, Share2, Bell } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface SocialActivityProps {
   userId: string;
@@ -24,12 +27,11 @@ export const SocialActivity = ({ userId }: SocialActivityProps) => {
     queryKey: ['social-activity', userId],
     queryFn: async () => {
       const [likes, comments, friendships] = await Promise.all([
-        // Get recent likes on user's posts
         supabase
           .from('post_likes')
           .select(`
             created_at,
-            posts!inner(user_id),
+            posts!inner(user_id, content),
             profiles!post_likes_user_id_fkey(
               id,
               pseudo,
@@ -40,7 +42,6 @@ export const SocialActivity = ({ userId }: SocialActivityProps) => {
           .order('created_at', { ascending: false })
           .limit(5),
           
-        // Get recent comments on user's posts
         supabase
           .from('post_comments')
           .select(`
@@ -57,7 +58,6 @@ export const SocialActivity = ({ userId }: SocialActivityProps) => {
           .order('created_at', { ascending: false })
           .limit(5),
           
-        // Get recent friend requests
         supabase
           .from('friendships')
           .select(`
@@ -79,6 +79,7 @@ export const SocialActivity = ({ userId }: SocialActivityProps) => {
           type: 'like',
           created_at: like.created_at,
           profile: like.profiles as Profile,
+          postContent: like.posts.content
         })),
         ...(comments.data || []).map(comment => ({
           type: 'comment',
@@ -113,8 +114,12 @@ export const SocialActivity = ({ userId }: SocialActivityProps) => {
 
   if (!activities?.length) {
     return (
-      <div className="text-center text-muted-foreground p-4">
-        No recent activity
+      <div className="text-center text-muted-foreground p-8 border border-dashed border-border rounded-lg">
+        <Bell className="w-12 h-12 mx-auto mb-4 text-muted-foreground/50" />
+        <p className="font-medium">Aucune activité récente</p>
+        <p className="text-sm text-muted-foreground mt-1">
+          Les interactions avec vos amis apparaîtront ici
+        </p>
       </div>
     );
   }
@@ -135,13 +140,37 @@ export const SocialActivity = ({ userId }: SocialActivityProps) => {
   const getActivityText = (activity: any) => {
     switch (activity.type) {
       case 'like':
-        return 'a aimé votre publication';
+        return (
+          <span>
+            a aimé votre publication
+            <span className="block text-xs text-muted-foreground mt-1 italic">
+              "{activity.postContent?.substring(0, 50)}..."
+            </span>
+          </span>
+        );
       case 'comment':
-        return 'a commenté votre publication';
+        return (
+          <span>
+            a commenté : 
+            <span className="block text-xs text-muted-foreground mt-1 italic">
+              "{activity.content?.substring(0, 50)}..."
+            </span>
+          </span>
+        );
       case 'friendship':
-        return activity.status === 'accepted' 
-          ? 'est maintenant votre ami(e)' 
-          : 'vous a envoyé une demande d\'ami';
+        return (
+          <span>
+            {activity.status === 'accepted' 
+              ? 'est maintenant votre ami(e)' 
+              : 'vous a envoyé une demande d\'ami'}
+            <Badge 
+              variant={activity.status === 'accepted' ? "success" : "secondary"}
+              className="ml-2"
+            >
+              {activity.status === 'accepted' ? 'Acceptée' : 'En attente'}
+            </Badge>
+          </span>
+        );
       default:
         return '';
     }
@@ -149,36 +178,65 @@ export const SocialActivity = ({ userId }: SocialActivityProps) => {
 
   return (
     <div className="space-y-4">
-      <h3 className="font-semibold text-lg">Activité récente</h3>
+      <div className="flex items-center justify-between">
+        <h3 className="font-semibold text-lg flex items-center gap-2">
+          <Bell className="h-5 w-5" />
+          Activité récente
+        </h3>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Share2 className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              Partager mon profil
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
+      
       <div className="space-y-2">
-        {activities.map((activity, index) => (
-          <Button
-            key={index}
-            variant="ghost"
-            className="w-full justify-start gap-3 h-auto py-3"
-            onClick={() => navigate(`/profile/${activity.profile.id}`)}
-          >
-            <Avatar className="h-8 w-8">
-              <AvatarImage src={activity.profile.image_profile} />
-              <AvatarFallback>
-                {activity.profile.pseudo?.[0].toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1 text-left">
-              <p className="font-medium">{activity.profile.pseudo}</p>
-              <p className="text-sm text-muted-foreground flex items-center gap-2">
-                {getActivityIcon(activity.type)}
-                {getActivityText(activity)}
-              </p>
-            </div>
-            <span className="text-xs text-muted-foreground">
-              {formatDistanceToNow(new Date(activity.created_at), {
-                addSuffix: true,
-                locale: fr
-              })}
-            </span>
-          </Button>
-        ))}
+        <AnimatePresence>
+          {activities.map((activity, index) => (
+            <motion.div
+              key={activity.created_at + index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.2, delay: index * 0.1 }}
+            >
+              <Button
+                variant="ghost"
+                className="w-full justify-start gap-3 h-auto py-3 group hover:bg-accent/50"
+                onClick={() => navigate(`/profile/${activity.profile.id}`)}
+              >
+                <Avatar className="h-10 w-10 border-2 border-border group-hover:border-primary transition-colors">
+                  <AvatarImage src={activity.profile.image_profile} />
+                  <AvatarFallback>
+                    {activity.profile.pseudo?.[0].toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1 text-left">
+                  <p className="font-medium group-hover:text-primary transition-colors">
+                    {activity.profile.pseudo}
+                  </p>
+                  <p className="text-sm text-muted-foreground flex items-center gap-2">
+                    {getActivityIcon(activity.type)}
+                    {getActivityText(activity)}
+                  </p>
+                </div>
+                <span className="text-xs text-muted-foreground">
+                  {formatDistanceToNow(new Date(activity.created_at), {
+                    addSuffix: true,
+                    locale: fr
+                  })}
+                </span>
+              </Button>
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
     </div>
   );
