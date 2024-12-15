@@ -2,7 +2,11 @@ import { Button } from "@/components/ui/button";
 import { Users, MessageCircle, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-export const NavigationButtons = () => {
+interface NavigationButtonsProps {
+  currentUser: any;
+}
+
+export const NavigationButtons = ({ currentUser }: NavigationButtonsProps) => {
   const navigate = useNavigate();
 
   return (

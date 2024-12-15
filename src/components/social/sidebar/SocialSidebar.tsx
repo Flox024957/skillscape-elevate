@@ -73,7 +73,7 @@ export const SocialSidebar = () => {
     <aside className="hidden md:flex flex-col w-80 min-h-screen bg-card/50 border-r border-border p-4 space-y-6 sticky top-16">
       <ProfileSection currentUser={currentUser} />
       <Separator />
-      <NavigationButtons />
+      <NavigationButtons currentUser={currentUser} />
       <Separator />
       {currentUser && <FriendSuggestions userId={currentUser.id} />}
       <Separator />
