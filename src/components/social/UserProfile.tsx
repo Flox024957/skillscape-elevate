@@ -12,7 +12,7 @@ import { ExperienceTimeline } from './profile/sections/ExperienceTimeline';
 import { EducationSection } from './profile/sections/EducationSection';
 import { BadgesSection } from './profile/sections/BadgesSection';
 import { UserSkills } from './UserSkills';
-import { Profile } from '@/integrations/supabase/types/profiles';
+import { Profile, Education, Experience } from '@/integrations/supabase/types/profiles';
 
 interface UserProfileProps {
   userId: string;
@@ -41,11 +41,17 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
         .single();
 
       if (error) throw error;
-      return data as Profile;
+
+      // Transform the raw data to match our Profile type
+      const transformedData: Profile = {
+        ...data,
+        education: (data.education || []) as Education[],
+        experience: (data.experience || []) as Experience[],
+      };
+
+      return transformedData;
     },
   });
-
-  const { data: friendshipStatus } = useFriendshipStatus(userId, currentUserId);
 
   if (profileLoading) {
     return <div className="animate-pulse space-y-4">
@@ -85,8 +91,8 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           <div className="lg:col-span-2 space-y-6">
             <AboutSection profile={profile} />
-            <ExperienceTimeline experience={profile.experience || []} />
-            <EducationSection education={profile.education || []} />
+            <ExperienceTimeline experience={profile.experience} />
+            <EducationSection education={profile.education} />
             <UserSkills userId={userId} />
           </div>
 
