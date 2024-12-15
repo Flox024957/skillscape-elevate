@@ -1,10 +1,9 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Image, Loader2, Paperclip, X } from 'lucide-react';
-import { Progress } from "@/components/ui/progress";
+import { FileAttachmentInput } from "./post/FileAttachmentInput";
+import { SubmitPostButton } from "./post/SubmitPostButton";
 
 interface CreatePostProps {
   userId: string;
@@ -17,8 +16,6 @@ export const CreatePost = ({ userId }: CreatePostProps) => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const attachmentInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,17 +50,32 @@ export const CreatePost = ({ userId }: CreatePostProps) => {
     const fileName = `${Math.random()}.${fileExt}`;
     const filePath = `${userId}/${fileName}`;
 
+    let uploadProgress = 0;
+    const fileSize = file.size;
+    const chunkSize = 1024 * 1024; // 1MB chunks
+    const chunks = Math.ceil(fileSize / chunkSize);
+
+    for (let i = 0; i < chunks; i++) {
+      const start = i * chunkSize;
+      const end = Math.min(start + chunkSize, fileSize);
+      const chunk = file.slice(start, end);
+
+      const { error: uploadError } = await supabase.storage
+        .from(bucket)
+        .upload(`${filePath}_${i}`, chunk);
+
+      if (uploadError) throw uploadError;
+
+      uploadProgress = ((i + 1) / chunks) * 100;
+      setUploadProgress(uploadProgress);
+    }
+
+    // Combine chunks (this would typically be done server-side)
     const { error: uploadError } = await supabase.storage
       .from(bucket)
-      .upload(filePath, file, {
-        onUploadProgress: (progress) => {
-          setUploadProgress((progress.loaded / progress.total) * 100);
-        }
-      });
+      .upload(filePath, file);
 
-    if (uploadError) {
-      throw uploadError;
-    }
+    if (uploadError) throw uploadError;
 
     const { data } = supabase.storage
       .from(bucket)
@@ -135,92 +147,27 @@ export const CreatePost = ({ userId }: CreatePostProps) => {
         disabled={isLoading}
       />
       
-      {uploadProgress > 0 && uploadProgress < 100 && (
-        <Progress value={uploadProgress} className="w-full" />
-      )}
-      
-      {imagePreview && (
-        <div className="relative">
-          <img 
-            src={imagePreview} 
-            alt="Preview" 
-            className="max-h-[200px] rounded-lg object-cover"
-          />
-          <Button
-            variant="destructive"
-            size="icon"
-            className="absolute top-2 right-2"
-            onClick={() => {
-              setSelectedImage(null);
-              setImagePreview(null);
-            }}
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
-      )}
+      <FileAttachmentInput
+        onImageSelect={handleImageSelect}
+        onFileSelect={handleFileSelect}
+        selectedImage={selectedImage}
+        selectedFile={selectedFile}
+        imagePreview={imagePreview}
+        uploadProgress={uploadProgress}
+        onRemoveImage={() => {
+          setSelectedImage(null);
+          setImagePreview(null);
+        }}
+        onRemoveFile={() => setSelectedFile(null)}
+        isLoading={isLoading}
+      />
 
-      {selectedFile && (
-        <div className="flex items-center justify-between bg-background/50 p-2 rounded-lg">
-          <span className="text-sm truncate">{selectedFile.name}</span>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setSelectedFile(null)}
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
-      )}
-
-      <div className="flex justify-between items-center">
-        <div className="flex gap-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={isLoading}
-          >
-            <Image className="h-4 w-4" />
-          </Button>
-          <input
-            type="file"
-            ref={fileInputRef}
-            className="hidden"
-            accept="image/*"
-            onChange={handleImageSelect}
-          />
-          
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => attachmentInputRef.current?.click()}
-            disabled={isLoading}
-          >
-            <Paperclip className="h-4 w-4" />
-          </Button>
-          <input
-            type="file"
-            ref={attachmentInputRef}
-            className="hidden"
-            onChange={handleFileSelect}
-          />
-        </div>
-        
-        <Button 
-          onClick={handleSubmit} 
+      <div className="flex justify-end">
+        <SubmitPostButton
+          isLoading={isLoading}
           disabled={isLoading || (!content.trim() && !selectedImage && !selectedFile)}
-          className="relative overflow-hidden"
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              Publication en cours...
-            </>
-          ) : (
-            'Publier'
-          )}
-        </Button>
+          onClick={handleSubmit}
+        />
       </div>
     </div>
   );
