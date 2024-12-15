@@ -12,7 +12,7 @@ import { EducationSection } from './profile/sections/EducationSection';
 import { BadgesSection } from './profile/sections/BadgesSection';
 import { UserSkills } from './UserSkills';
 import { ProfileInfoSection } from './profile/sections/ProfileInfoSection';
-import { Profile, Education, Experience } from '@/integrations/supabase/types/profiles';
+import { Profile } from '@/integrations/supabase/types/profiles';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
@@ -38,6 +38,7 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
   const { data: profile, isLoading: profileLoading } = useQuery({
     queryKey: ['profile', userId],
     queryFn: async () => {
+      console.log('Fetching profile for userId:', userId);
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -45,6 +46,7 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
         .single();
 
       if (error) {
+        console.error('Error fetching profile:', error);
         toast({
           title: "Erreur",
           description: "Impossible de charger le profil",
@@ -53,11 +55,11 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
         throw error;
       }
 
-      // Parse the JSON fields to ensure correct typing
+      console.log('Profile data:', data);
       return {
         ...data,
-        education: (data.education || []) as Education[],
-        experience: (data.experience || []) as Experience[],
+        education: (data.education || []) as Profile['education'],
+        experience: (data.experience || []) as Profile['experience'],
         interests: (data.interests || []) as string[],
         languages: (data.languages || []) as string[],
       } as Profile;

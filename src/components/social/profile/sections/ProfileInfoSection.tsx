@@ -60,27 +60,6 @@ export const ProfileInfoSection = ({ profile }: ProfileInfoSectionProps) => {
             </div>
           )}
 
-          {hasEducation && (
-            <>
-              <Separator />
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <GraduationCap className="h-5 w-5 text-primary" />
-                  <h4 className="font-medium">Formation</h4>
-                </div>
-                {profile.education.map((edu, index) => (
-                  <div key={index} className="ml-7 space-y-1">
-                    <p className="font-medium">{edu.school}</p>
-                    <p className="text-sm text-muted-foreground">{edu.degree} - {edu.field}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {edu.start_date} - {edu.end_date || 'Présent'}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-
           {profile.social_links && Object.entries(profile.social_links).length > 0 && (
             <>
               <Separator />
