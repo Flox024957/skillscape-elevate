@@ -43,7 +43,6 @@ const SkillDetailPage = () => {
   }
 
   if (error || !skill) {
-    toast.error("Erreur lors du chargement de la compétence");
     return (
       <div className="min-h-screen bg-background">
         <div className="container px-4 py-8">
@@ -66,23 +65,13 @@ const SkillDetailPage = () => {
     );
   }
 
-  const handleNavigateBack = () => {
-    if (skill.category_id) {
-      navigate(`/category/${skill.category_id}`);
-    } else {
-      navigate('/');
-    }
-  };
-
-  const handleAddToDashboard = (type: string, content: string) => {
-    toast.success(`${type} ajouté au tableau de bord`);
-  };
-
   return (
     <SkillDetailContent 
       skill={skill}
-      onNavigateBack={handleNavigateBack}
-      onAddToDashboard={handleAddToDashboard}
+      onNavigateBack={() => navigate(-1)}
+      onAddToDashboard={(type: string, content: string) => {
+        toast.success(`${type} ajouté au tableau de bord`);
+      }}
     />
   );
 };
