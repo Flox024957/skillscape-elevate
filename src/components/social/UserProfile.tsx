@@ -12,7 +12,7 @@ import { EducationSection } from './profile/sections/EducationSection';
 import { BadgesSection } from './profile/sections/BadgesSection';
 import { UserSkills } from './UserSkills';
 import { ProfileInfoSection } from './profile/sections/ProfileInfoSection';
-import { Profile } from '@/integrations/supabase/types/profiles';
+import { Profile, Education, Experience } from '@/integrations/supabase/types/profiles';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
@@ -53,7 +53,14 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
         throw error;
       }
 
-      return data as Profile;
+      // Parse the JSON fields to ensure correct typing
+      return {
+        ...data,
+        education: (data.education || []) as Education[],
+        experience: (data.experience || []) as Experience[],
+        interests: (data.interests || []) as string[],
+        languages: (data.languages || []) as string[],
+      } as Profile;
     },
   });
 
@@ -101,55 +108,59 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
       >
         <ProfileBanner
           userId={userId}
-          bannerUrl={profile.banner_image}
+          bannerUrl={profile?.banner_image}
           isCurrentUser={isCurrentUser}
         />
 
         <div className="px-4 -mt-16 relative z-10">
-          <ProfileHeader 
-            isCurrentUser={isCurrentUser} 
-            profile={profile}
-          />
-
-          {!isCurrentUser && currentUserId && (
-            <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="mt-4"
-            >
-              <FriendshipButton
-                currentUserId={currentUserId}
-                targetUserId={userId}
-                friendshipStatus={friendshipStatus}
+          {profile && (
+            <>
+              <ProfileHeader 
+                isCurrentUser={isCurrentUser} 
+                profile={profile}
               />
-            </motion.div>
+
+              {!isCurrentUser && currentUserId && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="mt-4"
+                >
+                  <FriendshipButton
+                    currentUserId={currentUserId}
+                    targetUserId={userId}
+                    friendshipStatus={friendshipStatus}
+                  />
+                </motion.div>
+              )}
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+                <motion.div 
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="lg:col-span-2 space-y-6"
+                >
+                  <ProfileInfoSection profile={profile} />
+                  <AboutSection profile={profile} />
+                  <ExperienceTimeline experience={profile.experience} />
+                  <EducationSection education={profile.education} />
+                  <UserSkills userId={userId} />
+                </motion.div>
+
+                <motion.div 
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="space-y-6"
+                >
+                  <BadgesSection userId={userId} />
+                  <ProfileTabs isCurrentUser={isCurrentUser} />
+                </motion.div>
+              </div>
+            </>
           )}
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 }}
-              className="lg:col-span-2 space-y-6"
-            >
-              <ProfileInfoSection profile={profile} />
-              <AboutSection profile={profile} />
-              <ExperienceTimeline experience={profile.experience} />
-              <EducationSection education={profile.education} />
-              <UserSkills userId={userId} />
-            </motion.div>
-
-            <motion.div 
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4 }}
-              className="space-y-6"
-            >
-              <BadgesSection userId={userId} />
-              <ProfileTabs isCurrentUser={isCurrentUser} />
-            </motion.div>
-          </div>
         </div>
       </motion.div>
     </AnimatePresence>
