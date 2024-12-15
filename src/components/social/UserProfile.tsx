@@ -29,13 +29,14 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
   useEffect(() => {
     const checkCurrentUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
+      console.log('Current user:', user);
       setCurrentUserId(user?.id || null);
       setIsCurrentUser(user?.id === userId);
     };
     checkCurrentUser();
   }, [userId]);
 
-  const { data: profile, isLoading: profileLoading } = useQuery({
+  const { data: profile, isLoading: profileLoading, error } = useQuery({
     queryKey: ['profile', userId],
     queryFn: async () => {
       console.log('Fetching profile for userId:', userId);
@@ -55,18 +56,23 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
         throw error;
       }
 
-      console.log('Profile data:', data);
+      console.log('Raw profile data:', data);
       return {
         ...data,
-        education: (data.education || []) as Profile['education'],
-        experience: (data.experience || []) as Profile['experience'],
-        interests: (data.interests || []) as string[],
-        languages: (data.languages || []) as string[],
+        education: data?.education || [],
+        experience: data?.experience || [],
+        interests: data?.interests || [],
+        languages: data?.languages || [],
+        social_links: data?.social_links || {},
       } as Profile;
     },
   });
 
   const { data: friendshipStatus } = useFriendshipStatus(userId, currentUserId);
+
+  console.log('Rendered profile:', profile);
+  console.log('Loading state:', profileLoading);
+  console.log('Error state:', error);
 
   if (profileLoading) {
     return (
@@ -83,7 +89,7 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
     );
   }
 
-  if (!profile) {
+  if (error || !profile) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <motion.div 
@@ -110,61 +116,57 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
       >
         <ProfileBanner
           userId={userId}
-          bannerUrl={profile?.banner_image}
+          bannerUrl={profile.banner_image}
           isCurrentUser={isCurrentUser}
         />
 
         <div className="relative z-10">
-          {profile && (
-            <>
-              <div className="-mt-16">
-                <ProfileHeader 
-                  isCurrentUser={isCurrentUser} 
-                  profile={profile}
-                />
-              </div>
+          <div className="-mt-16">
+            <ProfileHeader 
+              isCurrentUser={isCurrentUser} 
+              profile={profile}
+            />
+          </div>
 
-              {!isCurrentUser && currentUserId && (
-                <motion.div 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="mt-4"
-                >
-                  <FriendshipButton
-                    currentUserId={currentUserId}
-                    targetUserId={userId}
-                    friendshipStatus={friendshipStatus}
-                  />
-                </motion.div>
-              )}
-
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-                <motion.div 
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3 }}
-                  className="lg:col-span-2 space-y-6"
-                >
-                  <ProfileInfoSection profile={profile} />
-                  <AboutSection profile={profile} />
-                  <ExperienceTimeline experience={profile.experience} />
-                  <EducationSection education={profile.education} />
-                  <UserSkills userId={userId} />
-                </motion.div>
-
-                <motion.div 
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.4 }}
-                  className="space-y-6"
-                >
-                  <BadgesSection userId={userId} />
-                  <ProfileTabs isCurrentUser={isCurrentUser} />
-                </motion.div>
-              </div>
-            </>
+          {!isCurrentUser && currentUserId && (
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="mt-4"
+            >
+              <FriendshipButton
+                currentUserId={currentUserId}
+                targetUserId={userId}
+                friendshipStatus={friendshipStatus}
+              />
+            </motion.div>
           )}
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3 }}
+              className="lg:col-span-2 space-y-6"
+            >
+              <ProfileInfoSection profile={profile} />
+              <AboutSection profile={profile} />
+              <ExperienceTimeline experience={profile.experience} />
+              <EducationSection education={profile.education} />
+              <UserSkills userId={userId} />
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
+              className="space-y-6"
+            >
+              <BadgesSection userId={userId} />
+              <ProfileTabs isCurrentUser={isCurrentUser} />
+            </motion.div>
+          </div>
         </div>
       </motion.div>
     </AnimatePresence>
