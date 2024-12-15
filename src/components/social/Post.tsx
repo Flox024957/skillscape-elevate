@@ -70,14 +70,17 @@ export const Post = ({ post, currentUserId }: PostProps) => {
         createdAt={post.created_at}
       />
 
-      <p className="text-foreground">{post.content}</p>
+      <p className="text-foreground whitespace-pre-wrap">{post.content}</p>
 
       {post.image_url && (
-        <img
-          src={post.image_url}
-          alt="Post"
-          className="rounded-lg max-h-96 w-full object-cover"
-        />
+        <div className="relative w-full h-[300px]">
+          <img
+            src={post.image_url}
+            alt="Post"
+            className="rounded-lg w-full h-full object-cover"
+            loading="lazy"
+          />
+        </div>
       )}
 
       <PostActions
