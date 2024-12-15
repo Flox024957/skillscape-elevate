@@ -1,11 +1,11 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Heart, MessageCircle, UserPlus } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { ActivityIcon } from "../../social/activity/ActivityIcon";
+import { ActivityContent } from "../../social/activity/ActivityContent";
 
 interface ActivityItemProps {
   activity: {
@@ -25,58 +25,6 @@ interface ActivityItemProps {
 
 export const ActivityItem = ({ activity, index }: ActivityItemProps) => {
   const navigate = useNavigate();
-
-  const getActivityIcon = (type: string) => {
-    switch (type) {
-      case 'like':
-        return <Heart className="h-4 w-4 text-red-500" />;
-      case 'comment':
-        return <MessageCircle className="h-4 w-4 text-blue-500" />;
-      case 'friendship':
-        return <UserPlus className="h-4 w-4 text-green-500" />;
-      default:
-        return null;
-    }
-  };
-
-  const getActivityText = (activity: any) => {
-    switch (activity.type) {
-      case 'like':
-        return (
-          <span>
-            a aimé votre publication
-            <span className="block text-xs text-muted-foreground mt-1 italic">
-              "{activity.postContent?.substring(0, 50)}..."
-            </span>
-          </span>
-        );
-      case 'comment':
-        return (
-          <span>
-            a commenté : 
-            <span className="block text-xs text-muted-foreground mt-1 italic">
-              "{activity.content?.substring(0, 50)}..."
-            </span>
-          </span>
-        );
-      case 'friendship':
-        return (
-          <span>
-            {activity.status === 'accepted' 
-              ? 'est maintenant votre ami(e)' 
-              : 'vous a envoyé une demande d\'ami'}
-            <Badge 
-              variant={activity.status === 'accepted' ? "success" : "secondary"}
-              className="ml-2"
-            >
-              {activity.status === 'accepted' ? 'Acceptée' : 'En attente'}
-            </Badge>
-          </span>
-        );
-      default:
-        return '';
-    }
-  };
 
   return (
     <motion.div
@@ -101,8 +49,8 @@ export const ActivityItem = ({ activity, index }: ActivityItemProps) => {
             {activity.profile.pseudo}
           </p>
           <p className="text-sm text-muted-foreground flex items-center gap-2">
-            {getActivityIcon(activity.type)}
-            {getActivityText(activity)}
+            <ActivityIcon type={activity.type} />
+            <ActivityContent activity={activity} />
           </p>
         </div>
         <span className="text-xs text-muted-foreground">
