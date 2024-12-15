@@ -116,7 +116,7 @@ export const SocialSidebar = () => {
               <Badge 
                 key={skill.skill_id} 
                 variant="secondary"
-                className="bg-primary/10"
+                className="bg-purple-500/20 text-purple-200 hover:bg-purple-500/30"
               >
                 {skill.skills.titre}
               </Badge>

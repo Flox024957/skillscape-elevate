@@ -10,6 +10,8 @@ import SkillDetailPage from "@/pages/SkillDetailPage";
 import AudioPage from "@/pages/AudioPage";
 import ChallengesPage from "@/pages/ChallengesPage";
 import MainPage from "@/pages/MainPage";
+import Messages from "@/pages/Messages";
+import Friends from "@/pages/Friends";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 interface AppRoutesProps {
@@ -39,6 +41,22 @@ export const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
         element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
             <Social />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/messages"
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <Messages />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/friends"
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <Friends />
           </ProtectedRoute>
         }
       />
