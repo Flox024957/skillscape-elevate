@@ -1,3 +1,4 @@
+import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Image, Paperclip, X } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
