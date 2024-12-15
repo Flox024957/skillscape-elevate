@@ -4,8 +4,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Users, Lock } from "lucide-react";
 
+interface Group {
+  id: string;
+  name: string;
+  description: string | null;
+  is_private: boolean;
+  created_at: string;
+  group_members: number;
+}
+
 export const GroupList = () => {
-  const { data: groups = [] } = useQuery({
+  const { data: groups = [] } = useQuery<Group[]>({
     queryKey: ['groups'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -16,12 +25,17 @@ export const GroupList = () => {
           description,
           is_private,
           created_at,
-          group_members (count)
+          group_members:group_members(count)
         `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data;
+      
+      // Transform the data to get the count value directly
+      return data.map(group => ({
+        ...group,
+        group_members: group.group_members[0]?.count || 0
+      }));
     },
   });
 
@@ -42,7 +56,7 @@ export const GroupList = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center text-sm text-muted-foreground">
                 <Users className="h-4 w-4 mr-1" />
-                {group.group_members?.count || 0} members
+                {group.group_members} members
               </div>
               <Button variant="outline" size="sm">
                 View Group
