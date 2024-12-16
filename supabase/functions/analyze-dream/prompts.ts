@@ -1,87 +1,123 @@
 export const generateDreamAnalysisPrompt = (dream: string): string => {
-  return `En tant qu'expert en développement professionnel et personnel, analyse en détail le rêve professionnel suivant et fournis une analyse approfondie avec des conseils concrets pour sa réalisation :
+  return `En tant que conseiller professionnel expert, analysez ce rêve professionnel et fournissez une analyse structurée avec des recommandations concrètes :
 
 ${dream}
 
-Format de réponse souhaité :
+Veuillez structurer votre réponse selon le format suivant :
 
-ANALYSE APPROFONDIE :
-[Analyse détaillée du rêve, sa signification profonde, et son alignement avec les aspirations professionnelles de la personne]
+SYNTHÈSE GLOBALE :
+[Une analyse concise et percutante du rêve professionnel, sa signification et son potentiel de réalisation]
 
-POINTS FORTS IDENTIFIÉS :
-1. [Point fort majeur 1 avec explication]
-2. [Point fort majeur 2 avec explication]
-3. [Point fort majeur 3 avec explication]
-4. [Point fort majeur 4 avec explication]
+ANALYSE DES COMPÉTENCES :
+• Forces actuelles :
+- [Force majeure 1 avec explication]
+- [Force majeure 2 avec explication]
+- [Force majeure 3 avec explication]
 
-DÉFIS À SURMONTER :
-1. [Défi principal 1 et comment l'aborder]
-2. [Défi principal 2 et comment l'aborder]
-3. [Défi principal 3 et comment l'aborder]
+• Compétences à développer :
+- [Compétence 1 avec justification]
+- [Compétence 2 avec justification]
+- [Compétence 3 avec justification]
 
-PLAN D'ACTION DÉTAILLÉ :
-Court terme (0-6 mois) :
-1. [Action concrète 1]
-2. [Action concrète 2]
-3. [Action concrète 3]
+OBSTACLES ET SOLUTIONS :
+1. [Obstacle 1]
+   Solution proposée : [Solution détaillée]
+2. [Obstacle 2]
+   Solution proposée : [Solution détaillée]
+3. [Obstacle 3]
+   Solution proposée : [Solution détaillée]
 
-Moyen terme (6-18 mois) :
-1. [Action concrète 1]
-2. [Action concrète 2]
-3. [Action concrète 3]
+PLAN D'ACTION :
+• Court terme (0-6 mois) :
+1. [Action spécifique et mesurable]
+2. [Action spécifique et mesurable]
+3. [Action spécifique et mesurable]
 
-Long terme (18+ mois) :
-1. [Action concrète 1]
-2. [Action concrète 2]
-3. [Action concrète 3]
+• Moyen terme (6-18 mois) :
+1. [Action spécifique et mesurable]
+2. [Action spécifique et mesurable]
+3. [Action spécifique et mesurable]
 
-RESSOURCES RECOMMANDÉES :
-1. [Ressource spécifique 1]
-2. [Ressource spécifique 2]
-3. [Ressource spécifique 3]
-4. [Ressource spécifique 4]
+• Long terme (18+ mois) :
+1. [Action stratégique]
+2. [Action stratégique]
+3. [Action stratégique]
 
-CONSEILS DE DÉVELOPPEMENT PERSONNEL :
-[Conseils personnalisés pour le développement personnel nécessaire à la réalisation de ce rêve]`;
+RECOMMANDATIONS CONCRÈTES :
+• Formation et développement :
+- [Formation/certification spécifique 1]
+- [Formation/certification spécifique 2]
+- [Formation/certification spécifique 3]
+
+• Réseau et mentorat :
+- [Recommandation spécifique pour le networking]
+- [Type de mentor à rechercher]
+- [Communautés professionnelles à rejoindre]
+
+INDICATEURS DE SUCCÈS :
+1. [Indicateur mesurable 1]
+2. [Indicateur mesurable 2]
+3. [Indicateur mesurable 3]
+
+CONCLUSION ET PROCHAINES ÉTAPES :
+[Résumé des points clés et des actions prioritaires à entreprendre immédiatement]`;
 };
 
 export const getFallbackTemplate = (): string => {
-  return `ANALYSE APPROFONDIE :
-Analyse à développer
+  return `SYNTHÈSE GLOBALE :
+[Analyse à développer]
 
-POINTS FORTS IDENTIFIÉS :
-1. Point à développer
-2. Point à développer
-3. Point à développer
-4. Point à développer
+ANALYSE DES COMPÉTENCES :
+• Forces actuelles :
+- Force à identifier
+- Force à identifier
+- Force à identifier
 
-DÉFIS À SURMONTER :
-1. Défi à identifier
-2. Défi à identifier
-3. Défi à identifier
+• Compétences à développer :
+- Compétence à développer
+- Compétence à développer
+- Compétence à développer
 
-PLAN D'ACTION DÉTAILLÉ :
-Court terme (0-6 mois) :
+OBSTACLES ET SOLUTIONS :
+1. Obstacle à identifier
+   Solution proposée : À développer
+2. Obstacle à identifier
+   Solution proposée : À développer
+3. Obstacle à identifier
+   Solution proposée : À développer
+
+PLAN D'ACTION :
+• Court terme (0-6 mois) :
 1. Action à définir
 2. Action à définir
 3. Action à définir
 
-Moyen terme (6-18 mois) :
+• Moyen terme (6-18 mois) :
 1. Action à définir
 2. Action à définir
 3. Action à définir
 
-Long terme (18+ mois) :
+• Long terme (18+ mois) :
 1. Action à définir
 2. Action à définir
 3. Action à définir
 
-RESSOURCES RECOMMANDÉES :
-1. Ressource à identifier
-2. Ressource à identifier
-3. Ressource à identifier
-4. Ressource à identifier
+RECOMMANDATIONS CONCRÈTES :
+• Formation et développement :
+- Recommandation à définir
+- Recommandation à définir
+- Recommandation à définir
 
-CONSEILS DE DÉVELOPPEMENT PERSONNEL :
-Conseils à développer`;
+• Réseau et mentorat :
+- Recommandation à définir
+- Recommandation à définir
+- Recommandation à définir
+
+INDICATEURS DE SUCCÈS :
+1. Indicateur à définir
+2. Indicateur à définir
+3. Indicateur à définir
+
+CONCLUSION ET PROCHAINES ÉTAPES :
+[À développer]`;
 };
