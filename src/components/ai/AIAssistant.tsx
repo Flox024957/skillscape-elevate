@@ -1,9 +1,15 @@
 import { useState } from "react";
-import { pipeline } from "@huggingface/transformers";
+import { pipeline, TextClassificationOutput } from "@huggingface/transformers";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+
+// Définition du type pour le résultat de la classification
+type ClassificationResult = {
+  label: string;
+  score: number;
+}[];
 
 export const AIAssistant = () => {
   const [input, setInput] = useState("");
@@ -24,7 +30,7 @@ export const AIAssistant = () => {
         "Xenova/distilbert-base-uncased-finetuned-sst-2-english"
       );
 
-      const result = await classifier(input);
+      const result = (await classifier(input)) as ClassificationResult;
       console.log("Résultat de l'analyse:", result);
 
       setOutput(
