@@ -22,8 +22,9 @@ serve(async (req) => {
 
     const HF_TOKEN = Deno.env.get('HUGGINGFACE_API_KEY');
     if (!HF_TOKEN) {
+      console.error('Hugging Face API key not configured');
       return new Response(
-        JSON.stringify({ error: 'Clé API Hugging Face non configurée' }),
+        JSON.stringify({ error: 'Configuration API manquante' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -58,6 +59,7 @@ ACTIONS À METTRE EN PLACE
 3. [Action concrète 3]`;
 
     console.log("Envoi de la requête à Qwen2...");
+    console.log("Token HF présent:", !!HF_TOKEN);
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15000);
@@ -88,22 +90,27 @@ ACTIONS À METTRE EN PLACE
       clearTimeout(timeout);
 
       if (!response.ok) {
+        console.error(`Hugging Face API error: ${response.status}`);
         throw new Error(`Erreur API: ${response.status}`);
       }
 
       const result = await response.json();
+      console.log("Réponse brute de l'API:", result);
+      
       let analysis = Array.isArray(result) ? result[0].generated_text : result.generated_text;
 
       if (!analysis || typeof analysis !== 'string') {
+        console.error("Réponse invalide:", analysis);
         throw new Error("Réponse invalide");
       }
 
       // Vérification basique de la structure
       if (!analysis.includes('ANALYSE') || !analysis.includes('POINTS FORTS')) {
+        console.error("Structure de réponse invalide");
         analysis = "Je n'ai pas pu analyser ce rêve correctement. Veuillez réessayer avec plus de détails.";
       }
 
-      console.log("Réponse reçue de Qwen2:", analysis);
+      console.log("Réponse finale:", analysis);
 
       return new Response(
         JSON.stringify({ analysis }),
