@@ -24,7 +24,7 @@ export const CategoryContent = ({ name, description, skillsCount, isMobile }: Ca
           "group-hover:from-primary group-hover:to-purple-300",
           "transition-all duration-300",
           "break-words hyphens-auto leading-tight",
-          isMobile ? "text-[13px]" : "text-sm",
+          isMobile ? "text-[15px]" : "text-sm",
           "max-w-[95%] mx-auto"
         )}
         style={{
