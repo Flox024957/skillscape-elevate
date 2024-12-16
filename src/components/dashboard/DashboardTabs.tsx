@@ -18,28 +18,28 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
 
   return (
     <Tabs defaultValue="skills" className="w-full">
-      <TabsList className="w-full flex overflow-x-auto gap-1 p-1 mb-6 bg-background/50 backdrop-blur-sm border border-border rounded-lg">
+      <TabsList className="w-full flex overflow-x-auto gap-1 p-1 mb-6 bg-background/50 backdrop-blur-sm border border-neon-purple/30 rounded-lg">
         <TabsTrigger 
           value="skills" 
-          className="flex-1 min-w-max whitespace-nowrap px-3 py-2 text-sm"
+          className="flex-1 min-w-max whitespace-nowrap px-3 py-2 text-sm hover:text-neon-purple transition-colors"
         >
           {isMobile ? "Skills" : "Compétences & Maîtrises"}
         </TabsTrigger>
         <TabsTrigger 
           value="notes" 
-          className="flex-1 min-w-max whitespace-nowrap px-3 py-2 text-sm"
+          className="flex-1 min-w-max whitespace-nowrap px-3 py-2 text-sm hover:text-neon-purple transition-colors"
         >
           Agenda/Notes
         </TabsTrigger>
         <TabsTrigger 
           value="canvas" 
-          className="flex-1 min-w-max whitespace-nowrap px-3 py-2 text-sm"
+          className="flex-1 min-w-max whitespace-nowrap px-3 py-2 text-sm hover:text-neon-purple transition-colors"
         >
           Canvas
         </TabsTrigger>
         <TabsTrigger 
           value="audio" 
-          className="flex-1 min-w-max whitespace-nowrap px-3 py-2 text-sm"
+          className="flex-1 min-w-max whitespace-nowrap px-3 py-2 text-sm hover:text-neon-purple transition-colors"
         >
           Audio
         </TabsTrigger>

@@ -21,9 +21,16 @@ const Dashboard = () => {
     return (
       <div className="min-h-screen bg-background/50 backdrop-blur-sm p-2 md:p-4">
         <div className="max-w-7xl mx-auto">
-          <div className="bg-card p-4 rounded-lg border border-border animate-pulse">
-            Chargement...
-          </div>
+          <motion.div 
+            className="bg-card/50 backdrop-blur-sm p-8 rounded-lg border border-neon-purple/50 neon-frame"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <span className="text-lg text-muted-foreground futuristic-text">
+              Chargement...
+            </span>
+          </motion.div>
         </div>
       </div>
     );
@@ -33,15 +40,15 @@ const Dashboard = () => {
     <div className="min-h-screen bg-background/50 backdrop-blur-sm">
       <div className="max-w-7xl mx-auto">
         <motion.div 
-          className={`bg-card rounded-lg border border-border overflow-hidden ${
+          className={`glass-panel neon-frame overflow-hidden ${
             isMobile ? 'mx-2 my-2' : 'mx-4 my-4'
           }`}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <div className="p-4 border-b border-border">
-            <h1 className="text-xl md:text-2xl font-bold">
+          <div className="p-4 border-b border-neon-purple/30 bg-card/50 backdrop-blur-sm">
+            <h1 className="text-xl md:text-2xl font-bold futuristic-text">
               Tableau de bord
             </h1>
           </div>
