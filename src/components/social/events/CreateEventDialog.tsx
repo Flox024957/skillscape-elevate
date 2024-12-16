@@ -16,9 +16,10 @@ import { Calendar, MapPin } from "lucide-react";
 
 interface CreateEventDialogProps {
   userId: string;
+  children?: React.ReactNode; // Add this line to accept children
 }
 
-export const CreateEventDialog = ({ userId }: CreateEventDialogProps) => {
+export const CreateEventDialog = ({ userId, children }: CreateEventDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
@@ -72,10 +73,7 @@ export const CreateEventDialog = ({ userId }: CreateEventDialogProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="gap-2">
-          <Calendar className="h-4 w-4" />
-          Créer un événement
-        </Button>
+        {children}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
