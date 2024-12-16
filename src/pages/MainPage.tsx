@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { SearchBar } from "@/components/social/SearchBar";
 import { ArrowRight, Sparkles, Target, Users, Rocket, Brain, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { AIAssistant } from "@/components/ai/AIAssistant";
 
 const features = [
   {
@@ -156,16 +155,6 @@ const MainPage = () => {
           className="max-w-3xl mx-auto mb-16"
         >
           <SearchBar />
-        </motion.div>
-
-        {/* AI Assistant Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="mb-16"
-        >
-          <AIAssistant />
         </motion.div>
 
         {/* Features Section */}
