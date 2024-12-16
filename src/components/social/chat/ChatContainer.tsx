@@ -1,5 +1,4 @@
 import { Message } from '@/integrations/supabase/types/messages';
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageList } from './MessageList';
 import { MessageInput } from './MessageInput';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -32,16 +31,13 @@ export const ChatContainer = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className={cn(
-        "glass-panel flex flex-col",
-        isMobile ? "h-[calc(100vh-200px)] rounded-t-xl" : "flex-1"
+        "glass-panel flex flex-col h-full",
+        isMobile && "w-full"
       )}
     >
       {selectedFriend ? (
         <>
-          <div className={cn(
-            "p-3 border-b border-border/50 flex items-center gap-2",
-            isMobile && "sticky top-0 bg-background/80 backdrop-blur-sm z-10"
-          )}>
+          <div className="p-3 border-b border-border/50 flex items-center gap-2 sticky top-0 bg-background/80 backdrop-blur-sm z-10">
             {isMobile && onBack && (
               <Button
                 variant="ghost"

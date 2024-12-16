@@ -21,10 +21,7 @@ export const MessageInput = ({ onSend }: MessageInputProps) => {
   };
 
   return (
-    <div className={cn(
-      "p-4 border-t border-border/50",
-      isMobile && "sticky bottom-0 bg-background/80 backdrop-blur-sm"
-    )}>
+    <div className="p-4 border-t border-border/50 sticky bottom-0 bg-background/80 backdrop-blur-sm">
       <div className="flex gap-2">
         <Input
           value={message}

@@ -19,15 +19,13 @@ export const ConversationList = ({
 
   return (
     <div className={cn(
-      "glass-panel",
-      isMobile ? "w-full mb-4" : "w-1/3"
+      "glass-panel h-full",
+      isMobile ? "w-full" : "w-1/3"
     )}>
       <div className="p-3 border-b border-border/50">
         <h2 className="font-semibold neon-text">Conversations</h2>
       </div>
-      <ScrollArea className={cn(
-        isMobile ? "h-[200px]" : "h-[calc(600px-65px)]"
-      )}>
+      <ScrollArea className="h-[calc(100%-53px)]">
         <div className="p-2 space-y-2">
           {conversations.map((conv) => (
             <button
