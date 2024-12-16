@@ -4,12 +4,12 @@ export const CosmicEffects = () => {
   return (
     <>
       {/* Enhanced Cosmic Wave Effects */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden opacity-40">
         <motion.div 
-          initial={{ scale: 1.2, opacity: 0.2 }}
+          initial={{ scale: 1.2, opacity: 0.1 }}
           animate={{ 
             scale: [1.2, 1.3, 1.2],
-            opacity: [0.2, 0.3, 0.2],
+            opacity: [0.1, 0.15, 0.1],
           }}
           transition={{ 
             duration: 20,
@@ -17,14 +17,14 @@ export const CosmicEffects = () => {
             ease: "easeInOut"
           }}
           className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] 
-                    bg-gradient-to-br from-purple-500/20 via-pink-500/20 to-blue-500/20 
+                    bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-blue-500/10 
                     rounded-[100%] blur-3xl"
         />
         <motion.div 
-          initial={{ scale: 1.1, opacity: 0.15 }}
+          initial={{ scale: 1.1, opacity: 0.08 }}
           animate={{ 
             scale: [1.1, 1.2, 1.1],
-            opacity: [0.15, 0.25, 0.15],
+            opacity: [0.08, 0.12, 0.08],
           }}
           transition={{ 
             duration: 15,
@@ -33,18 +33,18 @@ export const CosmicEffects = () => {
             delay: 2
           }}
           className="absolute -bottom-1/2 -right-1/2 w-[200%] h-[200%] 
-                    bg-gradient-to-tl from-blue-500/20 via-purple-500/20 to-pink-500/20 
+                    bg-gradient-to-tl from-blue-500/10 via-purple-500/10 to-pink-500/10 
                     rounded-[100%] blur-3xl"
         />
       </div>
 
-      {/* Enhanced Nebula Effects */}
-      <div className="absolute inset-0 overflow-hidden">
+      {/* Subtle Nebula Effects */}
+      <div className="absolute inset-0 overflow-hidden opacity-30">
         <motion.div 
-          initial={{ scale: 1, opacity: 0.3 }}
+          initial={{ scale: 1, opacity: 0.15 }}
           animate={{ 
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.4, 0.3],
+            scale: [1, 1.1, 1],
+            opacity: [0.15, 0.2, 0.15],
           }}
           transition={{ 
             duration: 25,
@@ -52,23 +52,7 @@ export const CosmicEffects = () => {
             ease: "easeInOut"
           }}
           className="absolute top-1/4 left-1/4 w-[600px] h-[600px] 
-                    bg-gradient-to-br from-purple-600/30 via-pink-600/20 to-blue-600/30 
-                    rounded-full blur-3xl"
-        />
-        <motion.div 
-          initial={{ scale: 1.1, opacity: 0.25 }}
-          animate={{ 
-            scale: [1.1, 1.3, 1.1],
-            opacity: [0.25, 0.35, 0.25],
-          }}
-          transition={{ 
-            duration: 20,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1
-          }}
-          className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] 
-                    bg-gradient-to-tl from-blue-600/30 via-purple-600/20 to-pink-600/30 
+                    bg-gradient-to-br from-purple-600/20 via-pink-600/10 to-blue-600/20 
                     rounded-full blur-3xl"
         />
       </div>
@@ -76,9 +60,9 @@ export const CosmicEffects = () => {
       {/* Stellar Dust Effect */}
       <motion.div 
         initial={{ opacity: 0 }}
-        animate={{ opacity: 0.5 }}
+        animate={{ opacity: 0.3 }}
         transition={{ duration: 2 }}
-        className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.15)_1px,_transparent_1px)] 
+        className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.1)_1px,_transparent_1px)] 
                   bg-[length:15px_15px] mix-blend-screen"
       />
     </>
