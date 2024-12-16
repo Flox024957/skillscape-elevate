@@ -47,14 +47,14 @@ ACTIONS CONCRÈTES :
 2. [Action concrète 2]
 3. [Action concrète 3]`;
 
-    console.log("Envoi de la requête à Qwen2...");
+    console.log("Envoi de la requête à GPT-2...");
     console.log("Token HF présent:", !!HF_TOKEN);
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15000);
 
     const response = await fetch(
-      "https://api-inference.huggingface.co/models/Qwen/Qwen1.5-72B-Chat",
+      "https://api-inference.huggingface.co/models/distributed/optimized-gpt2-2b",
       {
         headers: {
           "Authorization": `Bearer ${HF_TOKEN}`,
