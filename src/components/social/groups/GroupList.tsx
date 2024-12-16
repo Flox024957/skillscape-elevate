@@ -6,6 +6,7 @@ import { Users, Lock, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Group {
   id: string;
@@ -24,7 +25,6 @@ export const GroupList = () => {
   const { data: groups = [], isLoading } = useQuery({
     queryKey: ['groups'],
     queryFn: async () => {
-      // First, get the groups
       const { data: groupsData, error: groupsError } = await supabase
         .from('groups')
         .select(`
@@ -38,7 +38,6 @@ export const GroupList = () => {
 
       if (groupsError) throw groupsError;
 
-      // Then, for each group, get the member count and next event
       const groupsWithDetails = await Promise.all(
         groupsData.map(async (group) => {
           const { count } = await supabase
@@ -46,7 +45,6 @@ export const GroupList = () => {
             .select('*', { count: 'exact', head: true })
             .eq('group_id', group.id);
 
-          // Get the next upcoming event for this group
           const { data: nextEvent } = await supabase
             .from('user_events')
             .select('title, start_time')
@@ -72,9 +70,7 @@ export const GroupList = () => {
     return (
       <div className="space-y-4">
         {[1, 2].map((i) => (
-          <Card key={i} className="animate-pulse">
-            <CardContent className="h-32" />
-          </Card>
+          <Skeleton key={i} className="h-32 w-full" />
         ))}
       </div>
     );
@@ -89,7 +85,7 @@ export const GroupList = () => {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 pb-4">
       {groups.map((group) => (
         <Card key={group.id} className="hover:bg-accent/50 transition-colors">
           <CardHeader className="p-4">

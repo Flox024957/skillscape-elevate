@@ -7,9 +7,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Plus } from "lucide-react";
 
-export const CreateGroupDialog = () => {
+interface CreateGroupDialogProps {
+  children?: React.ReactNode;
+}
+
+export const CreateGroupDialog = ({ children }: CreateGroupDialogProps) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
@@ -35,8 +38,8 @@ export const CreateGroupDialog = () => {
       if (error) throw error;
 
       toast({
-        title: "Success",
-        description: "Group created successfully",
+        title: "Succès",
+        description: "Groupe créé avec succès",
       });
       
       setIsOpen(false);
@@ -45,8 +48,8 @@ export const CreateGroupDialog = () => {
       setIsPrivate(false);
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to create group",
+        title: "Erreur",
+        description: "Impossible de créer le groupe",
         variant: "destructive",
       });
     }
@@ -55,18 +58,19 @@ export const CreateGroupDialog = () => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button className="w-full" size="lg">
-          <Plus className="mr-2 h-4 w-4" />
-          Create New Group
-        </Button>
+        {children || (
+          <Button variant="outline" size="sm">
+            Créer un groupe
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create a New Group</DialogTitle>
+          <DialogTitle>Créer un nouveau groupe</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="name">Group Name</Label>
+            <Label htmlFor="name">Nom du groupe</Label>
             <Input
               id="name"
               value={name}
@@ -83,7 +87,7 @@ export const CreateGroupDialog = () => {
             />
           </div>
           <div className="flex items-center justify-between">
-            <Label htmlFor="private">Private Group</Label>
+            <Label htmlFor="private">Groupe privé</Label>
             <Switch
               id="private"
               checked={isPrivate}
@@ -91,7 +95,7 @@ export const CreateGroupDialog = () => {
             />
           </div>
           <Button type="submit" className="w-full">
-            Create Group
+            Créer le groupe
           </Button>
         </form>
       </DialogContent>
