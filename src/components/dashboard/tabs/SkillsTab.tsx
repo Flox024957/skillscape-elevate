@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { MasteredSkillsList } from "./skills/MasteredSkillsList";
-import { SkillsList } from "./skills/SkillsList";
-import { motion } from "framer-motion";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { LearningSkillsList } from "./skills/LearningSkillsList";
+import { MasteredSkillsList } from "./skills/MasteredSkillsList";
+import { motion } from "framer-motion";
 
 interface SkillsTabProps {
   userId: string;
@@ -13,16 +13,24 @@ interface SkillsTabProps {
 const SkillsTab = ({ userId }: SkillsTabProps) => {
   const { toast } = useToast();
 
-  const { data: skills, refetch: refetchSkills } = useQuery({
-    queryKey: ['skills'],
+  const { data: userSkills, refetch: refetchUserSkills } = useQuery({
+    queryKey: ['userSkills', userId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('skills')
-        .select('*')
-        .order('titre');
+        .from('user_skills')
+        .select(`
+          *,
+          skill:skills (
+            id,
+            titre,
+            resume
+          )
+        `)
+        .eq('user_id', userId)
+        .order('position');
       
       if (error) {
-        console.error('Skills error:', error);
+        console.error('User skills error:', error);
         return [];
       }
       
@@ -38,6 +46,7 @@ const SkillsTab = ({ userId }: SkillsTabProps) => {
         .select(`
           *,
           skill:skills (
+            id,
             titre,
             resume
           )
@@ -55,14 +64,29 @@ const SkillsTab = ({ userId }: SkillsTabProps) => {
   });
 
   const handleMasterSkill = async (skillId: string) => {
-    const { error } = await supabase
+    const { error: deleteError } = await supabase
+      .from('user_skills')
+      .delete()
+      .eq('user_id', userId)
+      .eq('skill_id', skillId);
+
+    if (deleteError) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de supprimer la compétence de la liste d'apprentissage",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const { error: insertError } = await supabase
       .from('user_mastered_skills')
       .insert([{
         user_id: userId,
         skill_id: skillId,
       }]);
 
-    if (error) {
+    if (insertError) {
       toast({
         title: "Erreur",
         description: "Impossible de marquer la compétence comme maîtrisée",
@@ -74,13 +98,13 @@ const SkillsTab = ({ userId }: SkillsTabProps) => {
         description: "Compétence marquée comme maîtrisée",
       });
       refetchMastered();
-      refetchSkills();
+      refetchUserSkills();
     }
   };
 
-  const handleRemoveMasteredSkill = async (skillId: string) => {
+  const handleRemoveSkill = async (skillId: string) => {
     const { error } = await supabase
-      .from('user_mastered_skills')
+      .from('user_skills')
       .delete()
       .eq('user_id', userId)
       .eq('skill_id', skillId);
@@ -88,22 +112,38 @@ const SkillsTab = ({ userId }: SkillsTabProps) => {
     if (error) {
       toast({
         title: "Erreur",
-        description: "Impossible de retirer la compétence des maîtrises",
+        description: "Impossible de supprimer la compétence",
         variant: "destructive",
       });
     } else {
       toast({
         title: "Succès",
-        description: "Compétence retirée des maîtrises",
+        description: "Compétence supprimée",
       });
-      refetchMastered();
-      refetchSkills();
+      refetchUserSkills();
     }
   };
 
-  const nonMasteredSkills = skills?.filter(
-    skill => !masteredSkills?.some(ms => ms.skill_id === skill.id)
-  );
+  const handleReorderSkills = async (reorderedSkills: any[]) => {
+    const updates = reorderedSkills.map((skill, index) => ({
+      id: skill.id,
+      position: index,
+    }));
+
+    const { error } = await supabase
+      .from('user_skills')
+      .upsert(updates);
+
+    if (error) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de réorganiser les compétences",
+        variant: "destructive",
+      });
+    } else {
+      refetchUserSkills();
+    }
+  };
 
   return (
     <motion.div 
@@ -112,36 +152,29 @@ const SkillsTab = ({ userId }: SkillsTabProps) => {
       transition={{ duration: 0.3 }}
       className="space-y-8"
     >
-      <Tabs defaultValue="all" className="w-full">
+      <Tabs defaultValue="learning" className="w-full">
         <TabsList className="w-full grid grid-cols-2 mb-8">
-          <TabsTrigger value="all" className="data-[state=active]:bg-primary/10">
-            Toutes les compétences
+          <TabsTrigger value="learning" className="data-[state=active]:bg-primary/10">
+            Compétences en cours d'apprentissage
           </TabsTrigger>
           <TabsTrigger value="mastered" className="data-[state=active]:bg-primary/10">
             Compétences maîtrisées
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="all" className="space-y-6">
-          <SkillsList
-            skills={nonMasteredSkills || []}
+        <TabsContent value="learning" className="space-y-6">
+          <LearningSkillsList
+            skills={userSkills || []}
             onMaster={handleMasterSkill}
+            onRemove={handleRemoveSkill}
+            onReorder={handleReorderSkills}
           />
         </TabsContent>
 
         <TabsContent value="mastered">
-          {masteredSkills && masteredSkills.length > 0 ? (
-            <MasteredSkillsList
-              masteredSkills={masteredSkills}
-              onRemove={handleRemoveMasteredSkill}
-            />
-          ) : (
-            <div className="text-center p-8 bg-card/50 rounded-lg border border-border">
-              <p className="text-muted-foreground">
-                Aucune compétence maîtrisée pour le moment
-              </p>
-            </div>
-          )}
+          <MasteredSkillsList
+            masteredSkills={masteredSkills || []}
+          />
         </TabsContent>
       </Tabs>
     </motion.div>
