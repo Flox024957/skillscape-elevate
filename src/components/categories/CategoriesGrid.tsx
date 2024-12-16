@@ -31,10 +31,10 @@ export const CategoriesGrid = ({ categories }: CategoriesGridProps) => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
       className={cn(
-        "grid w-full mx-auto gap-3",
+        "grid grid-cols-3 w-full mx-auto gap-3",
         isMobile 
-          ? "grid-cols-1 px-2 max-w-[100vw]" 
-          : "grid-cols-3 px-4 max-w-[1200px] gap-4"
+          ? "px-2 max-w-[100vw]" 
+          : "px-4 max-w-[1200px] gap-4"
       )}
     >
       {displayedCategories?.map((category, index) => (
