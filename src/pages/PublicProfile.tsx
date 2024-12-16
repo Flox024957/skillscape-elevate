@@ -11,6 +11,11 @@ import { FriendshipButton } from "@/components/profile/FriendshipButton";
 import { UserMediaGallery } from "@/components/profile/UserMediaGallery";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
+import { Users, Image, BookOpen, Activity } from "lucide-react";
 
 export default function PublicProfile() {
   const { userId } = useParams();
@@ -54,46 +59,109 @@ export default function PublicProfile() {
   const isOwnProfile = currentUser === userId;
 
   return (
-    <div className="container mx-auto p-4 space-y-6">
-      <div className="flex items-center justify-between">
-        <ProfileHeader profile={profile} />
-        {!isOwnProfile && currentUser && (
-          <FriendshipButton currentUserId={currentUser} targetUserId={userId as string} />
-        )}
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-2 space-y-6">
-          {isOwnProfile && (
-            <CreatePost userId={userId as string} />
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen bg-background/50 backdrop-blur-sm"
+    >
+      <div className="container mx-auto p-4 space-y-6">
+        <div className="relative z-10">
+          <ProfileHeader profile={profile} />
+          {!isOwnProfile && currentUser && (
+            <div className="absolute top-4 right-4">
+              <FriendshipButton 
+                currentUserId={currentUser} 
+                targetUserId={userId as string} 
+              />
+            </div>
           )}
-          <NewsFeed userId={userId as string} profileFeed={true} />
         </div>
 
-        <div className="space-y-6">
-          <ProfileSidebar profile={profile} />
-          
-          <Card>
-            <CardHeader>
-              <h3 className="font-semibold">Médias partagés</h3>
-            </CardHeader>
-            <CardContent>
-              <UserMediaGallery userId={userId as string} />
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Sidebar */}
+          <div className="lg:col-span-1 space-y-6">
+            <ProfileSidebar profile={profile} />
+          </div>
 
-          <Card>
-            <CardHeader>
-              <h3 className="font-semibold">Amis</h3>
-            </CardHeader>
-            <CardContent>
-              <FriendsList userId={profile.id} variant="compact" />
-            </CardContent>
-          </Card>
+          {/* Main Content */}
+          <div className="lg:col-span-3">
+            <Tabs defaultValue="posts" className="w-full">
+              <TabsList className="w-full justify-start mb-6 bg-background/50 backdrop-blur-sm">
+                <TabsTrigger value="posts" className="flex items-center gap-2">
+                  <Activity className="h-4 w-4" />
+                  Publications
+                </TabsTrigger>
+                <TabsTrigger value="media" className="flex items-center gap-2">
+                  <Image className="h-4 w-4" />
+                  Médias
+                </TabsTrigger>
+                <TabsTrigger value="friends" className="flex items-center gap-2">
+                  <Users className="h-4 w-4" />
+                  Amis
+                </TabsTrigger>
+                <TabsTrigger value="experience" className="flex items-center gap-2">
+                  <BookOpen className="h-4 w-4" />
+                  Expérience
+                </TabsTrigger>
+              </TabsList>
 
-          <ProfileExperienceEducation profile={profile} />
+              <TabsContent value="posts" className="space-y-6">
+                {isOwnProfile && (
+                  <Card className="bg-card/50 backdrop-blur-sm border-primary/20">
+                    <CardContent className="pt-6">
+                      <CreatePost userId={userId as string} />
+                    </CardContent>
+                  </Card>
+                )}
+                <NewsFeed userId={userId as string} profileFeed={true} />
+              </TabsContent>
+
+              <TabsContent value="media">
+                <Card className="bg-card/50 backdrop-blur-sm border-primary/20">
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-semibold">Médias partagés</h3>
+                      <Badge variant="secondary" className="bg-primary/10">
+                        Galerie
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <UserMediaGallery userId={userId as string} />
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="friends">
+                <Card className="bg-card/50 backdrop-blur-sm border-primary/20">
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-semibold">Amis</h3>
+                      <Badge variant="secondary" className="bg-primary/10">
+                        Réseau
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <FriendsList userId={profile.id} variant="full" />
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="experience">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  <ProfileExperienceEducation profile={profile} />
+                </motion.div>
+              </TabsContent>
+            </Tabs>
+          </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
