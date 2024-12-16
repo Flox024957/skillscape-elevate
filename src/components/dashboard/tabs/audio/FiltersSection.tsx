@@ -1,12 +1,7 @@
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
+import { Card } from "@/components/ui/card";
 
 interface FiltersSectionProps {
   filters: {
@@ -19,52 +14,47 @@ interface FiltersSectionProps {
 
 export const FiltersSection = ({ filters, onFilterChange }: FiltersSectionProps) => {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Options de lecture</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <Checkbox
-              id="userSkills"
-              checked={filters.userSkillsOnly}
-              onCheckedChange={(checked) => 
-                onFilterChange('userSkillsOnly', checked)
-              }
-            />
-            <Label htmlFor="userSkills">
-              Uniquement mes compétences
-            </Label>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <Checkbox
-              id="mastered"
-              checked={filters.includeMastered}
-              onCheckedChange={(checked) =>
-                onFilterChange('includeMastered', checked)
-              }
-            />
-            <Label htmlFor="mastered">
-              Inclure les compétences maîtrisées
-            </Label>
-          </div>
+    <Card className="p-4 space-y-6">
+      <h3 className="text-lg font-semibold">Filtres et paramètres</h3>
+      
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <Label htmlFor="userSkills" className="text-sm font-medium">
+            Mes compétences uniquement
+          </Label>
+          <Switch
+            id="userSkills"
+            checked={filters.userSkillsOnly}
+            onCheckedChange={(checked) => onFilterChange('userSkillsOnly', checked)}
+          />
+        </div>
+
+        <div className="flex items-center justify-between">
+          <Label htmlFor="mastered" className="text-sm font-medium">
+            Inclure les compétences maîtrisées
+          </Label>
+          <Switch
+            id="mastered"
+            checked={filters.includeMastered}
+            onCheckedChange={(checked) => onFilterChange('includeMastered', checked)}
+          />
         </div>
 
         <div className="space-y-2">
-          <Label>Vitesse de lecture ({filters.playbackSpeed}x)</Label>
+          <Label htmlFor="speed" className="text-sm font-medium">
+            Vitesse de lecture ({filters.playbackSpeed}x)
+          </Label>
           <Slider
-            value={[filters.playbackSpeed]}
+            id="speed"
             min={0.5}
             max={2}
             step={0.1}
-            onValueChange={([value]) =>
-              onFilterChange('playbackSpeed', value)
-            }
+            value={[filters.playbackSpeed]}
+            onValueChange={([value]) => onFilterChange('playbackSpeed', value)}
+            className="w-full"
           />
         </div>
-      </CardContent>
+      </div>
     </Card>
   );
 };
