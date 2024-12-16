@@ -3,14 +3,19 @@ import { Clock } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export const DateTimeSection = () => {
+  console.log('Rendering DateTimeSection');
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
 
   useEffect(() => {
+    console.log('Setting up DateTimeSection timer');
     const timer = setInterval(() => {
       setCurrentDateTime(new Date());
     }, 1000);
 
-    return () => clearInterval(timer);
+    return () => {
+      console.log('Cleaning up DateTimeSection timer');
+      clearInterval(timer);
+    };
   }, []);
 
   const formatDate = (date: Date) => {
@@ -30,6 +35,10 @@ export const DateTimeSection = () => {
     });
   };
 
+  const formattedDate = formatDate(currentDateTime);
+  const formattedTime = formatTime(currentDateTime);
+  console.log('Current formatted time:', formattedTime);
+
   return (
     <Card>
       <CardContent className="p-6 space-y-4">
@@ -38,8 +47,8 @@ export const DateTimeSection = () => {
           <h3 className="text-lg font-semibold">Date et Heure</h3>
         </div>
         <div className="space-y-2">
-          <p className="text-lg">{formatDate(currentDateTime)}</p>
-          <p className="text-2xl font-semibold text-primary">{formatTime(currentDateTime)}</p>
+          <p className="text-lg">{formattedDate}</p>
+          <p className="text-2xl font-semibold text-primary">{formattedTime}</p>
         </div>
       </CardContent>
     </Card>

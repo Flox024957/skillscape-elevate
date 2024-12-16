@@ -34,6 +34,8 @@ export const ProfileContent = ({
   friendshipStatus,
   stats 
 }: ProfileContentProps) => {
+  console.log('Rendering ProfileContent with userId:', userId);
+  
   return (
     <motion.div 
       initial={{ opacity: 0 }}
