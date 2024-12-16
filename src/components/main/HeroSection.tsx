@@ -49,7 +49,7 @@ const HeroSection = () => {
       <motion.h1 
         variants={textVariants}
         className="text-6xl md:text-8xl font-bold mb-6 text-transparent bg-clip-text 
-                 bg-gradient-to-r from-[#0EA5E9] via-[#8B5CF6] to-[#F97316]
+                 bg-gradient-to-r from-[#0EA5E9] via-[#33C3F0] to-[#1EAEDB]
                  animate-text-shimmer drop-shadow-[0_0_30px_rgba(255,255,255,0.5)]
                  transform hover:scale-105 transition-transform duration-300 cursor-default
                  text-shadow-neon"
@@ -88,10 +88,10 @@ const HeroSection = () => {
           <Button
             onClick={() => navigate("/auth")}
             className="w-full sm:w-auto px-8 py-6 text-lg rounded-xl 
-                     bg-gradient-to-r from-[#8B5CF6] to-[#9b87f5] hover:from-[#7c4ef3] hover:to-[#8b76f3]
-                     shadow-[0_0_30px_rgba(139,92,246,0.5)] hover:shadow-[0_0_40px_rgba(139,92,246,0.7)]
+                     bg-gradient-to-r from-[#0EA5E9] to-[#33C3F0] hover:from-[#0FA0CE] hover:to-[#1EAEDB]
+                     shadow-[0_0_30px_rgba(14,165,233,0.5)] hover:shadow-[0_0_40px_rgba(14,165,233,0.7)]
                      transform hover:-translate-y-1 transition-all duration-300
-                     border border-[#8B5CF6]/50"
+                     border border-[#0EA5E9]/50"
           >
             Commencer Gratuitement
           </Button>
@@ -107,8 +107,8 @@ const HeroSection = () => {
             variant="outline"
             className="w-full sm:w-auto px-8 py-6 text-lg rounded-xl
                      bg-background/30 backdrop-blur-sm
-                     border border-[#8B5CF6]/50 hover:border-[#8B5CF6]
-                     shadow-[0_0_25px_rgba(139,92,246,0.4)] hover:shadow-[0_0_35px_rgba(139,92,246,0.6)]
+                     border border-[#0EA5E9]/50 hover:border-[#0EA5E9]
+                     shadow-[0_0_25px_rgba(14,165,233,0.4)] hover:shadow-[0_0_35px_rgba(14,165,233,0.6)]
                      transform hover:-translate-y-1 transition-all duration-300"
           >
             Découvrir la Plateforme
