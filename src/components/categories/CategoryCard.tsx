@@ -60,7 +60,7 @@ export const CategoryCard = ({
         "hover:border-primary/50 transition-all duration-500",
         "cursor-pointer shadow-lg hover:shadow-[0_0_30px_rgba(139,92,246,0.3)]",
         "transform-gpu perspective-1000",
-        isMobile ? "h-[100px]" : "h-[120px]"
+        isMobile ? "h-[130px]" : "h-[150px]"
       )}
       onClick={handleClick}
     >
