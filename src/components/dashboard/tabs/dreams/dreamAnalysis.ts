@@ -1,35 +1,13 @@
-import { pipeline } from "@huggingface/transformers";
+import { supabase } from "@/integrations/supabase/client";
 
 export const analyzeDreamText = async (dream: string) => {
-  const generator = await pipeline(
-    "text-generation",
-    "Xenova/tiny-gpt2", // Using a browser-optimized model with ONNX support
-    { revision: "v1.0.0" }
-  );
-
-  const prompt = `En tant que coach professionnel, voici mes conseils pour réaliser ce rêve : ${dream}\n\nConseils :\n1.`;
-  const result = await generator(prompt, {
-    max_new_tokens: 100,
-    temperature: 0.7,
+  const { data, error } = await supabase.functions.invoke('analyze-dream', {
+    body: { dream }
   });
 
-  // Handle both array and single result cases
-  let generatedText: string;
-  
-  if (Array.isArray(result)) {
-    // If result is an array, take the first item's text
-    generatedText = typeof result[0] === 'string' 
-      ? result[0] 
-      : (result[0] as any).generated_text || '';
-  } else {
-    // If result is a single item
-    generatedText = typeof result === 'string' 
-      ? result 
-      : (result as any).generated_text || '';
+  if (error) {
+    throw new Error(error.message);
   }
-  
-  return generatedText
-    .split("Conseils :")[1]
-    .trim()
-    .replace(/^\d+\.\s*/gm, "• ");
+
+  return data.analysis;
 };
