@@ -39,59 +39,57 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-black/30 backdrop-blur-xl p-8 mb-16
+    <div className="relative overflow-hidden rounded-2xl bg-black/30 backdrop-blur-xl p-12 mb-16
                     border border-purple-500/20 hover:border-purple-500/40 transition-all duration-500
-                    group">
+                    group flex flex-col items-center justify-center text-center">
       {/* Background Glow Effect */}
       <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 opacity-0 
                     group-hover:opacity-100 transition-opacity duration-500" />
       
-      {/* Time Display */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="flex items-center gap-4 mb-8"
-      >
-        <div className="p-3 bg-purple-500/10 rounded-xl">
-          <Clock className="w-8 h-8 text-purple-400" />
-        </div>
-        <div>
-          <h2 className="text-4xl font-bold text-white mb-1 font-mono">
-            {format(currentTime, 'HH:mm:ss')}
-          </h2>
-          <p className="text-purple-300">
-            {format(currentTime, 'EEEE d MMMM yyyy', { locale: fr })}
-          </p>
-        </div>
-      </motion.div>
-
       {/* Main Content */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.6 }}
-        className="space-y-6"
+        className="space-y-12 relative z-10 max-w-3xl mx-auto"
       >
-        <div className="flex flex-col gap-4">
-          <h1 className="text-5xl font-bold bg-clip-text text-transparent 
-                       bg-gradient-to-r from-purple-400 via-pink-500 to-purple-400">
-            Bienvenue dans votre espace
+        <div className="flex flex-col gap-6">
+          <h1 className="text-6xl font-bold bg-clip-text text-transparent 
+                       bg-gradient-to-r from-purple-400 via-pink-500 to-purple-400
+                       tracking-tight leading-none">
+            FLAP, suivez l'énergie là où elle est...
           </h1>
-          <p className="text-xl text-gray-300">
-            Explorez vos compétences et suivez votre progression
-          </p>
         </div>
 
-        <div className="flex gap-4 mt-8">
+        {/* Time Display */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="flex items-center justify-center gap-4"
+        >
+          <div className="p-3 bg-purple-500/10 rounded-xl">
+            <Clock className="w-6 h-6 text-purple-400" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold text-white mb-1 font-mono">
+              {format(currentTime, 'HH:mm:ss')}
+            </h2>
+            <p className="text-purple-300 text-sm">
+              {format(currentTime, 'EEEE d MMMM yyyy', { locale: fr })}
+            </p>
+          </div>
+        </motion.div>
+
+        <div className="flex justify-center mt-8">
           <Button
             onClick={() => navigate('/dashboard')}
-            className="bg-purple-500 hover:bg-purple-600 text-white px-6 py-2 rounded-lg
+            className="bg-purple-500 hover:bg-purple-600 text-white px-8 py-6 rounded-lg
                      transition-all duration-300 transform hover:-translate-y-1
-                     hover:shadow-[0_0_15px_rgba(168,85,247,0.5)]"
+                     hover:shadow-[0_0_15px_rgba(168,85,247,0.5)] text-lg"
           >
             Accéder au tableau de bord
-            <ChevronRight className="ml-2 w-4 h-4" />
+            <ChevronRight className="ml-2 w-5 h-5" />
           </Button>
         </div>
       </motion.div>
@@ -102,7 +100,7 @@ const HeroSection = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
-          className="mt-8 p-4 bg-white/5 rounded-xl border border-purple-500/20"
+          className="mt-12 p-4 bg-white/5 rounded-xl border border-purple-500/20 w-full max-w-2xl mx-auto"
         >
           <div className="flex items-center gap-2 mb-4">
             <Calendar className="w-5 h-5 text-purple-400" />
