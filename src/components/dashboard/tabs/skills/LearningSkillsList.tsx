@@ -28,21 +28,28 @@ export const LearningSkillsList = ({
   onRemove,
   onReorder 
 }: LearningSkillsListProps) => {
+  // Initialize sensors outside of any conditional logic
+  const pointerSensor = useSensor(PointerSensor, {
+    activationConstraint: {
+      distance: 8,
+    },
+  });
+  
+  const touchSensor = useSensor(TouchSensor, {
+    activationConstraint: {
+      delay: 250,
+      tolerance: 8,
+    },
+  });
+  
+  const keyboardSensor = useSensor(KeyboardSensor, {
+    coordinateGetter: sortableKeyboardCoordinates,
+  });
+
   const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8,
-      },
-    }),
-    useSensor(TouchSensor, {
-      activationConstraint: {
-        delay: 250,
-        tolerance: 8,
-      },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
+    pointerSensor,
+    touchSensor,
+    keyboardSensor
   );
 
   const handleDragEnd = (event: any) => {
@@ -61,6 +68,7 @@ export const LearningSkillsList = ({
     }
   };
 
+  // Render loading state
   if (!Array.isArray(skills)) {
     return (
       <div className="flex items-center justify-center p-8">
@@ -69,6 +77,7 @@ export const LearningSkillsList = ({
     );
   }
 
+  // Render empty state
   if (!skills.length) {
     return (
       <div className="text-center p-8 bg-card/50 rounded-lg border border-border">
@@ -79,6 +88,7 @@ export const LearningSkillsList = ({
     );
   }
 
+  // Render skills list
   return (
     <DndContext
       sensors={sensors}
