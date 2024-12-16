@@ -6,7 +6,7 @@ import SkillsTab from "./tabs/SkillsTab";
 import { User } from "@supabase/supabase-js";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion } from "framer-motion";
-import { Book, Calendar, Canvas, Music } from "lucide-react";
+import { Book, Calendar, PenTool, Music } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface DashboardTabsProps {
@@ -51,7 +51,7 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
             isMobile && "text-xs"
           )}
         >
-          <Canvas className={cn("w-4 h-4", isMobile && "w-3 h-3")} />
+          <PenTool className={cn("w-4 h-4", isMobile && "w-3 h-3")} />
           Canvas
         </TabsTrigger>
         <TabsTrigger 
