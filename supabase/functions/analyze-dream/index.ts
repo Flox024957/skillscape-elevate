@@ -28,24 +28,50 @@ serve(async (req) => {
       );
     }
 
-    const prompt = `Analyse le rêve professionnel suivant et fournis une analyse détaillée :
+    const prompt = `En tant qu'expert en développement professionnel et personnel, analyse en détail le rêve professionnel suivant et fournis une analyse approfondie avec des conseils concrets pour sa réalisation :
 
 ${dream}
 
 Format de réponse souhaité :
 
-ANALYSE :
-[Analyse détaillée du rêve et de sa signification professionnelle]
+ANALYSE APPROFONDIE :
+[Analyse détaillée du rêve, sa signification profonde, et son alignement avec les aspirations professionnelles de la personne]
 
-POINTS FORTS :
-1. [Point fort 1]
-2. [Point fort 2]
-3. [Point fort 3]
+POINTS FORTS IDENTIFIÉS :
+1. [Point fort majeur 1 avec explication]
+2. [Point fort majeur 2 avec explication]
+3. [Point fort majeur 3 avec explication]
+4. [Point fort majeur 4 avec explication]
 
-ACTIONS CONCRÈTES :
+DÉFIS À SURMONTER :
+1. [Défi principal 1 et comment l'aborder]
+2. [Défi principal 2 et comment l'aborder]
+3. [Défi principal 3 et comment l'aborder]
+
+PLAN D'ACTION DÉTAILLÉ :
+Court terme (0-6 mois) :
 1. [Action concrète 1]
 2. [Action concrète 2]
-3. [Action concrète 3]`;
+3. [Action concrète 3]
+
+Moyen terme (6-18 mois) :
+1. [Action concrète 1]
+2. [Action concrète 2]
+3. [Action concrète 3]
+
+Long terme (18+ mois) :
+1. [Action concrète 1]
+2. [Action concrète 2]
+3. [Action concrète 3]
+
+RESSOURCES RECOMMANDÉES :
+1. [Ressource spécifique 1]
+2. [Ressource spécifique 2]
+3. [Ressource spécifique 3]
+4. [Ressource spécifique 4]
+
+CONSEILS DE DÉVELOPPEMENT PERSONNEL :
+[Conseils personnalisés pour le développement personnel nécessaire à la réalisation de ce rêve]`;
 
     console.log("Envoi de la requête à GPT-2...");
     console.log("Token HF présent:", !!HF_TOKEN);
@@ -66,13 +92,13 @@ ACTIONS CONCRÈTES :
           body: JSON.stringify({
             inputs: prompt,
             parameters: {
-              max_new_tokens: 500,  // Reduced from 800 to improve stability
-              temperature: 0.8,     // Slightly increased for more focused outputs
-              top_p: 0.9,          // Slightly reduced for more focused outputs
-              top_k: 40,           // Reduced from 50 for more stability
+              max_new_tokens: 1000,  // Increased for longer responses
+              temperature: 0.7,
+              top_p: 0.9,
+              top_k: 40,
               repetition_penalty: 1.2,
               return_full_text: false,
-              wait_for_model: true  // Added to prevent timeouts
+              wait_for_model: true
             }
           }),
           signal: controller.signal,
@@ -97,20 +123,46 @@ ACTIONS CONCRÈTES :
       }
 
       // Basic validation of the response structure
-      if (!analysis.includes('ANALYSE') || !analysis.includes('POINTS FORTS')) {
+      if (!analysis.includes('ANALYSE APPROFONDIE') || !analysis.includes('POINTS FORTS')) {
         console.log("Restructuration de la réponse...");
-        analysis = `ANALYSE :
+        analysis = `ANALYSE APPROFONDIE :
 ${analysis}
 
-POINTS FORTS :
+POINTS FORTS IDENTIFIÉS :
 1. Point à développer
 2. Point à développer
 3. Point à développer
+4. Point à développer
 
-ACTIONS CONCRÈTES :
+DÉFIS À SURMONTER :
+1. Défi à identifier
+2. Défi à identifier
+3. Défi à identifier
+
+PLAN D'ACTION DÉTAILLÉ :
+Court terme (0-6 mois) :
 1. Action à définir
 2. Action à définir
-3. Action à définir`;
+3. Action à définir
+
+Moyen terme (6-18 mois) :
+1. Action à définir
+2. Action à définir
+3. Action à définir
+
+Long terme (18+ mois) :
+1. Action à définir
+2. Action à définir
+3. Action à définir
+
+RESSOURCES RECOMMANDÉES :
+1. Ressource à identifier
+2. Ressource à identifier
+3. Ressource à identifier
+4. Ressource à identifier
+
+CONSEILS DE DÉVELOPPEMENT PERSONNEL :
+Conseils à développer`;
       }
 
       console.log("Réponse finale:", analysis);
@@ -122,7 +174,6 @@ ACTIONS CONCRÈTES :
 
     } catch (apiError) {
       console.error("Erreur API:", apiError);
-      // If it's an abort error, return a specific message
       if (apiError.name === 'AbortError') {
         return new Response(
           JSON.stringify({ 
