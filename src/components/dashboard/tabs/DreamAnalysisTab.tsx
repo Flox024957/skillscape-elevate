@@ -23,18 +23,22 @@ export const DreamAnalysisTab = () => {
 
     setIsLoading(true);
     try {
-      const classifier = await pipeline(
+      const generator = await pipeline(
         "text-generation",
-        "Xenova/distilgpt2"
+        "facebook/opt-125m",
+        { quantized: true }
       );
 
       const prompt = `En tant que coach professionnel, voici mes conseils pour réaliser ce rêve : ${dream}\n\nConseils :\n1.`;
-      const result = await classifier(prompt, {
-        max_length: 150,
+      const result = await generator(prompt, {
+        max_new_tokens: 100,
         temperature: 0.7,
       });
 
-      const advice = result[0].generated_text
+      // Le résultat est un tableau, nous prenons le premier élément
+      const generatedText = Array.isArray(result) ? result[0].generated_text : result.generated_text;
+      
+      const advice = generatedText
         .split("Conseils :")[1]
         .trim()
         .replace(/^\d+\.\s*/gm, "• ");
