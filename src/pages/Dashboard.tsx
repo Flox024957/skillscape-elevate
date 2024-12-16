@@ -41,12 +41,12 @@ const Dashboard = () => {
     <div className="min-h-screen bg-background/50 backdrop-blur-sm">
       <div className={cn(
         "mx-auto",
-        isMobile ? "max-w-full" : "max-w-7xl px-4"
+        isMobile ? "max-w-full px-0" : "max-w-7xl px-4"
       )}>
         <motion.div 
           className={cn(
             "glass-panel neon-frame overflow-hidden",
-            isMobile ? "rounded-none border-x-0" : "m-4 rounded-lg"
+            isMobile ? "rounded-none border-x-0 mt-0" : "m-4 rounded-lg"
           )}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

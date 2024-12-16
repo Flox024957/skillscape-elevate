@@ -21,109 +21,23 @@
 
   /* Navigation */
   .nav-container {
-    @apply fixed bottom-0 top-auto h-16 bg-background/95;
+    @apply fixed bottom-0 top-auto h-16 bg-background/95 z-50;
     border-top: 1px solid var(--border);
     border-bottom: none;
     box-shadow: 0 -4px 6px -1px rgb(0 0 0 / 0.1), 0 -2px 4px -2px rgb(0 0 0 / 0.1);
   }
 
-  /* Social Feed */
-  .feed-container {
-    @apply px-2 pb-20;
+  /* Dashboard */
+  .dashboard-tabs {
+    @apply px-0;
   }
 
-  .post-card {
-    @apply p-3 rounded-xl;
-    background: linear-gradient(to bottom, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.1);
+  .dashboard-tab-content {
+    @apply p-2;
   }
 
-  .post-actions {
-    @apply gap-2 flex-wrap justify-center;
+  .dashboard-card {
+    @apply rounded-lg p-3;
   }
 
-  .post-content {
-    @apply text-sm leading-relaxed;
-  }
-
-  .post-image {
-    @apply rounded-lg shadow-lg;
-  }
-
-  /* Profile Section */
-  .profile-header {
-    @apply flex-col gap-4 text-center p-4;
-    background: linear-gradient(135deg, rgba(139,92,246,0.1) 0%, rgba(91,33,182,0.1) 100%);
-  }
-
-  .profile-avatar {
-    @apply mx-auto shadow-xl border-2 border-primary/20;
-  }
-
-  .profile-info {
-    @apply space-y-2;
-  }
-
-  .profile-stats {
-    @apply grid grid-cols-3 gap-4 p-4 rounded-xl bg-card/50;
-  }
-
-  /* Friend List */
-  .friend-list {
-    @apply grid grid-cols-2 gap-3 p-2;
-  }
-
-  .friend-card {
-    @apply p-3 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50;
-  }
-
-  /* Messages */
-  .message-list {
-    @apply p-2 space-y-2;
-  }
-
-  .message-bubble {
-    @apply max-w-[85%] p-3 rounded-2xl;
-    background: linear-gradient(to right, rgba(139,92,246,0.1), rgba(139,92,246,0.05));
-  }
-
-  /* Animations */
-  .mobile-slide-up {
-    animation: slideUp 0.3s ease-out;
-  }
-
-  @keyframes slideUp {
-    from {
-      transform: translateY(100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-
-  /* Utils */
-  .glass-effect {
-    @apply bg-background/80 backdrop-blur-lg border border-border/50;
-  }
-}
-
-@media (max-width: 640px) {
-  .post-grid {
-    @apply grid-cols-1 gap-4;
-  }
-
-  .friend-list {
-    @apply grid-cols-1;
-  }
-
-  .profile-stats {
-    @apply grid-cols-2;
-  }
-
-  .action-buttons {
-    @apply flex-col space-y-2;
-  }
 }

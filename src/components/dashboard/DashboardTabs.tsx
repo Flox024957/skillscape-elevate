@@ -42,7 +42,7 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
           )}
         >
           <Calendar className={cn("w-4 h-4", isMobile && "w-3 h-3")} />
-          Agenda/Notes
+          {isMobile ? "Notes" : "Agenda/Notes"}
         </TabsTrigger>
         <TabsTrigger 
           value="canvas" 
