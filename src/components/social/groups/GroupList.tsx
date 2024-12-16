@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Skeleton } from "@/components/ui/skeleton";
+import { motion } from "framer-motion";
 
 interface Group {
   id: string;
@@ -78,52 +79,69 @@ export const GroupList = () => {
 
   if (!groups.length) {
     return (
-      <div className="text-center p-6 border border-dashed rounded-lg">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center p-6 border border-dashed rounded-lg"
+      >
         <p className="text-muted-foreground">Aucun groupe trouvé</p>
-      </div>
+      </motion.div>
     );
   }
 
   return (
     <div className="space-y-4 pb-4">
-      {groups.map((group) => (
-        <Card key={group.id} className="hover:bg-accent/50 transition-colors">
-          <CardHeader className="p-4">
-            <CardTitle className="text-base flex items-center justify-between">
-              {group.name}
-              {group.is_private && <Lock className="h-4 w-4 text-muted-foreground" />}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 pt-0">
-            <p className="text-sm text-muted-foreground mb-4">
-              {group.description}
-            </p>
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center text-sm text-muted-foreground">
-                  <Users className="h-4 w-4 mr-1" />
-                  {group.members_count} membres
+      {groups.map((group, index) => (
+        <motion.div
+          key={group.id}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: index * 0.1 }}
+        >
+          <Card className="hover:bg-accent/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+            <CardHeader className="p-4">
+              <CardTitle className="text-base flex items-center justify-between">
+                <span className="gradient-text">{group.name}</span>
+                {group.is_private && (
+                  <Lock className="h-4 w-4 text-muted-foreground" />
+                )}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 pt-0">
+              <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                {group.description}
+              </p>
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center text-sm text-muted-foreground">
+                    <Users className="h-4 w-4 mr-1" />
+                    {group.members_count} membres
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="hover:bg-primary hover:text-white transition-colors"
+                  >
+                    Voir le groupe
+                  </Button>
                 </div>
-                <Button variant="outline" size="sm">
-                  Voir le groupe
-                </Button>
-              </div>
-              {group.next_event && (
-                <div className="flex items-center gap-2 mt-2">
-                  <Badge variant="secondary" className="flex items-center gap-1">
-                    <Calendar className="h-3 w-3" />
-                    <span className="text-xs">
-                      {format(new Date(group.next_event.start_time), "d MMMM", { locale: fr })}
+                {group.next_event && (
+                  <div className="flex items-center gap-2 mt-2">
+                    <Badge variant="secondary" className="flex items-center gap-1 bg-primary/10">
+                      <Calendar className="h-3 w-3" />
+                      <span className="text-xs">
+                        {format(new Date(group.next_event.start_time), "d MMMM", { locale: fr })}
+                      </span>
+                    </Badge>
+                    <span className="text-xs text-muted-foreground truncate">
+                      {group.next_event.title}
                     </span>
-                  </Badge>
-                  <span className="text-xs text-muted-foreground truncate">
-                    {group.next_event.title}
-                  </span>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
       ))}
     </div>
   );
