@@ -4,6 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useQuery } from '@tanstack/react-query';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from "@/lib/utils";
 
 interface Friend {
   id: string;
@@ -67,6 +69,7 @@ FriendItem.displayName = 'FriendItem';
 
 export const FriendsList = ({ userId, variant = 'full' }: FriendsListProps) => {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   
   const { data: friends, isLoading } = useQuery({
     queryKey: ['friends', userId],
@@ -85,7 +88,6 @@ export const FriendsList = ({ userId, variant = 'full' }: FriendsListProps) => {
 
       if (error) throw error;
       
-      // Filtrer les amis null et transformer la structure
       return acceptedFriends
         .map(f => f.friend)
         .filter(friend => friend !== null) as Friend[];
@@ -94,16 +96,29 @@ export const FriendsList = ({ userId, variant = 'full' }: FriendsListProps) => {
   });
 
   if (isLoading) {
-    return <div className="animate-pulse">Chargement des amis...</div>;
+    return (
+      <div className="space-y-2">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="h-16 bg-accent/20 rounded-lg animate-pulse" />
+        ))}
+      </div>
+    );
   }
 
   if (!friends?.length) {
-    return <div className="text-center text-muted-foreground">Aucun ami pour le moment</div>;
+    return (
+      <div className="text-center text-muted-foreground py-8">
+        <p>Aucun ami pour le moment</p>
+        <Button 
+          variant="outline" 
+          className="mt-4"
+          onClick={() => navigate('/social')}
+        >
+          Découvrir des personnes
+        </Button>
+      </div>
+    );
   }
-
-  const handleFriendClick = (friendId: string) => {
-    navigate(`/profile/${friendId}`);
-  };
 
   if (variant === 'compact') {
     return (
@@ -113,7 +128,7 @@ export const FriendsList = ({ userId, variant = 'full' }: FriendsListProps) => {
             key={friend.id} 
             friend={friend} 
             variant="compact" 
-            onClick={() => handleFriendClick(friend.id)}
+            onClick={() => navigate(`/profile/${friend.id}`)}
           />
         ))}
       </div>
@@ -121,13 +136,13 @@ export const FriendsList = ({ userId, variant = 'full' }: FriendsListProps) => {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {friends.map((friend) => (
         <FriendItem 
           key={friend.id} 
           friend={friend} 
           variant="full"
-          onClick={() => handleFriendClick(friend.id)}
+          onClick={() => navigate(`/profile/${friend.id}`)}
         />
       ))}
     </div>

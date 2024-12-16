@@ -3,10 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from "@/integrations/supabase/client";
 import { ChatSection } from '@/components/social/ChatSection';
 import { SocialSidebar } from '@/components/social/sidebar/SocialSidebar';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 
 const Messages = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const getUser = async () => {
@@ -25,10 +28,21 @@ const Messages = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="flex">
+      <div className={cn(
+        "flex",
+        isMobile && "flex-col"
+      )}>
         <SocialSidebar />
-        <div className="flex-1 container mx-auto px-4 py-6">
-          <h1 className="text-2xl font-bold mb-6">Messages</h1>
+        <div className={cn(
+          "flex-1",
+          isMobile ? "px-2 py-4" : "container mx-auto px-4 py-6"
+        )}>
+          <h1 className={cn(
+            "font-semibold gradient-text mb-4",
+            isMobile ? "text-xl" : "text-2xl"
+          )}>
+            Messages
+          </h1>
           <ChatSection userId={user.id} />
         </div>
       </div>

@@ -2,6 +2,7 @@ import { ChatConversation } from '@/integrations/supabase/types/messages';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ConversationListProps {
   conversations: ChatConversation[];
@@ -14,12 +15,19 @@ export const ConversationList = ({
   selectedFriend, 
   onSelectFriend 
 }: ConversationListProps) => {
+  const isMobile = useIsMobile();
+
   return (
-    <div className="w-1/3 glass-panel">
-      <div className="p-4 border-b border-border/50">
+    <div className={cn(
+      "glass-panel",
+      isMobile ? "w-full mb-4" : "w-1/3"
+    )}>
+      <div className="p-3 border-b border-border/50">
         <h2 className="font-semibold neon-text">Conversations</h2>
       </div>
-      <ScrollArea className="h-[calc(600px-65px)]">
+      <ScrollArea className={cn(
+        isMobile ? "h-[200px]" : "h-[calc(600px-65px)]"
+      )}>
         <div className="p-2 space-y-2">
           {conversations.map((conv) => (
             <button
@@ -36,8 +44,8 @@ export const ConversationList = ({
                 <AvatarImage src={conv.friend.image_profile || undefined} />
                 <AvatarFallback>{conv.friend.pseudo?.charAt(0)}</AvatarFallback>
               </Avatar>
-              <div className="text-left">
-                <p className="font-medium">{conv.friend.pseudo}</p>
+              <div className="text-left flex-1 min-w-0">
+                <p className="font-medium truncate">{conv.friend.pseudo}</p>
                 {conv.lastMessage && (
                   <p className="text-sm text-muted-foreground truncate">
                     {conv.lastMessage.content}

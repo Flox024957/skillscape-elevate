@@ -76,19 +76,23 @@ export const SocialSidebar = () => {
         {currentUser && <FriendSuggestions userId={currentUser.id} />}
       </motion.div>
 
-      <Separator className="opacity-50" />
+      {!isMobile && (
+        <>
+          <Separator className="opacity-50" />
 
-      <motion.div variants={itemVariants} className="flex-1 p-4">
-        <ScrollArea className="h-[calc(100vh-600px)] md:h-full">
-          {currentUser && <SocialActivity userId={currentUser.id} />}
-        </ScrollArea>
-      </motion.div>
+          <motion.div variants={itemVariants} className="flex-1 p-4">
+            <ScrollArea className="h-[calc(100vh-600px)] md:h-full">
+              {currentUser && <SocialActivity userId={currentUser.id} />}
+            </ScrollArea>
+          </motion.div>
 
-      <Separator className="opacity-50" />
+          <Separator className="opacity-50" />
 
-      <motion.div variants={itemVariants} className="p-4">
-        <SkillsSection />
-      </motion.div>
+          <motion.div variants={itemVariants} className="p-4">
+            <SkillsSection />
+          </motion.div>
+        </>
+      )}
     </motion.aside>
   );
 };
