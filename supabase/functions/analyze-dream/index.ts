@@ -1,19 +1,20 @@
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { corsHeaders } from "../_shared/cors.ts";
 import { generateDreamAnalysisPrompt } from "./prompts.ts";
-import { queryHuggingFace } from "./huggingface.ts";
-import { DreamAnalysisResponse } from "./types.ts";
 
-const TIMEOUT_DURATION = 60000; // 60 secondes pour laisser plus de temps au modèle
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
 
 serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
   }
 
   try {
     const { dream } = await req.json();
-    const HF_TOKEN = Deno.env.get("HUGGINGFACE_API_KEY");
+    const HF_TOKEN = Deno.env.get('HUGGINGFACE_API_KEY');
 
     if (!dream) {
       return new Response(
@@ -21,7 +22,7 @@ serve(async (req) => {
           error: "Le rêve est requis",
           analysis: "Veuillez fournir un rêve à analyser."
         }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
@@ -32,56 +33,61 @@ serve(async (req) => {
           error: "Configuration incorrecte",
           analysis: "Service temporairement indisponible."
         }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), TIMEOUT_DURATION);
+    const prompt = generateDreamAnalysisPrompt(dream);
+    console.log("Envoi du prompt à l'API:", prompt);
 
-    try {
-      console.log("Début de l'analyse du rêve...");
-      const prompt = generateDreamAnalysisPrompt(dream);
-      const analysis = await queryHuggingFace(prompt, HF_TOKEN, controller.signal);
-      
-      console.log("Analyse terminée avec succès");
-      
-      // Sauvegarder l'analyse dans la base de données
-      const response: DreamAnalysisResponse = {
-        analysis: analysis.trim()
-      };
+    const response = await fetch(
+      "https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1",
+      {
+        headers: {
+          Authorization: `Bearer ${HF_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify({
+          inputs: prompt,
+          parameters: {
+            max_new_tokens: 2000,
+            temperature: 0.7,
+            top_p: 0.95,
+            top_k: 50,
+            repetition_penalty: 1.2,
+          },
+        }),
+      }
+    );
+
+    const result = await response.json();
+    console.log("Réponse brute de l'API:", result);
+
+    if (Array.isArray(result) && result[0]?.generated_text) {
+      const analysis = result[0].generated_text.replace(prompt, "").trim();
+      console.log("Analyse générée:", analysis);
 
       return new Response(
-        JSON.stringify(response),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        JSON.stringify({ analysis }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
-
-    } catch (apiError) {
-      console.error("Erreur API:", apiError);
-      
-      const errorResponse: DreamAnalysisResponse = {
-        error: apiError.name === 'AbortError' 
-          ? "Délai d'attente dépassé" 
-          : `Erreur API: ${apiError.message || apiError.status || 500}`,
-        analysis: "Une erreur est survenue lors de l'analyse. Veuillez réessayer."
-      };
-
-      return new Response(
-        JSON.stringify(errorResponse),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    } finally {
-      clearTimeout(timeout);
+    } else {
+      console.error("Format de réponse inattendu:", result);
+      throw new Error("Format de réponse invalide");
     }
 
   } catch (error) {
-    console.error("Erreur générale:", error);
+    console.error("Erreur dans la fonction analyze-dream:", error);
     return new Response(
       JSON.stringify({
-        error: "Erreur serveur",
-        analysis: "Une erreur inattendue est survenue. Veuillez réessayer."
+        error: error.message,
+        analysis: "Une erreur est survenue lors de l'analyse. Veuillez réessayer."
       }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
     );
   }
 });

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Sparkles, History, BookMarked } from "lucide-react";
+import { Sparkles, History, BookMarked, Lightbulb } from "lucide-react";
 import { toast } from "sonner";
 import { DreamInput } from "./dreams/DreamInput";
 import { AnalysisButton } from "./dreams/AnalysisButton";
@@ -8,6 +8,9 @@ import { analyzeDreamText } from "./dreams/dreamAnalysis";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DreamHistory } from "./dreams/DreamHistory";
 import { DreamResources } from "./dreams/DreamResources";
+import { DreamTips } from "./dreams/DreamTips";
+import { Card } from "@/components/ui/card";
+import { motion } from "framer-motion";
 
 export const DreamAnalysisTab = () => {
   const [dream, setDream] = useState("");
@@ -20,8 +23,8 @@ export const DreamAnalysisTab = () => {
       return;
     }
 
-    if (dream.length > 1500) {
-      toast.error("Votre description est trop longue. Maximum 300 mots.");
+    if (dream.length > 2000) {
+      toast.error("Votre description est trop longue. Maximum 400 mots.");
       return;
     }
 
@@ -46,7 +49,7 @@ export const DreamAnalysisTab = () => {
   return (
     <div className="space-y-6">
       <Tabs defaultValue="analyze" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 mb-8">
+        <TabsList className="grid w-full grid-cols-4 mb-8">
           <TabsTrigger value="analyze" className="flex items-center gap-2">
             <Sparkles className="h-4 w-4" />
             Analyser
@@ -59,34 +62,70 @@ export const DreamAnalysisTab = () => {
             <BookMarked className="h-4 w-4" />
             Ressources
           </TabsTrigger>
+          <TabsTrigger value="tips" className="flex items-center gap-2">
+            <Lightbulb className="h-4 w-4" />
+            Conseils
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="analyze">
-          <div className="bg-card/50 backdrop-blur-sm rounded-lg p-6 border border-border">
-            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-              <Sparkles className="h-6 w-6 text-purple-400" />
-              Analyseur de Rêves Professionnels
-            </h2>
-            
-            <p className="text-muted-foreground mb-6">
-              Décrivez votre rêve professionnel et laissez l'IA vous guider 
-              vers sa réalisation avec des conseils personnalisés et un plan d'action concret.
-            </p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Card className="p-6">
+              <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                <Sparkles className="h-6 w-6 text-purple-400" />
+                Analyseur de Rêves Professionnels
+              </h2>
+              
+              <p className="text-muted-foreground mb-6">
+                Décrivez votre rêve professionnel en détail et laissez l'IA vous guider 
+                vers sa réalisation avec des conseils personnalisés et un plan d'action concret.
+              </p>
 
-            <div className="space-y-4">
-              <DreamInput dream={dream} onChange={setDream} />
-              <AnalysisButton onClick={handleAnalysis} isLoading={isLoading} />
-              {analysis && <AnalysisResult analysis={analysis} />}
-            </div>
-          </div>
+              <div className="space-y-4">
+                <DreamInput 
+                  dream={dream} 
+                  onChange={setDream} 
+                  placeholder="Décrivez votre rêve professionnel en détail (changement de carrière, projet d'entreprise, évolution professionnelle...)"
+                />
+                <AnalysisButton onClick={handleAnalysis} isLoading={isLoading} />
+                {analysis && <AnalysisResult analysis={analysis} />}
+              </div>
+            </Card>
+          </motion.div>
         </TabsContent>
 
         <TabsContent value="history">
-          <DreamHistory />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <DreamHistory />
+          </motion.div>
         </TabsContent>
 
         <TabsContent value="resources">
-          <DreamResources />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <DreamResources />
+          </motion.div>
+        </TabsContent>
+
+        <TabsContent value="tips">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <DreamTips />
+          </motion.div>
         </TabsContent>
       </Tabs>
     </div>
