@@ -4,7 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 export const CategoriesSection = () => {
   const isMobile = useIsMobile();
@@ -22,7 +21,8 @@ export const CategoriesSection = () => {
             resume
           )
         `)
-        .order('name');
+        .order('name')
+        .limit(9);
       
       if (categoriesError) throw categoriesError;
       
@@ -60,15 +60,9 @@ export const CategoriesSection = () => {
         Explorez nos Catégories
       </h2>
 
-      {isLoading ? (
-        <div className="text-center text-gray-300">Chargement des catégories...</div>
-      ) : (
-        <ScrollArea className={cn(
-          isMobile && "h-[400px]"
-        )}>
-          <CategoriesGrid categories={categories || []} />
-        </ScrollArea>
-      )}
+      <div className="max-h-fit overflow-hidden">
+        <CategoriesGrid categories={categories || []} />
+      </div>
     </motion.div>
   );
 };

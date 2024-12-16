@@ -60,7 +60,7 @@ export const CategoryCard = ({
         "hover:border-primary/50 transition-all duration-500",
         "cursor-pointer shadow-lg hover:shadow-[0_0_30px_rgba(139,92,246,0.3)]",
         "transform-gpu perspective-1000",
-        isMobile ? "h-[200px]" : "h-[280px]"
+        isMobile ? "h-[100px]" : "h-[120px]"
       )}
       onClick={handleClick}
     >
@@ -75,11 +75,6 @@ export const CategoryCard = ({
         skillsCount={skills?.length || 0}
         isMobile={isMobile}
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent opacity-0 
-                    group-hover:opacity-100 transition-opacity duration-500" />
-      <div className="absolute inset-0 border border-primary/0 rounded-xl opacity-0 
-                    group-hover:opacity-100 group-hover:border-primary/30 transition-all 
-                    duration-500 shadow-[0_0_15px_rgba(139,92,246,0.3)] pointer-events-none" />
     </motion.div>
   );
 };
