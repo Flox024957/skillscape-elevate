@@ -50,7 +50,7 @@ const HeroSection = () => {
         variants={textVariants}
         className="text-6xl md:text-8xl font-bold mb-6 text-transparent bg-clip-text 
                  bg-gradient-to-r from-[#0A1E3D] via-[#0E2A5E] to-[#1E3D7B]
-                 animate-text-shimmer drop-shadow-[0_0_30px_rgba(138,43,226,0.5)]
+                 animate-text-shimmer drop-shadow-[0_0_30px_rgba(14,165,233,0.5)]
                  transform hover:scale-105 transition-transform duration-300 cursor-default
                  text-shadow-neon"
       >
@@ -61,7 +61,7 @@ const HeroSection = () => {
         variants={textVariants}
         className="text-4xl md:text-5xl font-bold mb-6 text-transparent bg-clip-text
                  bg-gradient-to-r from-[#0A1E3D] to-[#1E3D7B]
-                 drop-shadow-[0_0_20px_rgba(138,43,226,0.4)]
+                 drop-shadow-[0_0_20px_rgba(14,165,233,0.4)]
                  futuristic-text"
       >
         Élevez Votre Potentiel Professionnel
@@ -70,7 +70,7 @@ const HeroSection = () => {
       <motion.p 
         variants={textVariants}
         className="text-xl text-[#9CA3AF] max-w-2xl mx-auto mb-8 leading-relaxed
-                 drop-shadow-[0_0_5px_rgba(138,43,226,0.3)]"
+                 drop-shadow-[0_0_5px_rgba(14,165,233,0.3)]"
       >
         Développez vos compétences, fixez des objectifs ambitieux et suivez votre progression 
         vers l'excellence professionnelle
@@ -89,9 +89,9 @@ const HeroSection = () => {
             onClick={() => navigate("/auth")}
             className="w-full sm:w-auto px-8 py-6 text-lg rounded-xl 
                      bg-gradient-to-r from-[#0A1E3D] to-[#1E3D7B] hover:from-[#0E2A5E] hover:to-[#2A4F8F]
-                     shadow-[0_0_30px_rgba(138,43,226,0.5)] hover:shadow-[0_0_40px_rgba(138,43,226,0.7)]
+                     shadow-[0_0_30px_rgba(14,165,233,0.5)] hover:shadow-[0_0_40px_rgba(14,165,233,0.7)]
                      transform hover:-translate-y-1 transition-all duration-300
-                     border border-[#8A2BE2]/50"
+                     border border-[#0EA5E9]/50"
           >
             Commencer Gratuitement
           </Button>
@@ -107,8 +107,8 @@ const HeroSection = () => {
             variant="outline"
             className="w-full sm:w-auto px-8 py-6 text-lg rounded-xl
                      bg-background/30 backdrop-blur-sm
-                     border border-[#8A2BE2]/50 hover:border-[#8A2BE2]
-                     shadow-[0_0_25px_rgba(138,43,226,0.4)] hover:shadow-[0_0_35px_rgba(138,43,226,0.6)]
+                     border border-[#0EA5E9]/50 hover:border-[#0EA5E9]
+                     shadow-[0_0_25px_rgba(14,165,233,0.4)] hover:shadow-[0_0_35px_rgba(14,165,233,0.6)]
                      transform hover:-translate-y-1 transition-all duration-300"
           >
             Découvrir la Plateforme

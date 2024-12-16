@@ -17,7 +17,7 @@ export const CosmicEffects = () => {
             ease: "easeInOut"
           }}
           className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] 
-                    bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-blue-500/10 
+                    bg-gradient-to-br from-[#0EA5E9]/10 via-[#33C3F0]/10 to-[#1EAEDB]/10 
                     rounded-[100%] blur-3xl"
         />
         <motion.div 
@@ -33,7 +33,7 @@ export const CosmicEffects = () => {
             delay: 2
           }}
           className="absolute -bottom-1/2 -right-1/2 w-[200%] h-[200%] 
-                    bg-gradient-to-tl from-blue-500/10 via-purple-500/10 to-pink-500/10 
+                    bg-gradient-to-tl from-[#1EAEDB]/10 via-[#0EA5E9]/10 to-[#33C3F0]/10 
                     rounded-[100%] blur-3xl"
         />
       </div>
@@ -52,7 +52,7 @@ export const CosmicEffects = () => {
             ease: "easeInOut"
           }}
           className="absolute top-1/4 left-1/4 w-[600px] h-[600px] 
-                    bg-gradient-to-br from-purple-600/20 via-pink-600/10 to-blue-600/20 
+                    bg-gradient-to-br from-[#0EA5E9]/20 via-[#33C3F0]/10 to-[#1EAEDB]/20 
                     rounded-full blur-3xl"
         />
       </div>
