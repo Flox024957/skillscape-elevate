@@ -67,7 +67,7 @@ serve(async (req) => {
         error: apiError.name === 'AbortError' 
           ? "Délai d'attente dépassé" 
           : `Erreur API: ${apiError.status || 500}`,
-        analysis: "Une erreur est survenue. Veuillez réessayer."
+        analysis: "Une erreur est survenue. Veuillez réessayer dans quelques instants."
       };
 
       return new Response(

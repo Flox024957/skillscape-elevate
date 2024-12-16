@@ -1,6 +1,6 @@
-import { HuggingFaceParams } from './types';
+import { HuggingFaceParams } from './types.ts';
 
-export const MODEL_URL = "https://api-inference.huggingface.co/models/distributed/optimized-gpt2-2b";
+export const MODEL_URL = "https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1";
 
 export const getDefaultParams = (): HuggingFaceParams => ({
   max_new_tokens: 1000,
@@ -31,9 +31,16 @@ export async function queryHuggingFace(
   });
 
   if (!response.ok) {
+    console.error(`Hugging Face API error: ${response.status}`);
     throw new Error(`API Error: ${response.status}`);
   }
 
   const result = await response.json();
+  
+  if (!result || !Array.isArray(result) || result.length === 0) {
+    console.error('Invalid response format from Hugging Face API:', result);
+    throw new Error('Invalid API response format');
+  }
+
   return result[0].generated_text;
 }
