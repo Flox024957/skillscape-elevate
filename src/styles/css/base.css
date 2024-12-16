@@ -10,20 +10,42 @@
     --card-foreground: 210 20% 98%;
     --popover: 224 25% 5%;
     --popover-foreground: 210 20% 98%;
-    --primary: 213 100% 48%; /* Apple Blue */
+    --primary: 210 100% 50%;
     --primary-foreground: 210 20% 98%;
-    --secondary: 267 100% 57%; /* Mauve */
+    --secondary: 224 25% 12%;
     --secondary-foreground: 210 20% 98%;
-    --accent: 24 95% 53%; /* Vibrant Orange */
-    --accent-foreground: 210 20% 98%;
     --muted: 224 25% 12%;
     --muted-foreground: 217.9 10.6% 64.9%;
+    --accent: 224 25% 12%;
+    --accent-foreground: 210 20% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 20% 98%;
     --border: 224 25% 12%;
     --input: 224 25% 12%;
-    --ring: 213 100% 48%;
+    --ring: 210 100% 50%;
     --radius: 0.5rem;
+  }
+ 
+  .dark {
+    --background: 224 25% 5%;
+    --foreground: 210 20% 98%;
+    --card: 224 25% 8%;
+    --card-foreground: 210 20% 98%;
+    --popover: 224 25% 5%;
+    --popover-foreground: 210 20% 98%;
+    --primary: 210 100% 50%;
+    --primary-foreground: 210 20% 98%;
+    --secondary: 224 25% 12%;
+    --secondary-foreground: 210 20% 98%;
+    --muted: 224 25% 12%;
+    --muted-foreground: 217.9 10.6% 64.9%;
+    --accent: 224 25% 12%;
+    --accent-foreground: 210 20% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 224 25% 12%;
+    --input: 224 25% 12%;
+    --ring: 210 100% 50%;
   }
 }
 
@@ -52,28 +74,5 @@
   
   .gradient-text {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/80 to-primary;
-  }
-
-  .neon-text {
-    @apply transition-all duration-300;
-  }
-
-  .neon-text:hover {
-    @apply text-white;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8),
-                 0 0 20px rgba(255, 255, 255, 0.4),
-                 0 0 30px rgba(255, 255, 255, 0.2);
-  }
-
-  .neon-border {
-    @apply transition-all duration-300;
-    box-shadow: 0 0 5px rgba(0, 112, 243, 0.2),
-                inset 0 0 5px rgba(0, 112, 243, 0.1);
-  }
-
-  .neon-border:hover {
-    box-shadow: 0 0 10px rgba(0, 112, 243, 0.4),
-                0 0 20px rgba(0, 112, 243, 0.2),
-                inset 0 0 10px rgba(0, 112, 243, 0.2);
   }
 }
