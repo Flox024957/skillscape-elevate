@@ -47,13 +47,11 @@ export const ProfileContent = ({
         isCurrentUser={isCurrentUser}
       />
 
-      <div className="relative z-10">
-        <div className="-mt-16">
-          <ProfileHeader 
-            isCurrentUser={isCurrentUser} 
-            profile={profile}
-          />
-        </div>
+      <div className="relative z-10 -mt-16">
+        <ProfileHeader 
+          isCurrentUser={isCurrentUser} 
+          profile={profile}
+        />
 
         {!isCurrentUser && currentUserId && (
           <motion.div 

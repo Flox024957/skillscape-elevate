@@ -11,7 +11,7 @@ interface ProfileTabsProps {
 
 export const ProfileTabs = ({ isCurrentUser, userId }: ProfileTabsProps) => {
   return (
-    <Tabs defaultValue="posts" className="w-full mt-6">
+    <Tabs defaultValue="posts" className="w-full">
       <TabsList className="w-full grid grid-cols-4 gap-4">
         <TabsTrigger value="posts" className="flex items-center gap-2">
           <FileText className="h-4 w-4" />
