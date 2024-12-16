@@ -28,39 +28,43 @@ serve(async (req) => {
       );
     }
 
-    const prompt = `Analyse ce rêve professionnel de manière concise :
+    const prompt = `Analyse ce rêve professionnel et donne des conseils pratiques pour le réaliser :
 
 ${dream}
 
-Format de réponse :
+Format de réponse attendu :
 
-ANALYSE
-[2-3 phrases d'analyse]
+ANALYSE GLOBALE
+[2-3 phrases d'analyse du rêve et de sa signification]
 
-FORCES
-• [Point 1]
-• [Point 2]
+POINTS FORTS IDENTIFIÉS
+• [Point fort 1]
+• [Point fort 2]
+• [Point fort 3]
 
-DÉFIS
+DÉFIS À SURMONTER
 • [Défi 1]
 • [Défi 2]
+• [Défi 3]
 
-CONSEILS
-1. [Conseil 1]
-2. [Conseil 2]
+CONSEILS PRATIQUES
+1. [Conseil détaillé 1]
+2. [Conseil détaillé 2]
+3. [Conseil détaillé 3]
 
-ACTIONS
-1. [Action 1]
-2. [Action 2]`;
+ACTIONS À METTRE EN PLACE
+1. [Action concrète 1]
+2. [Action concrète 2]
+3. [Action concrète 3]`;
 
-    console.log("Envoi de la requête à l'API...");
+    console.log("Envoi de la requête à Qwen2...");
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15000);
 
     try {
       const response = await fetch(
-        "https://api-inference.huggingface.co/models/bigscience/bloom",
+        "https://api-inference.huggingface.co/models/Qwen/Qwen1.5-72B-Chat",
         {
           headers: { 
             Authorization: `Bearer ${HF_TOKEN}`,
@@ -70,11 +74,11 @@ ACTIONS
           body: JSON.stringify({
             inputs: prompt,
             parameters: {
-              max_new_tokens: 500,
+              max_new_tokens: 800,
               temperature: 0.7,
               top_p: 0.95,
               return_full_text: false,
-              truncate: 500
+              truncate: 1000
             }
           }),
           signal: controller.signal
@@ -95,11 +99,11 @@ ACTIONS
       }
 
       // Vérification basique de la structure
-      if (!analysis.includes('ANALYSE') || !analysis.includes('FORCES')) {
+      if (!analysis.includes('ANALYSE') || !analysis.includes('POINTS FORTS')) {
         analysis = "Je n'ai pas pu analyser ce rêve correctement. Veuillez réessayer avec plus de détails.";
       }
 
-      console.log("Réponse reçue:", analysis);
+      console.log("Réponse reçue de Qwen2:", analysis);
 
       return new Response(
         JSON.stringify({ analysis }),
