@@ -1,16 +1,17 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { toast } from "sonner";
-import { pipeline } from "@huggingface/transformers";
+import { DreamInput } from "./dreams/DreamInput";
+import { AnalysisButton } from "./dreams/AnalysisButton";
+import { AnalysisResult } from "./dreams/AnalysisResult";
+import { analyzeDreamText } from "./dreams/dreamAnalysis";
 
 export const DreamAnalysisTab = () => {
   const [dream, setDream] = useState("");
   const [analysis, setAnalysis] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const analyzeDream = async () => {
+  const handleAnalysis = async () => {
     if (!dream.trim()) {
       toast.error("Veuillez décrire votre rêve avant de continuer");
       return;
@@ -23,26 +24,7 @@ export const DreamAnalysisTab = () => {
 
     setIsLoading(true);
     try {
-      const generator = await pipeline(
-        "text-generation",
-        "facebook/opt-125m",
-        { quantized: true }
-      );
-
-      const prompt = `En tant que coach professionnel, voici mes conseils pour réaliser ce rêve : ${dream}\n\nConseils :\n1.`;
-      const result = await generator(prompt, {
-        max_new_tokens: 100,
-        temperature: 0.7,
-      });
-
-      // Le résultat est un tableau, nous prenons le premier élément
-      const generatedText = Array.isArray(result) ? result[0].generated_text : result.generated_text;
-      
-      const advice = generatedText
-        .split("Conseils :")[1]
-        .trim()
-        .replace(/^\d+\.\s*/gm, "• ");
-
+      const advice = await analyzeDreamText(dream);
       setAnalysis(advice);
       toast.success("Analyse terminée !");
     } catch (error) {
@@ -67,36 +49,11 @@ export const DreamAnalysisTab = () => {
         </p>
 
         <div className="space-y-4">
-          <Textarea
-            value={dream}
-            onChange={(e) => setDream(e.target.value)}
-            placeholder="Décrivez votre rêve professionnel ici..."
-            className="min-h-[150px] bg-background/50"
-          />
-          
-          <Button
-            onClick={analyzeDream}
-            disabled={isLoading}
-            className="w-full bg-gradient-to-r from-purple-500 to-pink-500 
-                     hover:from-purple-600 hover:to-pink-600"
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Analyse en cours...
-              </>
-            ) : (
-              "Analyser mon rêve"
-            )}
-          </Button>
+          <DreamInput dream={dream} onChange={setDream} />
+          <AnalysisButton onClick={handleAnalysis} isLoading={isLoading} />
         </div>
 
-        {analysis && (
-          <div className="mt-6 p-4 bg-card/30 rounded-lg border border-border">
-            <h3 className="font-semibold mb-2">Conseils pour réaliser votre rêve :</h3>
-            <p className="text-muted-foreground whitespace-pre-line">{analysis}</p>
-          </div>
-        )}
+        <AnalysisResult analysis={analysis} />
       </div>
     </div>
   );
