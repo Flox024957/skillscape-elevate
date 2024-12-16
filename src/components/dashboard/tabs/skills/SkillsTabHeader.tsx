@@ -16,8 +16,10 @@ export const SkillsTabHeader = () => {
       <TabsTrigger 
         value="learning" 
         className={cn(
-          "flex items-center justify-center gap-3 py-4 rounded-lg transition-all",
+          "flex items-center justify-center gap-3 py-6 rounded-xl transition-all",
+          "bg-card/50 backdrop-blur-sm border border-border/50",
           "data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none",
+          "data-[state=active]:border-primary/50",
           "hover:bg-primary/5",
           isMobile && "w-full"
         )}
@@ -28,8 +30,10 @@ export const SkillsTabHeader = () => {
       <TabsTrigger 
         value="mastered" 
         className={cn(
-          "flex items-center justify-center gap-3 py-4 rounded-lg transition-all",
+          "flex items-center justify-center gap-3 py-6 rounded-xl transition-all",
+          "bg-card/50 backdrop-blur-sm border border-border/50",
           "data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none",
+          "data-[state=active]:border-primary/50",
           "hover:bg-primary/5",
           isMobile && "w-full"
         )}
