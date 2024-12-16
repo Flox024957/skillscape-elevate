@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Sparkles, Target, Users, Rocket, Brain, Star } from "lucide-react";
 import { FeatureCard } from "./FeatureCard";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 const features = [
   {

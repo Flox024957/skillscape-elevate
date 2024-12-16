@@ -3,6 +3,8 @@ import { HeroSection } from "@/components/main/HeroSection";
 import { FeaturesSection } from "@/components/main/FeaturesSection";
 import { CategoriesSection } from "@/components/main/CategoriesSection";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 const MainPage = () => {
   const isMobile = useIsMobile();

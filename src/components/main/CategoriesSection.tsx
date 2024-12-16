@@ -3,6 +3,7 @@ import { CategoriesGrid } from "@/components/categories/CategoriesGrid";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 export const CategoriesSection = () => {
   const isMobile = useIsMobile();

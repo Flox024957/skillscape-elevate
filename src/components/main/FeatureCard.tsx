@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 interface FeatureCardProps {
   icon: React.ReactNode;
