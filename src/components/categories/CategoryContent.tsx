@@ -1,6 +1,5 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 interface CategoryContentProps {
   name: string;
@@ -11,19 +10,46 @@ interface CategoryContentProps {
 
 export const CategoryContent = ({ name, description, skillsCount, isMobile }: CategoryContentProps) => {
   return (
-    <div className={`absolute inset-0 p-6 flex flex-col justify-end 
-                    bg-gradient-to-t from-black/80 via-black/50 to-transparent
-                    text-white transition-opacity duration-300
-                    ${isMobile ? 'gap-1' : 'gap-2'}`}>
-      <h3 className={`font-bold ${isMobile ? 'text-lg' : 'text-xl'}`}>
+    <motion.div 
+      className={cn(
+        "absolute inset-0 p-6 flex flex-col justify-end",
+        "bg-gradient-to-t from-black/90 via-black/50 to-transparent",
+        "text-white transition-all duration-300 group-hover:bg-black/70",
+        isMobile ? "gap-1" : "gap-2"
+      )}
+    >
+      <motion.h3 
+        className={cn(
+          "font-bold bg-clip-text text-transparent",
+          "bg-gradient-to-r from-white to-white/90",
+          "group-hover:from-primary group-hover:to-purple-300",
+          "transition-all duration-300",
+          isMobile ? "text-lg" : "text-xl"
+        )}
+      >
         {name}
-      </h3>
-      <p className={`text-white/80 line-clamp-2 ${isMobile ? 'text-sm' : 'text-base'}`}>
+      </motion.h3>
+      <motion.p 
+        className={cn(
+          "text-white/80 line-clamp-2 group-hover:text-white/90",
+          "transition-all duration-300",
+          isMobile ? "text-sm" : "text-base"
+        )}
+      >
         {description}
-      </p>
-      <div className="flex items-center gap-2 text-sm text-white/60">
-        <span>{skillsCount} skills</span>
-      </div>
-    </div>
+      </motion.p>
+      <motion.div 
+        className={cn(
+          "flex items-center gap-2 text-sm",
+          "text-white/60 group-hover:text-primary/90",
+          "transition-all duration-300"
+        )}
+      >
+        <span className="flex items-center gap-1">
+          <span className="w-2 h-2 rounded-full bg-primary/60 group-hover:bg-primary" />
+          {skillsCount} skills
+        </span>
+      </motion.div>
+    </motion.div>
   );
 };

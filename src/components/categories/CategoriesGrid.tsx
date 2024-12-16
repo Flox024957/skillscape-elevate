@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { CategoryCard } from "./CategoryCard";
 import { getCategoryImage, getImagePosition } from "@/utils/categoryUtils";
 
@@ -22,7 +23,12 @@ export const CategoriesGrid = ({ categories }: CategoriesGridProps) => {
   const displayedCategories = categories?.slice(0, 9);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto px-4 py-8">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto px-4 py-8"
+    >
       {displayedCategories?.map((category, index) => (
         <CategoryCard
           key={category.id}
@@ -35,6 +41,6 @@ export const CategoriesGrid = ({ categories }: CategoriesGridProps) => {
           skills={category.skills}
         />
       ))}
-    </div>
+    </motion.div>
   );
 };

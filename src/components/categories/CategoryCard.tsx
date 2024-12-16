@@ -49,10 +49,17 @@ export const CategoryCard = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.1 }}
+      whileHover={{ 
+        scale: 1.02,
+        transition: { duration: 0.2 }
+      }}
       className={cn(
-        "group relative overflow-hidden rounded-xl bg-black/5 backdrop-blur-sm",
-        "border border-white/10 hover:border-primary/50 transition-all duration-500",
-        "cursor-pointer hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] transform-gpu",
+        "group relative overflow-hidden rounded-xl",
+        "bg-gradient-to-br from-black/5 via-black/10 to-black/20",
+        "backdrop-blur-sm border border-white/10",
+        "hover:border-primary/50 transition-all duration-500",
+        "cursor-pointer shadow-lg hover:shadow-[0_0_30px_rgba(139,92,246,0.3)]",
+        "transform-gpu perspective-1000",
         isMobile ? "h-[200px]" : "h-[280px]"
       )}
       onClick={handleClick}
@@ -68,6 +75,8 @@ export const CategoryCard = ({
         skillsCount={skills?.length || 0}
         isMobile={isMobile}
       />
+      <div className="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent opacity-0 
+                    group-hover:opacity-100 transition-opacity duration-500" />
       <div className="absolute inset-0 border border-primary/0 rounded-xl opacity-0 
                     group-hover:opacity-100 group-hover:border-primary/30 transition-all 
                     duration-500 shadow-[0_0_15px_rgba(139,92,246,0.3)] pointer-events-none" />

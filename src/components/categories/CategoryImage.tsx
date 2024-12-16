@@ -11,13 +11,17 @@ export const CategoryImage = ({ id, imageUrl, imagePosition }: CategoryImageProp
     <>
       <motion.div
         className={`absolute inset-0 bg-[url('${imageUrl}')] bg-cover ${imagePosition} 
-                    transition-all duration-700 ease-out opacity-80 group-hover:opacity-100 
-                    group-hover:scale-105`}
-        whileHover={{ scale: 1.05 }}
+                    transition-all duration-700 ease-out group-hover:scale-110 
+                    group-hover:rotate-1 group-hover:opacity-90`}
+        initial={{ scale: 1 }}
+        whileHover={{ scale: 1.1, rotate: 1 }}
         id={`category-${id}`}
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 
-                      to-transparent opacity-90 group-hover:opacity-70 transition-all duration-500" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-black/50 
+                    opacity-0 group-hover:opacity-100 transition-all duration-500 
+                    mix-blend-overlay" />
+      <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 
+                    transition-all duration-500" />
     </>
   );
 };
