@@ -5,9 +5,11 @@ import { SearchInput } from './search/SearchInput';
 import { SearchResults } from './search/SearchResults';
 import { useProfileSearch } from './search/useProfileSearch';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export const SearchBar = () => {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const { data: searchResults = [], isLoading } = useProfileSearch(searchQuery);
@@ -33,7 +35,7 @@ export const SearchBar = () => {
   return (
     <motion.div 
       ref={searchRef}
-      className="relative w-full max-w-2xl mx-auto"
+      className={`relative w-full ${isMobile ? 'max-w-full' : 'max-w-2xl'} mx-auto`}
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
@@ -55,6 +57,7 @@ export const SearchBar = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
+              className={`absolute w-full ${isMobile ? 'max-h-[60vh]' : 'max-h-[400px]'} overflow-auto z-50`}
             >
               <CommandList className="animate-fade-in">
                 <SearchResults
