@@ -1,6 +1,4 @@
 import { serve } from "https://deno.fresh.dev/std@v9.6.1/http/server.ts";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0';
-import { Configuration, OpenAIApi } from "https://esm.sh/openai@3.3.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -22,32 +20,50 @@ serve(async (req) => {
       );
     }
 
-    const openAiKey = Deno.env.get('OPENAI_API_KEY');
-    if (!openAiKey) {
+    const perplexityApiKey = Deno.env.get('PERPLEXITY_API_KEY');
+    if (!perplexityApiKey) {
       return new Response(
-        JSON.stringify({ error: 'OpenAI API key not configured' }),
+        JSON.stringify({ error: 'Perplexity API key not configured' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    const configuration = new Configuration({ apiKey: openAiKey });
-    const openai = new OpenAIApi(configuration);
-
-    const prompt = `En tant que coach professionnel, analyse ce rêve et donne des conseils pratiques pour sa réalisation : ${dream}
+    const response = await fetch('https://api.perplexity.ai/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${perplexityApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'llama-3.1-sonar-small-128k-online',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a professional career coach. Be precise and concise.'
+          },
+          {
+            role: 'user',
+            content: `En tant que coach professionnel, analyse ce rêve et donne des conseils pratiques pour sa réalisation : ${dream}
 
 Format de réponse souhaité :
 • Premier conseil pratique
 • Deuxième conseil pratique
-• Troisième conseil pratique`;
-
-    const completion = await openai.createCompletion({
-      model: "gpt-3.5-turbo-instruct",
-      prompt,
-      max_tokens: 500,
-      temperature: 0.7,
+• Troisième conseil pratique`
+          }
+        ],
+        temperature: 0.2,
+        max_tokens: 1000,
+        top_p: 0.9
+      }),
     });
 
-    const analysis = completion.data.choices[0]?.text?.trim() || "Désolé, je n'ai pas pu analyser ce rêve.";
+    if (!response.ok) {
+      console.error('Perplexity API error:', await response.text());
+      throw new Error('Failed to analyze dream');
+    }
+
+    const result = await response.json();
+    const analysis = result.choices[0]?.message?.content || "Désolé, je n'ai pas pu analyser ce rêve.";
 
     return new Response(
       JSON.stringify({ analysis }),
@@ -55,6 +71,7 @@ Format de réponse souhaité :
     );
 
   } catch (error) {
+    console.error('Error in analyze-dream function:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
