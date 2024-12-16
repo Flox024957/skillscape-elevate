@@ -4,16 +4,18 @@ import VolumeControl from "./audio/VolumeControl";
 import ProgressBar from "./audio/ProgressBar";
 import PlaybackControls from "./audio/PlaybackControls";
 import { useAudioPlayer } from "./audio/useAudioPlayer";
-import { useToast } from "@/hooks/use-toast";
 
 interface AudioPlayerProps {
   selectedContent: string;
-  userSkills?: any[];
   onContentSelect: (content: string) => void;
+  playbackSpeed?: number;
 }
 
-const AudioPlayer = ({ selectedContent, userSkills, onContentSelect }: AudioPlayerProps) => {
-  const { toast } = useToast();
+const AudioPlayer = ({ 
+  selectedContent, 
+  onContentSelect,
+  playbackSpeed = 1 
+}: AudioPlayerProps) => {
   const {
     isPlaying,
     selectedVoice,
@@ -25,22 +27,7 @@ const AudioPlayer = ({ selectedContent, userSkills, onContentSelect }: AudioPlay
     handlePlay,
     handleVolumeChange,
     formatTime,
-  } = useAudioPlayer(selectedContent);
-
-  const handleRandomPlay = () => {
-    if (!userSkills || userSkills.length === 0) {
-      toast({
-        title: "Aucune compétence disponible",
-        description: "Veuillez d'abord sélectionner des compétences",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const randomIndex = Math.floor(Math.random() * userSkills.length);
-    const randomSkill = userSkills[randomIndex];
-    onContentSelect(`${randomSkill.titre}. ${randomSkill.resume}. ${randomSkill.description}`);
-  };
+  } = useAudioPlayer(selectedContent, playbackSpeed);
 
   return (
     <Card>
@@ -67,7 +54,7 @@ const AudioPlayer = ({ selectedContent, userSkills, onContentSelect }: AudioPlay
           isPlaying={isPlaying}
           selectedContent={selectedContent}
           onPlay={handlePlay}
-          onRandomPlay={handleRandomPlay}
+          onRandomPlay={() => {/* TODO: Implement random play */}}
         />
       </CardContent>
     </Card>
