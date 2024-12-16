@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 export const GeometricShapes = () => {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none flex items-center justify-center">
-      {/* Main Circle */}
+      {/* Professional Gradient Circle */}
       <motion.div
         className="relative"
         animate={{
@@ -11,7 +11,7 @@ export const GeometricShapes = () => {
           rotate: [0, 180, 360],
         }}
         transition={{
-          duration: 30,
+          duration: 45,
           ease: "easeInOut",
           repeat: Infinity,
           repeatType: "reverse"
@@ -20,80 +20,80 @@ export const GeometricShapes = () => {
           width: '100vw',
           height: '100vw',
           borderRadius: '50%',
-          background: 'linear-gradient(45deg, rgba(14,165,233,0.15), rgba(30,174,219,0.15))',
-          backdropFilter: 'blur(8px)',
-          border: '1px solid rgba(14,165,233,0.1)'
+          background: 'linear-gradient(45deg, rgba(14,165,233,0.08), rgba(30,174,219,0.08))',
+          backdropFilter: 'blur(4px)',
+          border: '1px solid rgba(14,165,233,0.05)'
         }}
       >
-        {/* Subtle Inner Glow */}
+        {/* Elegant Inner Glow */}
         <motion.div
           className="absolute inset-0"
           animate={{
             rotate: [360, 0],
-            scale: [0.9, 1, 0.9]
+            scale: [0.95, 1, 0.95]
           }}
           transition={{
-            duration: 20,
+            duration: 30,
             ease: "linear",
             repeat: Infinity
           }}
           style={{
             borderRadius: '50%',
-            background: 'linear-gradient(-45deg, rgba(14,165,233,0.1), transparent)',
+            background: 'linear-gradient(-45deg, rgba(14,165,233,0.05), transparent)',
             mixBlendMode: 'soft-light'
           }}
         />
 
-        {/* Ethereal Glow Effect */}
+        {/* Subtle Glow Effect */}
         <motion.div
           className="absolute inset-0"
           animate={{
-            opacity: [0.2, 0.3, 0.2]
+            opacity: [0.1, 0.15, 0.1]
           }}
           transition={{
-            duration: 4,
+            duration: 6,
             ease: "easeInOut",
             repeat: Infinity
           }}
           style={{
             borderRadius: '50%',
-            boxShadow: '0 0 60px rgba(14,165,233,0.2), 0 0 120px rgba(14,165,233,0.1)',
-            background: 'radial-gradient(circle at center, rgba(14,165,233,0.15), transparent)'
+            boxShadow: '0 0 40px rgba(14,165,233,0.1), 0 0 80px rgba(14,165,233,0.05)',
+            background: 'radial-gradient(circle at center, rgba(14,165,233,0.08), transparent)'
           }}
         />
 
-        {/* Refined Orbital Ring */}
+        {/* Minimal Orbital Ring */}
         <motion.div
           className="absolute inset-0"
           animate={{
             rotate: [0, 360]
           }}
           transition={{
-            duration: 40,
+            duration: 60,
             ease: "linear",
             repeat: Infinity
           }}
           style={{
             borderRadius: '50%',
-            border: '1px solid rgba(14,165,233,0.08)',
-            boxShadow: '0 0 40px rgba(14,165,233,0.15), 0 0 80px rgba(14,165,233,0.05)'
+            border: '1px solid rgba(14,165,233,0.04)',
+            boxShadow: '0 0 30px rgba(14,165,233,0.08), 0 0 60px rgba(14,165,233,0.03)'
           }}
         />
       </motion.div>
 
-      {/* Subtle Background Accent */}
+      {/* Refined Background Accent */}
       <motion.div
         className="absolute inset-0"
         animate={{
-          opacity: [0.05, 0.1, 0.05]
+          opacity: [0.02, 0.04, 0.02]
         }}
         transition={{
-          duration: 8,
+          duration: 10,
           ease: "easeInOut",
           repeat: Infinity
         }}
         style={{
-          background: 'radial-gradient(circle at center, rgba(14,165,233,0.08), transparent 70%)'
+          background: 'radial-gradient(circle at center, rgba(14,165,233,0.04), transparent 70%)'
         }}
       />
     </div>
