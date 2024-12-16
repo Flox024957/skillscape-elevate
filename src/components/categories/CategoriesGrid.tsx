@@ -27,7 +27,7 @@ export const CategoriesGrid = ({ categories }: CategoriesGridProps) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="grid grid-cols-3 gap-3 max-w-[800px] mx-auto w-full px-2"
+      className="grid grid-cols-3 gap-4 max-w-[1200px] mx-auto w-full px-4"
     >
       {displayedCategories?.map((category, index) => (
         <CategoryCard
