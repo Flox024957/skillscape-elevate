@@ -48,9 +48,8 @@ const HeroSection = () => {
     >
       <motion.h1 
         variants={textVariants}
-        className="text-6xl md:text-8xl font-bold mb-6 text-transparent bg-clip-text 
-                 bg-gradient-to-r from-[#0A1E3D] via-[#0E2A5E] to-[#1E3D7B]
-                 animate-text-shimmer drop-shadow-[0_0_30px_rgba(14,165,233,0.5)]
+        className="text-6xl md:text-8xl font-bold mb-6 text-white
+                 drop-shadow-[0_0_30px_rgba(14,165,233,0.5)]
                  transform hover:scale-105 transition-transform duration-300 cursor-default
                  text-shadow-neon"
       >
