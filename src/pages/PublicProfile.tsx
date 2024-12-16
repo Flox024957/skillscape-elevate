@@ -1,22 +1,13 @@
 import { useParams } from "react-router-dom";
 import { useProfileData } from "@/hooks/useProfileData";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { FriendsList } from "@/components/social/FriendsList";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
-import { ProfileExperienceEducation } from "@/components/profile/ProfileExperienceEducation";
 import { ProfileSidebar } from "@/components/profile/ProfileSidebar";
-import { NewsFeed } from "@/components/social/NewsFeed";
-import { CreatePost } from "@/components/social/CreatePost";
 import { FriendshipButton } from "@/components/profile/FriendshipButton";
-import { UserMediaGallery } from "@/components/profile/UserMediaGallery";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import { motion, AnimatePresence } from "framer-motion";
-import { Users, Image, BookOpen, Activity, Calendar } from "lucide-react";
-import { ProfileEvents } from "@/components/profile/ProfileEvents";
+import { motion } from "framer-motion";
+import { ProfileTabs } from "@/components/profile/ProfileTabs";
 
 export default function PublicProfile() {
   const { userId } = useParams();
@@ -115,111 +106,11 @@ export default function PublicProfile() {
             transition={{ delay: 0.3 }}
             className="lg:col-span-3"
           >
-            <Tabs defaultValue="posts" className="w-full">
-              <TabsList className="w-full justify-start mb-6 glass-panel">
-                <TabsTrigger value="posts" className="flex items-center gap-2">
-                  <Activity className="h-4 w-4" />
-                  Publications
-                </TabsTrigger>
-                <TabsTrigger value="media" className="flex items-center gap-2">
-                  <Image className="h-4 w-4" />
-                  Médias
-                </TabsTrigger>
-                <TabsTrigger value="friends" className="flex items-center gap-2">
-                  <Users className="h-4 w-4" />
-                  Amis
-                </TabsTrigger>
-                <TabsTrigger value="events" className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  Événements
-                </TabsTrigger>
-                <TabsTrigger value="experience" className="flex items-center gap-2">
-                  <BookOpen className="h-4 w-4" />
-                  Expérience
-                </TabsTrigger>
-              </TabsList>
-
-              <AnimatePresence mode="wait">
-                <TabsContent value="posts" className="space-y-6">
-                  {isOwnProfile && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                    >
-                      <Card className="glass-panel border-primary/20">
-                        <CardContent className="pt-6">
-                          <CreatePost userId={userId as string} />
-                        </CardContent>
-                      </Card>
-                    </motion.div>
-                  )}
-                  <NewsFeed userId={userId as string} profileFeed={true} />
-                </TabsContent>
-
-                <TabsContent value="media">
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    className="glass-panel rounded-lg p-6"
-                  >
-                    <div className="flex items-center justify-between mb-6">
-                      <h3 className="text-lg font-semibold gradient-text">Galerie Média</h3>
-                      <Badge variant="secondary" className="bg-primary/10">
-                        Collection
-                      </Badge>
-                    </div>
-                    <UserMediaGallery userId={userId as string} />
-                  </motion.div>
-                </TabsContent>
-
-                <TabsContent value="friends">
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    className="glass-panel rounded-lg p-6"
-                  >
-                    <div className="flex items-center justify-between mb-6">
-                      <h3 className="text-lg font-semibold gradient-text">Réseau</h3>
-                      <Badge variant="secondary" className="bg-primary/10">
-                        Connexions
-                      </Badge>
-                    </div>
-                    <FriendsList userId={profile.id} variant="full" />
-                  </motion.div>
-                </TabsContent>
-
-                <TabsContent value="events">
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    className="glass-panel rounded-lg p-6"
-                  >
-                    <div className="flex items-center justify-between mb-6">
-                      <h3 className="text-lg font-semibold gradient-text">Événements</h3>
-                      <Badge variant="secondary" className="bg-primary/10">
-                        Agenda
-                      </Badge>
-                    </div>
-                    <ProfileEvents userId={userId as string} isOwnProfile={isOwnProfile} />
-                  </motion.div>
-                </TabsContent>
-
-                <TabsContent value="experience">
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    className="glass-panel rounded-lg p-6"
-                  >
-                    <ProfileExperienceEducation profile={profile} />
-                  </motion.div>
-                </TabsContent>
-              </AnimatePresence>
-            </Tabs>
+            <ProfileTabs 
+              userId={userId as string} 
+              isOwnProfile={isOwnProfile} 
+              profile={profile}
+            />
           </motion.div>
         </div>
       </div>
