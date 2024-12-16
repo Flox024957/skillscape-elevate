@@ -23,7 +23,7 @@ const Dashboard = () => {
       <div className="min-h-screen bg-background/50 backdrop-blur-sm p-2">
         <div className="max-w-7xl mx-auto">
           <motion.div 
-            className="bg-card/50 backdrop-blur-sm p-4 rounded-lg border border-neon-purple/50"
+            className="bg-card/50 backdrop-blur-sm p-4 rounded-lg border border-border"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
@@ -40,38 +40,13 @@ const Dashboard = () => {
   return (
     <div className={cn(
       "min-h-screen bg-background/50 backdrop-blur-sm",
-      isMobile && "pb-20"
+      isMobile ? "pb-20 pt-2" : "py-4"
     )}>
       <div className={cn(
         "mx-auto",
-        isMobile ? "max-w-full px-0" : "max-w-7xl px-4"
+        isMobile ? "max-w-full" : "max-w-7xl px-4"
       )}>
-        <motion.div 
-          className={cn(
-            "glass-panel neon-frame overflow-hidden",
-            isMobile ? "rounded-none border-x-0 mt-0" : "m-4 rounded-lg"
-          )}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <div className={cn(
-            "border-b border-neon-purple/30 bg-card/50 backdrop-blur-sm",
-            isMobile ? "p-3" : "p-4"
-          )}>
-            <h1 className={cn(
-              "font-bold futuristic-text",
-              isMobile ? "text-lg" : "text-2xl"
-            )}>
-              Tableau de bord
-            </h1>
-          </div>
-          <div className={cn(
-            isMobile ? "p-0" : "p-4"
-          )}>
-            <DashboardTabs user={user} />
-          </div>
-        </motion.div>
+        <DashboardTabs user={user} />
       </div>
     </div>
   );
