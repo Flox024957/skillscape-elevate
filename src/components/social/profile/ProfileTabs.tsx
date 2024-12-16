@@ -2,14 +2,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CreatePost } from "../CreatePost";
 import { NewsFeed } from "../NewsFeed";
 import { MediaGallery } from "./MediaGallery";
-import { useParams } from "react-router-dom";
 import { FileText, Image, Video, FileArchive } from "lucide-react";
 
-export const ProfileTabs = ({ isCurrentUser }: { isCurrentUser: boolean }) => {
-  const { userId } = useParams();
+interface ProfileTabsProps {
+  isCurrentUser: boolean;
+  userId: string;
+}
 
-  if (!userId) return null;
-
+export const ProfileTabs = ({ isCurrentUser, userId }: ProfileTabsProps) => {
   return (
     <Tabs defaultValue="posts" className="w-full">
       <TabsList className="w-full grid grid-cols-4 gap-4">
