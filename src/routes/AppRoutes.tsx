@@ -61,6 +61,28 @@ export const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
         }
       />
       <Route
+        path="/groups/manage"
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <div className="container mx-auto p-6">
+              <h1 className="text-2xl font-bold mb-6">Gestion des groupes</h1>
+              {/* TODO: Implement groups management page */}
+            </div>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/events/manage"
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <div className="container mx-auto p-6">
+              <h1 className="text-2xl font-bold mb-6">Gestion des événements</h1>
+              {/* TODO: Implement events management page */}
+            </div>
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/edit-profile"
         element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>

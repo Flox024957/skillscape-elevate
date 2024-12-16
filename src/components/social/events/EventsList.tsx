@@ -36,7 +36,7 @@ export const EventsList = ({ userId }: EventsListProps) => {
 
   if (!events?.length) {
     return (
-      <div className="text-center p-8 border border-dashed rounded-lg">
+      <div className="text-center p-4 border border-dashed rounded-lg">
         <p className="text-muted-foreground">Aucun événement à venir</p>
       </div>
     );
