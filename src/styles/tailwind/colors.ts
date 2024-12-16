@@ -33,8 +33,9 @@ export const colors = {
     foreground: "hsl(var(--card-foreground))",
   },
   futuristic: {
-    blue: "#0070F3",
-    violet: "#5E5CE6",
+    blue: "#0070F3",    // Apple Blue
+    violet: "#5E5CE6",  // Mauve
+    orange: "#F97316",  // Vibrant Orange
     darkBlue: "#1A1F2C",
     black: "#000000",
     gray: "#1C1C1E",
@@ -42,7 +43,7 @@ export const colors = {
   neon: {
     blue: "#0070F3",
     purple: "#5E5CE6",
-    orange: "#FF9F0A",
-    pink: "#FF2D55",
+    orange: "#F97316",
+    white: "#FFFFFF",
   },
 };
