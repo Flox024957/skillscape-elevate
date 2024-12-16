@@ -4,6 +4,7 @@ import { Command, CommandList } from "@/components/ui/command";
 import { SearchInput } from './search/SearchInput';
 import { SearchResults } from './search/SearchResults';
 import { useProfileSearch } from './search/useProfileSearch';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export const SearchBar = () => {
   const navigate = useNavigate();
@@ -30,13 +31,15 @@ export const SearchBar = () => {
   };
 
   return (
-    <div 
+    <motion.div 
       ref={searchRef}
-      className="relative w-full max-w-2xl mx-auto" 
-      onClick={(e) => e.stopPropagation()}
+      className="relative w-full max-w-2xl mx-auto"
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
     >
       <Command 
-        className="rounded-xl border border-neon-purple/30 bg-futuristic-gray/20 backdrop-blur-md shadow-lg"
+        className="rounded-xl border border-neon-purple/30 bg-futuristic-gray/20 backdrop-blur-md shadow-lg transition-all duration-300 hover:border-neon-purple/50 hover:shadow-neon-purple/20"
         shouldFilter={false} 
         loop
       >
@@ -45,16 +48,25 @@ export const SearchBar = () => {
           onChange={setSearchQuery}
           onFocus={() => setIsSearching(true)}
         />
-        {isSearching && (
-          <CommandList className="animate-fade-in">
-            <SearchResults
-              results={searchResults}
-              isLoading={isLoading}
-              onSelect={handleSelect}
-            />
-          </CommandList>
-        )}
+        <AnimatePresence>
+          {isSearching && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+            >
+              <CommandList className="animate-fade-in">
+                <SearchResults
+                  results={searchResults}
+                  isLoading={isLoading}
+                  onSelect={handleSelect}
+                />
+              </CommandList>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </Command>
-    </div>
+    </motion.div>
   );
 };
