@@ -5,8 +5,7 @@ import { NewsFeed } from '@/components/social/NewsFeed';
 import { CreatePost } from '@/components/social/CreatePost';
 import { SearchBar } from '@/components/social/SearchBar';
 import { SocialSidebar } from '@/components/social/sidebar/SocialSidebar';
-import { GroupSection } from '@/components/social/groups/GroupSection';
-import { EventSection } from '@/components/social/events/EventSection';
+import { RightSidebar } from '@/components/social/sidebar/RightSidebar';
 
 const Social = () => {
   const navigate = useNavigate();
@@ -41,14 +40,10 @@ const Social = () => {
               <CreatePost userId={user.id} />
             </div>
             
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <GroupSection />
-              <EventSection />
-            </div>
-            
             <NewsFeed userId={user.id} />
           </div>
         </div>
+        <RightSidebar />
       </div>
     </div>
   );
