@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export const CategoriesSection = () => {
   const isMobile = useIsMobile();
@@ -53,7 +54,7 @@ export const CategoriesSection = () => {
         "after:blur-xl after:-z-10",
         "drop-shadow-[0_0_8px_rgba(14,165,233,0.6)]",
         "tracking-wide",
-        isMobile ? "text-3xl" : "text-4xl",
+        isMobile ? "text-2xl" : "text-4xl",
         "font-bold"
       )}>
         Explorez nos Catégories
@@ -62,7 +63,11 @@ export const CategoriesSection = () => {
       {isLoading ? (
         <div className="text-center text-gray-300">Chargement des catégories...</div>
       ) : (
-        <CategoriesGrid categories={categories || []} />
+        <ScrollArea className={cn(
+          isMobile && "h-[400px]"
+        )}>
+          <CategoriesGrid categories={categories || []} />
+        </ScrollArea>
       )}
     </motion.div>
   );
