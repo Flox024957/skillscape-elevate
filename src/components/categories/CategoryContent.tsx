@@ -19,13 +19,22 @@ export const CategoryContent = ({ name, description, skillsCount, isMobile }: Ca
     >
       <motion.h3 
         className={cn(
-          "font-bold bg-clip-text text-transparent text-center",
+          "font-bold bg-clip-text text-transparent text-center w-full",
           "bg-gradient-to-r from-white to-white/90",
           "group-hover:from-primary group-hover:to-purple-300",
           "transition-all duration-300 px-2",
-          "line-clamp-2",
-          isMobile ? "text-sm" : "text-base"
+          "break-words hyphens-auto",
+          isMobile ? "text-[11px] leading-tight" : "text-sm leading-snug",
+          "max-w-[90%] mx-auto"
         )}
+        style={{
+          wordBreak: "break-word",
+          overflowWrap: "break-word",
+          WebkitLineClamp: 3,
+          display: "-webkit-box",
+          WebkitBoxOrient: "vertical",
+          overflow: "hidden"
+        }}
       >
         {name}
       </motion.h3>

@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
 import { CategoryCard } from "./CategoryCard";
 import { getCategoryImage, getImagePosition } from "@/utils/categoryUtils";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 interface Skill {
   id: string;
@@ -21,13 +23,17 @@ interface CategoriesGridProps {
 
 export const CategoriesGrid = ({ categories }: CategoriesGridProps) => {
   const displayedCategories = categories?.slice(0, 9);
+  const isMobile = useIsMobile();
 
   return (
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="grid grid-cols-3 gap-4 max-w-[1200px] mx-auto w-full px-4"
+      className={cn(
+        "grid grid-cols-3 w-full mx-auto",
+        isMobile ? "gap-2 px-2 max-w-[100vw]" : "gap-4 px-4 max-w-[1200px]"
+      )}
     >
       {displayedCategories?.map((category, index) => (
         <CategoryCard
