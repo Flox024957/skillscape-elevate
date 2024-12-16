@@ -1,10 +1,10 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { corsHeaders } from "../_shared/cors.ts";
-import { generateDreamAnalysisPrompt, getFallbackTemplate } from "./prompts.ts";
+import { generateDreamAnalysisPrompt } from "./prompts.ts";
 import { queryHuggingFace } from "./huggingface.ts";
 import { DreamAnalysisResponse } from "./types.ts";
 
-const TIMEOUT_DURATION = 30000; // 30 secondes
+const TIMEOUT_DURATION = 60000; // 60 secondes pour laisser plus de temps au modèle
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -43,16 +43,12 @@ serve(async (req) => {
       console.log("Début de l'analyse du rêve...");
       const prompt = generateDreamAnalysisPrompt(dream);
       const analysis = await queryHuggingFace(prompt, HF_TOKEN, controller.signal);
-
-      // Validation basique de la structure de la réponse
-      const finalAnalysis = analysis.includes('ANALYSE APPROFONDIE') 
-        ? analysis 
-        : getFallbackTemplate();
-
+      
       console.log("Analyse terminée avec succès");
       
+      // Sauvegarder l'analyse dans la base de données
       const response: DreamAnalysisResponse = {
-        analysis: finalAnalysis
+        analysis: analysis.trim()
       };
 
       return new Response(
@@ -66,8 +62,8 @@ serve(async (req) => {
       const errorResponse: DreamAnalysisResponse = {
         error: apiError.name === 'AbortError' 
           ? "Délai d'attente dépassé" 
-          : `Erreur API: ${apiError.status || 500}`,
-        analysis: "Une erreur est survenue. Veuillez réessayer dans quelques instants."
+          : `Erreur API: ${apiError.message || apiError.status || 500}`,
+        analysis: "Une erreur est survenue lors de l'analyse. Veuillez réessayer."
       };
 
       return new Response(
@@ -83,7 +79,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         error: "Erreur serveur",
-        analysis: "Une erreur inattendue est survenue."
+        analysis: "Une erreur inattendue est survenue. Veuillez réessayer."
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
