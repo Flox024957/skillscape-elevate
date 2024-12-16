@@ -1,10 +1,13 @@
 import { useState } from "react";
-import { Sparkles } from "lucide-react";
+import { Sparkles, History, BookMarked } from "lucide-react";
 import { toast } from "sonner";
 import { DreamInput } from "./dreams/DreamInput";
 import { AnalysisButton } from "./dreams/AnalysisButton";
 import { AnalysisResult } from "./dreams/AnalysisResult";
 import { analyzeDreamText } from "./dreams/dreamAnalysis";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DreamHistory } from "./dreams/DreamHistory";
+import { DreamResources } from "./dreams/DreamResources";
 
 export const DreamAnalysisTab = () => {
   const [dream, setDream] = useState("");
@@ -25,7 +28,7 @@ export const DreamAnalysisTab = () => {
     setIsLoading(true);
     try {
       const advice = await analyzeDreamText(dream);
-      console.log("Réponse reçue de l'API:", advice); // Debug log
+      console.log("Réponse reçue de l'API:", advice);
       setAnalysis(advice);
       if (!advice) {
         toast.error("L'analyse n'a pas produit de résultats");
@@ -42,23 +45,50 @@ export const DreamAnalysisTab = () => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-card/50 backdrop-blur-sm rounded-lg p-6 border border-border">
-        <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-          <Sparkles className="h-6 w-6 text-purple-400" />
-          Analyseur de Rêves
-        </h2>
-        
-        <p className="text-muted-foreground mb-6">
-          Décrivez votre rêve professionnel (300 mots maximum) et laissez l'IA vous guider 
-          vers sa réalisation avec des conseils personnalisés.
-        </p>
+      <Tabs defaultValue="analyze" className="w-full">
+        <TabsList className="grid w-full grid-cols-3 mb-8">
+          <TabsTrigger value="analyze" className="flex items-center gap-2">
+            <Sparkles className="h-4 w-4" />
+            Analyser
+          </TabsTrigger>
+          <TabsTrigger value="history" className="flex items-center gap-2">
+            <History className="h-4 w-4" />
+            Historique
+          </TabsTrigger>
+          <TabsTrigger value="resources" className="flex items-center gap-2">
+            <BookMarked className="h-4 w-4" />
+            Ressources
+          </TabsTrigger>
+        </TabsList>
 
-        <div className="space-y-4">
-          <DreamInput dream={dream} onChange={setDream} />
-          <AnalysisButton onClick={handleAnalysis} isLoading={isLoading} />
-          {analysis && <AnalysisResult analysis={analysis} />}
-        </div>
-      </div>
+        <TabsContent value="analyze">
+          <div className="bg-card/50 backdrop-blur-sm rounded-lg p-6 border border-border">
+            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+              <Sparkles className="h-6 w-6 text-purple-400" />
+              Analyseur de Rêves Professionnels
+            </h2>
+            
+            <p className="text-muted-foreground mb-6">
+              Décrivez votre rêve professionnel et laissez l'IA vous guider 
+              vers sa réalisation avec des conseils personnalisés et un plan d'action concret.
+            </p>
+
+            <div className="space-y-4">
+              <DreamInput dream={dream} onChange={setDream} />
+              <AnalysisButton onClick={handleAnalysis} isLoading={isLoading} />
+              {analysis && <AnalysisResult analysis={analysis} />}
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="history">
+          <DreamHistory />
+        </TabsContent>
+
+        <TabsContent value="resources">
+          <DreamResources />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
