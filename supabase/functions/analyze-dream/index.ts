@@ -1,5 +1,4 @@
 import { serve } from "https://deno.fresh.dev/std@v9.6.1/http/server.ts";
-import { GoogleGenerativeAI } from "https://esm.sh/@google/generative-ai@0.1.3";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -21,30 +20,50 @@ serve(async (req) => {
       );
     }
 
-    const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
-    if (!geminiApiKey) {
+    const HF_TOKEN = Deno.env.get('HUGGINGFACE_API_KEY');
+    if (!HF_TOKEN) {
       return new Response(
-        JSON.stringify({ error: 'Gemini API key not configured' }),
+        JSON.stringify({ error: 'Hugging Face API key not configured' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    const genAI = new GoogleGenerativeAI(geminiApiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-
-    const prompt = `En tant que coach professionnel, analyse ce rêve et donne des conseils pratiques pour sa réalisation : ${dream}
+    // Utilisation du modèle BLOOM multilingue
+    const response = await fetch(
+      "https://api-inference.huggingface.co/models/bigscience/bloom",
+      {
+        headers: { 
+          Authorization: `Bearer ${HF_TOKEN}`,
+          'Content-Type': 'application/json',
+        },
+        method: "POST",
+        body: JSON.stringify({
+          inputs: `En tant que coach professionnel, analyse ce rêve et donne trois conseils pratiques pour sa réalisation : ${dream}
 
 Format de réponse souhaité :
 • Premier conseil pratique
 • Deuxième conseil pratique
-• Troisième conseil pratique`;
+• Troisième conseil pratique`,
+          parameters: {
+            max_length: 500,
+            temperature: 0.7,
+            top_p: 0.95,
+            return_full_text: false
+          }
+        }),
+      }
+    );
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const analysis = response.text() || "Désolé, je n'ai pas pu analyser ce rêve.";
+    if (!response.ok) {
+      console.error('Hugging Face API error:', await response.text());
+      throw new Error('Failed to analyze dream');
+    }
+
+    const result = await response.json();
+    const analysis = Array.isArray(result) ? result[0].generated_text : result.generated_text;
 
     return new Response(
-      JSON.stringify({ analysis }),
+      JSON.stringify({ analysis: analysis || "Désolé, je n'ai pas pu analyser ce rêve." }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
