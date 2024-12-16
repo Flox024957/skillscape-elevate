@@ -18,7 +18,7 @@ export const YearHeader = ({ selectedYear, setSelectedYear }: YearHeaderProps) =
         <Button
           variant="outline"
           size="icon"
-          onClick={() => setSelectedYear(prev => prev - 1)}
+          onClick={() => setSelectedYear(selectedYear - 1)}
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
@@ -31,7 +31,7 @@ export const YearHeader = ({ selectedYear, setSelectedYear }: YearHeaderProps) =
         <Button
           variant="outline"
           size="icon"
-          onClick={() => setSelectedYear(prev => prev + 1)}
+          onClick={() => setSelectedYear(selectedYear + 1)}
         >
           <ChevronRight className="h-4 w-4" />
         </Button>
