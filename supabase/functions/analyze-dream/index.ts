@@ -28,36 +28,36 @@ serve(async (req) => {
       );
     }
 
-    const prompt = `En tant que coach professionnel spécialisé dans l'analyse des rêves professionnels, analyse ce rêve et fournis une réponse détaillée :
+    const prompt = `En tant que coach professionnel, analyse ce rêve professionnel et fournis une réponse détaillée et structurée :
 
 ${dream}
 
-Format de réponse souhaité :
+Réponds en suivant EXACTEMENT ce format :
 
-ANALYSE DU RÊVE :
-[Fournis une analyse approfondie des éléments clés du rêve professionnel, en identifiant les aspirations et les défis potentiels]
+ANALYSE DU RÊVE
+[Une analyse détaillée du rêve professionnel en 3-4 phrases]
 
-POINTS FORTS IDENTIFIÉS :
-• [Premier point fort identifié dans le rêve]
-• [Deuxième point fort identifié]
-• [Troisième point fort identifié]
+POINTS FORTS IDENTIFIÉS
+• [Premier point fort]
+• [Deuxième point fort]
+• [Troisième point fort]
 
-OBSTACLES POTENTIELS :
-• [Premier obstacle potentiel]
-• [Deuxième obstacle potentiel]
-• [Troisième obstacle potentiel]
+OBSTACLES POTENTIELS
+• [Premier obstacle]
+• [Deuxième obstacle]
+• [Troisième obstacle]
 
-CONSEILS PRATIQUES POUR LA RÉALISATION :
-1. [Premier conseil détaillé et actionnable]
-2. [Deuxième conseil détaillé et actionnable]
-3. [Troisième conseil détaillé et actionnable]
+CONSEILS PRATIQUES
+1. [Premier conseil actionnable]
+2. [Deuxième conseil actionnable]
+3. [Troisième conseil actionnable]
 
-PROCHAINES ÉTAPES RECOMMANDÉES :
-1. [Première étape concrète à mettre en place]
+PROCHAINES ÉTAPES
+1. [Première étape concrète]
 2. [Deuxième étape concrète]
 3. [Troisième étape concrète]`;
 
-    console.log("Envoi de la requête à l'API Hugging Face avec le prompt :", prompt);
+    console.log("Envoi de la requête à l'API avec le prompt :", prompt);
 
     const response = await fetch(
       "https://api-inference.huggingface.co/models/bigscience/bloom",
@@ -70,10 +70,11 @@ PROCHAINES ÉTAPES RECOMMANDÉES :
         body: JSON.stringify({
           inputs: prompt,
           parameters: {
-            max_length: 1000,
+            max_new_tokens: 1000,
             temperature: 0.7,
             top_p: 0.95,
-            return_full_text: false
+            return_full_text: false,
+            truncate: 1000
           }
         }),
       }
@@ -85,21 +86,32 @@ PROCHAINES ÉTAPES RECOMMANDÉES :
     }
 
     const result = await response.json();
-    const analysis = Array.isArray(result) ? result[0].generated_text : result.generated_text;
+    let analysis = Array.isArray(result) ? result[0].generated_text : result.generated_text;
 
-    console.log("Réponse reçue de l'API :", analysis);
+    // Vérification et nettoyage de la réponse
+    if (!analysis || typeof analysis !== 'string') {
+      throw new Error("Réponse invalide de l'API");
+    }
+
+    // S'assurer que la réponse est bien structurée
+    if (!analysis.includes('ANALYSE DU RÊVE') || !analysis.includes('POINTS FORTS')) {
+      analysis = `ANALYSE INCOMPLÈTE\n\nDésolé, je n'ai pas pu analyser ce rêve correctement. Veuillez réessayer avec une description plus détaillée.`;
+    }
+
+    console.log("Réponse finale formatée :", analysis);
 
     return new Response(
-      JSON.stringify({ 
-        analysis: analysis || "Désolé, je n'ai pas pu analyser ce rêve correctement. Veuillez réessayer." 
-      }),
+      JSON.stringify({ analysis }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
   } catch (error) {
     console.error('Erreur dans la fonction analyze-dream:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error.message,
+        analysis: "Une erreur est survenue lors de l'analyse. Veuillez réessayer." 
+      }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
