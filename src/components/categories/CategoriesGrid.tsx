@@ -33,7 +33,7 @@ export const CategoriesGrid = ({ categories }: CategoriesGridProps) => {
       className={cn(
         "grid w-full mx-auto gap-3",
         isMobile 
-          ? "grid-cols-2 px-2 max-w-[100vw]" 
+          ? "grid-cols-1 px-2 max-w-[100vw]" 
           : "grid-cols-3 px-4 max-w-[1200px] gap-4"
       )}
     >
