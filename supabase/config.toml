@@ -5,5 +5,5 @@ enabled = true
 url = "https://kioxqfgtqpwxcagefvki.supabase.co"
 
 [functions]
-[functions.generate-skill-image]
+[functions.analyze-dream]
 verify_jwt = false
