@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { eachMonthOfInterval } from "date-fns";
 import { YearHeader } from "./yearly/YearHeader";
 import { MonthCard } from "./yearly/MonthCard";
-import { MonthDetailDialog } from "./yearly/MonthDetailDialog";
+import { DayDetailDialog } from "./yearly/DayDetailDialog";
 import { useYearData, getMonthData } from "./yearly/useYearData";
 
 interface YearlyCalendarProps {
@@ -12,7 +12,7 @@ interface YearlyCalendarProps {
 
 export const YearlyCalendar = ({ userId }: YearlyCalendarProps) => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [selectedMonth, setSelectedMonth] = useState<Date | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const { data: yearData } = useYearData(userId, selectedYear);
 
@@ -42,17 +42,17 @@ export const YearlyCalendar = ({ userId }: YearlyCalendarProps) => {
                 key={month.toString()}
                 month={month}
                 data={monthData}
-                onClick={() => setSelectedMonth(month)}
+                onClick={(date) => setSelectedDate(date)}
               />
             );
           })}
         </AnimatePresence>
       </div>
 
-      <MonthDetailDialog
-        selectedMonth={selectedMonth}
-        data={selectedMonth ? getMonthData(yearData, selectedMonth) : { notes: [], events: [] }}
-        onClose={() => setSelectedMonth(null)}
+      <DayDetailDialog
+        selectedDate={selectedDate}
+        data={selectedDate ? getMonthData(yearData, selectedDate) : { notes: [], events: [] }}
+        onClose={() => setSelectedDate(null)}
       />
     </motion.div>
   );
