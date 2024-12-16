@@ -4,6 +4,7 @@ import VolumeControl from "./audio/VolumeControl";
 import ProgressBar from "./audio/ProgressBar";
 import PlaybackControls from "./audio/PlaybackControls";
 import { useAudioPlayer } from "./audio/useAudioPlayer";
+import { useToast } from "@/hooks/use-toast";
 
 interface AudioPlayerProps {
   selectedContent: string;
@@ -12,6 +13,7 @@ interface AudioPlayerProps {
 }
 
 const AudioPlayer = ({ selectedContent, userNotes, onContentSelect }: AudioPlayerProps) => {
+  const { toast } = useToast();
   const {
     isPlaying,
     selectedVoice,
