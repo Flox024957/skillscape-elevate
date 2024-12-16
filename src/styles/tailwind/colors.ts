@@ -41,7 +41,7 @@ export const colors = {
   },
   neon: {
     blue: "#0070F3",
-    purple: "#5E5CE6",
+    purple: "#8B5CF6",
     orange: "#FF9F0A",
     pink: "#FF2D55",
   },
