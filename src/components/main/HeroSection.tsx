@@ -63,7 +63,7 @@ const HeroSection = () => {
                  drop-shadow-[0_0_20px_rgba(14,165,233,0.4)]
                  futuristic-text"
       >
-        Élevez Votre Potentiel Professionnel
+        Élevez Votre Potentiel
       </motion.p>
 
       <motion.p 
@@ -72,7 +72,7 @@ const HeroSection = () => {
                  drop-shadow-[0_0_5px_rgba(14,165,233,0.3)]"
       >
         Développez vos compétences, fixez des objectifs ambitieux et suivez votre progression 
-        vers l'excellence professionnelle
+        vers l'excellence
       </motion.p>
 
       <motion.div 

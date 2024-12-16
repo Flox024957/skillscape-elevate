@@ -44,10 +44,10 @@ export const CategoriesSection = () => {
       className="px-4"
     >
       <h2 className={cn(
-        "text-center mb-8 bg-clip-text text-transparent",
+        "text-center mb-8 text-white",
         "bg-gradient-to-r from-[#0A1E3D] to-[#1E3D7B]",
-        "drop-shadow-[0_0_30px_rgba(14,165,233,0.5)]",
-        isMobile ? "text-2xl" : "text-3xl",
+        "drop-shadow-[0_0_30px_rgba(14,165,233,0.8)]",
+        isMobile ? "text-3xl" : "text-4xl",
         "font-bold"
       )}>
         Explorez nos Catégories
