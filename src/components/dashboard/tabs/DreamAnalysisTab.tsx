@@ -17,7 +17,7 @@ export const DreamAnalysisTab = () => {
       return;
     }
 
-    if (dream.length > 1500) { // ~300 mots
+    if (dream.length > 1500) {
       toast.error("Votre description est trop longue. Maximum 300 mots.");
       return;
     }
@@ -25,7 +25,12 @@ export const DreamAnalysisTab = () => {
     setIsLoading(true);
     try {
       const advice = await analyzeDreamText(dream);
+      console.log("Réponse reçue de l'API:", advice); // Debug log
       setAnalysis(advice);
+      if (!advice) {
+        toast.error("L'analyse n'a pas produit de résultats");
+        return;
+      }
       toast.success("Analyse terminée !");
     } catch (error) {
       console.error("Erreur lors de l'analyse:", error);
@@ -51,9 +56,8 @@ export const DreamAnalysisTab = () => {
         <div className="space-y-4">
           <DreamInput dream={dream} onChange={setDream} />
           <AnalysisButton onClick={handleAnalysis} isLoading={isLoading} />
+          {analysis && <AnalysisResult analysis={analysis} />}
         </div>
-
-        <AnalysisResult analysis={analysis} />
       </div>
     </div>
   );

@@ -5,12 +5,31 @@ interface AnalysisResultProps {
 export const AnalysisResult = ({ analysis }: AnalysisResultProps) => {
   if (!analysis) return null;
 
+  console.log("Contenu de l'analyse:", analysis); // Debug log
+
+  // Si l'analyse est une chaîne simple, l'afficher directement
+  if (!analysis.includes('\n')) {
+    return (
+      <div className="mt-6">
+        <div className="p-4 bg-card/30 rounded-lg border border-border">
+          <h3 className="font-semibold mb-2 text-primary">Analyse</h3>
+          <p className="text-muted-foreground whitespace-pre-line">{analysis}</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Sinon, traiter le format structuré
+  const sections = analysis.split('\n\n').filter(Boolean);
+
   return (
     <div className="mt-6 space-y-4">
-      {analysis.split('\n\n').map((section, index) => {
-        const [title, ...content] = section.split('\n');
-        
-        if (!title || !content.length) return null;
+      {sections.map((section, index) => {
+        const lines = section.split('\n');
+        const title = lines[0];
+        const content = lines.slice(1);
+
+        if (!title) return null;
 
         return (
           <div 
