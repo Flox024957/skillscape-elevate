@@ -50,68 +50,97 @@ ACTIONS CONCRÈTES :
     console.log("Envoi de la requête à GPT-2...");
     console.log("Token HF présent:", !!HF_TOKEN);
 
+    // Increased timeout to 30 seconds
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 15000);
+    const timeout = setTimeout(() => controller.abort(), 30000);
 
-    const response = await fetch(
-      "https://api-inference.huggingface.co/models/distributed/optimized-gpt2-2b",
-      {
-        headers: {
-          "Authorization": `Bearer ${HF_TOKEN}`,
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify({
-          inputs: prompt,
-          parameters: {
-            max_new_tokens: 800,
-            temperature: 0.7,
-            top_p: 0.95,
-            top_k: 50,
-            repetition_penalty: 1.1,
-            return_full_text: false
-          }
-        }),
-        signal: controller.signal,
+    try {
+      const response = await fetch(
+        "https://api-inference.huggingface.co/models/distributed/optimized-gpt2-2b",
+        {
+          headers: {
+            "Authorization": `Bearer ${HF_TOKEN}`,
+            "Content-Type": "application/json",
+          },
+          method: "POST",
+          body: JSON.stringify({
+            inputs: prompt,
+            parameters: {
+              max_new_tokens: 500,  // Reduced from 800 to improve stability
+              temperature: 0.8,     // Slightly increased for more focused outputs
+              top_p: 0.9,          // Slightly reduced for more focused outputs
+              top_k: 40,           // Reduced from 50 for more stability
+              repetition_penalty: 1.2,
+              return_full_text: false,
+              wait_for_model: true  // Added to prevent timeouts
+            }
+          }),
+          signal: controller.signal,
+        }
+      );
+
+      clearTimeout(timeout);
+
+      if (!response.ok) {
+        console.error(`Hugging Face API error: ${response.status} - ${await response.text()}`);
+        throw new Error(`Erreur API: ${response.status}`);
       }
-    );
 
-    clearTimeout(timeout);
+      const result = await response.json();
+      console.log("Réponse brute de l'API:", result);
+      
+      let analysis = Array.isArray(result) ? result[0].generated_text : result.generated_text;
 
-    if (!response.ok) {
-      console.error(`Hugging Face API error: ${response.status}`);
-      throw new Error(`Erreur API: ${response.status}`);
+      if (!analysis || typeof analysis !== 'string') {
+        console.error("Réponse invalide:", analysis);
+        throw new Error("Format de réponse invalide");
+      }
+
+      // Basic validation of the response structure
+      if (!analysis.includes('ANALYSE') || !analysis.includes('POINTS FORTS')) {
+        console.log("Restructuration de la réponse...");
+        analysis = `ANALYSE :
+${analysis}
+
+POINTS FORTS :
+1. Point à développer
+2. Point à développer
+3. Point à développer
+
+ACTIONS CONCRÈTES :
+1. Action à définir
+2. Action à définir
+3. Action à définir`;
+      }
+
+      console.log("Réponse finale:", analysis);
+
+      return new Response(
+        JSON.stringify({ analysis }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+
+    } catch (apiError) {
+      console.error("Erreur API:", apiError);
+      // If it's an abort error, return a specific message
+      if (apiError.name === 'AbortError') {
+        return new Response(
+          JSON.stringify({ 
+            error: "Le service a mis trop de temps à répondre", 
+            analysis: "Le service est temporairement surchargé. Veuillez réessayer dans quelques instants." 
+          }),
+          { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      throw apiError;
     }
-
-    const result = await response.json();
-    console.log("Réponse brute de l'API:", result);
-    
-    let analysis = Array.isArray(result) ? result[0].generated_text : result.generated_text;
-
-    if (!analysis || typeof analysis !== 'string') {
-      console.error("Réponse invalide:", analysis);
-      throw new Error("Réponse invalide");
-    }
-
-    // Vérification basique de la structure
-    if (!analysis.includes('ANALYSE') || !analysis.includes('POINTS FORTS')) {
-      console.error("Structure de réponse invalide");
-      analysis = "Je n'ai pas pu analyser ce rêve correctement. Veuillez réessayer avec plus de détails.";
-    }
-
-    console.log("Réponse finale:", analysis);
-
-    return new Response(
-      JSON.stringify({ analysis }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
 
   } catch (error) {
     console.error("Erreur:", error);
     return new Response(
       JSON.stringify({
         error: error.message || "Une erreur est survenue",
-        analysis: "Une erreur est survenue. Veuillez réessayer."
+        analysis: "Une erreur est survenue lors de l'analyse. Veuillez réessayer dans quelques instants."
       }),
       { 
         status: 500,
