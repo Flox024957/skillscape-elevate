@@ -8,11 +8,13 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import { AppRoutes } from "@/routes/AppRoutes";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const queryClient = new QueryClient();
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -41,7 +43,8 @@ const App = () => {
             {isAuthenticated && <Navbar />}
             <main className={cn(
               "relative w-full",
-              isAuthenticated && "pt-16"
+              isAuthenticated && !isMobile && "pt-16",
+              isMobile && "pb-16"
             )}>
               <Toaster />
               <Sonner />

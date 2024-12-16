@@ -1,16 +1,19 @@
 import { motion } from "framer-motion";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface NavContainerProps {
   children: React.ReactNode;
 }
 
 export const NavContainer = ({ children }: NavContainerProps) => {
+  const isMobile = useIsMobile();
+
   return (
     <motion.nav 
-      initial={{ y: -100 }}
+      initial={{ y: isMobile ? 100 : -100 }}
       animate={{ y: 0 }}
       transition={{ type: "spring", stiffness: 100 }}
-      className="fixed top-0 left-0 right-0 bg-background/95 backdrop-blur-md border-b border-border z-50"
+      className="fixed top-0 left-0 right-0 bg-background/95 backdrop-blur-md border-b border-border z-50 md:top-0 bottom-0 md:bottom-auto nav-container"
       role="navigation"
       aria-label="Navigation principale"
     >

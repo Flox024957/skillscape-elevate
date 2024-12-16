@@ -18,6 +18,59 @@
   main {
     @apply mt-0 md:mt-16;
   }
+
+  /* Navigation */
+  .nav-container {
+    @apply fixed bottom-0 top-auto h-16 bg-background/95;
+    border-top: 1px solid var(--border);
+    border-bottom: none;
+  }
+
+  /* Dashboard */
+  .dashboard-tabs {
+    @apply overflow-x-auto;
+  }
+
+  .dashboard-tab-content {
+    @apply px-2;
+  }
+
+  /* Profile Section */
+  .profile-header {
+    @apply flex-col gap-4 text-center;
+  }
+
+  .profile-actions {
+    @apply justify-center mt-4;
+  }
+
+  /* Social Feed */
+  .feed-container {
+    @apply px-2;
+  }
+
+  .post-card {
+    @apply p-3;
+  }
+
+  /* Forms and Inputs */
+  .form-container {
+    @apply p-3;
+  }
+
+  .input-group {
+    @apply flex-col;
+  }
+
+  /* Tables */
+  .table-container {
+    @apply overflow-x-auto -mx-3;
+  }
+
+  /* Cards */
+  .card-grid {
+    @apply grid-cols-1;
+  }
 }
 
 @media (max-width: 640px) {
@@ -39,5 +92,20 @@
 
   p {
     @apply text-sm;
+  }
+
+  /* Tabs */
+  .tabs-list {
+    @apply flex-nowrap overflow-x-auto pb-2;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .tabs-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tab-trigger {
+    @apply whitespace-nowrap;
   }
 }
