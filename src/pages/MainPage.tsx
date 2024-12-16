@@ -2,8 +2,32 @@ import { motion } from "framer-motion";
 import { CategoriesGrid } from "@/components/categories/CategoriesGrid";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { SearchBar } from "@/components/social/SearchBar";
+import { ArrowRight, Sparkles, Target, Users } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+const features = [
+  {
+    icon: <Sparkles className="w-6 h-6 text-purple-400" />,
+    title: "Développement Personnel",
+    description: "Suivez votre progression et développez vos compétences à votre rythme"
+  },
+  {
+    icon: <Target className="w-6 h-6 text-orange-400" />,
+    title: "Objectifs Clairs",
+    description: "Définissez et atteignez vos objectifs professionnels étape par étape"
+  },
+  {
+    icon: <Users className="w-6 h-6 text-blue-400" />,
+    title: "Communauté Active",
+    description: "Partagez et apprenez avec une communauté de professionnels motivés"
+  }
+];
 
 const MainPage = () => {
+  const navigate = useNavigate();
+  
   const { data: categories, isLoading } = useQuery({
     queryKey: ['categories'],
     queryFn: async () => {
@@ -25,7 +49,6 @@ const MainPage = () => {
         throw categoriesError;
       }
       
-      // Transform the data to match the expected interface
       const transformedCategories = categoriesData?.map(category => ({
         ...category,
         skills: category.skills?.map(skill => ({
@@ -48,20 +71,112 @@ const MainPage = () => {
       />
       
       <div className="container mx-auto px-4 py-8 relative z-10">
+        {/* Hero Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="space-y-8"
+          className="text-center mb-12 space-y-6"
         >
-          <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent 
-                         bg-gradient-to-r from-purple-400 to-pink-600">
-              Bienvenue sur FLAP
-            </h1>
-            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-              Explorez nos catégories et commencez votre voyage de développement personnel
-            </p>
-          </div>
+          <motion.h1 
+            className="text-5xl md:text-7xl font-bold mb-4 bg-clip-text text-transparent 
+                     bg-gradient-to-r from-purple-400 via-pink-500 to-orange-400"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            Bienvenue sur FLAP
+          </motion.h1>
+          
+          <motion.p 
+            className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            Développez vos compétences, fixez des objectifs ambitieux et suivez votre progression 
+            vers l'excellence professionnelle
+          </motion.p>
+
+          <motion.div 
+            className="flex flex-col sm:flex-row gap-4 justify-center mt-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <Button
+              size="lg"
+              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600
+                       text-white font-semibold px-8 py-6 rounded-xl shadow-lg hover:shadow-xl
+                       transition-all duration-300 transform hover:-translate-y-1"
+              onClick={() => navigate("/auth")}
+            >
+              Commencer Maintenant
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+            
+            <Button
+              variant="outline"
+              size="lg"
+              className="border-purple-500/50 hover:border-purple-500 text-purple-400
+                       hover:text-purple-300 font-semibold px-8 py-6 rounded-xl
+                       backdrop-blur-sm transition-all duration-300"
+              onClick={() => navigate("/dashboard")}
+            >
+              Explorer la Plateforme
+            </Button>
+          </motion.div>
+        </motion.div>
+
+        {/* Search Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="max-w-3xl mx-auto mb-16"
+        >
+          <SearchBar />
+        </motion.div>
+
+        {/* Features Section */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16"
+        >
+          {features.map((feature, index) => (
+            <motion.div
+              key={feature.title}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 + index * 0.1 }}
+              className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-purple-500/20
+                       hover:border-purple-500/40 transition-all duration-300
+                       transform hover:-translate-y-1 hover:shadow-lg"
+            >
+              <div className="bg-white/10 rounded-lg p-3 w-fit mb-4">
+                {feature.icon}
+              </div>
+              <h3 className="text-xl font-semibold text-gray-200 mb-2">
+                {feature.title}
+              </h3>
+              <p className="text-gray-400">
+                {feature.description}
+              </p>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Categories Section */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.7 }}
+        >
+          <h2 className="text-3xl font-bold text-center mb-8 bg-clip-text text-transparent 
+                       bg-gradient-to-r from-purple-400 to-pink-500">
+            Explorez nos Catégories
+          </h2>
 
           {isLoading ? (
             <div className="text-center text-gray-300">Chargement des catégories...</div>

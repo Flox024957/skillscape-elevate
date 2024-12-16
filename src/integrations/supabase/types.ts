@@ -1141,6 +1141,7 @@ export type Database = {
         Row: {
           created_at: string
           description: string | null
+          folder_id: string | null
           id: string
           image_url: string
           user_id: string | null
@@ -1148,6 +1149,7 @@ export type Database = {
         Insert: {
           created_at?: string
           description?: string | null
+          folder_id?: string | null
           id?: string
           image_url: string
           user_id?: string | null
@@ -1155,11 +1157,19 @@ export type Database = {
         Update: {
           created_at?: string
           description?: string | null
+          folder_id?: string | null
           id?: string
           image_url?: string
           user_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "user_canvas_images_folder_id_fkey"
+            columns: ["folder_id"]
+            isOneToOne: false
+            referencedRelation: "user_image_folders"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "user_canvas_images_user_id_fkey"
             columns: ["user_id"]
@@ -1206,6 +1216,41 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "user_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_image_folders: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_image_folders_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
