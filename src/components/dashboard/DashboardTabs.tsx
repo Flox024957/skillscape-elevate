@@ -47,7 +47,7 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
       {/* Tabs Principal */}
       <Tabs defaultValue="skills" className="w-full">
         <TabsList className={cn(
-          "w-full flex gap-2 bg-background/50 backdrop-blur-sm border border-border rounded-lg sticky top-0 z-10",
+          "w-full flex gap-2 bg-background/50 backdrop-blur-sm border border-border rounded-lg sticky top-0 z-30",
           isMobile ? "p-2 mb-6 mx-4" : "p-1 mb-6"
         )}>
           <TabsTrigger 
