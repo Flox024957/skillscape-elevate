@@ -11,6 +11,7 @@ import { BadgesSection } from './sections/BadgesSection';
 import { ProfileTabs } from './ProfileTabs';
 import { ProfileBanner } from './sections/ProfileBanner';
 import { ProfileStats } from './sections/ProfileStats';
+import { DateTimeSection } from './sections/DateTimeSection';
 
 interface ProfileContentProps {
   profile: Profile;
@@ -97,6 +98,7 @@ export const ProfileContent = ({
             transition={{ delay: 0.4 }}
             className="space-y-6"
           >
+            <DateTimeSection />
             <BadgesSection userId={userId} />
             <ProfileTabs isCurrentUser={isCurrentUser} />
           </motion.div>
