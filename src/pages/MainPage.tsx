@@ -11,7 +11,7 @@ const MainPage = () => {
   const isMobile = useIsMobile();
   
   return (
-    <div className="min-h-screen relative overflow-hidden bg-background/50 backdrop-blur-sm">
+    <div className="min-h-screen relative overflow-hidden bg-[#0A0118]/90 backdrop-blur-sm">
       {/* Background Effects */}
       <AnimatedBackground />
       <CosmicEffects />

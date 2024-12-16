@@ -59,7 +59,8 @@ const HeroSection = () => {
 
       <motion.p 
         variants={textVariants}
-        className="text-4xl md:text-5xl font-bold mb-6 text-[#D1D5DB]
+        className="text-4xl md:text-5xl font-bold mb-6 text-transparent bg-clip-text
+                 bg-gradient-to-r from-[#0EA5E9] to-[#33C3F0]
                  drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]
                  futuristic-text"
       >

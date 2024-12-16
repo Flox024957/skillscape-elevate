@@ -45,7 +45,7 @@ export const CategoriesSection = () => {
     >
       <h2 className={cn(
         "text-center mb-8 bg-clip-text text-transparent",
-        "bg-gradient-to-r from-purple-400 to-pink-500",
+        "bg-gradient-to-r from-[#0EA5E9] to-[#33C3F0]",
         isMobile ? "text-2xl" : "text-3xl",
         "font-bold"
       )}>
