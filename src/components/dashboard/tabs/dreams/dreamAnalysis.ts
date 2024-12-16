@@ -3,7 +3,10 @@ import { pipeline } from "@huggingface/transformers";
 export const analyzeDreamText = async (dream: string) => {
   const generator = await pipeline(
     "text-generation",
-    "facebook/opt-125m"
+    "Xenova/gpt2", // Using a more reliable model that's compatible with browser inference
+    {
+      quantized: true,
+    }
   );
 
   const prompt = `En tant que coach professionnel, voici mes conseils pour réaliser ce rêve : ${dream}\n\nConseils :\n1.`;
