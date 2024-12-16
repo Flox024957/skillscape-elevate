@@ -79,7 +79,7 @@ export const ProfileExperienceEducation = ({ profile }: ProfileExperienceEducati
             <ul className="space-y-2">
               {personalGoals.map((goal, index) => (
                 <li key={index} className="text-sm">
-                  {goal}
+                  {typeof goal === 'string' ? goal : JSON.stringify(goal)}
                 </li>
               ))}
             </ul>
