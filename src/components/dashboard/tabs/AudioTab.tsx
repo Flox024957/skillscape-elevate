@@ -5,7 +5,10 @@ import { Mic, Play } from "lucide-react";
 import AudioPlayer from "@/components/dashboard/AudioPlayer";
 import { SkillsSection } from "./audio/SkillsSection";
 import { FiltersSection } from "./audio/FiltersSection";
+import { PlaylistSection } from "./audio/PlaylistSection";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const AudioTab = () => {
   const [selectedContent, setSelectedContent] = useState("");
@@ -15,7 +18,9 @@ const AudioTab = () => {
     userSkillsOnly: false,
     includeMastered: false,
     playbackSpeed: 1,
+    categoryId: undefined as string | undefined,
   });
+  const isMobile = useIsMobile();
 
   const handleContentSelect = (content: string) => {
     setSelectedContent(content);
@@ -57,11 +62,20 @@ const AudioTab = () => {
           </Button>
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <CardContent className={cn(
+        "space-y-6",
+        isMobile && "px-2"
+      )}>
+        <div className={cn(
+          "grid gap-6",
+          isMobile ? "grid-cols-1" : "grid-cols-2"
+        )}>
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-[#E5DEFF]">Compétences disponibles</h3>
-            <ScrollArea className="h-[400px] rounded-md border border-[#1E3D7B]/30 bg-[#1E3D7B]/10 p-4">
+            <ScrollArea className={cn(
+              "rounded-md border border-[#1E3D7B]/30 bg-[#1E3D7B]/10 p-4",
+              isMobile ? "h-[300px]" : "h-[400px]"
+            )}>
               <SkillsSection
                 onContentSelect={handleContentSelect}
                 onSkillSelect={handleSkillSelect}
@@ -80,6 +94,8 @@ const AudioTab = () => {
                 playbackSpeed={filters.playbackSpeed}
               />
             </Card>
+
+            <PlaylistSection />
 
             <FiltersSection
               filters={filters}

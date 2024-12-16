@@ -985,6 +985,7 @@ export type Database = {
           created_at: string
           id: string
           name: string
+          skill_order: number[] | null
           skills: string[] | null
           updated_at: string
           user_id: string | null
@@ -993,6 +994,7 @@ export type Database = {
           created_at?: string
           id?: string
           name: string
+          skill_order?: number[] | null
           skills?: string[] | null
           updated_at?: string
           user_id?: string | null
@@ -1001,6 +1003,7 @@ export type Database = {
           created_at?: string
           id?: string
           name?: string
+          skill_order?: number[] | null
           skills?: string[] | null
           updated_at?: string
           user_id?: string | null

@@ -1,146 +1,100 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Plus, Play, Trash2 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Play, Trash2 } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { toast } from "sonner";
 
-export const PlaylistSection = ({ onContentSelect }: { onContentSelect: (content: string) => void }) => {
-  const [newPlaylistName, setNewPlaylistName] = useState("");
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
-
-  const { data: playlists } = useQuery({
-    queryKey: ['skill_playlists'],
+export const PlaylistSection = () => {
+  const { data: currentPlaylist, refetch } = useQuery({
+    queryKey: ['current-playlist'],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return [];
-      
+      if (!user) return null;
+
       const { data, error } = await supabase
         .from('skill_playlists')
-        .select('*')
+        .select(`
+          *,
+          skills:skills (
+            id,
+            titre,
+            resume
+          )
+        `)
         .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-      
-      if (error) throw error;
+        .eq('name', 'Lecture en cours')
+        .single();
+
+      if (error && error.code !== 'PGRST116') throw error;
       return data;
     },
   });
 
-  const createPlaylistMutation = useMutation({
-    mutationFn: async (name: string) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Non authentifié");
+  const handleRemoveFromPlaylist = async (skillId: string) => {
+    if (!currentPlaylist) return;
 
-      const { data, error } = await supabase
-        .from('skill_playlists')
-        .insert([{ name, user_id: user.id }]);
+    const updatedSkills = currentPlaylist.skills.filter((s: any) => s.id !== skillId);
+    const { error } = await supabase
+      .from('skill_playlists')
+      .update({ 
+        skills: updatedSkills.map((s: any) => s.id),
+        skill_order: Array.from({ length: updatedSkills.length }, (_, i) => i)
+      })
+      .eq('id', currentPlaylist.id);
 
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['skill_playlists'] });
-      setNewPlaylistName("");
-      toast({
-        title: "Playlist créée",
-        description: "Votre playlist a été créée avec succès",
-      });
-    },
-  });
-
-  const deletePlaylistMutation = useMutation({
-    mutationFn: async (playlistId: string) => {
-      const { error } = await supabase
-        .from('skill_playlists')
-        .delete()
-        .eq('id', playlistId);
-
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['skill_playlists'] });
-      toast({
-        title: "Playlist supprimée",
-        description: "La playlist a été supprimée avec succès",
-      });
-    },
-  });
-
-  const handleCreatePlaylist = () => {
-    if (!newPlaylistName.trim()) {
-      toast({
-        title: "Nom requis",
-        description: "Veuillez entrer un nom pour la playlist",
-        variant: "destructive",
-      });
+    if (error) {
+      toast.error("Erreur lors de la suppression de la compétence");
       return;
     }
-    createPlaylistMutation.mutate(newPlaylistName);
+
+    refetch();
+    toast.success("Compétence retirée de la playlist");
   };
 
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Mes Playlists</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex gap-2">
-          <Input
-            placeholder="Nom de la playlist"
-            value={newPlaylistName}
-            onChange={(e) => setNewPlaylistName(e.target.value)}
-          />
-          <Button onClick={handleCreatePlaylist} size="icon">
-            <Plus className="h-4 w-4" />
-          </Button>
-        </div>
+  if (!currentPlaylist?.skills?.length) {
+    return (
+      <Card className="bg-[#1E3D7B]/20 border-[#1E3D7B]/30 p-4">
+        <p className="text-center text-muted-foreground">
+          Aucune compétence dans la playlist
+        </p>
+      </Card>
+    );
+  }
 
+  return (
+    <Card className="bg-[#1E3D7B]/20 border-[#1E3D7B]/30 p-4">
+      <h4 className="font-semibold mb-4">Playlist en cours</h4>
+      <ScrollArea className="h-[200px]">
         <div className="space-y-2">
-          {playlists?.map((playlist) => (
-            <div key={playlist.id} className="flex items-center justify-between p-2 bg-card rounded-lg border">
-              <span>{playlist.name}</span>
+          {currentPlaylist.skills.map((skill: any, index: number) => (
+            <div
+              key={skill.id}
+              className="flex items-center justify-between p-2 bg-background/50 rounded-lg"
+            >
+              <span className="text-sm">{index + 1}. {skill.titre}</span>
               <div className="flex gap-2">
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => {
-                    if (playlist.skills && playlist.skills.length > 0) {
-                      // TODO: Implement playlist playback
-                      toast({
-                        title: "Lecture de la playlist",
-                        description: "Cette fonctionnalité sera bientôt disponible",
-                      });
-                    } else {
-                      toast({
-                        title: "Playlist vide",
-                        description: "Ajoutez des compétences à cette playlist",
-                        variant: "destructive",
-                      });
-                    }
-                  }}
+                  className="h-8 w-8"
+                  onClick={() => handleRemoveFromPlaylist(skill.id)}
                 >
-                  <Play className="h-4 w-4" />
+                  <Trash2 className="h-4 w-4" />
                 </Button>
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => deletePlaylistMutation.mutate(playlist.id)}
+                  className="h-8 w-8"
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Play className="h-4 w-4" />
                 </Button>
               </div>
             </div>
           ))}
         </div>
-      </CardContent>
+      </ScrollArea>
     </Card>
   );
 };
