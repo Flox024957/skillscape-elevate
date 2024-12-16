@@ -6,6 +6,8 @@ import SkillsTab from "./tabs/SkillsTab";
 import { User } from "@supabase/supabase-js";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion } from "framer-motion";
+import { Book, Calendar, Canvas, Music } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface DashboardTabsProps {
   user: User;
@@ -18,35 +20,57 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
 
   return (
     <Tabs defaultValue="skills" className="w-full">
-      <TabsList className="w-full flex overflow-x-auto gap-1 p-1 mb-6 bg-background/50 backdrop-blur-sm border border-neon-purple/30 rounded-lg">
+      <TabsList className={cn(
+        "w-full flex gap-1 bg-background/50 backdrop-blur-sm border border-neon-purple/30 rounded-lg",
+        isMobile ? "p-1 mb-2 overflow-x-auto no-scrollbar" : "p-1 mb-6"
+      )}>
         <TabsTrigger 
           value="skills" 
-          className="flex-1 min-w-max whitespace-nowrap px-3 py-2 text-sm hover:text-neon-purple transition-colors"
+          className={cn(
+            "flex items-center gap-2 flex-1 min-w-max whitespace-nowrap px-3 py-2 text-sm hover:text-neon-purple transition-colors",
+            isMobile && "text-xs"
+          )}
         >
+          <Book className={cn("w-4 h-4", isMobile && "w-3 h-3")} />
           {isMobile ? "Skills" : "Compétences & Maîtrises"}
         </TabsTrigger>
         <TabsTrigger 
           value="notes" 
-          className="flex-1 min-w-max whitespace-nowrap px-3 py-2 text-sm hover:text-neon-purple transition-colors"
+          className={cn(
+            "flex items-center gap-2 flex-1 min-w-max whitespace-nowrap px-3 py-2 text-sm hover:text-neon-purple transition-colors",
+            isMobile && "text-xs"
+          )}
         >
+          <Calendar className={cn("w-4 h-4", isMobile && "w-3 h-3")} />
           Agenda/Notes
         </TabsTrigger>
         <TabsTrigger 
           value="canvas" 
-          className="flex-1 min-w-max whitespace-nowrap px-3 py-2 text-sm hover:text-neon-purple transition-colors"
+          className={cn(
+            "flex items-center gap-2 flex-1 min-w-max whitespace-nowrap px-3 py-2 text-sm hover:text-neon-purple transition-colors",
+            isMobile && "text-xs"
+          )}
         >
+          <Canvas className={cn("w-4 h-4", isMobile && "w-3 h-3")} />
           Canvas
         </TabsTrigger>
         <TabsTrigger 
           value="audio" 
-          className="flex-1 min-w-max whitespace-nowrap px-3 py-2 text-sm hover:text-neon-purple transition-colors"
+          className={cn(
+            "flex items-center gap-2 flex-1 min-w-max whitespace-nowrap px-3 py-2 text-sm hover:text-neon-purple transition-colors",
+            isMobile && "text-xs"
+          )}
         >
+          <Music className={cn("w-4 h-4", isMobile && "w-3 h-3")} />
           Audio
         </TabsTrigger>
       </TabsList>
 
       <motion.div 
-        className="space-y-4 px-2 md:px-4"
+        className={cn(
+          "space-y-4",
+          isMobile ? "px-2" : "px-4"
+        )}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}

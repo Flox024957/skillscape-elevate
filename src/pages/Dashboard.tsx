@@ -19,15 +19,15 @@ const Dashboard = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-background/50 backdrop-blur-sm p-2 md:p-4">
+      <div className="min-h-screen bg-background/50 backdrop-blur-sm p-2">
         <div className="max-w-7xl mx-auto">
           <motion.div 
-            className="bg-card/50 backdrop-blur-sm p-8 rounded-lg border border-neon-purple/50 neon-frame"
+            className="bg-card/50 backdrop-blur-sm p-4 rounded-lg border border-neon-purple/50"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <span className="text-lg text-muted-foreground futuristic-text">
+            <span className="text-lg text-muted-foreground">
               Chargement...
             </span>
           </motion.div>
@@ -38,21 +38,33 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-background/50 backdrop-blur-sm">
-      <div className="max-w-7xl mx-auto">
+      <div className={cn(
+        "mx-auto",
+        isMobile ? "max-w-full" : "max-w-7xl px-4"
+      )}>
         <motion.div 
-          className={`glass-panel neon-frame overflow-hidden ${
-            isMobile ? 'mx-2 my-2' : 'mx-4 my-4'
-          }`}
+          className={cn(
+            "glass-panel neon-frame overflow-hidden",
+            isMobile ? "rounded-none border-x-0" : "m-4 rounded-lg"
+          )}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <div className="p-4 border-b border-neon-purple/30 bg-card/50 backdrop-blur-sm">
-            <h1 className="text-xl md:text-2xl font-bold futuristic-text">
+          <div className={cn(
+            "border-b border-neon-purple/30 bg-card/50 backdrop-blur-sm",
+            isMobile ? "p-3" : "p-4"
+          )}>
+            <h1 className={cn(
+              "font-bold futuristic-text",
+              isMobile ? "text-lg" : "text-2xl"
+            )}>
               Tableau de bord
             </h1>
           </div>
-          <div className="p-2 md:p-4">
+          <div className={cn(
+            isMobile ? "p-0" : "p-4"
+          )}>
             <DashboardTabs user={user} />
           </div>
         </motion.div>
