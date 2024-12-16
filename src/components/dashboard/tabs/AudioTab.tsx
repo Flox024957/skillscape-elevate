@@ -42,14 +42,15 @@ const AudioTab = () => {
   };
 
   return (
-    <Card>
+    <Card className="bg-[#0A1E3D]/40 border-[#1E3D7B]/30 backdrop-blur-xl">
       <CardHeader>
-        <CardTitle className="flex items-center justify-between">
+        <CardTitle className="flex items-center justify-between text-[#E5DEFF]">
           <span>Lecteur Audio</span>
           <Button 
             variant={isRecording ? "destructive" : "outline"}
             size="sm"
             onClick={toggleRecording}
+            className="bg-[#1E3D7B]/20 border-[#1E3D7B]/30 hover:bg-[#1E3D7B]/40"
           >
             <Mic className="w-4 h-4 mr-2" />
             {isRecording ? "Arrêter" : "Enregistrer"}
@@ -59,8 +60,8 @@ const AudioTab = () => {
       <CardContent className="space-y-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Compétences disponibles</h3>
-            <ScrollArea className="h-[400px] rounded-md border p-4">
+            <h3 className="text-lg font-semibold text-[#E5DEFF]">Compétences disponibles</h3>
+            <ScrollArea className="h-[400px] rounded-md border border-[#1E3D7B]/30 bg-[#1E3D7B]/10 p-4">
               <SkillsSection
                 onContentSelect={handleContentSelect}
                 onSkillSelect={handleSkillSelect}
@@ -71,8 +72,8 @@ const AudioTab = () => {
           </div>
           
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Lecture</h3>
-            <Card className="p-4">
+            <h3 className="text-lg font-semibold text-[#E5DEFF]">Lecture</h3>
+            <Card className="bg-[#1E3D7B]/20 border-[#1E3D7B]/30 p-4">
               <AudioPlayer 
                 selectedContent={selectedContent}
                 onContentSelect={handleContentSelect}

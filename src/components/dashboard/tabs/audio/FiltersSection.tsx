@@ -14,12 +14,12 @@ interface FiltersSectionProps {
 
 export const FiltersSection = ({ filters, onFilterChange }: FiltersSectionProps) => {
   return (
-    <Card className="p-4 space-y-6">
-      <h3 className="text-lg font-semibold">Filtres et paramètres</h3>
+    <Card className="bg-[#1E3D7B]/20 border-[#1E3D7B]/30 p-4 space-y-6">
+      <h3 className="text-lg font-semibold text-[#E5DEFF]">Filtres et paramètres</h3>
       
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <Label htmlFor="userSkills" className="text-sm font-medium">
+          <Label htmlFor="userSkills" className="text-sm font-medium text-[#8B9CC7]">
             Mes compétences uniquement
           </Label>
           <Switch
@@ -30,7 +30,7 @@ export const FiltersSection = ({ filters, onFilterChange }: FiltersSectionProps)
         </div>
 
         <div className="flex items-center justify-between">
-          <Label htmlFor="mastered" className="text-sm font-medium">
+          <Label htmlFor="mastered" className="text-sm font-medium text-[#8B9CC7]">
             Inclure les compétences maîtrisées
           </Label>
           <Switch
@@ -41,7 +41,7 @@ export const FiltersSection = ({ filters, onFilterChange }: FiltersSectionProps)
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="speed" className="text-sm font-medium">
+          <Label htmlFor="speed" className="text-sm font-medium text-[#8B9CC7]">
             Vitesse de lecture ({filters.playbackSpeed}x)
           </Label>
           <Slider
