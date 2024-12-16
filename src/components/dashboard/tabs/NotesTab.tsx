@@ -8,6 +8,8 @@ import { format } from "date-fns";
 import { Calendar } from "./notes/Calendar";
 import { NoteInput } from "./notes/NoteInput";
 import { NotesList } from "./notes/NotesList";
+import { YearlyCalendar } from "./notes/YearlyCalendar";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface NotesTabProps {
   userId: string;
@@ -19,6 +21,7 @@ const NotesTab = ({ userId }: NotesTabProps) => {
   const [time, setTime] = useState(format(new Date(), "HH:mm"));
   const [tags, setTags] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [view, setView] = useState<"daily" | "yearly">("daily");
   const { toast } = useToast();
   const isMobile = useIsMobile();
 
@@ -113,34 +116,47 @@ const NotesTab = ({ userId }: NotesTabProps) => {
   };
 
   return (
-    <div className={`grid grid-cols-1 ${isMobile ? 'gap-4' : 'md:grid-cols-2 gap-6'}`}>
-      <Calendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
-      
-      <motion.div 
-        className="bg-card rounded-lg border border-border overflow-hidden"
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.3, delay: 0.1 }}
-      >
-        <div className="p-4 space-y-4">
-          <NoteInput
-            note={note}
-            setNote={setNote}
-            time={time}
-            setTime={setTime}
-            saveNote={saveNote}
-            tags={tags}
-            setTags={setTags}
-          />
-          
-          <NotesList 
-            notes={userNotes} 
-            deleteNote={deleteNote}
-            selectedTags={selectedTags}
-            onTagClick={handleTagClick}
-          />
-        </div>
-      </motion.div>
+    <div className="space-y-4">
+      <Tabs value={view} onValueChange={(v) => setView(v as "daily" | "yearly")}>
+        <TabsList className="w-full justify-start mb-4">
+          <TabsTrigger value="daily">Vue journalière</TabsTrigger>
+          <TabsTrigger value="yearly">Vue annuelle</TabsTrigger>
+        </TabsList>
+
+        {view === "daily" ? (
+          <div className={`grid grid-cols-1 ${isMobile ? 'gap-4' : 'md:grid-cols-2 gap-6'}`}>
+            <Calendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+            
+            <motion.div 
+              className="bg-card rounded-lg border border-border overflow-hidden"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
+            >
+              <div className="p-4 space-y-4">
+                <NoteInput
+                  note={note}
+                  setNote={setNote}
+                  time={time}
+                  setTime={setTime}
+                  saveNote={saveNote}
+                  tags={tags}
+                  setTags={setTags}
+                />
+                
+                <NotesList 
+                  notes={userNotes} 
+                  deleteNote={deleteNote}
+                  selectedTags={selectedTags}
+                  onTagClick={handleTagClick}
+                />
+              </div>
+            </motion.div>
+          </div>
+        ) : (
+          <YearlyCalendar userId={userId} />
+        )}
+      </Tabs>
     </div>
   );
 };
