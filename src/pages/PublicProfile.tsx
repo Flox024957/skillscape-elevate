@@ -15,7 +15,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
-import { Users, Image, BookOpen, Activity, MessageSquare } from "lucide-react";
+import { Users, Image, BookOpen, Activity, Calendar } from "lucide-react";
+import { ProfileEvents } from "@/components/profile/ProfileEvents";
 
 export default function PublicProfile() {
   const { userId } = useParams();
@@ -116,25 +117,25 @@ export default function PublicProfile() {
           >
             <Tabs defaultValue="posts" className="w-full">
               <TabsList className="w-full justify-start mb-6 glass-panel">
-                <TabsTrigger value="posts" className="flex items-center gap-2 data-[state=active]:bg-primary/20">
+                <TabsTrigger value="posts" className="flex items-center gap-2">
                   <Activity className="h-4 w-4" />
                   Publications
                 </TabsTrigger>
-                <TabsTrigger value="media" className="flex items-center gap-2 data-[state=active]:bg-primary/20">
+                <TabsTrigger value="media" className="flex items-center gap-2">
                   <Image className="h-4 w-4" />
                   Médias
                 </TabsTrigger>
-                <TabsTrigger value="friends" className="flex items-center gap-2 data-[state=active]:bg-primary/20">
+                <TabsTrigger value="friends" className="flex items-center gap-2">
                   <Users className="h-4 w-4" />
                   Amis
                 </TabsTrigger>
-                <TabsTrigger value="experience" className="flex items-center gap-2 data-[state=active]:bg-primary/20">
+                <TabsTrigger value="events" className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4" />
+                  Événements
+                </TabsTrigger>
+                <TabsTrigger value="experience" className="flex items-center gap-2">
                   <BookOpen className="h-4 w-4" />
                   Expérience
-                </TabsTrigger>
-                <TabsTrigger value="messages" className="flex items-center gap-2 data-[state=active]:bg-primary/20">
-                  <MessageSquare className="h-4 w-4" />
-                  Messages
                 </TabsTrigger>
               </TabsList>
 
@@ -190,6 +191,23 @@ export default function PublicProfile() {
                   </motion.div>
                 </TabsContent>
 
+                <TabsContent value="events">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="glass-panel rounded-lg p-6"
+                  >
+                    <div className="flex items-center justify-between mb-6">
+                      <h3 className="text-lg font-semibold gradient-text">Événements</h3>
+                      <Badge variant="secondary" className="bg-primary/10">
+                        Agenda
+                      </Badge>
+                    </div>
+                    <ProfileEvents userId={userId as string} isOwnProfile={isOwnProfile} />
+                  </motion.div>
+                </TabsContent>
+
                 <TabsContent value="experience">
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
@@ -198,26 +216,6 @@ export default function PublicProfile() {
                     className="glass-panel rounded-lg p-6"
                   >
                     <ProfileExperienceEducation profile={profile} />
-                  </motion.div>
-                </TabsContent>
-
-                <TabsContent value="messages">
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    className="glass-panel rounded-lg p-6"
-                  >
-                    <div className="flex items-center justify-between mb-6">
-                      <h3 className="text-lg font-semibold gradient-text">Messages</h3>
-                      <Badge variant="secondary" className="bg-primary/10">
-                        Communication
-                      </Badge>
-                    </div>
-                    {/* Intégration future du composant de messagerie */}
-                    <p className="text-center text-muted-foreground">
-                      La messagerie sera bientôt disponible
-                    </p>
                   </motion.div>
                 </TabsContent>
               </AnimatePresence>
