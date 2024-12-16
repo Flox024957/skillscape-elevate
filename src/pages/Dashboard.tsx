@@ -17,7 +17,7 @@ const Dashboard = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-background/50 backdrop-blur-sm p-4">
+      <div className="min-h-screen bg-background p-4">
         <div className="max-w-7xl mx-auto">
           <div className="glass-panel p-6 animate-pulse">
             Chargement...
@@ -28,7 +28,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background/50 backdrop-blur-sm p-4">
+    <div className="min-h-screen bg-background p-4">
       <div className="max-w-7xl mx-auto space-y-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -45,7 +45,6 @@ const Dashboard = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="glass-panel"
         >
           <DashboardTabs user={user} />
         </motion.div>

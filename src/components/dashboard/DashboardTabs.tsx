@@ -52,7 +52,7 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
       className="space-y-4"
     >
       <motion.div variants={tabVariants}>
-        <TabsList className="grid grid-cols-2 md:grid-cols-5 gap-2 bg-background/50 backdrop-blur-sm p-1 rounded-lg border border-border/50">
+        <TabsList className="grid grid-cols-2 md:grid-cols-5 gap-2 bg-card/50 backdrop-blur-sm p-1 rounded-lg border border-border/50">
           <TabsTrigger 
             value="skills"
             className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-300"
