@@ -37,8 +37,8 @@ const MainPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.8 }}
             className={cn(
-              "glass-panel-pro overflow-hidden rounded-3xl",
-              isMobile ? "p-6 mt-6" : "p-12"
+              "glass-panel-pro overflow-hidden rounded-3xl mt-6",
+              isMobile ? "p-6" : "p-12"
             )}
           >
             <CategoriesSection />
