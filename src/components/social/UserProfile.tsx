@@ -71,7 +71,6 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
         throw error;
       }
     },
-    retry: 1,
   });
 
   if (profileLoading) {
