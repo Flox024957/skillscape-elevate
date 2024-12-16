@@ -1,52 +1,26 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Play, Plus } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface SkillsSectionProps {
   onContentSelect: (content: string) => void;
-  selectedSkills: string[];
-  onSkillSelect: (skillId: string) => void;
+  filters: {
+    userSkillsOnly: boolean;
+    includeMastered: boolean;
+  };
 }
 
-export const SkillsSection = ({
-  onContentSelect,
-  selectedSkills,
-  onSkillSelect,
-}: SkillsSectionProps) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
-
-  const { data: categories } = useQuery({
-    queryKey: ['categories'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('categories')
-        .select('*')
-        .order('name');
-      
-      if (error) throw error;
-      return data;
-    },
-  });
+export const SkillsSection = ({ onContentSelect, filters }: SkillsSectionProps) => {
+  const { toast } = useToast();
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
 
   const { data: skills } = useQuery({
-    queryKey: ['skills', selectedCategory],
+    queryKey: ['skills', filters],
     queryFn: async () => {
       let query = supabase
         .from('skills')
@@ -55,15 +29,22 @@ export const SkillsSection = ({
           titre,
           resume,
           description,
-          category_id,
           categories (
             name
           )
         `)
         .order('titre');
 
-      if (selectedCategory !== "all") {
-        query = query.eq('category_id', selectedCategory);
+      if (filters.userSkillsOnly) {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          query = query.in('id', (await supabase
+            .from('user_skills')
+            .select('skill_id')
+            .eq('user_id', user.id)
+            .eq('est_maitrisee', filters.includeMastered)
+          ).data?.map(s => s.skill_id) || []);
+        }
       }
 
       const { data, error } = await query;
@@ -72,68 +53,75 @@ export const SkillsSection = ({
     },
   });
 
-  const { data: userSkills } = useQuery({
-    queryKey: ['userSkills'],
-    queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return [];
-      
-      const { data, error } = await supabase
-        .from('user_skills')
-        .select('skill_id')
-        .eq('user_id', user.id);
-      
-      if (error) throw error;
-      return data.map(s => s.skill_id);
-    },
-  });
-
   const getSkillContent = (skill: any) => {
     return `${skill.titre}. ${skill.resume}. ${skill.description}`;
+  };
+
+  const handleSkillSelect = (skillId: string) => {
+    setSelectedSkills(prev => 
+      prev.includes(skillId)
+        ? prev.filter(id => id !== skillId)
+        : [...prev, skillId]
+    );
+  };
+
+  const handlePlaySelected = () => {
+    if (selectedSkills.length === 0) {
+      toast({
+        title: "Aucune compétence sélectionnée",
+        description: "Veuillez sélectionner au moins une compétence à lire",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const selectedContent = skills
+      ?.filter(skill => selectedSkills.includes(skill.id))
+      .map(skill => getSkillContent(skill))
+      .join(". ");
+
+    if (selectedContent) {
+      onContentSelect(selectedContent);
+    }
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Compétences</CardTitle>
+        <CardTitle className="flex items-center justify-between">
+          <span>Compétences</span>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handlePlaySelected}
+            disabled={selectedSkills.length === 0}
+          >
+            <Play className="w-4 h-4 mr-2" />
+            Lire la sélection
+          </Button>
+        </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <Select
-          value={selectedCategory}
-          onValueChange={setSelectedCategory}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Catégorie" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Toutes les catégories</SelectItem>
-            {categories?.map((category) => (
-              <SelectItem key={category.id} value={category.id}>
-                {category.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
+      <CardContent>
         <ScrollArea className="h-[300px] rounded-md border p-4">
           <div className="space-y-2">
-            {skills?.map((skill) => (
+            {skills?.map((skill, index) => (
               <div key={skill.id} className="flex items-center gap-2">
-                <Checkbox
-                  checked={selectedSkills.includes(skill.id)}
-                  onCheckedChange={() => onSkillSelect(skill.id)}
-                />
                 <Button
                   variant="ghost"
-                  className="w-full justify-start text-left font-normal"
+                  size="sm"
+                  onClick={() => handleSkillSelect(skill.id)}
+                  className={`flex-1 justify-start ${
+                    selectedSkills.includes(skill.id) ? "bg-accent" : ""
+                  }`}
+                >
+                  {index + 1}. {skill.titre}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
                   onClick={() => onContentSelect(getSkillContent(skill))}
                 >
-                  {skill.titre}
-                  {userSkills?.includes(skill.id) && (
-                    <Badge variant="secondary" className="ml-2">
-                      En cours
-                    </Badge>
-                  )}
+                  <Play className="w-4 h-4" />
                 </Button>
               </div>
             ))}
