@@ -1,21 +1,20 @@
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import VoiceSelector from "./audio/VoiceSelector";
+import { useAudioPlayer } from "./audio/useAudioPlayer";
+import PlaybackControls from "./audio/PlaybackControls";
 import VolumeControl from "./audio/VolumeControl";
 import ProgressBar from "./audio/ProgressBar";
-import PlaybackControls from "./audio/PlaybackControls";
-import { useAudioPlayer } from "./audio/useAudioPlayer";
+import VoiceSelector from "./audio/VoiceSelector";
+import { Slider } from "@/components/ui/slider";
 
 interface AudioPlayerProps {
   selectedContent: string;
   onContentSelect: (content: string) => void;
-  playbackSpeed?: number;
+  playbackSpeed: number;
 }
 
-const AudioPlayer = ({ 
-  selectedContent, 
-  onContentSelect,
-  playbackSpeed = 1 
-}: AudioPlayerProps) => {
+const AudioPlayer = ({ selectedContent, onContentSelect, playbackSpeed = 1 }: AudioPlayerProps) => {
+  const [randomMode, setRandomMode] = useState(false);
   const {
     isPlaying,
     selectedVoice,
@@ -29,10 +28,15 @@ const AudioPlayer = ({
     formatTime,
   } = useAudioPlayer(selectedContent, playbackSpeed);
 
+  const handleRandomPlay = () => {
+    setRandomMode(!randomMode);
+    // Implement random play logic here
+  };
+
   return (
     <Card>
-      <CardContent className="space-y-4 p-4">
-        <div className="flex items-center gap-4">
+      <CardContent className="space-y-6 p-6">
+        <div className="flex flex-col md:flex-row justify-between gap-4">
           <VoiceSelector
             selectedVoice={selectedVoice}
             voices={voices}
@@ -50,12 +54,31 @@ const AudioPlayer = ({
           formatTime={formatTime}
         />
 
-        <PlaybackControls
-          isPlaying={isPlaying}
-          selectedContent={selectedContent}
-          onPlay={handlePlay}
-          onRandomPlay={() => {/* TODO: Implement random play */}}
-        />
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <PlaybackControls
+            isPlaying={isPlaying}
+            selectedContent={selectedContent}
+            onPlay={handlePlay}
+            onRandomPlay={handleRandomPlay}
+          />
+          <div className="flex items-center gap-2 w-full md:w-auto">
+            <span className="text-sm whitespace-nowrap">Vitesse : {playbackSpeed}x</span>
+            <Slider
+              value={[playbackSpeed]}
+              min={0.5}
+              max={2}
+              step={0.1}
+              className="w-32"
+              disabled
+            />
+          </div>
+        </div>
+
+        {selectedContent && (
+          <div className="mt-4 p-4 bg-muted/50 rounded-lg">
+            <p className="text-sm text-muted-foreground">{selectedContent}</p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
