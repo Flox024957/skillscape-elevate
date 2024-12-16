@@ -38,7 +38,10 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background/50 backdrop-blur-sm">
+    <div className={cn(
+      "min-h-screen bg-background/50 backdrop-blur-sm",
+      isMobile && "pb-20"
+    )}>
       <div className={cn(
         "mx-auto",
         isMobile ? "max-w-full px-0" : "max-w-7xl px-4"
