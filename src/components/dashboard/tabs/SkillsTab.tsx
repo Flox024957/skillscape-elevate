@@ -3,6 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { MasteredSkillsList } from "./skills/MasteredSkillsList";
 import { SkillsList } from "./skills/SkillsList";
+import { motion } from "framer-motion";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 interface SkillsTabProps {
   userId: string;
@@ -104,19 +106,45 @@ const SkillsTab = ({ userId }: SkillsTabProps) => {
   );
 
   return (
-    <div className="space-y-8">
-      {masteredSkills && masteredSkills.length > 0 && (
-        <MasteredSkillsList
-          masteredSkills={masteredSkills}
-          onRemove={handleRemoveMasteredSkill}
-        />
-      )}
-      
-      <SkillsList
-        skills={nonMasteredSkills || []}
-        onMaster={handleMasterSkill}
-      />
-    </div>
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+      className="space-y-8"
+    >
+      <Tabs defaultValue="all" className="w-full">
+        <TabsList className="w-full grid grid-cols-2 mb-8">
+          <TabsTrigger value="all" className="data-[state=active]:bg-primary/10">
+            Toutes les compétences
+          </TabsTrigger>
+          <TabsTrigger value="mastered" className="data-[state=active]:bg-primary/10">
+            Compétences maîtrisées
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="all" className="space-y-6">
+          <SkillsList
+            skills={nonMasteredSkills || []}
+            onMaster={handleMasterSkill}
+          />
+        </TabsContent>
+
+        <TabsContent value="mastered">
+          {masteredSkills && masteredSkills.length > 0 ? (
+            <MasteredSkillsList
+              masteredSkills={masteredSkills}
+              onRemove={handleRemoveMasteredSkill}
+            />
+          ) : (
+            <div className="text-center p-8 bg-card/50 rounded-lg border border-border">
+              <p className="text-muted-foreground">
+                Aucune compétence maîtrisée pour le moment
+              </p>
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
+    </motion.div>
   );
 };
 
