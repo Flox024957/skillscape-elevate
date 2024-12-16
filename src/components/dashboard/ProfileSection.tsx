@@ -8,13 +8,14 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
+import { memo } from "react";
 
 interface ProfileSectionProps {
   user: User;
   onSignOut: () => Promise<void>;
 }
 
-const ProfileSection = ({ user, onSignOut }: ProfileSectionProps) => {
+const ProfileSection = memo(({ user, onSignOut }: ProfileSectionProps) => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
 
@@ -24,27 +25,25 @@ const ProfileSection = ({ user, onSignOut }: ProfileSectionProps) => {
       const [friendsCount, postsCount] = await Promise.all([
         supabase
           .from('friendships')
-          .select('id', { count: 'exact' })
+          .select('id', { count: 'exact', head: true })
           .eq('status', 'accepted')
-          .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`)
-          .then(({ count }) => count),
+          .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`),
         supabase
           .from('posts')
-          .select('id', { count: 'exact' })
+          .select('id', { count: 'exact', head: true })
           .eq('user_id', user.id)
-          .then(({ count }) => count)
       ]);
 
       return {
-        friends: friendsCount || 0,
-        posts: postsCount || 0
+        friends: friendsCount.count || 0,
+        posts: postsCount.count || 0
       };
     },
     staleTime: 30000,
   });
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="p-3 space-y-3">
       <div className={cn(
         "flex items-center",
         isMobile ? "justify-between" : "gap-4"
@@ -52,7 +51,7 @@ const ProfileSection = ({ user, onSignOut }: ProfileSectionProps) => {
         <div className="flex items-center gap-3">
           <Avatar className={cn(
             "border-2 border-primary/20",
-            isMobile ? "h-12 w-12" : "h-16 w-16"
+            isMobile ? "h-10 w-10" : "h-16 w-16"
           )}>
             <AvatarImage src={user.user_metadata.avatar_url} />
             <AvatarFallback>{user.email?.charAt(0).toUpperCase()}</AvatarFallback>
@@ -60,11 +59,11 @@ const ProfileSection = ({ user, onSignOut }: ProfileSectionProps) => {
           <div>
             <h2 className={cn(
               "font-semibold",
-              isMobile ? "text-base" : "text-xl"
+              isMobile ? "text-sm" : "text-xl"
             )}>
               {user.user_metadata.full_name || user.email}
             </h2>
-            <p className="text-sm text-muted-foreground truncate max-w-[200px]">
+            <p className="text-xs text-muted-foreground truncate max-w-[150px]">
               {user.email}
             </p>
           </div>
@@ -81,7 +80,7 @@ const ProfileSection = ({ user, onSignOut }: ProfileSectionProps) => {
         )}
       </div>
 
-      <div className="flex gap-4">
+      <div className="flex gap-2">
         <Button
           variant="ghost"
           size={isMobile ? "sm" : "default"}
@@ -90,7 +89,6 @@ const ProfileSection = ({ user, onSignOut }: ProfileSectionProps) => {
         >
           <Users className={cn("h-4 w-4", isMobile && "h-3 w-3")} />
           <Badge variant="secondary">{socialStats?.friends || 0}</Badge>
-          {!isMobile && "Amis"}
         </Button>
         <Button
           variant="ghost"
@@ -114,6 +112,8 @@ const ProfileSection = ({ user, onSignOut }: ProfileSectionProps) => {
       </div>
     </div>
   );
-};
+});
+
+ProfileSection.displayName = "ProfileSection";
 
 export default ProfileSection;
