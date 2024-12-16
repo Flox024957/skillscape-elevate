@@ -53,6 +53,24 @@
   * {
     @apply border-border;
   }
+
+  /* Masquer la barre de défilement sur mobile tout en gardant la fonctionnalité */
+  @media (max-width: 768px) {
+    html {
+      overflow-y: auto;
+      -ms-overflow-style: none;  /* Pour Internet Explorer et Edge */
+      scrollbar-width: none;     /* Pour Firefox */
+    }
+    
+    html::-webkit-scrollbar {
+      display: none;             /* Pour Chrome, Safari et Opera */
+    }
+    
+    body {
+      -webkit-overflow-scrolling: touch; /* Pour un défilement fluide sur iOS */
+    }
+  }
+  
   body {
     @apply bg-background text-foreground antialiased min-h-screen;
     font-feature-settings: "rlig" 1, "calt" 1;
