@@ -23,6 +23,8 @@ import SkillContent from "./skills/SkillContent";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { UserSkill } from "@/types/skills";
 import { Json } from "@/integrations/supabase/types";
+import MasteredSkillsSection from "./skills/MasteredSkillsSection";
+import { Separator } from "@/components/ui/separator";
 
 interface SkillsTabProps {
   userId: string;
@@ -155,38 +157,50 @@ const SkillsTab = ({ userId }: SkillsTabProps) => {
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
     >
-      <div className={`space-y-4 ${isMobile ? 'px-2' : ''}`}>
-        <SortableContext
-          items={userSkills.map(skill => skill.skill_id)}
-          strategy={verticalListSortingStrategy}
-        >
-          {userSkills.map((userSkill) => (
-            <SortableSkillItem key={userSkill.skill_id} id={userSkill.skill_id}>
-              <Collapsible
-                open={openSections.includes(userSkill.skill_id)}
-                onOpenChange={() => toggleSection(userSkill.skill_id)}
-                className="bg-card rounded-lg border border-border overflow-hidden flex-1"
-              >
-                <SkillHeader
-                  title={userSkill.skills.titre}
-                  selectedSections={userSkill.sections_selectionnees}
-                  skillId={userSkill.skill_id}
-                  onAdd={handleAddSkillSection}
-                  isMastered={userSkill.is_mastered}
-                />
-                <SkillContent
-                  skillId={userSkill.skill_id}
-                  selectedSections={userSkill.sections_selectionnees}
-                  summary={userSkill.skills.resume}
-                  explanation={userSkill.skills.description}
-                  concreteAction={userSkill.skills.action_concrete}
-                  examples={userSkill.skills.exemples}
-                  onAdd={handleAddSkillSection}
-                />
-              </Collapsible>
-            </SortableSkillItem>
-          ))}
-        </SortableContext>
+      <div className={`space-y-8 ${isMobile ? 'px-2' : ''}`}>
+        <div>
+          <h2 className="text-lg font-semibold mb-4">Compétences en cours d'apprentissage</h2>
+          <SortableContext
+            items={userSkills.map(skill => skill.skill_id)}
+            strategy={verticalListSortingStrategy}
+          >
+            <div className="space-y-4">
+              {userSkills.map((userSkill) => (
+                <SortableSkillItem key={userSkill.skill_id} id={userSkill.skill_id}>
+                  <Collapsible
+                    open={openSections.includes(userSkill.skill_id)}
+                    onOpenChange={() => toggleSection(userSkill.skill_id)}
+                    className="bg-card rounded-lg border border-border overflow-hidden flex-1"
+                  >
+                    <SkillHeader
+                      title={userSkill.skills.titre}
+                      selectedSections={userSkill.sections_selectionnees}
+                      skillId={userSkill.skill_id}
+                      onAdd={handleAddSkillSection}
+                      isMastered={userSkill.is_mastered}
+                    />
+                    <SkillContent
+                      skillId={userSkill.skill_id}
+                      selectedSections={userSkill.sections_selectionnees}
+                      summary={userSkill.skills.resume}
+                      explanation={userSkill.skills.description}
+                      concreteAction={userSkill.skills.action_concrete}
+                      examples={userSkill.skills.exemples}
+                      onAdd={handleAddSkillSection}
+                    />
+                  </Collapsible>
+                </SortableSkillItem>
+              ))}
+            </div>
+          </SortableContext>
+        </div>
+
+        <Separator className="my-8" />
+
+        <div>
+          <h2 className="text-lg font-semibold mb-4">Compétences maîtrisées</h2>
+          <MasteredSkillsSection />
+        </div>
       </div>
     </DndContext>
   );

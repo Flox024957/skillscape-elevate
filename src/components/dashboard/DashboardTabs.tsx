@@ -23,13 +23,13 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
           value="skills" 
           className="flex-1 min-w-max whitespace-nowrap px-3 py-2 text-sm"
         >
-          {isMobile ? "Skills" : "Compétences"}
+          {isMobile ? "Skills" : "Compétences & Maîtrises"}
         </TabsTrigger>
         <TabsTrigger 
           value="notes" 
           className="flex-1 min-w-max whitespace-nowrap px-3 py-2 text-sm"
         >
-          Notes
+          Agenda/Notes
         </TabsTrigger>
         <TabsTrigger 
           value="canvas" 
