@@ -1,4 +1,4 @@
-import { pipeline, TextGenerationOutput, TextGenerationSingle } from "@huggingface/transformers";
+import { pipeline } from "@huggingface/transformers";
 
 export const analyzeDreamText = async (dream: string) => {
   const generator = await pipeline(
@@ -13,9 +13,19 @@ export const analyzeDreamText = async (dream: string) => {
   });
 
   // Handle both array and single result cases
-  const generatedText = Array.isArray(result) 
-    ? result[0].generated_text 
-    : result.generated_text;
+  let generatedText: string;
+  
+  if (Array.isArray(result)) {
+    // If result is an array, take the first item's text
+    generatedText = typeof result[0] === 'string' 
+      ? result[0] 
+      : (result[0] as any).generated_text || '';
+  } else {
+    // If result is a single item
+    generatedText = typeof result === 'string' 
+      ? result 
+      : (result as any).generated_text || '';
+  }
   
   return generatedText
     .split("Conseils :")[1]
