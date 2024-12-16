@@ -5,10 +5,27 @@ import { FriendsList } from "@/components/social/FriendsList";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { ProfileExperienceEducation } from "@/components/profile/ProfileExperienceEducation";
 import { ProfileSidebar } from "@/components/profile/ProfileSidebar";
+import { NewsFeed } from "@/components/social/NewsFeed";
+import { CreatePost } from "@/components/social/CreatePost";
+import { FriendshipButton } from "@/components/profile/FriendshipButton";
+import { UserMediaGallery } from "@/components/profile/UserMediaGallery";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
 
 export default function PublicProfile() {
   const { userId } = useParams();
   const { data: profile, isLoading } = useProfileData(userId as string);
+  const [currentUser, setCurrentUser] = useState<string | null>(null);
+
+  useEffect(() => {
+    const getCurrentUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setCurrentUser(user.id);
+      }
+    };
+    getCurrentUser();
+  }, []);
 
   if (isLoading) {
     return (
@@ -34,23 +51,47 @@ export default function PublicProfile() {
     );
   }
 
+  const isOwnProfile = currentUser === userId;
+
   return (
     <div className="container mx-auto p-4 space-y-6">
-      <ProfileHeader profile={profile} />
+      <div className="flex items-center justify-between">
+        <ProfileHeader profile={profile} />
+        {!isOwnProfile && currentUser && (
+          <FriendshipButton currentUserId={currentUser} targetUserId={userId as string} />
+        )}
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <ProfileSidebar profile={profile} />
-        <ProfileExperienceEducation profile={profile} />
-        
+        <div className="md:col-span-2 space-y-6">
+          {isOwnProfile && (
+            <CreatePost userId={userId as string} />
+          )}
+          <NewsFeed userId={userId as string} profileFeed={true} />
+        </div>
+
         <div className="space-y-6">
+          <ProfileSidebar profile={profile} />
+          
+          <Card>
+            <CardHeader>
+              <h3 className="font-semibold">Médias partagés</h3>
+            </CardHeader>
+            <CardContent>
+              <UserMediaGallery userId={userId as string} />
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <h3 className="font-semibold">Amis</h3>
             </CardHeader>
             <CardContent>
-              <FriendsList userId={profile.id} />
+              <FriendsList userId={profile.id} variant="compact" />
             </CardContent>
           </Card>
+
+          <ProfileExperienceEducation profile={profile} />
         </div>
       </div>
     </div>
