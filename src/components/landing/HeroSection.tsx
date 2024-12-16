@@ -50,10 +50,10 @@ const HeroSection = () => {
       <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
         <Button
           onClick={() => navigate("/auth")}
-          className="w-full sm:w-auto px-8 py-6 text-lg rounded-xl bg-gradient-to-r from-[#8B5CF6] to-[#9b87f5] hover:from-[#7c4ef3] hover:to-[#8b76f3]
-                   shadow-[0_0_30px_rgba(139,92,246,0.5)] hover:shadow-[0_0_40px_rgba(139,92,246,0.7)]
+          className="w-full sm:w-auto px-8 py-6 text-lg rounded-xl bg-gradient-to-r from-[#0070F3] to-[#0EA5E9] hover:from-[#0051F3] hover:to-[#0C93D9]
+                   shadow-[0_0_30px_rgba(0,112,243,0.5)] hover:shadow-[0_0_40px_rgba(0,112,243,0.7)]
                    transform hover:-translate-y-1 transition-all duration-300
-                   border border-[#8B5CF6]/50"
+                   border border-[#0070F3]/50"
         >
           Commencer Gratuitement
         </Button>
@@ -62,8 +62,8 @@ const HeroSection = () => {
           variant="outline"
           className="w-full sm:w-auto px-8 py-6 text-lg rounded-xl
                    bg-background/30 backdrop-blur-sm
-                   border border-[#8B5CF6]/50 hover:border-[#8B5CF6]
-                   shadow-[0_0_25px_rgba(139,92,246,0.4)] hover:shadow-[0_0_35px_rgba(139,92,246,0.6)]
+                   border border-[#F97316]/50 hover:border-[#F97316]
+                   shadow-[0_0_25px_rgba(249,115,22,0.4)] hover:shadow-[0_0_35px_rgba(249,115,22,0.6)]
                    transform hover:-translate-y-1 transition-all duration-300"
         >
           Découvrir la Plateforme
