@@ -17,6 +17,8 @@ const NotesTab = ({ userId }: NotesTabProps) => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [note, setNote] = useState("");
   const [time, setTime] = useState(format(new Date(), "HH:mm"));
+  const [tags, setTags] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const { toast } = useToast();
   const isMobile = useIsMobile();
 
@@ -60,6 +62,7 @@ const NotesTab = ({ userId }: NotesTabProps) => {
         user_id: userId,
         content: note.trim(),
         created_at: noteDate.toISOString(),
+        tags: tags.length > 0 ? tags : null,
       }]);
 
     if (error) {
@@ -75,6 +78,7 @@ const NotesTab = ({ userId }: NotesTabProps) => {
         description: "Note sauvegardée",
       });
       setNote("");
+      setTags([]);
       refetch();
     }
   };
@@ -100,6 +104,14 @@ const NotesTab = ({ userId }: NotesTabProps) => {
     }
   };
 
+  const handleTagClick = (tag: string) => {
+    setSelectedTags(prev => 
+      prev.includes(tag) 
+        ? prev.filter(t => t !== tag)
+        : [...prev, tag]
+    );
+  };
+
   return (
     <div className={`grid grid-cols-1 ${isMobile ? 'gap-4' : 'md:grid-cols-2 gap-6'}`}>
       <Calendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
@@ -117,9 +129,16 @@ const NotesTab = ({ userId }: NotesTabProps) => {
             time={time}
             setTime={setTime}
             saveNote={saveNote}
+            tags={tags}
+            setTags={setTags}
           />
           
-          <NotesList notes={userNotes} deleteNote={deleteNote} />
+          <NotesList 
+            notes={userNotes} 
+            deleteNote={deleteNote}
+            selectedTags={selectedTags}
+            onTagClick={handleTagClick}
+          />
         </div>
       </motion.div>
     </div>
