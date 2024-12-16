@@ -2,66 +2,81 @@ import { motion } from "framer-motion";
 
 export const GeometricShapes = () => {
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {/* Large Rotating Hexagon */}
-      <motion.div 
-        initial={{ rotate: 0, scale: 0.8, opacity: 0.1 }}
-        animate={{ 
-          rotate: 360,
-          scale: [0.8, 1, 0.8],
-          opacity: [0.1, 0.2, 0.1]
+    <div className="absolute inset-0 overflow-hidden pointer-events-none flex items-center justify-center">
+      {/* Main Morphing Shape */}
+      <motion.div
+        className="w-[40vw] h-[40vw] relative"
+        animate={{
+          clipPath: [
+            'polygon(50% 0%, 0% 100%, 100% 100%)', // Triangle
+            'polygon(0% 0%, 0% 100%, 100% 100%, 100% 0%)', // Square
+            'circle(50% at 50% 50%)', // Circle
+            'polygon(50% 0%, 0% 100%, 100% 100%)' // Back to Triangle
+          ],
+          rotate: [0, 90, 180, 360],
+          scale: [1, 0.9, 1.1, 1]
         }}
-        transition={{ 
-          duration: 30,
-          repeat: Infinity,
-          ease: "linear"
-        }}
-        className="absolute top-1/4 left-1/4 w-96 h-96"
-        style={{
-          background: 'linear-gradient(45deg, rgba(139,92,246,0.3), rgba(0,0,0,0))',
-          clipPath: 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)',
-          transform: 'rotate(45deg)',
-          filter: 'blur(2px)'
-        }}
-      />
-
-      {/* Floating Triangles */}
-      <motion.div 
-        initial={{ rotate: 360, scale: 1.2, opacity: 0.15 }}
-        animate={{ 
-          rotate: 0,
-          scale: [1.2, 1.4, 1.2],
-          opacity: [0.15, 0.25, 0.15]
-        }}
-        transition={{ 
-          duration: 25,
-          repeat: Infinity,
-          ease: "linear"
-        }}
-        className="absolute bottom-1/4 right-1/4 w-80 h-80"
-        style={{
-          background: 'linear-gradient(-45deg, rgba(139,92,246,0.2), rgba(0,0,0,0))',
-          clipPath: 'polygon(50% 0%, 100% 100%, 0% 100%)',
-          filter: 'blur(3px)'
-        }}
-      />
-
-      {/* Pulsing Circle */}
-      <motion.div 
-        initial={{ scale: 0.9, opacity: 0.1 }}
-        animate={{ 
-          scale: [0.9, 1.1, 0.9],
-          opacity: [0.1, 0.2, 0.1]
-        }}
-        transition={{ 
+        transition={{
           duration: 20,
+          ease: "easeInOut",
           repeat: Infinity,
-          ease: "easeInOut"
+          repeatType: "reverse"
         }}
-        className="absolute top-1/3 right-1/3 w-64 h-64 rounded-full"
         style={{
-          background: 'radial-gradient(circle, rgba(139,92,246,0.2) 0%, rgba(0,0,0,0) 70%)',
-          filter: 'blur(4px)'
+          background: 'linear-gradient(45deg, rgba(139,92,246,0.3), rgba(168,85,247,0.3))',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(139,92,246,0.2)'
+        }}
+      >
+        {/* Inner Rotating Shape */}
+        <motion.div
+          className="absolute inset-0"
+          animate={{
+            rotate: [360, 0],
+            scale: [0.8, 1, 0.8]
+          }}
+          transition={{
+            duration: 15,
+            ease: "linear",
+            repeat: Infinity
+          }}
+          style={{
+            background: 'linear-gradient(-45deg, rgba(139,92,246,0.2), transparent)',
+            mixBlendMode: 'overlay'
+          }}
+        />
+
+        {/* Glowing Effect */}
+        <motion.div
+          className="absolute inset-0"
+          animate={{
+            opacity: [0.3, 0.5, 0.3]
+          }}
+          transition={{
+            duration: 3,
+            ease: "easeInOut",
+            repeat: Infinity
+          }}
+          style={{
+            boxShadow: '0 0 50px rgba(139,92,246,0.3)',
+            background: 'radial-gradient(circle at center, rgba(139,92,246,0.2), transparent)'
+          }}
+        />
+      </motion.div>
+
+      {/* Background Accent */}
+      <motion.div
+        className="absolute inset-0"
+        animate={{
+          opacity: [0.1, 0.2, 0.1]
+        }}
+        transition={{
+          duration: 5,
+          ease: "easeInOut",
+          repeat: Infinity
+        }}
+        style={{
+          background: 'radial-gradient(circle at center, rgba(139,92,246,0.1), transparent 70%)'
         }}
       />
     </div>
