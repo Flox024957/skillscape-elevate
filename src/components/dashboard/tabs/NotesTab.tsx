@@ -1,16 +1,13 @@
 import { useState } from "react";
-import { Calendar } from "@/components/ui/calendar";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { Plus, Clock, Calendar as CalendarIcon, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
-import { fr } from "date-fns/locale";
-import { Input } from "@/components/ui/input";
+import { Calendar } from "./notes/Calendar";
+import { NoteInput } from "./notes/NoteInput";
+import { NotesList } from "./notes/NotesList";
 
 interface NotesTabProps {
   userId: string;
@@ -105,25 +102,7 @@ const NotesTab = ({ userId }: NotesTabProps) => {
 
   return (
     <div className={`grid grid-cols-1 ${isMobile ? 'gap-4' : 'md:grid-cols-2 gap-6'}`}>
-      <motion.div 
-        className="bg-card rounded-lg border border-border overflow-hidden"
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.3 }}
-      >
-        <div className="p-4 space-y-4">
-          <h3 className="text-lg font-semibold flex items-center gap-2">
-            <CalendarIcon className="h-5 w-5 text-primary" />
-            {format(selectedDate || new Date(), "EEEE d MMMM yyyy", { locale: fr })}
-          </h3>
-          <Calendar
-            mode="single"
-            selected={selectedDate}
-            onSelect={setSelectedDate}
-            className="rounded-md"
-          />
-        </div>
-      </motion.div>
+      <Calendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
       
       <motion.div 
         className="bg-card rounded-lg border border-border overflow-hidden"
@@ -132,61 +111,15 @@ const NotesTab = ({ userId }: NotesTabProps) => {
         transition={{ duration: 0.3, delay: 0.1 }}
       >
         <div className="p-4 space-y-4">
-          <div className="flex items-center gap-4">
-            <div className="flex-1">
-              <label htmlFor="time" className="text-sm font-medium mb-1 block">
-                Heure
-              </label>
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="time"
-                  type="time"
-                  value={time}
-                  onChange={(e) => setTime(e.target.value)}
-                  className="flex-1"
-                />
-              </div>
-            </div>
-          </div>
-
-          <Textarea
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            placeholder="Écrivez une note..."
-            className="min-h-[100px] resize-none"
+          <NoteInput
+            note={note}
+            setNote={setNote}
+            time={time}
+            setTime={setTime}
+            saveNote={saveNote}
           />
           
-          <Button onClick={saveNote} className="w-full">
-            <Plus className="h-4 w-4 mr-2" />
-            Ajouter au planning
-          </Button>
-          
-          <div className="space-y-2 max-h-[300px] overflow-y-auto">
-            {userNotes?.map((note) => (
-              <motion.div
-                key={note.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex items-start gap-3 text-sm bg-muted/50 p-3 rounded-md group"
-              >
-                <div className="flex-1">
-                  <div className="font-medium text-xs text-muted-foreground mb-1">
-                    {format(new Date(note.created_at), "HH:mm")}
-                  </div>
-                  {note.content}
-                </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="opacity-0 group-hover:opacity-100 transition-opacity"
-                  onClick={() => deleteNote(note.id)}
-                >
-                  <Trash2 className="h-4 w-4 text-destructive" />
-                </Button>
-              </motion.div>
-            ))}
-          </div>
+          <NotesList notes={userNotes} deleteNote={deleteNote} />
         </div>
       </motion.div>
     </div>
