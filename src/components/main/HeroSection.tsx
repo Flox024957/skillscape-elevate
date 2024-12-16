@@ -51,7 +51,8 @@ const HeroSection = () => {
         className="text-6xl md:text-8xl font-bold mb-6 text-transparent bg-clip-text 
                  bg-gradient-to-r from-[#0EA5E9] via-[#8B5CF6] to-[#F97316]
                  animate-text-shimmer drop-shadow-[0_0_30px_rgba(255,255,255,0.5)]
-                 transform hover:scale-105 transition-transform duration-300 cursor-default"
+                 transform hover:scale-105 transition-transform duration-300 cursor-default
+                 text-shadow-neon"
       >
         FLAP
       </motion.h1>
@@ -59,7 +60,8 @@ const HeroSection = () => {
       <motion.p 
         variants={textVariants}
         className="text-4xl md:text-5xl font-bold mb-6 text-[#D1D5DB]
-                 drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]"
+                 drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]
+                 futuristic-text"
       >
         Élevez Votre Potentiel Professionnel
       </motion.p>
