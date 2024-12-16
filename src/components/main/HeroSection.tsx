@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { Clock } from "lucide-react";
+import { Clock, Calendar, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -15,28 +15,19 @@ const HeroSection = () => {
   const { data: todayNotes } = useQuery({
     queryKey: ['todayNotes'],
     queryFn: async () => {
-      const { data: session } = await supabase.auth.getSession();
-      if (!session.session) return [];
-
       const today = new Date();
-      const tomorrow = new Date(today);
-      tomorrow.setDate(tomorrow.getDate() + 1);
-
+      today.setHours(0, 0, 0, 0);
+      
       const { data, error } = await supabase
         .from('user_notes')
         .select('*')
-        .eq('user_id', session.session.user.id)
-        .gte('created_at', format(today, 'yyyy-MM-dd'))
-        .lt('created_at', format(tomorrow, 'yyyy-MM-dd'))
+        .gte('created_at', today.toISOString())
+        .lt('created_at', new Date(today.getTime() + 24*60*60*1000).toISOString())
         .order('created_at', { ascending: true });
       
-      if (error) {
-        console.error('Notes error:', error);
-        return [];
-      }
-      
+      if (error) throw error;
       return data;
-    },
+    }
   });
 
   useEffect(() => {
@@ -48,89 +39,88 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <motion.div 
-      variants={{
-        hidden: { opacity: 0 },
-        visible: { opacity: 1, transition: { duration: 0.5 } }
-      }}
-      className="text-center mb-20"
-    >
-      <motion.div 
-        className="mb-12 space-y-4"
+    <div className="relative overflow-hidden rounded-2xl bg-black/30 backdrop-blur-xl p-8 mb-16
+                    border border-purple-500/20 hover:border-purple-500/40 transition-all duration-500
+                    group">
+      {/* Background Glow Effect */}
+      <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 opacity-0 
+                    group-hover:opacity-100 transition-opacity duration-500" />
+      
+      {/* Time Display */}
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.6 }}
+        className="flex items-center gap-4 mb-8"
       >
-        <h2 className="text-6xl font-bold text-primary">
-          {format(currentTime, "HH:mm:ss")}
-        </h2>
-        <p className="text-2xl text-muted-foreground">
-          {format(currentTime, "EEEE d MMMM yyyy", { locale: fr })}
-        </p>
+        <div className="p-3 bg-purple-500/10 rounded-xl">
+          <Clock className="w-8 h-8 text-purple-400" />
+        </div>
+        <div>
+          <h2 className="text-4xl font-bold text-white mb-1 font-mono">
+            {format(currentTime, 'HH:mm:ss')}
+          </h2>
+          <p className="text-purple-300">
+            {format(currentTime, 'EEEE d MMMM yyyy', { locale: fr })}
+          </p>
+        </div>
       </motion.div>
 
-      {todayNotes && todayNotes.length > 0 ? (
-        <motion.div 
-          className="max-w-2xl mx-auto space-y-4 mb-8"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
+      {/* Main Content */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.6 }}
+        className="space-y-6"
+      >
+        <div className="flex flex-col gap-4">
+          <h1 className="text-5xl font-bold bg-clip-text text-transparent 
+                       bg-gradient-to-r from-purple-400 via-pink-500 to-purple-400">
+            Bienvenue dans votre espace
+          </h1>
+          <p className="text-xl text-gray-300">
+            Explorez vos compétences et suivez votre progression
+          </p>
+        </div>
+
+        <div className="flex gap-4 mt-8">
+          <Button
+            onClick={() => navigate('/dashboard')}
+            className="bg-purple-500 hover:bg-purple-600 text-white px-6 py-2 rounded-lg
+                     transition-all duration-300 transform hover:-translate-y-1
+                     hover:shadow-[0_0_15px_rgba(168,85,247,0.5)]"
+          >
+            Accéder au tableau de bord
+            <ChevronRight className="ml-2 w-4 h-4" />
+          </Button>
+        </div>
+      </motion.div>
+
+      {/* Today's Notes Preview */}
+      {todayNotes && todayNotes.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+          className="mt-8 p-4 bg-white/5 rounded-xl border border-purple-500/20"
         >
-          <h3 className="text-xl font-semibold mb-4">Planning du jour</h3>
-          <div className="grid gap-3">
-            {todayNotes.map((note, index) => (
-              <motion.div
-                key={note.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-lg p-4 flex items-start gap-4"
-              >
-                <div className="flex items-center gap-2 text-primary">
-                  <Clock className="h-5 w-5" />
-                  <span className="font-medium">
-                    {format(new Date(note.created_at), "HH:mm")}
-                  </span>
-                </div>
-                <p className="flex-1 text-left">{note.content}</p>
-              </motion.div>
+          <div className="flex items-center gap-2 mb-4">
+            <Calendar className="w-5 h-5 text-purple-400" />
+            <h3 className="text-lg font-semibold text-white">Notes du jour</h3>
+          </div>
+          <div className="space-y-2">
+            {todayNotes.map((note: any) => (
+              <div key={note.id} className="p-3 bg-black/20 rounded-lg">
+                <p className="text-gray-300">{note.content}</p>
+                <p className="text-sm text-purple-400 mt-1">
+                  {format(new Date(note.created_at), 'HH:mm')}
+                </p>
+              </div>
             ))}
           </div>
         </motion.div>
-      ) : (
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="text-muted-foreground mb-8"
-        >
-          Aucune tâche planifiée pour aujourd'hui
-        </motion.p>
       )}
-
-      <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-        <Button
-          onClick={() => navigate("/auth")}
-          className="w-full sm:w-auto px-8 py-6 text-lg rounded-xl bg-gradient-to-r from-[#8B5CF6] to-[#9b87f5] hover:from-[#7c4ef3] hover:to-[#8b76f3]
-                   shadow-[0_0_30px_rgba(139,92,246,0.5)] hover:shadow-[0_0_40px_rgba(139,92,246,0.7)]
-                   transform hover:-translate-y-1 transition-all duration-300
-                   border border-[#8B5CF6]/50"
-        >
-          Commencer Gratuitement
-        </Button>
-        <Button
-          onClick={() => navigate("/dashboard")}
-          variant="outline"
-          className="w-full sm:w-auto px-8 py-6 text-lg rounded-xl
-                   bg-background/30 backdrop-blur-sm
-                   border border-[#8B5CF6]/50 hover:border-[#8B5CF6]
-                   shadow-[0_0_25px_rgba(139,92,246,0.4)] hover:shadow-[0_0_35px_rgba(139,92,246,0.6)]
-                   transform hover:-translate-y-1 transition-all duration-300"
-        >
-          Accéder au Dashboard
-        </Button>
-      </div>
-    </motion.div>
+    </div>
   );
 };
 
