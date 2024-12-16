@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { SearchBar } from "@/components/social/SearchBar";
-import { ArrowRight, Sparkles, Target, Users } from "lucide-react";
+import { ArrowRight, Sparkles, Target, Users, Rocket, Brain, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const features = [
@@ -22,6 +22,21 @@ const features = [
     icon: <Users className="w-6 h-6 text-blue-400" />,
     title: "Communauté Active",
     description: "Partagez et apprenez avec une communauté de professionnels motivés"
+  },
+  {
+    icon: <Rocket className="w-6 h-6 text-pink-400" />,
+    title: "Progression Rapide",
+    description: "Accélérez votre apprentissage grâce à nos outils innovants"
+  },
+  {
+    icon: <Brain className="w-6 h-6 text-green-400" />,
+    title: "Apprentissage Intelligent",
+    description: "Utilisez l'IA pour optimiser votre parcours d'apprentissage"
+  },
+  {
+    icon: <Star className="w-6 h-6 text-yellow-400" />,
+    title: "Récompenses",
+    description: "Gagnez des badges et débloquez des achievements en progressant"
   }
 ];
 
@@ -65,17 +80,22 @@ const MainPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black to-purple-900/20">
-      <div 
-        className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1518770660439-4636190af475')] 
-                   bg-cover bg-center opacity-10 pointer-events-none"
-      />
+      {/* Background Elements */}
+      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1518770660439-4636190af475')] bg-cover bg-center opacity-10 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-purple-900/20 pointer-events-none" />
+      
+      {/* Animated Background Shapes */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-1/2 -left-1/2 w-full h-full animate-cosmic-wave-1 opacity-20 bg-gradient-to-r from-purple-500/30 to-pink-500/30 rounded-full blur-3xl" />
+        <div className="absolute -bottom-1/2 -right-1/2 w-full h-full animate-cosmic-wave-2 opacity-20 bg-gradient-to-r from-blue-500/30 to-purple-500/30 rounded-full blur-3xl" />
+      </div>
       
       <div className="container mx-auto px-4 py-8 relative z-10">
         {/* Hero Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12 space-y-6"
+          className="text-center mb-20 space-y-6"
         >
           <motion.h1 
             className="text-5xl md:text-7xl font-bold mb-4 bg-clip-text text-transparent 

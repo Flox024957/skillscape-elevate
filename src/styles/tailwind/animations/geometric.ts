@@ -56,29 +56,11 @@ export const geometricAnimations = {
         opacity: "0.4",
       }
     },
-    "circle-pulse": {
-      "0%": {
-        transform: "scale(1) rotate(0deg)",
-        opacity: "0.3",
-        borderRadius: "50%",
-      },
-      "50%": {
-        transform: "scale(1.5) rotate(180deg)",
-        opacity: "0.6",
-        borderRadius: "40%",
-      },
-      "100%": {
-        transform: "scale(1) rotate(360deg)",
-        opacity: "0.3",
-        borderRadius: "50%",
-      }
-    },
   },
   animation: {
     "hexagon-spin": "hexagon-spin 20s linear infinite",
     "hexagon-spin-reverse": "hexagon-spin-reverse 25s linear infinite",
     "triangle-float": "triangle-float 15s ease-in-out infinite",
     "triangle-float-reverse": "triangle-float-reverse 18s ease-in-out infinite",
-    "circle-pulse": "circle-pulse 10s ease-in-out infinite",
   }
 };
