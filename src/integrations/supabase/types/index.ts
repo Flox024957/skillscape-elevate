@@ -3,14 +3,12 @@ import { Profile } from './profiles';
 import { Post, PostLike, PostComment } from './posts';
 import { Message } from './messages';
 import { Friendship } from './friendships';
-import { UserDream } from './dreams';
 
 export * from './auth';
 export * from './profiles';
 export * from './posts';
 export * from './messages';
 export * from './friendships';
-export * from './dreams';
 
 export type Database = {
   public: {
@@ -34,11 +32,6 @@ export type Database = {
         Row: Friendship;
         Insert: Partial<Friendship>;
         Update: Partial<Friendship>;
-      };
-      user_dreams: {
-        Row: UserDream;
-        Insert: Partial<UserDream>;
-        Update: Partial<UserDream>;
       };
     };
   };
