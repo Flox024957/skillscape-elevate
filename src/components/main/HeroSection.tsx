@@ -1,9 +1,14 @@
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { Card } from "@/components/ui/card";
 
 const HeroSection = () => {
-  const navigate = useNavigate();
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const textVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -17,7 +22,7 @@ const HeroSection = () => {
     }
   };
 
-  const buttonVariants = {
+  const frameVariants = {
     hidden: { opacity: 0, scale: 0.8 },
     visible: { 
       opacity: 1, 
@@ -29,14 +34,11 @@ const HeroSection = () => {
       }
     },
     hover: {
-      scale: 1.05,
+      scale: 1.02,
       transition: {
         duration: 0.2,
         ease: "easeInOut"
       }
-    },
-    tap: {
-      scale: 0.95
     }
   };
 
@@ -79,39 +81,76 @@ const HeroSection = () => {
         variants={textVariants}
         className="flex flex-col sm:flex-row gap-6 justify-center items-center"
       >
+        {/* Horloge et Date */}
         <motion.div
-          variants={buttonVariants}
+          variants={frameVariants}
           whileHover="hover"
-          whileTap="tap"
+          className="w-full sm:w-[300px]"
         >
-          <Button
-            onClick={() => navigate("/auth")}
-            className="w-full sm:w-auto px-8 py-6 text-lg rounded-xl 
-                     bg-gradient-to-r from-[#0A1E3D] to-[#1E3D7B] hover:from-[#0E2A5E] hover:to-[#2A4F8F]
-                     shadow-[0_0_30px_rgba(14,165,233,0.5)] hover:shadow-[0_0_40px_rgba(14,165,233,0.7)]
-                     transform hover:-translate-y-1 transition-all duration-300
-                     border border-[#0EA5E9]/50"
-          >
-            Commencer Gratuitement
-          </Button>
+          <Card className="p-6 bg-gradient-to-r from-[#0A1E3D] to-[#1E3D7B] 
+                         shadow-[0_0_30px_rgba(14,165,233,0.5)]
+                         border border-[#0EA5E9]/50">
+            <div className="relative w-32 h-32 mx-auto mb-4">
+              <div className="absolute inset-0 rounded-full border-4 border-[#0EA5E9]/30" />
+              {/* Aiguilles de l'horloge */}
+              <div 
+                className="absolute w-1 h-16 bg-[#0EA5E9] top-[8px] left-[calc(50%-1px)]"
+                style={{ 
+                  transform: `rotate(${time.getHours() * 30 + time.getMinutes() * 0.5}deg)`,
+                  transformOrigin: 'bottom center'
+                }}
+              />
+              <div 
+                className="absolute w-0.5 h-20 bg-white top-[4px] left-[calc(50%-0.5px)]"
+                style={{ 
+                  transform: `rotate(${time.getMinutes() * 6}deg)`,
+                  transformOrigin: 'bottom center'
+                }}
+              />
+              <div 
+                className="absolute w-0.5 h-24 bg-red-500 top-0 left-[calc(50%-0.5px)]"
+                style={{ 
+                  transform: `rotate(${time.getSeconds() * 6}deg)`,
+                  transformOrigin: 'bottom center'
+                }}
+              />
+            </div>
+            <div className="text-white space-y-2">
+              <p className="text-2xl font-bold">
+                {time.toLocaleTimeString()}
+              </p>
+              <p className="text-lg opacity-80" style={{ fontFamily: 'Old Standard TT, serif' }}>
+                {time.toLocaleDateString('fr-FR', { 
+                  weekday: 'long', 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })}
+              </p>
+            </div>
+          </Card>
         </motion.div>
 
+        {/* Agenda du jour */}
         <motion.div
-          variants={buttonVariants}
+          variants={frameVariants}
           whileHover="hover"
-          whileTap="tap"
+          className="w-full sm:w-[300px]"
         >
-          <Button
-            onClick={() => navigate("/dashboard")}
-            variant="outline"
-            className="w-full sm:w-auto px-8 py-6 text-lg rounded-xl
-                     bg-background/30 backdrop-blur-sm
-                     border border-[#0EA5E9]/50 hover:border-[#0EA5E9]
-                     shadow-[0_0_25px_rgba(14,165,233,0.4)] hover:shadow-[0_0_35px_rgba(14,165,233,0.6)]
-                     transform hover:-translate-y-1 transition-all duration-300"
-          >
-            Découvrir la Plateforme
-          </Button>
+          <Card className="p-6 bg-background/30 backdrop-blur-sm
+                         border border-[#0EA5E9]/50 hover:border-[#0EA5E9]
+                         shadow-[0_0_25px_rgba(14,165,233,0.4)]">
+            <h3 className="text-xl font-bold text-white mb-4">Agenda du Jour</h3>
+            <div className="space-y-3 text-left">
+              <p className="text-gray-300 text-sm">
+                Aucun événement prévu pour aujourd'hui
+              </p>
+              <div className="h-px bg-gradient-to-r from-transparent via-[#0EA5E9]/30 to-transparent" />
+              <p className="text-[#0EA5E9]/70 text-xs italic">
+                Connectez-vous pour voir votre agenda
+              </p>
+            </div>
+          </Card>
         </motion.div>
       </motion.div>
     </motion.div>
