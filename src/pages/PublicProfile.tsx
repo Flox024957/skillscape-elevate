@@ -5,7 +5,18 @@ import { Avatar } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { UserSkills } from "@/components/social/UserSkills";
 import { FriendsList } from "@/components/social/FriendsList";
-import { Briefcase, MapPin, Globe2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { 
+  Briefcase, 
+  MapPin, 
+  Globe2, 
+  GraduationCap, 
+  Languages, 
+  Target, 
+  Heart,
+  Calendar,
+  Mail
+} from "lucide-react";
 
 export default function PublicProfile() {
   const { userId } = useParams();
@@ -101,6 +112,48 @@ export default function PublicProfile() {
             </CardContent>
           </Card>
 
+          {/* Languages Section */}
+          {profile.languages && profile.languages.length > 0 && (
+            <Card>
+              <CardHeader>
+                <h3 className="font-semibold flex items-center gap-2">
+                  <Languages className="h-5 w-5" />
+                  Langues
+                </h3>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  {profile.languages.map((language, index) => (
+                    <Badge key={index} variant="secondary">
+                      {language}
+                    </Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Interests Section */}
+          {profile.interests && profile.interests.length > 0 && (
+            <Card>
+              <CardHeader>
+                <h3 className="font-semibold flex items-center gap-2">
+                  <Heart className="h-5 w-5" />
+                  Centres d'intérêt
+                </h3>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  {profile.interests.map((interest, index) => (
+                    <Badge key={index} variant="outline">
+                      {interest}
+                    </Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           <UserSkills userId={profile.id} />
         </div>
 
@@ -111,53 +164,130 @@ export default function PublicProfile() {
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Experience Section */}
-            <div className="space-y-4">
-              <h4 className="font-medium">Expérience</h4>
-              {profile.experience?.map((exp: any, index: number) => (
-                <div key={index} className="space-y-2">
-                  <h5 className="font-medium">{exp.title}</h5>
-                  <p className="text-sm text-muted-foreground">
-                    {exp.company}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {exp.start_date} - {exp.end_date || "Présent"}
-                  </p>
-                  {exp.description && (
-                    <p className="text-sm">{exp.description}</p>
-                  )}
-                  {index < (profile.experience?.length || 0) - 1 && (
-                    <Separator className="my-4" />
-                  )}
-                </div>
-              ))}
-            </div>
+            {profile.experience && profile.experience.length > 0 && (
+              <div className="space-y-4">
+                <h4 className="font-medium flex items-center gap-2">
+                  <Briefcase className="h-5 w-5" />
+                  Expérience
+                </h4>
+                {profile.experience.map((exp: any, index: number) => (
+                  <div key={index} className="space-y-2">
+                    <h5 className="font-medium">{exp.title}</h5>
+                    <p className="text-sm text-muted-foreground">
+                      {exp.company}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {exp.start_date} - {exp.end_date || "Présent"}
+                    </p>
+                    {exp.description && (
+                      <p className="text-sm">{exp.description}</p>
+                    )}
+                    {index < (profile.experience?.length || 0) - 1 && (
+                      <Separator className="my-4" />
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
 
             {/* Education Section */}
-            <div className="space-y-4">
-              <h4 className="font-medium">Formation</h4>
-              {profile.education?.map((edu: any, index: number) => (
-                <div key={index} className="space-y-2">
-                  <h5 className="font-medium">{edu.school}</h5>
-                  <p className="text-sm text-muted-foreground">
-                    {edu.degree} - {edu.field}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {edu.start_date} - {edu.end_date || "Présent"}
-                  </p>
-                  {edu.description && (
-                    <p className="text-sm">{edu.description}</p>
-                  )}
-                  {index < (profile.education?.length || 0) - 1 && (
-                    <Separator className="my-4" />
-                  )}
-                </div>
-              ))}
-            </div>
+            {profile.education && profile.education.length > 0 && (
+              <div className="space-y-4">
+                <h4 className="font-medium flex items-center gap-2">
+                  <GraduationCap className="h-5 w-5" />
+                  Formation
+                </h4>
+                {profile.education.map((edu: any, index: number) => (
+                  <div key={index} className="space-y-2">
+                    <h5 className="font-medium">{edu.school}</h5>
+                    <p className="text-sm text-muted-foreground">
+                      {edu.degree} - {edu.field}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {edu.start_date} - {edu.end_date || "Présent"}
+                    </p>
+                    {edu.description && (
+                      <p className="text-sm">{edu.description}</p>
+                    )}
+                    {index < (profile.education?.length || 0) - 1 && (
+                      <Separator className="my-4" />
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Personal Goals Section */}
+            {profile.personal_goals && profile.personal_goals.length > 0 && (
+              <div className="space-y-4">
+                <h4 className="font-medium flex items-center gap-2">
+                  <Target className="h-5 w-5" />
+                  Objectifs Personnels
+                </h4>
+                <ul className="space-y-2">
+                  {profile.personal_goals.map((goal: string, index: number) => (
+                    <li key={index} className="text-sm">
+                      {goal}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </CardContent>
         </Card>
 
-        {/* Right Column - Friends */}
+        {/* Right Column - Friends & Additional Info */}
         <div className="space-y-6">
+          {/* Certifications Section */}
+          {profile.certifications && profile.certifications.length > 0 && (
+            <Card>
+              <CardHeader>
+                <h3 className="font-semibold flex items-center gap-2">
+                  <Calendar className="h-5 w-5" />
+                  Certifications
+                </h3>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {profile.certifications.map((cert: any, index: number) => (
+                    <div key={index} className="space-y-1">
+                      <h4 className="font-medium">{cert.name}</h4>
+                      <p className="text-sm text-muted-foreground">
+                        {cert.issuer} - {cert.date}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Social Links */}
+          {profile.social_links && Object.keys(profile.social_links).length > 0 && (
+            <Card>
+              <CardHeader>
+                <h3 className="font-semibold">Réseaux Sociaux</h3>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {Object.entries(profile.social_links).map(([platform, url]) => (
+                    <a
+                      key={platform}
+                      href={url as string}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      <Globe2 className="h-4 w-4" />
+                      <span className="capitalize">{platform}</span>
+                    </a>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Friends Section */}
           <Card>
             <CardHeader>
               <h3 className="font-semibold">Amis</h3>
