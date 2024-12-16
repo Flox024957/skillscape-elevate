@@ -20,9 +20,9 @@ export const GeometricShapes = () => {
           width: '100vw',
           height: '100vw',
           borderRadius: '50%',
-          background: 'linear-gradient(45deg, rgba(139,92,246,0.3), rgba(168,85,247,0.3))',
+          background: 'linear-gradient(45deg, rgba(14,165,233,0.3), rgba(30,174,219,0.3))',
           backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(139,92,246,0.2)'
+          border: '1px solid rgba(14,165,233,0.2)'
         }}
       >
         {/* Inner Rotating Circle */}
@@ -39,7 +39,7 @@ export const GeometricShapes = () => {
           }}
           style={{
             borderRadius: '50%',
-            background: 'linear-gradient(-45deg, rgba(139,92,246,0.2), transparent)',
+            background: 'linear-gradient(-45deg, rgba(14,165,233,0.2), transparent)',
             mixBlendMode: 'overlay'
           }}
         />
@@ -57,8 +57,8 @@ export const GeometricShapes = () => {
           }}
           style={{
             borderRadius: '50%',
-            boxShadow: '0 0 50px rgba(139,92,246,0.3)',
-            background: 'radial-gradient(circle at center, rgba(139,92,246,0.2), transparent)'
+            boxShadow: '0 0 50px rgba(14,165,233,0.4), 0 0 100px rgba(14,165,233,0.2)',
+            background: 'radial-gradient(circle at center, rgba(14,165,233,0.3), transparent)'
           }}
         />
 
@@ -75,8 +75,8 @@ export const GeometricShapes = () => {
           }}
           style={{
             borderRadius: '50%',
-            border: '2px solid rgba(139,92,246,0.1)',
-            boxShadow: '0 0 30px rgba(139,92,246,0.2)'
+            border: '2px solid rgba(14,165,233,0.15)',
+            boxShadow: '0 0 30px rgba(14,165,233,0.3), 0 0 60px rgba(14,165,233,0.1)'
           }}
         />
       </motion.div>
@@ -93,7 +93,7 @@ export const GeometricShapes = () => {
           repeat: Infinity
         }}
         style={{
-          background: 'radial-gradient(circle at center, rgba(139,92,246,0.1), transparent 70%)'
+          background: 'radial-gradient(circle at center, rgba(14,165,233,0.15), transparent 70%)'
         }}
       />
     </div>
