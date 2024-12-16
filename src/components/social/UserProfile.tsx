@@ -18,32 +18,28 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
   const [isCurrentUser, setIsCurrentUser] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
-  // Check if current user
   useEffect(() => {
     const checkCurrentUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      setCurrentUserId(user?.id || null);
-      setIsCurrentUser(user?.id === userId);
+      if (user) {
+        setCurrentUserId(user.id);
+        setIsCurrentUser(user.id === userId);
+      }
     };
     checkCurrentUser();
   }, [userId]);
 
-  // Fetch profile data
   const { 
     data: profile, 
     isLoading: profileLoading, 
     error: profileError 
   } = useProfileData(userId);
 
-  // Fetch friendship status
   const { data: friendshipStatus } = useFriendshipStatus(userId, currentUserId);
 
-  // Fetch profile stats with proper error handling
   const { data: stats } = useQuery({
     queryKey: ['profile-stats', userId],
     queryFn: async () => {
-      console.log('Fetching stats for userId:', userId);
-      
       try {
         const [friendsCount, skillsCount, achievementsCount] = await Promise.all([
           supabase
@@ -51,26 +47,17 @@ export const UserProfile = ({ userId }: UserProfileProps) => {
             .select('*', { count: 'exact', head: true })
             .eq('status', 'accepted')
             .or(`user_id.eq.${userId},friend_id.eq.${userId}`)
-            .then(({ count, error }) => {
-              if (error) throw error;
-              return count || 0;
-            }),
+            .then(({ count }) => count || 0),
           supabase
             .from('user_skills')
             .select('*', { count: 'exact', head: true })
             .eq('user_id', userId)
-            .then(({ count, error }) => {
-              if (error) throw error;
-              return count || 0;
-            }),
+            .then(({ count }) => count || 0),
           supabase
             .from('user_achievements')
             .select('*', { count: 'exact', head: true })
             .eq('user_id', userId)
-            .then(({ count, error }) => {
-              if (error) throw error;
-              return count || 0;
-            })
+            .then(({ count }) => count || 0)
         ]);
 
         return { friendsCount, skillsCount, achievementsCount };

@@ -34,7 +34,7 @@ export const ProfileContent = ({
   friendshipStatus,
   stats 
 }: ProfileContentProps) => {
-  console.log('Rendering ProfileContent with userId:', userId);
+  console.log('Rendering ProfileContent with profile:', profile);
   
   return (
     <motion.div 
@@ -62,7 +62,7 @@ export const ProfileContent = ({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="mt-4"
+            className="mt-4 flex justify-center"
           >
             <FriendshipButton
               currentUserId={currentUserId}
@@ -102,7 +102,7 @@ export const ProfileContent = ({
           >
             <DateTimeSection />
             <BadgesSection userId={userId} />
-            <ProfileTabs isCurrentUser={isCurrentUser} />
+            <ProfileTabs isCurrentUser={isCurrentUser} userId={userId} />
           </motion.div>
         </div>
       </div>
