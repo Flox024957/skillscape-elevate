@@ -10,32 +10,43 @@ interface Group {
   description: string | null;
   is_private: boolean;
   created_at: string;
-  group_members: number;
+  members_count: number;
 }
 
 export const GroupList = () => {
   const { data: groups = [] } = useQuery<Group[]>({
     queryKey: ['groups'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // First, get the groups
+      const { data: groupsData, error: groupsError } = await supabase
         .from('groups')
         .select(`
           id,
           name,
           description,
           is_private,
-          created_at,
-          group_members:group_members(count)
+          created_at
         `)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      
-      // Transform the data to get the count value directly
-      return data.map(group => ({
-        ...group,
-        group_members: group.group_members[0]?.count || 0
-      }));
+      if (groupsError) throw groupsError;
+
+      // Then, for each group, get the member count separately
+      const groupsWithCounts = await Promise.all(
+        groupsData.map(async (group) => {
+          const { count } = await supabase
+            .from('group_members')
+            .select('*', { count: 'exact', head: true })
+            .eq('group_id', group.id);
+
+          return {
+            ...group,
+            members_count: count || 0
+          };
+        })
+      );
+
+      return groupsWithCounts;
     },
   });
 
@@ -56,7 +67,7 @@ export const GroupList = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center text-sm text-muted-foreground">
                 <Users className="h-4 w-4 mr-1" />
-                {group.group_members} members
+                {group.members_count} members
               </div>
               <Button variant="outline" size="sm">
                 View Group
