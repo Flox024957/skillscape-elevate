@@ -1416,6 +1416,7 @@ export type Database = {
           id: string
           maitrisee_le: string | null
           notes: string | null
+          position: number | null
           sections_selectionnees: string[] | null
           skill_id: string | null
           updated_at: string | null
@@ -1428,6 +1429,7 @@ export type Database = {
           id?: string
           maitrisee_le?: string | null
           notes?: string | null
+          position?: number | null
           sections_selectionnees?: string[] | null
           skill_id?: string | null
           updated_at?: string | null
@@ -1440,6 +1442,7 @@ export type Database = {
           id?: string
           maitrisee_le?: string | null
           notes?: string | null
+          position?: number | null
           sections_selectionnees?: string[] | null
           skill_id?: string | null
           updated_at?: string | null
