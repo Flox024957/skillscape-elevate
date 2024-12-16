@@ -3,8 +3,8 @@ import { HuggingFaceParams } from './types.ts';
 export const MODEL_URL = "https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1";
 
 export const getDefaultParams = (): HuggingFaceParams => ({
-  max_new_tokens: 2000, // Augmenté pour permettre des réponses plus longues
-  temperature: 0.7,
+  max_new_tokens: 2000,
+  temperature: 0.8,
   top_p: 0.9,
   top_k: 50,
   repetition_penalty: 1.2,

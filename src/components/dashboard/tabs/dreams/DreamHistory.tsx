@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Database } from "@/integrations/supabase/types";
+import { Sparkles, Calendar } from "lucide-react";
 
 type UserDream = Database["public"]["Tables"]["user_dreams"]["Row"];
 
@@ -33,33 +34,53 @@ export const DreamHistory = () => {
   if (!dreams?.length) {
     return (
       <div className="bg-card/50 backdrop-blur-sm rounded-lg p-6 border border-border">
-        <p className="text-muted-foreground">Aucun rêve analysé pour le moment.</p>
+        <div className="text-center py-8">
+          <Sparkles className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <p className="text-muted-foreground">
+            Aucun rêve analysé pour le moment.
+            <br />
+            Commencez par décrire votre rêve professionnel dans l'onglet "Analyser".
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="bg-card/50 backdrop-blur-sm rounded-lg p-6 border border-border">
-      <h2 className="text-2xl font-bold mb-6">Historique des Analyses</h2>
+      <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+        <Sparkles className="h-6 w-6 text-purple-400" />
+        Historique des Analyses
+      </h2>
       <ScrollArea className="h-[600px] pr-4">
         <div className="space-y-4">
           {dreams.map((dream) => (
-            <Card key={dream.id} className="p-4">
-              <div className="flex justify-between items-start mb-2">
-                <h3 className="font-semibold">{dream.title || "Rêve professionnel"}</h3>
-                <span className="text-sm text-muted-foreground">
+            <Card key={dream.id} className="p-6 hover:shadow-lg transition-shadow">
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="font-semibold text-lg">
+                  {dream.title || "Rêve professionnel"}
+                </h3>
+                <div className="flex items-center text-sm text-muted-foreground">
+                  <Calendar className="h-4 w-4 mr-1" />
                   {formatDistanceToNow(new Date(dream.created_at), {
                     addSuffix: true,
                     locale: fr,
                   })}
-                </span>
+                </div>
               </div>
-              <p className="text-sm text-muted-foreground mb-4">{dream.content}</p>
-              <div className="space-y-2">
+              
+              <div className="space-y-4">
+                <div className="bg-muted/30 rounded-lg p-4">
+                  <h4 className="font-medium mb-2">Description du rêve</h4>
+                  <p className="text-muted-foreground">{dream.content}</p>
+                </div>
+                
                 {dream.analysis && (
-                  <div className="text-sm">
-                    <strong>Analyse :</strong>
-                    <p className="mt-1 text-muted-foreground">{dream.analysis}</p>
+                  <div className="bg-primary/5 rounded-lg p-4">
+                    <h4 className="font-medium mb-2 text-primary">Analyse</h4>
+                    <div className="text-muted-foreground whitespace-pre-line">
+                      {dream.analysis}
+                    </div>
                   </div>
                 )}
               </div>
