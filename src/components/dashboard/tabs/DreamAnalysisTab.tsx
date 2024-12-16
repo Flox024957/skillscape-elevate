@@ -11,11 +11,26 @@ import { DreamResources } from "./dreams/DreamResources";
 import { DreamTips } from "./dreams/DreamTips";
 import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
 export const DreamAnalysisTab = () => {
   const [dream, setDream] = useState("");
   const [analysis, setAnalysis] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const { refetch: refetchDreams } = useQuery({
+    queryKey: ["dreams-history"],
+    queryFn: async () => {
+      const { data: dreams, error } = await supabase
+        .from("user_dreams")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      return dreams;
+    },
+  });
 
   const handleAnalysis = async () => {
     if (!dream.trim()) {
@@ -33,11 +48,29 @@ export const DreamAnalysisTab = () => {
       const advice = await analyzeDreamText(dream);
       console.log("Réponse reçue de l'API:", advice);
       setAnalysis(advice);
+      
       if (!advice) {
         toast.error("L'analyse n'a pas produit de résultats");
         return;
       }
-      toast.success("Analyse terminée !");
+
+      // Sauvegarder le rêve et son analyse dans la base de données
+      const { error: saveError } = await supabase
+        .from("user_dreams")
+        .insert({
+          title: dream.slice(0, 50) + "...",
+          content: dream,
+          analysis: advice,
+        });
+
+      if (saveError) {
+        console.error("Erreur lors de la sauvegarde:", saveError);
+        toast.error("Erreur lors de la sauvegarde du rêve");
+        return;
+      }
+
+      await refetchDreams();
+      toast.success("Analyse terminée et sauvegardée !");
     } catch (error) {
       console.error("Erreur lors de l'analyse:", error);
       toast.error("Une erreur est survenue lors de l'analyse");

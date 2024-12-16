@@ -5,12 +5,14 @@ import { Card } from "@/components/ui/card";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Database } from "@/integrations/supabase/types";
-import { Sparkles, Calendar } from "lucide-react";
+import { Sparkles, Calendar, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 type UserDream = Database["public"]["Tables"]["user_dreams"]["Row"];
 
 export const DreamHistory = () => {
-  const { data: dreams, isLoading } = useQuery({
+  const { data: dreams, isLoading, refetch } = useQuery({
     queryKey: ["dreams-history"],
     queryFn: async () => {
       const { data: dreams, error } = await supabase
@@ -22,6 +24,23 @@ export const DreamHistory = () => {
       return dreams as UserDream[];
     },
   });
+
+  const handleDelete = async (dreamId: string) => {
+    try {
+      const { error } = await supabase
+        .from("user_dreams")
+        .delete()
+        .eq("id", dreamId);
+
+      if (error) throw error;
+
+      toast.success("Rêve supprimé avec succès");
+      refetch();
+    } catch (error) {
+      console.error("Erreur lors de la suppression:", error);
+      toast.error("Erreur lors de la suppression du rêve");
+    }
+  };
 
   if (isLoading) {
     return (
@@ -60,12 +79,22 @@ export const DreamHistory = () => {
                 <h3 className="font-semibold text-lg">
                   {dream.title || "Rêve professionnel"}
                 </h3>
-                <div className="flex items-center text-sm text-muted-foreground">
-                  <Calendar className="h-4 w-4 mr-1" />
-                  {formatDistanceToNow(new Date(dream.created_at), {
-                    addSuffix: true,
-                    locale: fr,
-                  })}
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center text-sm text-muted-foreground">
+                    <Calendar className="h-4 w-4 mr-1" />
+                    {formatDistanceToNow(new Date(dream.created_at), {
+                      addSuffix: true,
+                      locale: fr,
+                    })}
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-destructive hover:text-destructive/90"
+                    onClick={() => handleDelete(dream.id)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
                 </div>
               </div>
               

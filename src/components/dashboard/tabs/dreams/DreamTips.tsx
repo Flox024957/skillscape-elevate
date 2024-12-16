@@ -1,57 +1,77 @@
 import { Card } from "@/components/ui/card";
-import { Lightbulb, Target, Brain, Pencil } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Lightbulb, CheckCircle2 } from "lucide-react";
+
+const tips = [
+  {
+    title: "Définissez des objectifs SMART",
+    description: "Vos objectifs doivent être Spécifiques, Mesurables, Atteignables, Réalistes et Temporellement définis.",
+    steps: [
+      "Écrivez vos objectifs de manière précise",
+      "Fixez des indicateurs de réussite",
+      "Assurez-vous qu'ils sont réalisables",
+      "Établissez un calendrier",
+    ],
+  },
+  {
+    title: "Développez votre réseau",
+    description: "Le networking est essentiel pour concrétiser vos rêves professionnels.",
+    steps: [
+      "Participez à des événements professionnels",
+      "Rejoignez des groupes LinkedIn pertinents",
+      "Contactez d'anciens collègues",
+      "Partagez votre expertise en ligne",
+    ],
+  },
+  {
+    title: "Investissez dans votre formation",
+    description: "L'apprentissage continu est la clé du succès professionnel.",
+    steps: [
+      "Identifiez les compétences requises",
+      "Suivez des formations certifiantes",
+      "Pratiquez régulièrement",
+      "Demandez des retours d'expérience",
+    ],
+  },
+  {
+    title: "Planifiez votre transition",
+    description: "Une transition professionnelle réussie nécessite une préparation minutieuse.",
+    steps: [
+      "Évaluez votre situation actuelle",
+      "Constituez une épargne de sécurité",
+      "Préparez votre entourage",
+      "Définissez des étapes intermédiaires",
+    ],
+  },
+];
 
 export const DreamTips = () => {
-  const tips = [
-    {
-      icon: Target,
-      title: "Soyez Spécifique",
-      description: "Plus votre description est détaillée, plus l'analyse sera pertinente. Incluez vos motivations, vos objectifs et vos attentes."
-    },
-    {
-      icon: Brain,
-      title: "Explorez vos Émotions",
-      description: "Décrivez ce que vous ressentez par rapport à ce rêve professionnel. Vos émotions sont des indicateurs précieux de vos véritables aspirations."
-    },
-    {
-      icon: Pencil,
-      title: "Notez les Détails",
-      description: "Prenez le temps d'écrire tous les aspects de votre rêve, même ceux qui peuvent sembler moins importants. Chaque détail peut être significatif."
-    },
-    {
-      icon: Lightbulb,
-      title: "Restez Ouvert",
-      description: "L'analyse peut révéler des aspects de votre rêve auxquels vous n'aviez pas pensé. Gardez l'esprit ouvert aux nouvelles perspectives."
-    }
-  ];
-
   return (
-    <div className="bg-card/50 backdrop-blur-sm rounded-lg p-6 border border-border">
+    <Card className="p-6">
       <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-        <Lightbulb className="h-6 w-6 text-yellow-400" />
-        Conseils pour une Meilleure Analyse
+        <Lightbulb className="h-6 w-6 text-purple-400" />
+        Conseils pour Réaliser vos Rêves
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {tips.map((tip, index) => {
-          const Icon = tip.icon;
-          return (
+      <ScrollArea className="h-[600px] pr-4">
+        <div className="space-y-6">
+          {tips.map((tip, index) => (
             <Card key={index} className="p-6 hover:shadow-lg transition-shadow">
-              <div className="flex items-start gap-4">
-                <div className="p-2 bg-primary/10 rounded-lg">
-                  <Icon className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-2">{tip.title}</h3>
-                  <p className="text-muted-foreground text-sm">
-                    {tip.description}
-                  </p>
-                </div>
+              <h3 className="text-lg font-semibold mb-2">{tip.title}</h3>
+              <p className="text-muted-foreground mb-4">{tip.description}</p>
+              
+              <div className="space-y-2">
+                {tip.steps.map((step, stepIndex) => (
+                  <div key={stepIndex} className="flex items-start gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-green-500 mt-0.5" />
+                    <p className="text-sm">{step}</p>
+                  </div>
+                ))}
               </div>
             </Card>
-          );
-        })}
-      </div>
-    </div>
+          ))}
+        </div>
+      </ScrollArea>
+    </Card>
   );
 };
