@@ -4,6 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
+import { UserDream } from "@/integrations/supabase/types";
 
 export const DreamHistory = () => {
   const { data: dreams, isLoading } = useQuery({
@@ -15,7 +16,7 @@ export const DreamHistory = () => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return dreams;
+      return dreams as UserDream[];
     },
   });
 
