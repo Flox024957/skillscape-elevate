@@ -1,12 +1,11 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import AudioTab from "./tabs/AudioTab";
 import CanvasTab from "./tabs/CanvasTab";
 import NotesTab from "./tabs/NotesTab";
 import SkillsTab from "./tabs/SkillsTab";
 import { User } from "@supabase/supabase-js";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion } from "framer-motion";
-import { Book, Calendar, PenTool, Music } from "lucide-react";
+import { Book, Calendar, PenTool } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface DashboardTabsProps {
@@ -54,16 +53,6 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
           <PenTool className={cn("w-4 h-4", isMobile && "w-3 h-3")} />
           Canvas
         </TabsTrigger>
-        <TabsTrigger 
-          value="audio" 
-          className={cn(
-            "flex items-center gap-2 flex-1 min-w-max whitespace-nowrap px-3 py-2 text-sm hover:text-neon-purple transition-colors",
-            isMobile && "text-xs"
-          )}
-        >
-          <Music className={cn("w-4 h-4", isMobile && "w-3 h-3")} />
-          Audio
-        </TabsTrigger>
       </TabsList>
 
       <motion.div 
@@ -85,10 +74,6 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
 
         <TabsContent value="canvas" className="mt-0">
           <CanvasTab userId={user.id} />
-        </TabsContent>
-
-        <TabsContent value="audio" className="mt-0">
-          <AudioTab />
         </TabsContent>
       </motion.div>
     </Tabs>

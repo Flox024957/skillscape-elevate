@@ -1,4 +1,4 @@
-import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, TouchSensor } from '@dnd-kit/core';
 import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { motion } from "framer-motion";
 import SortableSkillItem from './SortableSkillItem';
@@ -29,7 +29,17 @@ export const LearningSkillsList = ({
   onReorder 
 }: LearningSkillsListProps) => {
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 250,
+        tolerance: 8,
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
@@ -51,7 +61,6 @@ export const LearningSkillsList = ({
     }
   };
 
-  // Handle loading or undefined state
   if (!Array.isArray(skills)) {
     return (
       <div className="flex items-center justify-center p-8">
@@ -82,7 +91,6 @@ export const LearningSkillsList = ({
       >
         <div className="space-y-2">
           {skills.map((skill, index) => {
-            // Skip rendering if skill or skill.skill is undefined
             if (!skill?.skill) {
               console.warn('Invalid skill data:', skill);
               return null;

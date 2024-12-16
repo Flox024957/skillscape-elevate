@@ -1,4 +1,5 @@
 import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { GripVertical } from "lucide-react";
 
 interface SortableSkillItemProps {
@@ -13,17 +14,25 @@ const SortableSkillItem = ({ id, children }: SortableSkillItemProps) => {
     setNodeRef,
     transform,
     transition,
+    isDragging
   } = useSortable({ id });
 
-  const style = transform ? {
-    transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+  const style = {
+    transform: CSS.Transform.toString(transform),
     transition,
-  } : undefined;
+    zIndex: isDragging ? 1 : 0,
+    position: 'relative' as const,
+    touchAction: 'none'
+  };
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} className="mb-4">
       <div className="flex items-center gap-2">
-        <button {...listeners} className="cursor-grab hover:cursor-grabbing p-2">
+        <button 
+          {...listeners} 
+          className="touch-none cursor-grab active:cursor-grabbing p-2"
+          aria-label="Réorganiser"
+        >
           <GripVertical className="h-4 w-4 text-muted-foreground" />
         </button>
         {children}
