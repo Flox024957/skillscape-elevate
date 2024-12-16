@@ -1,124 +1,118 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
-import { format } from "date-fns";
-import { fr } from "date-fns/locale";
-import { Clock, Calendar, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const HeroSection = () => {
   const navigate = useNavigate();
-  const [currentTime, setCurrentTime] = useState(new Date());
 
-  const { data: todayNotes } = useQuery({
-    queryKey: ['todayNotes'],
-    queryFn: async () => {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      
-      const { data, error } = await supabase
-        .from('user_notes')
-        .select('*')
-        .gte('created_at', today.toISOString())
-        .lt('created_at', new Date(today.getTime() + 24*60*60*1000).toISOString())
-        .order('created_at', { ascending: true });
-      
-      if (error) throw error;
-      return data;
+  const textVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        duration: 0.8,
+        ease: "easeOut"
+      }
     }
-  });
+  };
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
+  const buttonVariants = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: { 
+      opacity: 1, 
+      scale: 1,
+      transition: {
+        duration: 0.5,
+        delay: 0.8,
+        ease: "easeOut"
+      }
+    },
+    hover: {
+      scale: 1.05,
+      transition: {
+        duration: 0.2,
+        ease: "easeInOut"
+      }
+    },
+    tap: {
+      scale: 0.95
+    }
+  };
 
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-black/30 backdrop-blur-xl p-12 mb-16
-                    border border-purple-500/20 hover:border-purple-500/40 transition-all duration-500
-                    group flex flex-col items-center justify-center text-center">
-      {/* Background Glow Effect */}
-      <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 opacity-0 
-                    group-hover:opacity-100 transition-opacity duration-500" />
-      
-      {/* Main Content */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.6 }}
-        className="space-y-12 relative z-10 max-w-3xl mx-auto"
+    <motion.div 
+      initial="hidden"
+      animate="visible"
+      className="text-center mb-20 perspective-1000"
+    >
+      <motion.h1 
+        variants={textVariants}
+        className="text-6xl md:text-8xl font-bold mb-6 text-transparent bg-clip-text 
+                 bg-gradient-to-r from-[#0EA5E9] via-[#8B5CF6] to-[#F97316]
+                 animate-text-shimmer drop-shadow-[0_0_30px_rgba(255,255,255,0.5)]
+                 transform hover:scale-105 transition-transform duration-300 cursor-default"
       >
-        <div className="flex flex-col gap-6">
-          <h1 className="text-6xl font-bold bg-clip-text text-transparent 
-                       bg-gradient-to-r from-purple-400 via-pink-500 to-purple-400
-                       tracking-tight leading-none">
-            FLAP, suivez l'énergie là où elle est...
-          </h1>
-        </div>
+        FLAP
+      </motion.h1>
 
-        {/* Time Display */}
+      <motion.p 
+        variants={textVariants}
+        className="text-4xl md:text-5xl font-bold mb-6 text-[#D1D5DB]
+                 drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]"
+      >
+        Élevez Votre Potentiel Professionnel
+      </motion.p>
+
+      <motion.p 
+        variants={textVariants}
+        className="text-xl text-[#9CA3AF] max-w-2xl mx-auto mb-8 leading-relaxed
+                 drop-shadow-[0_0_5px_rgba(255,255,255,0.3)]"
+      >
+        Développez vos compétences, fixez des objectifs ambitieux et suivez votre progression 
+        vers l'excellence professionnelle
+      </motion.p>
+
+      <motion.div 
+        variants={textVariants}
+        className="flex flex-col sm:flex-row gap-6 justify-center items-center"
+      >
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="flex items-center justify-center gap-4"
+          variants={buttonVariants}
+          whileHover="hover"
+          whileTap="tap"
         >
-          <div className="p-3 bg-purple-500/10 rounded-xl">
-            <Clock className="w-6 h-6 text-purple-400" />
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold text-white mb-1 font-mono">
-              {format(currentTime, 'HH:mm:ss')}
-            </h2>
-            <p className="text-purple-300 text-sm">
-              {format(currentTime, 'EEEE d MMMM yyyy', { locale: fr })}
-            </p>
-          </div>
-        </motion.div>
-
-        <div className="flex justify-center mt-8">
           <Button
-            onClick={() => navigate('/dashboard')}
-            className="bg-purple-500 hover:bg-purple-600 text-white px-8 py-6 rounded-lg
-                     transition-all duration-300 transform hover:-translate-y-1
-                     hover:shadow-[0_0_15px_rgba(168,85,247,0.5)] text-lg"
+            onClick={() => navigate("/auth")}
+            className="w-full sm:w-auto px-8 py-6 text-lg rounded-xl 
+                     bg-gradient-to-r from-[#8B5CF6] to-[#9b87f5] hover:from-[#7c4ef3] hover:to-[#8b76f3]
+                     shadow-[0_0_30px_rgba(139,92,246,0.5)] hover:shadow-[0_0_40px_rgba(139,92,246,0.7)]
+                     transform hover:-translate-y-1 transition-all duration-300
+                     border border-[#8B5CF6]/50"
           >
-            Accéder au tableau de bord
-            <ChevronRight className="ml-2 w-5 h-5" />
+            Commencer Gratuitement
           </Button>
-        </div>
-      </motion.div>
-
-      {/* Today's Notes Preview */}
-      {todayNotes && todayNotes.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.6 }}
-          className="mt-12 p-4 bg-white/5 rounded-xl border border-purple-500/20 w-full max-w-2xl mx-auto"
-        >
-          <div className="flex items-center gap-2 mb-4">
-            <Calendar className="w-5 h-5 text-purple-400" />
-            <h3 className="text-lg font-semibold text-white">Notes du jour</h3>
-          </div>
-          <div className="space-y-2">
-            {todayNotes.map((note: any) => (
-              <div key={note.id} className="p-3 bg-black/20 rounded-lg">
-                <p className="text-gray-300">{note.content}</p>
-                <p className="text-sm text-purple-400 mt-1">
-                  {format(new Date(note.created_at), 'HH:mm')}
-                </p>
-              </div>
-            ))}
-          </div>
         </motion.div>
-      )}
-    </div>
+
+        <motion.div
+          variants={buttonVariants}
+          whileHover="hover"
+          whileTap="tap"
+        >
+          <Button
+            onClick={() => navigate("/dashboard")}
+            variant="outline"
+            className="w-full sm:w-auto px-8 py-6 text-lg rounded-xl
+                     bg-background/30 backdrop-blur-sm
+                     border border-[#8B5CF6]/50 hover:border-[#8B5CF6]
+                     shadow-[0_0_25px_rgba(139,92,246,0.4)] hover:shadow-[0_0_35px_rgba(139,92,246,0.6)]
+                     transform hover:-translate-y-1 transition-all duration-300"
+          >
+            Découvrir la Plateforme
+          </Button>
+        </motion.div>
+      </motion.div>
+    </motion.div>
   );
 };
 
