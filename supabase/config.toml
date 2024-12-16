@@ -1,9 +1,5 @@
 project_id = "kioxqfgtqpwxcagefvki"
 
-[api]
-enabled = true
-url = "https://kioxqfgtqpwxcagefvki.supabase.co"
-
 [functions]
 [functions.analyze-dream]
 verify_jwt = false
