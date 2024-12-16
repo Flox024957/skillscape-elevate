@@ -4,7 +4,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
-import { UserDream } from "@/integrations/supabase/types";
+import { Database } from "@/integrations/supabase/types";
+
+type UserDream = Database["public"]["Tables"]["user_dreams"]["Row"];
 
 export const DreamHistory = () => {
   const { data: dreams, isLoading } = useQuery({
