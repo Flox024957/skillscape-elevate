@@ -24,88 +24,106 @@
     @apply fixed bottom-0 top-auto h-16 bg-background/95;
     border-top: 1px solid var(--border);
     border-bottom: none;
-  }
-
-  /* Dashboard */
-  .dashboard-tabs {
-    @apply overflow-x-auto;
-  }
-
-  .dashboard-tab-content {
-    @apply px-2;
-  }
-
-  /* Profile Section */
-  .profile-header {
-    @apply flex-col gap-4 text-center;
-  }
-
-  .profile-actions {
-    @apply justify-center mt-4;
+    box-shadow: 0 -4px 6px -1px rgb(0 0 0 / 0.1), 0 -2px 4px -2px rgb(0 0 0 / 0.1);
   }
 
   /* Social Feed */
   .feed-container {
-    @apply px-2;
+    @apply px-2 pb-20;
   }
 
   .post-card {
-    @apply p-3;
+    @apply p-3 rounded-xl;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.1);
   }
 
-  /* Forms and Inputs */
-  .form-container {
-    @apply p-3;
+  .post-actions {
+    @apply gap-2 flex-wrap justify-center;
   }
 
-  .input-group {
-    @apply flex-col;
+  .post-content {
+    @apply text-sm leading-relaxed;
   }
 
-  /* Tables */
-  .table-container {
-    @apply overflow-x-auto -mx-3;
+  .post-image {
+    @apply rounded-lg shadow-lg;
   }
 
-  /* Cards */
-  .card-grid {
-    @apply grid-cols-1;
+  /* Profile Section */
+  .profile-header {
+    @apply flex-col gap-4 text-center p-4;
+    background: linear-gradient(135deg, rgba(139,92,246,0.1) 0%, rgba(91,33,182,0.1) 100%);
+  }
+
+  .profile-avatar {
+    @apply mx-auto shadow-xl border-2 border-primary/20;
+  }
+
+  .profile-info {
+    @apply space-y-2;
+  }
+
+  .profile-stats {
+    @apply grid grid-cols-3 gap-4 p-4 rounded-xl bg-card/50;
+  }
+
+  /* Friend List */
+  .friend-list {
+    @apply grid grid-cols-2 gap-3 p-2;
+  }
+
+  .friend-card {
+    @apply p-3 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50;
+  }
+
+  /* Messages */
+  .message-list {
+    @apply p-2 space-y-2;
+  }
+
+  .message-bubble {
+    @apply max-w-[85%] p-3 rounded-2xl;
+    background: linear-gradient(to right, rgba(139,92,246,0.1), rgba(139,92,246,0.05));
+  }
+
+  /* Animations */
+  .mobile-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  /* Utils */
+  .glass-effect {
+    @apply bg-background/80 backdrop-blur-lg border border-border/50;
   }
 }
 
 @media (max-width: 640px) {
-  .bg-futuristic-grid {
-    @apply bg-[size:20px_20px];
+  .post-grid {
+    @apply grid-cols-1 gap-4;
   }
 
-  h1 {
-    @apply text-2xl;
+  .friend-list {
+    @apply grid-cols-1;
   }
 
-  h2 {
-    @apply text-xl;
+  .profile-stats {
+    @apply grid-cols-2;
   }
 
-  h3 {
-    @apply text-lg;
-  }
-
-  p {
-    @apply text-sm;
-  }
-
-  /* Tabs */
-  .tabs-list {
-    @apply flex-nowrap overflow-x-auto pb-2;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-
-  .tabs-list::-webkit-scrollbar {
-    display: none;
-  }
-
-  .tab-trigger {
-    @apply whitespace-nowrap;
+  .action-buttons {
+    @apply flex-col space-y-2;
   }
 }

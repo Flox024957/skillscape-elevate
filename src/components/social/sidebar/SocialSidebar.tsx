@@ -9,6 +9,7 @@ import { SkillsSection } from './SkillsSection';
 import { Separator } from '@/components/ui/separator';
 import { motion } from 'framer-motion';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 
 export const SocialSidebar = () => {
   const isMobile = useIsMobile();
@@ -45,9 +46,12 @@ export const SocialSidebar = () => {
     visible: { x: 0, opacity: 1 }
   };
 
-  const sidebarClasses = isMobile
-    ? "flex flex-col w-full h-full bg-background overflow-hidden"
-    : "hidden md:flex flex-col w-80 min-h-screen bg-card/50 border-r border-border p-4 space-y-6 sticky top-16";
+  const sidebarClasses = cn(
+    "flex flex-col bg-card/50 border-border p-4 space-y-6",
+    isMobile 
+      ? "w-full h-full pb-20 glass-effect mobile-slide-up"
+      : "hidden md:flex w-80 min-h-screen border-r sticky top-16"
+  );
 
   return (
     <motion.aside 
