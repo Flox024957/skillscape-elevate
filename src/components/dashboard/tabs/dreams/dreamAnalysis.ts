@@ -1,4 +1,4 @@
-import { pipeline } from "@huggingface/transformers";
+import { pipeline, TextGenerationOutput, TextGenerationSingle } from "@huggingface/transformers";
 
 export const analyzeDreamText = async (dream: string) => {
   const generator = await pipeline(
@@ -12,10 +12,12 @@ export const analyzeDreamText = async (dream: string) => {
     temperature: 0.7,
   });
 
-  const generatedText = Array.isArray(result) ? result[0] : result;
-  const text = typeof generatedText === 'string' ? generatedText : generatedText.text;
+  // Handle both array and single result cases
+  const generatedText = Array.isArray(result) 
+    ? result[0].generated_text 
+    : result.generated_text;
   
-  return text
+  return generatedText
     .split("Conseils :")[1]
     .trim()
     .replace(/^\d+\.\s*/gm, "• ");
