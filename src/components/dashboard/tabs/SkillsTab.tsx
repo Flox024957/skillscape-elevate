@@ -1,13 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { LearningSkillsList } from "./skills/LearningSkillsList";
 import { MasteredSkillsList } from "./skills/MasteredSkillsList";
 import { motion } from "framer-motion";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { cn } from "@/lib/utils";
-import { Book, Trophy } from "lucide-react";
+import { SkillsTabHeader } from "./skills/SkillsTabHeader";
 
 interface SkillsTabProps {
   userId: string;
@@ -15,7 +13,6 @@ interface SkillsTabProps {
 
 const SkillsTab = ({ userId }: SkillsTabProps) => {
   const { toast } = useToast();
-  const isMobile = useIsMobile();
 
   const { data: userSkills, refetch: refetchUserSkills } = useQuery({
     queryKey: ['userSkills', userId],
@@ -157,33 +154,7 @@ const SkillsTab = ({ userId }: SkillsTabProps) => {
       className="space-y-8"
     >
       <Tabs defaultValue="learning" className="w-full">
-        <TabsList 
-          className={cn(
-            "w-full flex flex-col gap-2 mb-8",
-            !isMobile && "grid grid-cols-2 gap-2"
-          )}
-        >
-          <TabsTrigger 
-            value="learning" 
-            className={cn(
-              "flex items-center justify-center gap-2 data-[state=active]:bg-primary/10 py-3",
-              isMobile && "w-full"
-            )}
-          >
-            <Book className="w-4 h-4" />
-            Compétences en cours d'apprentissage
-          </TabsTrigger>
-          <TabsTrigger 
-            value="mastered" 
-            className={cn(
-              "flex items-center justify-center gap-2 data-[state=active]:bg-primary/10 py-3",
-              isMobile && "w-full"
-            )}
-          >
-            <Trophy className="w-4 h-4" />
-            Compétences maîtrisées
-          </TabsTrigger>
-        </TabsList>
+        <SkillsTabHeader />
 
         <TabsContent value="learning" className="space-y-6">
           <LearningSkillsList
