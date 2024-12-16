@@ -980,6 +980,41 @@ export type Database = {
           },
         ]
       }
+      skill_playlists: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          skills: string[] | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          skills?: string[] | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          skills?: string[] | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "skill_playlists_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       skills: {
         Row: {
           action_concrete: string
@@ -1172,44 +1207,6 @@ export type Database = {
           },
           {
             foreignKeyName: "user_canvas_images_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      user_dreams: {
-        Row: {
-          analysis: string | null
-          content: string
-          created_at: string
-          id: string
-          title: string
-          updated_at: string
-          user_id: string | null
-        }
-        Insert: {
-          analysis?: string | null
-          content: string
-          created_at?: string
-          id?: string
-          title: string
-          updated_at?: string
-          user_id?: string | null
-        }
-        Update: {
-          analysis?: string | null
-          content?: string
-          created_at?: string
-          id?: string
-          title?: string
-          updated_at?: string
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_dreams_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -1413,6 +1410,7 @@ export type Database = {
       }
       user_skills: {
         Row: {
+          audio_preferences: Json | null
           created_at: string | null
           est_maitrisee: boolean | null
           id: string
@@ -1424,6 +1422,7 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          audio_preferences?: Json | null
           created_at?: string | null
           est_maitrisee?: boolean | null
           id?: string
@@ -1435,6 +1434,7 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          audio_preferences?: Json | null
           created_at?: string | null
           est_maitrisee?: boolean | null
           id?: string

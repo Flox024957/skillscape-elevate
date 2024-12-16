@@ -8,11 +8,11 @@ import { useToast } from "@/hooks/use-toast";
 
 interface AudioPlayerProps {
   selectedContent: string;
-  userNotes?: any[];
+  userSkills?: any[];
   onContentSelect: (content: string) => void;
 }
 
-const AudioPlayer = ({ selectedContent, userNotes, onContentSelect }: AudioPlayerProps) => {
+const AudioPlayer = ({ selectedContent, userSkills, onContentSelect }: AudioPlayerProps) => {
   const { toast } = useToast();
   const {
     isPlaying,
@@ -28,18 +28,18 @@ const AudioPlayer = ({ selectedContent, userNotes, onContentSelect }: AudioPlaye
   } = useAudioPlayer(selectedContent);
 
   const handleRandomPlay = () => {
-    if (!userNotes || userNotes.length === 0) {
+    if (!userSkills || userSkills.length === 0) {
       toast({
-        title: "Aucune note disponible",
-        description: "Veuillez d'abord ajouter des notes",
+        title: "Aucune compétence disponible",
+        description: "Veuillez d'abord sélectionner des compétences",
         variant: "destructive",
       });
       return;
     }
 
-    const randomIndex = Math.floor(Math.random() * userNotes.length);
-    const randomNote = userNotes[randomIndex];
-    onContentSelect(randomNote.content);
+    const randomIndex = Math.floor(Math.random() * userSkills.length);
+    const randomSkill = userSkills[randomIndex];
+    onContentSelect(`${randomSkill.titre}. ${randomSkill.resume}. ${randomSkill.description}`);
   };
 
   return (

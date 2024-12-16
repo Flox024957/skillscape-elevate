@@ -3,7 +3,6 @@ import AudioTab from "./tabs/AudioTab";
 import CanvasTab from "./tabs/CanvasTab";
 import NotesTab from "./tabs/NotesTab";
 import SkillsTab from "./tabs/SkillsTab";
-import DreamAnalysisTab from "./tabs/DreamAnalysisTab";
 import { User } from "@supabase/supabase-js";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion } from "framer-motion";
@@ -44,12 +43,6 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
         >
           Audio
         </TabsTrigger>
-        <TabsTrigger 
-          value="dreams" 
-          className="flex-1 min-w-max whitespace-nowrap px-3 py-2 text-sm"
-        >
-          {isMobile ? "Rêves" : "Analyse des rêves"}
-        </TabsTrigger>
       </TabsList>
 
       <motion.div 
@@ -72,10 +65,6 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
 
         <TabsContent value="audio" className="mt-0">
           <AudioTab />
-        </TabsContent>
-
-        <TabsContent value="dreams" className="mt-0">
-          <DreamAnalysisTab />
         </TabsContent>
       </motion.div>
     </Tabs>

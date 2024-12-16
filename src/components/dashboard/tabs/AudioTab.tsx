@@ -5,27 +5,77 @@ import AudioPlayer from "@/components/dashboard/AudioPlayer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { Folder, List, Mic } from "lucide-react";
+import { Mic, List, Filter } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const AudioTab = () => {
   const [selectedContent, setSelectedContent] = useState("");
   const [isRecording, setIsRecording] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
 
-  const { data: userNotes, isLoading } = useQuery({
-    queryKey: ['userNotes'],
+  const { data: categories } = useQuery({
+    queryKey: ['categories'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*')
+        .order('name');
+      
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const { data: skills } = useQuery({
+    queryKey: ['skills', selectedCategory],
+    queryFn: async () => {
+      let query = supabase
+        .from('skills')
+        .select(`
+          id,
+          titre,
+          resume,
+          description,
+          category_id,
+          categories (
+            name
+          )
+        `)
+        .order('titre');
+
+      if (selectedCategory !== "all") {
+        query = query.eq('category_id', selectedCategory);
+      }
+
+      const { data, error } = await query;
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const { data: userSkills } = useQuery({
+    queryKey: ['userSkills'],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return [];
       
       const { data, error } = await supabase
-        .from('user_notes')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+        .from('user_skills')
+        .select('skill_id')
+        .eq('user_id', user.id);
       
       if (error) throw error;
-      return data;
+      return data.map(s => s.skill_id);
     },
   });
 
@@ -33,8 +83,28 @@ const AudioTab = () => {
     setSelectedContent(content);
   };
 
+  const toggleSkillSelection = (skillId: string) => {
+    setSelectedSkills(prev => 
+      prev.includes(skillId)
+        ? prev.filter(id => id !== skillId)
+        : [...prev, skillId]
+    );
+  };
+
+  const getSkillContent = (skill: any) => {
+    return `${skill.titre}. ${skill.resume}. ${skill.description}`;
+  };
+
   const toggleRecording = () => {
     setIsRecording(!isRecording);
+  };
+
+  const handlePlaySelected = () => {
+    if (selectedSkills.length === 0) return;
+    const selectedSkill = skills?.find(s => s.id === selectedSkills[0]);
+    if (selectedSkill) {
+      handleContentSelect(getSkillContent(selectedSkill));
+    }
   };
 
   return (
@@ -53,51 +123,100 @@ const AudioTab = () => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="player" className="space-y-4">
+        <Tabs defaultValue="skills" className="space-y-4">
           <TabsList>
-            <TabsTrigger value="player" className="flex items-center gap-2">
+            <TabsTrigger value="skills" className="flex items-center gap-2">
               <List className="w-4 h-4" />
-              Notes
+              Compétences
             </TabsTrigger>
-            <TabsTrigger value="folders" className="flex items-center gap-2">
-              <Folder className="w-4 h-4" />
-              Dossiers
+            <TabsTrigger value="filters" className="flex items-center gap-2">
+              <Filter className="w-4 h-4" />
+              Filtres
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="player" className="space-y-4">
-            <ScrollArea className="h-[200px] rounded-md border p-4">
+          <TabsContent value="skills" className="space-y-4">
+            <div className="flex items-center gap-4 mb-4">
+              <Select
+                value={selectedCategory}
+                onValueChange={setSelectedCategory}
+              >
+                <SelectTrigger className="w-[200px]">
+                  <SelectValue placeholder="Catégorie" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Toutes les catégories</SelectItem>
+                  {categories?.map((category) => (
+                    <SelectItem key={category.id} value={category.id}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <ScrollArea className="h-[300px] rounded-md border p-4">
               <div className="space-y-2">
-                {isLoading ? (
-                  <p className="text-muted-foreground">Chargement des notes...</p>
-                ) : userNotes?.length === 0 ? (
-                  <p className="text-muted-foreground">Aucune note à lire</p>
-                ) : (
-                  userNotes?.map((note) => (
+                {skills?.map((skill) => (
+                  <div key={skill.id} className="flex items-center gap-2">
+                    <Checkbox
+                      checked={selectedSkills.includes(skill.id)}
+                      onCheckedChange={() => toggleSkillSelection(skill.id)}
+                    />
                     <Button
-                      key={note.id}
                       variant="ghost"
                       className="w-full justify-start text-left font-normal"
-                      onClick={() => setSelectedContent(note.content)}
+                      onClick={() => handleContentSelect(getSkillContent(skill))}
                     >
-                      {note.content.substring(0, 50)}...
+                      {skill.titre}
+                      {userSkills?.includes(skill.id) && (
+                        <Badge variant="secondary" className="ml-2">
+                          En cours
+                        </Badge>
+                      )}
                     </Button>
-                  ))
-                )}
+                  </div>
+                ))}
               </div>
             </ScrollArea>
 
+            <div className="flex gap-2">
+              <Button
+                onClick={handlePlaySelected}
+                disabled={selectedSkills.length === 0}
+                className="w-full"
+              >
+                Lire la sélection
+              </Button>
+            </div>
+
             <AudioPlayer 
               selectedContent={selectedContent}
-              userNotes={userNotes}
+              userSkills={skills?.filter(s => userSkills?.includes(s.id))}
               onContentSelect={handleContentSelect}
             />
           </TabsContent>
 
-          <TabsContent value="folders" className="min-h-[300px] flex items-center justify-center">
-            <p className="text-muted-foreground">
-              Fonctionnalité de dossiers audio à venir...
-            </p>
+          <TabsContent value="filters" className="min-h-[300px]">
+            <div className="space-y-4">
+              <div className="border rounded-lg p-4">
+                <h3 className="font-medium mb-2">Options de lecture</h3>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Checkbox id="userSkills" />
+                    <label htmlFor="userSkills" className="text-sm">
+                      Uniquement mes compétences
+                    </label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Checkbox id="mastered" />
+                    <label htmlFor="mastered" className="text-sm">
+                      Inclure les compétences maîtrisées
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
           </TabsContent>
         </Tabs>
       </CardContent>
