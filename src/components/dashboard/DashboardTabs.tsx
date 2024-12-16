@@ -11,7 +11,6 @@ import ProfileSection from "./ProfileSection";
 import { SocialActivity } from "./SocialActivity";
 import { lazy, Suspense } from "react";
 
-// Lazy load les composants lourds
 const LazyCanvasTab = lazy(() => import("./tabs/CanvasTab"));
 const LazyNotesTab = lazy(() => import("./tabs/NotesTab"));
 
@@ -31,15 +30,15 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-8">
       {/* Profile Section avec Animation */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.2 }}
         className={cn(
-          "bg-card/50 backdrop-blur-sm border border-border rounded-lg overflow-hidden",
-          isMobile ? "mx-2" : ""
+          "bg-card/50 backdrop-blur-sm border border-border rounded-lg overflow-hidden shadow-lg",
+          isMobile ? "mx-4" : ""
         )}
       >
         <ProfileSection user={user} onSignOut={async () => {}} />
@@ -48,37 +47,37 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
       {/* Tabs Principal */}
       <Tabs defaultValue="skills" className="w-full">
         <TabsList className={cn(
-          "w-full flex gap-1 bg-background/50 backdrop-blur-sm border border-border rounded-lg sticky top-0 z-10",
-          isMobile ? "p-1 mb-2 mx-2" : "p-1 mb-6"
+          "w-full flex gap-2 bg-background/50 backdrop-blur-sm border border-border rounded-lg sticky top-0 z-10",
+          isMobile ? "p-2 mb-6 mx-4" : "p-1 mb-6"
         )}>
           <TabsTrigger 
             value="skills" 
             className={cn(
-              "flex-1 flex items-center justify-center gap-2 data-[state=active]:bg-primary/10 data-[state=active]:text-primary transition-all",
-              isMobile ? "text-xs py-2.5" : "text-sm"
+              "flex-1 flex items-center justify-center gap-2 data-[state=active]:bg-primary/10 data-[state=active]:text-primary transition-all py-3",
+              isMobile ? "text-sm" : "text-sm"
             )}
           >
-            <Book className={cn("w-4 h-4", isMobile && "w-3 h-3")} />
+            <Book className={cn("w-4 h-4", isMobile && "w-3.5 h-3.5")} />
             {isMobile ? "Skills" : "Compétences"}
           </TabsTrigger>
           <TabsTrigger 
             value="notes" 
             className={cn(
-              "flex-1 flex items-center justify-center gap-2 data-[state=active]:bg-primary/10 data-[state=active]:text-primary transition-all",
-              isMobile ? "text-xs py-2.5" : "text-sm"
+              "flex-1 flex items-center justify-center gap-2 data-[state=active]:bg-primary/10 data-[state=active]:text-primary transition-all py-3",
+              isMobile ? "text-sm" : "text-sm"
             )}
           >
-            <Calendar className={cn("w-4 h-4", isMobile && "w-3 h-3")} />
+            <Calendar className={cn("w-4 h-4", isMobile && "w-3.5 h-3.5")} />
             Notes
           </TabsTrigger>
           <TabsTrigger 
             value="canvas" 
             className={cn(
-              "flex-1 flex items-center justify-center gap-2 data-[state=active]:bg-primary/10 data-[state=active]:text-primary transition-all",
-              isMobile ? "text-xs py-2.5" : "text-sm"
+              "flex-1 flex items-center justify-center gap-2 data-[state=active]:bg-primary/10 data-[state=active]:text-primary transition-all py-3",
+              isMobile ? "text-sm" : "text-sm"
             )}
           >
-            <PenTool className={cn("w-4 h-4", isMobile && "w-3 h-3")} />
+            <PenTool className={cn("w-4 h-4", isMobile && "w-3.5 h-3.5")} />
             Canvas
           </TabsTrigger>
         </TabsList>
@@ -86,21 +85,21 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
         <AnimatePresence mode="wait">
           <motion.div 
             className={cn(
-              "space-y-4",
-              isMobile ? "px-2" : "px-4"
+              "space-y-8",
+              isMobile ? "px-4" : "px-4"
             )}
             variants={tabVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
           >
-            <TabsContent value="skills" className="space-y-4 mt-0">
+            <TabsContent value="skills" className="space-y-8 mt-0">
               <SkillsTab userId={user.id} />
             </TabsContent>
 
             <TabsContent value="notes" className="mt-0">
               <Suspense fallback={
-                <div className="animate-pulse space-y-4">
+                <div className="animate-pulse space-y-8">
                   <div className="h-12 bg-muted rounded-lg"></div>
                   <div className="h-32 bg-muted rounded-lg"></div>
                 </div>
@@ -111,7 +110,7 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
 
             <TabsContent value="canvas" className="mt-0">
               <Suspense fallback={
-                <div className="animate-pulse space-y-4">
+                <div className="animate-pulse space-y-8">
                   <div className="h-12 bg-muted rounded-lg"></div>
                   <div className="h-32 bg-muted rounded-lg"></div>
                 </div>
@@ -129,7 +128,7 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.2, delay: 0.1 }}
-          className="mx-2 mb-20"
+          className="mx-4 mb-24"
         >
           <SocialActivity userId={user.id} />
         </motion.div>

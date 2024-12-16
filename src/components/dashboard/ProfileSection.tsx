@@ -43,15 +43,15 @@ const ProfileSection = memo(({ user, onSignOut }: ProfileSectionProps) => {
   });
 
   return (
-    <div className="p-3 space-y-3">
+    <div className="p-6 space-y-6">
       <div className={cn(
         "flex items-center",
         isMobile ? "justify-between" : "gap-4"
       )}>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <Avatar className={cn(
             "border-2 border-primary/20",
-            isMobile ? "h-10 w-10" : "h-16 w-16"
+            isMobile ? "h-14 w-14" : "h-16 w-16"
           )}>
             <AvatarImage src={user.user_metadata.avatar_url} />
             <AvatarFallback>{user.email?.charAt(0).toUpperCase()}</AvatarFallback>
@@ -59,11 +59,11 @@ const ProfileSection = memo(({ user, onSignOut }: ProfileSectionProps) => {
           <div>
             <h2 className={cn(
               "font-semibold",
-              isMobile ? "text-sm" : "text-xl"
+              isMobile ? "text-base" : "text-xl"
             )}>
               {user.user_metadata.full_name || user.email}
             </h2>
-            <p className="text-xs text-muted-foreground truncate max-w-[150px]">
+            <p className="text-sm text-muted-foreground truncate max-w-[200px]">
               {user.email}
             </p>
           </div>
@@ -80,30 +80,30 @@ const ProfileSection = memo(({ user, onSignOut }: ProfileSectionProps) => {
         )}
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-4">
         <Button
           variant="ghost"
-          size={isMobile ? "sm" : "default"}
-          className="flex gap-2 flex-1"
+          size={isMobile ? "default" : "default"}
+          className="flex gap-3 flex-1 h-12"
           onClick={() => navigate("/friends")}
         >
-          <Users className={cn("h-4 w-4", isMobile && "h-3 w-3")} />
-          <Badge variant="secondary">{socialStats?.friends || 0}</Badge>
+          <Users className={cn("h-4 w-4", isMobile && "h-4 w-4")} />
+          <Badge variant="secondary" className="px-2 py-1">{socialStats?.friends || 0}</Badge>
         </Button>
         <Button
           variant="ghost"
-          size={isMobile ? "sm" : "default"}
-          className="flex gap-2 flex-1"
+          size={isMobile ? "default" : "default"}
+          className="flex gap-3 flex-1 h-12"
           onClick={() => navigate("/messages")}
         >
-          <MessageCircle className={cn("h-4 w-4", isMobile && "h-3 w-3")} />
+          <MessageCircle className={cn("h-4 w-4", isMobile && "h-4 w-4")} />
           Messages
         </Button>
         {isMobile && (
           <Button
             variant="ghost"
-            size="sm"
-            className="flex gap-2 flex-1"
+            size="default"
+            className="flex gap-3 flex-1 h-12"
             onClick={onSignOut}
           >
             Déconnexion
