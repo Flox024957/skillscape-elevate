@@ -1,5 +1,5 @@
 import { SearchBar } from "@/components/social/SearchBar";
-import { HeroSection } from "@/components/main/HeroSection";
+import HeroSection from "@/components/main/HeroSection";
 import { FeaturesSection } from "@/components/main/FeaturesSection";
 import { CategoriesSection } from "@/components/main/CategoriesSection";
 import { useIsMobile } from "@/hooks/use-mobile";

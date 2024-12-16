@@ -1,15 +1,12 @@
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Clock } from "lucide-react";
-import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
 const HeroSection = () => {
-  const navigate = useNavigate();
   const [currentTime, setCurrentTime] = useState(new Date());
 
   const { data: todayNotes } = useQuery({
