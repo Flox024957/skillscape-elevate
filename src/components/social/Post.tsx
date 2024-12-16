@@ -39,6 +39,8 @@ export const Post = ({ post, currentUserId }: PostProps) => {
       <PostHeader 
         profile={post.profiles}
         createdAt={post.created_at}
+        postId={post.id}
+        currentUserId={currentUserId}
       />
 
       <PostContent 
