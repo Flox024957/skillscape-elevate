@@ -12,7 +12,7 @@ export const CategoryContent = ({ name, description, skillsCount, isMobile }: Ca
   return (
     <motion.div 
       className={cn(
-        "absolute inset-0 p-6 flex flex-col justify-center items-center",
+        "absolute inset-0 p-4 flex flex-col justify-center items-center",
         "bg-gradient-to-t from-black/90 via-black/50 to-transparent",
         "text-white transition-all duration-300 group-hover:bg-black/70"
       )}
@@ -22,8 +22,9 @@ export const CategoryContent = ({ name, description, skillsCount, isMobile }: Ca
           "font-bold bg-clip-text text-transparent text-center",
           "bg-gradient-to-r from-white to-white/90",
           "group-hover:from-primary group-hover:to-purple-300",
-          "transition-all duration-300",
-          isMobile ? "text-lg" : "text-xl"
+          "transition-all duration-300 px-2",
+          "line-clamp-2",
+          isMobile ? "text-sm" : "text-base"
         )}
       >
         {name}
