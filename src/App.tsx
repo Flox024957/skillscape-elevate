@@ -40,10 +40,10 @@ const App = () => {
       <TooltipProvider>
         <BrowserRouter>
           <div className="min-h-screen bg-background">
-            {isAuthenticated && <Navbar />}
+            <Navbar />
             <main className={cn(
               "relative w-full",
-              isAuthenticated && !isMobile && "pt-16",
+              !isMobile && "pt-16",
               isMobile && "pb-16"
             )}>
               <Toaster />
