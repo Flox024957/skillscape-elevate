@@ -34,7 +34,8 @@ export const NavItem = ({
           ? "bg-primary text-primary-foreground shadow-lg" 
           : "hover:text-primary hover:bg-primary/10",
         "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
-        "disabled:pointer-events-none disabled:opacity-50"
+        "disabled:pointer-events-none disabled:opacity-50",
+        isMobile && "w-full"
       )}
       onClick={onClick}
       aria-label={ariaLabel}
