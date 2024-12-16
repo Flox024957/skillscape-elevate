@@ -4,6 +4,9 @@ import { MessageList } from './MessageList';
 import { MessageInput } from './MessageInput';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
+import { motion } from "framer-motion";
+import { ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface ChatContainerProps {
   selectedFriend: string | null;
@@ -11,6 +14,7 @@ interface ChatContainerProps {
   currentUserId: string;
   friendName?: string | null;
   onSendMessage: (content: string) => void;
+  onBack?: () => void;
 }
 
 export const ChatContainer = ({
@@ -18,18 +22,36 @@ export const ChatContainer = ({
   messages,
   currentUserId,
   friendName,
-  onSendMessage
+  onSendMessage,
+  onBack
 }: ChatContainerProps) => {
   const isMobile = useIsMobile();
 
   return (
-    <div className={cn(
-      "glass-panel flex flex-col",
-      isMobile ? "h-[calc(100vh-200px)]" : "flex-1"
-    )}>
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className={cn(
+        "glass-panel flex flex-col",
+        isMobile ? "h-[calc(100vh-200px)] rounded-t-xl" : "flex-1"
+      )}
+    >
       {selectedFriend ? (
         <>
-          <div className="p-3 border-b border-border/50">
+          <div className={cn(
+            "p-3 border-b border-border/50 flex items-center gap-2",
+            isMobile && "sticky top-0 bg-background/80 backdrop-blur-sm z-10"
+          )}>
+            {isMobile && onBack && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={onBack}
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+            )}
             <h2 className="font-semibold neon-text">{friendName}</h2>
           </div>
           <MessageList messages={messages} currentUserId={currentUserId} />
@@ -40,6 +62,6 @@ export const ChatContainer = ({
           Sélectionnez une conversation
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };

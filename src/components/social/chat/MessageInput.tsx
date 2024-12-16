@@ -1,6 +1,9 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { Send } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 interface MessageInputProps {
   onSend: (content: string) => void;
@@ -8,6 +11,7 @@ interface MessageInputProps {
 
 export const MessageInput = ({ onSend }: MessageInputProps) => {
   const [message, setMessage] = useState("");
+  const isMobile = useIsMobile();
 
   const handleSend = () => {
     if (message.trim()) {
@@ -17,7 +21,10 @@ export const MessageInput = ({ onSend }: MessageInputProps) => {
   };
 
   return (
-    <div className="p-4 border-t border-border/50">
+    <div className={cn(
+      "p-4 border-t border-border/50",
+      isMobile && "sticky bottom-0 bg-background/80 backdrop-blur-sm"
+    )}>
       <div className="flex gap-2">
         <Input
           value={message}
@@ -30,8 +37,19 @@ export const MessageInput = ({ onSend }: MessageInputProps) => {
             }
           }}
         />
-        <Button onClick={handleSend} className="futuristic-button">
-          Envoyer
+        <Button 
+          onClick={handleSend} 
+          size={isMobile ? "icon" : "default"}
+          className={cn(
+            "futuristic-button",
+            !isMobile && "px-4"
+          )}
+        >
+          {isMobile ? (
+            <Send className="h-4 w-4" />
+          ) : (
+            "Envoyer"
+          )}
         </Button>
       </div>
     </div>

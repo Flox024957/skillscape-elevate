@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useQuery } from '@tanstack/react-query';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 interface Friend {
   id: string;
@@ -20,10 +21,13 @@ interface FriendsListProps {
 
 const FriendItem = memo(({ friend, variant, onClick }: { friend: Friend, variant: 'full' | 'compact', onClick: () => void }) => {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   if (variant === 'compact') {
     return (
-      <button 
+      <motion.button 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
         onClick={onClick}
         className="w-full flex items-center gap-2 hover:bg-muted/50 p-2 rounded-lg transition-colors"
       >
@@ -36,17 +40,27 @@ const FriendItem = memo(({ friend, variant, onClick }: { friend: Friend, variant
           />
         </Avatar>
         <span className="text-sm truncate">{friend.pseudo}</span>
-      </button>
+      </motion.button>
     );
   }
 
   return (
-    <div className="flex items-center justify-between p-3 bg-card rounded-lg">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className={cn(
+        "flex items-center justify-between p-3 bg-card/50 backdrop-blur-sm rounded-lg",
+        isMobile && "shadow-sm"
+      )}
+    >
       <button 
         onClick={onClick}
         className="flex items-center gap-3 hover:opacity-80 transition-opacity"
       >
-        <Avatar className="h-12 w-12">
+        <Avatar className={cn(
+          "border-2 border-border",
+          isMobile ? "h-10 w-10" : "h-12 w-12"
+        )}>
           <img 
             src={friend.image_profile || '/placeholder.svg'} 
             alt={friend.pseudo}
@@ -55,13 +69,18 @@ const FriendItem = memo(({ friend, variant, onClick }: { friend: Friend, variant
           />
         </Avatar>
         <div>
-          <h3 className="font-medium">{friend.pseudo}</h3>
+          <h3 className="font-medium text-sm">{friend.pseudo}</h3>
         </div>
       </button>
-      <Button variant="ghost" size="sm" onClick={() => navigate(`/profile/${friend.id}`)}>
+      <Button 
+        variant="ghost" 
+        size={isMobile ? "sm" : "default"}
+        onClick={() => navigate(`/profile/${friend.id}`)}
+        className="text-xs"
+      >
         Voir le profil
       </Button>
-    </div>
+    </motion.div>
   );
 });
 
