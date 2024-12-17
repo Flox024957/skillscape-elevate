@@ -11,9 +11,9 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
     detectSessionInUrl: true
   },
   global: {
-    fetch: (...args) => {
-      console.log('Supabase Request:', args[0]);
-      return fetch(...args).then(async (response) => {
+    fetch: (input: RequestInfo | URL, init?: RequestInit) => {
+      console.log('Supabase Request:', input);
+      return fetch(input, init).then(async (response) => {
         if (!response.ok) {
           console.error('Supabase Error Response:', {
             status: response.status,
