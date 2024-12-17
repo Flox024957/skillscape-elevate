@@ -28,7 +28,8 @@ const Auth = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-background relative overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-violet-500/10 via-background to-background" />
       <AuthContainer>
         <AuthHeader />
         <AuthForm />

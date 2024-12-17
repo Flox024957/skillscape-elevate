@@ -17,7 +17,7 @@ export const AuthContainer = ({ children }: AuthContainerProps) => {
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className="bg-card/30 backdrop-blur-md p-8 sm:p-10 rounded-xl border border-border/50 shadow-xl"
+          className="bg-card/40 backdrop-blur-xl p-8 sm:p-10 rounded-xl border border-violet-500/20 shadow-2xl shadow-violet-500/10"
         >
           {children}
         </motion.div>

@@ -8,11 +8,11 @@ export const AuthHeader = () => {
       transition={{ duration: 0.5 }}
       className="text-4xl font-semibold text-center mb-12"
     >
-      <span className="welcome bg-clip-text text-transparent bg-gradient-to-r from-primary/80 to-primary">
+      <span className="welcome bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-violet-500">
         Welcome to{" "}
       </span>
       <motion.span 
-        className="flap text-primary font-bold"
+        className="flap text-violet-400 font-bold"
         whileHover={{ scale: 1.05 }}
         transition={{ type: "spring", stiffness: 300 }}
       >
