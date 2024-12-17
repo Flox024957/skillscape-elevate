@@ -3,6 +3,7 @@ import { Message } from '@/integrations/supabase/types/messages';
 import { useToast } from "@/hooks/use-toast";
 import { handleConnectionError, handleMessageUpdateError } from '@/utils/error-handling';
 import { fetchUserMessages, markMessagesAsRead, subscribeToMessages } from '@/services/messages';
+import { supabase } from "@/integrations/supabase/client";
 
 export const useMessages = (
   userId: string, 
