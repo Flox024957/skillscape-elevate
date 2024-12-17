@@ -15,16 +15,7 @@ interface AppRoutesProps {
 export const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
   return (
     <Routes>
-      <Route 
-        path="/" 
-        element={
-          isAuthenticated ? (
-            <Navigate to="/main" replace />
-          ) : (
-            <Navigate to="/auth" replace />
-          )
-        } 
-      />
+      <Route path="/" element={<Index />} />
       <Route 
         path="/auth" 
         element={isAuthenticated ? <Navigate to="/main" replace /> : <Auth />} 
