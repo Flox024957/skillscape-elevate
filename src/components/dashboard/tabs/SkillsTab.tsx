@@ -128,6 +128,7 @@ const SkillsTab = ({ userId }: SkillsTabProps) => {
   const handleReorderSkills = async (reorderedSkills: any[]) => {
     const updates = reorderedSkills.map((skill, index) => ({
       id: skill.id,
+      user_id: userId,  // Add this line to ensure user_id is included
       position: index,
     }));
 
@@ -136,6 +137,7 @@ const SkillsTab = ({ userId }: SkillsTabProps) => {
       .upsert(updates);
 
     if (error) {
+      console.error('Reorder error:', error);
       toast({
         title: "Erreur",
         description: "Impossible de réorganiser les compétences",
