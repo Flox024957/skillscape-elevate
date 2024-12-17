@@ -39,7 +39,7 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
         className={cn(
           "glass-panel-pro transform hover:scale-[1.01] transition-all duration-300",
           "bg-gradient-to-br from-purple-500/10 via-background/80 to-blue-500/10",
-          isMobile ? "mx-4" : ""
+          isMobile ? "mx-4 rounded-2xl shadow-lg" : ""
         )}
       >
         <ProfileSection user={user} onSignOut={async () => {}} />
@@ -48,7 +48,7 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
       {/* Tabs Principal */}
       <Tabs defaultValue="skills" className="w-full">
         <TabsList className={cn(
-          "w-full flex gap-2 bg-background/50 backdrop-blur-sm border border-border/50 rounded-lg sticky top-0 z-50",
+          "w-full flex gap-2 bg-background/50 backdrop-blur-sm border border-border/50 rounded-2xl sticky top-0 z-50",
           "shadow-lg shadow-purple-500/5",
           "transform hover:scale-[1.01] transition-all duration-300",
           isMobile ? "p-2 mb-20 mx-4" : "p-1 mb-12"
@@ -58,7 +58,7 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
             className={cn(
               "flex-1 flex items-center justify-center gap-2",
               "data-[state=active]:bg-primary/10 data-[state=active]:text-primary",
-              "transition-all duration-300 py-3",
+              "transition-all duration-300 py-3 rounded-xl",
               "hover:bg-primary/5",
               "transform hover:scale-[1.02]",
               isMobile ? "text-sm" : "text-base"
@@ -72,7 +72,7 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
             className={cn(
               "flex-1 flex items-center justify-center gap-2",
               "data-[state=active]:bg-primary/10 data-[state=active]:text-primary",
-              "transition-all duration-300 py-3",
+              "transition-all duration-300 py-3 rounded-xl",
               "hover:bg-primary/5",
               "transform hover:scale-[1.02]",
               isMobile ? "text-sm" : "text-base"
@@ -86,7 +86,7 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
             className={cn(
               "flex-1 flex items-center justify-center gap-2",
               "data-[state=active]:bg-primary/10 data-[state=active]:text-primary",
-              "transition-all duration-300 py-3",
+              "transition-all duration-300 py-3 rounded-xl",
               "hover:bg-primary/5",
               "transform hover:scale-[1.02]",
               isMobile ? "text-sm" : "text-base"
@@ -101,7 +101,7 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
           <motion.div 
             className={cn(
               "space-y-8",
-              isMobile ? "px-4 mt-20" : "px-4" // Ajout de mt-8 pour créer l'espace de 0.8cm en mobile
+              isMobile ? "px-4 mt-20" : "px-4"
             )}
             variants={tabVariants}
             initial="hidden"
@@ -115,8 +115,8 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
             <TabsContent value="notes" className="mt-0">
               <Suspense fallback={
                 <div className="animate-pulse space-y-8">
-                  <div className="h-12 bg-muted rounded-lg"></div>
-                  <div className="h-32 bg-muted rounded-lg"></div>
+                  <div className="h-12 bg-muted rounded-xl"></div>
+                  <div className="h-32 bg-muted rounded-xl"></div>
                 </div>
               }>
                 <LazyNotesTab userId={user.id} />
@@ -126,8 +126,8 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
             <TabsContent value="canvas" className="mt-0">
               <Suspense fallback={
                 <div className="animate-pulse space-y-8">
-                  <div className="h-12 bg-muted rounded-lg"></div>
-                  <div className="h-32 bg-muted rounded-lg"></div>
+                  <div className="h-12 bg-muted rounded-xl"></div>
+                  <div className="h-32 bg-muted rounded-xl"></div>
                 </div>
               }>
                 <LazyCanvasTab userId={user.id} />
