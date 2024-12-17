@@ -4,8 +4,9 @@ import { MessageInput } from './MessageInput';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { motion } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface ChatContainerProps {
   selectedFriend: string | null;
@@ -50,6 +51,14 @@ export const ChatContainer = ({
             )}
             <h2 className="font-semibold neon-text">{friendName}</h2>
           </div>
+          {messages.length === 0 && (
+            <Alert variant="destructive" className="m-4">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                Impossible de charger les messages. Problème de connexion au serveur.
+              </AlertDescription>
+            </Alert>
+          )}
           <MessageList messages={messages} currentUserId={currentUserId} />
           <MessageInput onSend={onSendMessage} />
         </>

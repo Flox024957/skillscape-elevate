@@ -9,12 +9,20 @@ export const useMessages = (
   updateConversations: (friendId: string) => void
 ) => {
   const [messages, setMessages] = useState<Message[]>([]);
+  const [isConnecting, setIsConnecting] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
     if (!selectedFriend) return;
 
+    let retryCount = 0;
+    const maxRetries = 3;
+    let retryTimeout: NodeJS.Timeout;
+
     const fetchMessages = async () => {
+      if (isConnecting) return;
+      setIsConnecting(true);
+
       try {
         const { data, error } = await supabase
           .from('messages')
@@ -34,18 +42,27 @@ export const useMessages = (
           .order('created_at', { ascending: true });
 
         if (error) {
+          if (error.message.includes('Failed to fetch') || error.message.includes('connection timeout')) {
+            if (retryCount < maxRetries) {
+              retryCount++;
+              retryTimeout = setTimeout(() => {
+                fetchMessages();
+              }, 2000 * retryCount); // Exponential backoff
+              return;
+            }
+          }
           console.error('Error fetching messages:', error);
           toast({
-            title: "Erreur",
-            description: "Impossible de charger les messages. Veuillez réessayer.",
+            title: "Erreur de connexion",
+            description: "Impossible de se connecter au serveur. Veuillez réessayer plus tard.",
             variant: "destructive",
           });
           return;
         }
 
         setMessages(data || []);
+        retryCount = 0; // Reset retry count on success
 
-        // Mark messages as read
         try {
           await supabase
             .from('messages')
@@ -65,12 +82,13 @@ export const useMessages = (
           description: "Impossible de se connecter au serveur. Veuillez vérifier votre connexion.",
           variant: "destructive",
         });
+      } finally {
+        setIsConnecting(false);
       }
     };
 
     fetchMessages();
 
-    // Set up real-time subscription
     let channel = supabase
       .channel('messages_channel')
       .on(
@@ -124,8 +142,11 @@ export const useMessages = (
       if (channel) {
         supabase.removeChannel(channel);
       }
+      if (retryTimeout) {
+        clearTimeout(retryTimeout);
+      }
     };
-  }, [userId, selectedFriend, updateConversations, toast]);
+  }, [userId, selectedFriend, updateConversations, toast, isConnecting]);
 
   return messages;
 };
