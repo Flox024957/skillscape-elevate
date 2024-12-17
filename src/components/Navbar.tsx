@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { NavContainer } from "./navbar/NavContainer";
 import { NavItem } from "./navbar/NavItem";
-import { Home, BookOpen, Mic2 } from "lucide-react";
+import { Home } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 export const Navbar = () => {
@@ -28,18 +28,6 @@ export const Navbar = () => {
       icon: Home,
       path: "/",
       isActive: location.pathname === "/"
-    },
-    {
-      label: "Compétences",
-      icon: BookOpen,
-      path: "/skills",
-      isActive: location.pathname.startsWith("/skills")
-    },
-    {
-      label: "Audio",
-      icon: Mic2,
-      path: "/audio",
-      isActive: location.pathname === "/audio"
     }
   ];
 
