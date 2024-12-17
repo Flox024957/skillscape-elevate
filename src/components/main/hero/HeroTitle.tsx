@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
-import { Sparkles } from "lucide-react";
 
 export const HeroTitle = () => {
   const isMobile = useIsMobile();
@@ -14,20 +13,6 @@ export const HeroTitle = () => {
       transition: {
         duration: 0.8,
         ease: "easeOut"
-      }
-    }
-  };
-
-  const sparkleVariants = {
-    initial: { scale: 0, rotate: -30 },
-    animate: { 
-      scale: 1, 
-      rotate: 0,
-      transition: {
-        type: "spring",
-        stiffness: 260,
-        damping: 20,
-        delay: 1.2
       }
     }
   };
@@ -48,14 +33,6 @@ export const HeroTitle = () => {
           )}
         >
           FLAP
-          <motion.span
-            variants={sparkleVariants}
-            initial="initial"
-            animate="animate"
-            className="absolute -top-4 -right-8"
-          >
-            <Sparkles className="w-8 h-8 text-yellow-400" />
-          </motion.span>
         </motion.h1>
       </div>
 
