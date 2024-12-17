@@ -74,13 +74,6 @@ const ProfileSection = memo(({ user, onSignOut }: ProfileSectionProps) => {
           <div className="flex gap-4">
             <Button 
               variant="outline" 
-              onClick={() => navigate("/main")}
-              className="hover:scale-105 transition-transform duration-300"
-            >
-              Explorer
-            </Button>
-            <Button 
-              variant="outline" 
               onClick={onSignOut}
               className="hover:scale-105 transition-transform duration-300"
             >
