@@ -13,22 +13,37 @@ export const PlaylistSection = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return null;
 
-      const { data, error } = await supabase
+      // D'abord, récupérer la playlist
+      const { data: playlist, error: playlistError } = await supabase
         .from('skill_playlists')
-        .select(`
-          *,
-          skills:skills (
-            id,
-            titre,
-            resume
-          )
-        `)
+        .select('*')
         .eq('user_id', user.id)
         .eq('name', 'Lecture en cours')
         .single();
 
-      if (error && error.code !== 'PGRST116') throw error;
-      return data;
+      if (playlistError && playlistError.code !== 'PGRST116') throw playlistError;
+      if (!playlist) return null;
+
+      // Ensuite, récupérer les skills correspondants
+      if (playlist.skills && playlist.skills.length > 0) {
+        const { data: skills, error: skillsError } = await supabase
+          .from('skills')
+          .select('id, titre, resume')
+          .in('id', playlist.skills);
+
+        if (skillsError) throw skillsError;
+
+        // Combiner les données
+        return {
+          ...playlist,
+          skills: skills || []
+        };
+      }
+
+      return {
+        ...playlist,
+        skills: []
+      };
     },
   });
 
