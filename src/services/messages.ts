@@ -8,19 +8,13 @@ export const fetchUserMessages = async (userId: string, selectedFriend: string) 
     const { data, error } = await supabase
       .from('messages')
       .select(`
-        id,
-        sender_id,
-        receiver_id,
-        content,
-        read,
-        created_at,
+        *,
         profiles!messages_sender_id_fkey (
           pseudo,
           image_profile
         )
       `)
-      .or(`sender_id.eq.${userId},receiver_id.eq.${userId}`)
-      .or(`sender_id.eq.${selectedFriend},receiver_id.eq.${selectedFriend}`)
+      .or(`and(sender_id.eq.${userId},receiver_id.eq.${selectedFriend}),and(sender_id.eq.${selectedFriend},receiver_id.eq.${userId})`)
       .order('created_at', { ascending: true });
 
     if (error) {
