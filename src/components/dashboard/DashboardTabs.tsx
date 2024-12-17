@@ -30,7 +30,7 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
   };
 
   return (
-    <div className="space-y-8 pb-20">
+    <div className="space-y-12 pb-20">
       {/* Profile Section avec Animation */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -48,7 +48,7 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
       <Tabs defaultValue="skills" className="w-full">
         <TabsList className={cn(
           "w-full flex gap-2 bg-background/50 backdrop-blur-sm border border-border rounded-lg sticky top-0 z-50",
-          isMobile ? "p-2 mb-8 mx-4" : "p-1 mb-8"
+          isMobile ? "p-2 mb-12 mx-4" : "p-1 mb-12"
         )}>
           <TabsTrigger 
             value="skills" 
