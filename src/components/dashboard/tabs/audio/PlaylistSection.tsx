@@ -11,7 +11,6 @@ export const PlaylistSection = () => {
   const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    // Récupérer l'ID de l'utilisateur de manière asynchrone
     const fetchUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
@@ -81,7 +80,7 @@ export const PlaylistSection = () => {
   }, [userId, refetchPlaylist]);
 
   const handleRemoveFromPlaylist = async (skillId: string) => {
-    if (!playlist) return;
+    if (!playlist || !userId) return;
 
     const updatedSkills = playlist.skills.filter((id: string) => id !== skillId);
     const { error } = await supabase
