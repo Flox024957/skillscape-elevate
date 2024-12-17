@@ -127,7 +127,7 @@ const ProfileSection = memo(({ user, onSignOut }: ProfileSectionProps) => {
             variant="ghost"
             size="default"
             className={cn(
-              "flex gap-3 flex-1 h-12",
+              "flex gap-3 flex-1 h-12 px-3",
               "hover:bg-primary/10 hover:text-primary",
               "transform hover:scale-[1.02] transition-all duration-300"
             )}
