@@ -3,25 +3,31 @@ import { Json } from "@/integrations/supabase/types";
 export interface Skill {
   id: string;
   titre: string;
-  resume: string | null;
-  description: string | null;
-  action_concrete: string | null;
-  exemples: any[] | null;
+  resume: string;
+  description: string;
+  action_concrete: string;
+  exemples: Json[];
   category_id: string | null;
   created_at: string;
   updated_at: string;
+  categories?: {
+    id: string;
+    name: string;
+  };
 }
 
 export interface UserSkill {
+  id: string;
+  user_id: string;
   skill_id: string;
   sections_selectionnees: string[] | null;
   skills: Skill;
-  is_mastered?: boolean;
 }
 
 export interface MasteredSkill {
+  id: string;
   skill_id: string;
-  mastered_at: string;
+  mastered_at: string | null;
   notes: string | null;
   skills: {
     id: string;
@@ -30,7 +36,6 @@ export interface MasteredSkill {
   };
 }
 
-// Helper function to transform French column names to English for UI
 export const transformSkill = (skill: Skill) => ({
   id: skill.id,
   title: skill.titre,
