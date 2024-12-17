@@ -41,11 +41,7 @@ export interface Friend {
 }
 
 export interface ChatConversation {
-  friend: {
-    id: string;
-    pseudo: string | null;
-    image_profile: string | null;
-  };
+  friend: Friend;
   unreadCount: number;
   lastMessage?: {
     content: string;

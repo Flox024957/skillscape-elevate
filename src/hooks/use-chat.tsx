@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from "@/integrations/supabase/client";
-import { Message, ChatConversation } from '@/types/skills';
+import { Message, ChatConversation, Friend } from '@/types/skills';
 import { useToast } from "@/hooks/use-toast";
 
 export const useChat = (userId: string) => {
@@ -29,7 +29,7 @@ export const useChat = (userId: string) => {
       }
 
       const conversationsData: ChatConversation[] = friendships.map(f => ({
-        friend: f.friend as ChatConversation['friend'],
+        friend: f.friend as Friend,
         unreadCount: 0,
         lastMessage: undefined
       }));
