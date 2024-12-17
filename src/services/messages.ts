@@ -4,10 +4,6 @@ import { Message } from "@/integrations/supabase/types/messages";
 export const fetchUserMessages = async (userId: string, selectedFriend: string) => {
   try {
     console.log('Fetching messages for:', { userId, selectedFriend });
-    console.log('Supabase connection info:', {
-      url: supabase.getClientUrl(),
-      schema: 'public'
-    });
     
     const { data, error } = await supabase
       .from('messages')
