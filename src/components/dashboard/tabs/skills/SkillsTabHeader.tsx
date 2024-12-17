@@ -9,7 +9,7 @@ export const SkillsTabHeader = () => {
   return (
     <TabsList 
       className={cn(
-        "w-full flex flex-col gap-6 mb-12 bg-background/50 backdrop-blur-sm border border-border/50 p-4 sticky top-20 z-20",
+        "w-full flex flex-col gap-6 mb-16 bg-background/50 backdrop-blur-sm border border-border/50 p-4 sticky top-20 z-20",
         !isMobile && "grid grid-cols-2 gap-6"
       )}
     >
