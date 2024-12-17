@@ -1,55 +1,65 @@
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { NavContainer } from "./navbar/NavContainer";
+import { Home, LayoutGrid, Headphones, Trophy, Users } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { NavItem } from "./navbar/NavItem";
-import { Home, BookOpen, Mic2 } from "lucide-react";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { NavTooltip } from "./navbar/NavTooltip";
+import { NavContainer } from "./navbar/NavContainer";
+
+const navItems = [
+  { 
+    icon: Home, 
+    label: "Accueil", 
+    path: "/main", 
+    description: "Retour à l'accueil",
+    ariaLabel: "Naviguer vers la page d'accueil"
+  },
+  { 
+    icon: LayoutGrid, 
+    label: "Dashboard", 
+    path: "/dashboard", 
+    description: "Accéder à votre tableau de bord",
+    ariaLabel: "Naviguer vers le tableau de bord"
+  },
+  { 
+    icon: Headphones, 
+    label: "Audio", 
+    path: "/audio", 
+    description: "Gérer vos contenus audio",
+    ariaLabel: "Naviguer vers la section audio"
+  },
+  { 
+    icon: Trophy, 
+    label: "Défis", 
+    path: "/challenges", 
+    description: "Voir vos défis",
+    ariaLabel: "Naviguer vers vos défis"
+  },
+  { 
+    icon: Users, 
+    label: "Social", 
+    path: "/social", 
+    description: "Espace social",
+    ariaLabel: "Naviguer vers l'espace social"
+  }
+];
 
 const Navbar = () => {
-  const [user, setUser] = useState<any>(null);
+  const navigate = useNavigate();
   const location = useLocation();
-  const isMobile = useIsMobile();
 
-  useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-    };
-
-    getUser();
-  }, []);
-
-  if (location.pathname === "/auth") return null;
-
-  const navigationItems = [
-    {
-      label: "Accueil",
-      icon: Home,
-      path: "/",
-      isActive: location.pathname === "/"
-    },
-    {
-      label: "Compétences",
-      icon: BookOpen,
-      path: "/skills",
-      isActive: location.pathname.startsWith("/skills")
-    },
-    {
-      label: "Audio",
-      icon: Mic2,
-      path: "/audio",
-      isActive: location.pathname === "/audio"
-    }
-  ];
+  const handleNavigation = (path: string) => {
+    navigate(path);
+  };
 
   return (
     <NavContainer>
-      {navigationItems.map((item) => (
-        <NavItem
-          key={item.path}
-          {...item}
-        />
+      {navItems.map((item) => (
+        <NavTooltip key={item.path} description={item.description}>
+          <NavItem
+            {...item}
+            isActive={location.pathname === item.path}
+            onClick={() => handleNavigation(item.path)}
+          />
+        </NavTooltip>
       ))}
     </NavContainer>
   );

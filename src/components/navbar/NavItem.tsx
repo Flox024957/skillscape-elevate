@@ -3,23 +3,27 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useNavigate } from "react-router-dom";
 
 interface NavItemProps {
   icon: LucideIcon;
   label: string;
   path: string;
+  description: string;
+  ariaLabel: string;
   isActive: boolean;
+  onClick: () => void;
 }
 
 export const NavItem = ({
   icon: Icon,
   label,
   path,
+  description,
+  ariaLabel,
   isActive,
+  onClick,
 }: NavItemProps) => {
   const isMobile = useIsMobile();
-  const navigate = useNavigate();
 
   return (
     <Button
@@ -33,8 +37,8 @@ export const NavItem = ({
         "disabled:pointer-events-none disabled:opacity-50",
         isMobile && "w-full"
       )}
-      onClick={() => navigate(path)}
-      aria-label={label}
+      onClick={onClick}
+      aria-label={ariaLabel}
       aria-current={isActive ? "page" : undefined}
     >
       <motion.div
