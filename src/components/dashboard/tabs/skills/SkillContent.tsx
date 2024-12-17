@@ -1,9 +1,6 @@
 import { CollapsibleContent } from "@/components/ui/collapsible";
 import SkillSection from "./SkillSection";
 import ExamplesSection from "./ExamplesSection";
-import { Json } from "@/integrations/supabase/types";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -13,7 +10,7 @@ interface SkillContentProps {
   summary: string | null;
   explanation: string | null;
   concreteAction: string | null;
-  examples: Json[] | null;
+  examples: any[] | null;
 }
 
 const SkillContent = ({
@@ -24,10 +21,9 @@ const SkillContent = ({
   concreteAction,
   examples,
 }: SkillContentProps) => {
-  const isMobile = useIsMobile();
   const { toast } = useToast();
 
-  const handleAddToNotes = async (skillId: string, title: string, content: string | Json[] | null) => {
+  const handleAddToNotes = async (skillId: string, title: string, content: string | any[] | null) => {
     if (!content) return;
 
     const { data: { user } } = await supabase.auth.getUser();
@@ -40,19 +36,21 @@ const SkillContent = ({
       return;
     }
 
-    const noteContent = Array.isArray(content) 
-      ? `Exemples:\n${content.map(ex => `- ${ex}`).join('\n')}`
-      : content;
+    // Format the content based on its type
+    const formattedContent = Array.isArray(content)
+      ? `${title}:\n${content.map(item => `- ${item}`).join('\n')}`
+      : `${title}:\n${content}`;
 
     const { error } = await supabase
       .from('user_notes')
       .insert([{
         user_id: user.id,
-        content: `${title}:\n${noteContent}`,
+        content: formattedContent,
         tags: ['skill', skillId]
       }]);
 
     if (error) {
+      console.error('Error adding note:', error);
       toast({
         title: "Erreur",
         description: "Impossible d'ajouter la note",
@@ -63,18 +61,13 @@ const SkillContent = ({
 
     toast({
       title: "Succès",
-      description: "Contenu ajouté à vos notes",
+      description: "Note ajoutée avec succès",
     });
   };
 
   return (
     <CollapsibleContent>
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3 }}
-        className={`p-6 space-y-6 ${isMobile ? 'text-sm' : ''}`}
-      >
+      <div className="p-6 space-y-6">
         {(!selectedSections || selectedSections.includes('Summary')) && (
           <SkillSection
             skillId={skillId}
@@ -83,6 +76,7 @@ const SkillContent = ({
             onAdd={handleAddToNotes}
           />
         )}
+        
         {(!selectedSections || selectedSections.includes('Explanation')) && (
           <SkillSection
             skillId={skillId}
@@ -91,6 +85,7 @@ const SkillContent = ({
             onAdd={handleAddToNotes}
           />
         )}
+        
         {(!selectedSections || selectedSections.includes('Concrete Action')) && (
           <SkillSection
             skillId={skillId}
@@ -99,6 +94,7 @@ const SkillContent = ({
             onAdd={handleAddToNotes}
           />
         )}
+        
         {(!selectedSections || selectedSections.includes('Examples')) && (
           <ExamplesSection
             skillId={skillId}
@@ -106,7 +102,7 @@ const SkillContent = ({
             onAdd={handleAddToNotes}
           />
         )}
-      </motion.div>
+      </div>
     </CollapsibleContent>
   );
 };
