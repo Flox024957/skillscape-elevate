@@ -5,6 +5,7 @@ export const handleConnectionError = () => {
     title: "Problème de connexion",
     description: "Le serveur est temporairement indisponible. Veuillez réessayer plus tard.",
     variant: "destructive",
+    duration: 5000,
   });
 };
 
@@ -14,5 +15,6 @@ export const handleMessageUpdateError = (error: any) => {
     title: "Erreur",
     description: "Impossible de mettre à jour le statut du message. Veuillez réessayer.",
     variant: "destructive",
+    duration: 5000,
   });
 };

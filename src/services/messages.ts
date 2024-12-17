@@ -1,5 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import { Message } from "@/integrations/supabase/types/messages";
+import { handleConnectionError } from "@/utils/error-handling";
 
 export const fetchUserMessages = async (userId: string, selectedFriend: string) => {
   try {
@@ -18,6 +19,10 @@ export const fetchUserMessages = async (userId: string, selectedFriend: string) 
       .order('created_at', { ascending: true });
 
     if (error) {
+      if (error.code === '503' || error.message.includes('timeout')) {
+        handleConnectionError();
+        return [];
+      }
       console.error('Error fetching messages:', error);
       throw error;
     }
@@ -26,7 +31,8 @@ export const fetchUserMessages = async (userId: string, selectedFriend: string) 
     return data as Message[];
   } catch (error) {
     console.error('Error in fetchUserMessages:', error);
-    throw error;
+    handleConnectionError();
+    return [];
   }
 };
 
@@ -44,6 +50,10 @@ export const markMessagesAsRead = async (userId: string, selectedFriend: string)
       });
 
     if (error) {
+      if (error.code === '503' || error.message.includes('timeout')) {
+        handleConnectionError();
+        return;
+      }
       console.error('Error marking messages as read:', error);
       throw error;
     }
@@ -51,7 +61,7 @@ export const markMessagesAsRead = async (userId: string, selectedFriend: string)
     console.log('Messages marked as read successfully');
   } catch (error) {
     console.error('Error in markMessagesAsRead:', error);
-    throw error;
+    handleConnectionError();
   }
 };
 
