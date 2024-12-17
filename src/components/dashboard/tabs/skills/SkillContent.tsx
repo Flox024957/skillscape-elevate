@@ -4,6 +4,8 @@ import ExamplesSection from "./ExamplesSection";
 import { Json } from "@/integrations/supabase/types";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface SkillContentProps {
   skillId: string;
@@ -12,7 +14,6 @@ interface SkillContentProps {
   explanation: string | null;
   concreteAction: string | null;
   examples: Json[] | null;
-  onAdd: (skillId: string, title: string, content: string | Json[] | null) => void;
 }
 
 const SkillContent = ({
@@ -22,9 +23,49 @@ const SkillContent = ({
   explanation,
   concreteAction,
   examples,
-  onAdd,
 }: SkillContentProps) => {
   const isMobile = useIsMobile();
+  const { toast } = useToast();
+
+  const handleAddToNotes = async (skillId: string, title: string, content: string | Json[] | null) => {
+    if (!content) return;
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast({
+        title: "Erreur",
+        description: "Vous devez être connecté pour ajouter des notes",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const noteContent = Array.isArray(content) 
+      ? `Exemples:\n${content.map(ex => `- ${ex}`).join('\n')}`
+      : content;
+
+    const { error } = await supabase
+      .from('user_notes')
+      .insert([{
+        user_id: user.id,
+        content: `${title}:\n${noteContent}`,
+        tags: ['skill', skillId]
+      }]);
+
+    if (error) {
+      toast({
+        title: "Erreur",
+        description: "Impossible d'ajouter la note",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    toast({
+      title: "Succès",
+      description: "Contenu ajouté à vos notes",
+    });
+  };
 
   return (
     <CollapsibleContent>
@@ -39,7 +80,7 @@ const SkillContent = ({
             skillId={skillId}
             title="Résumé"
             content={summary}
-            onAdd={onAdd}
+            onAdd={handleAddToNotes}
           />
         )}
         {(!selectedSections || selectedSections.includes('Explanation')) && (
@@ -47,7 +88,7 @@ const SkillContent = ({
             skillId={skillId}
             title="Explication"
             content={explanation}
-            onAdd={onAdd}
+            onAdd={handleAddToNotes}
           />
         )}
         {(!selectedSections || selectedSections.includes('Concrete Action')) && (
@@ -55,14 +96,14 @@ const SkillContent = ({
             skillId={skillId}
             title="Action Concrète"
             content={concreteAction}
-            onAdd={onAdd}
+            onAdd={handleAddToNotes}
           />
         )}
         {(!selectedSections || selectedSections.includes('Examples')) && (
           <ExamplesSection
             skillId={skillId}
             examples={examples}
-            onAdd={onAdd}
+            onAdd={handleAddToNotes}
           />
         )}
       </motion.div>
