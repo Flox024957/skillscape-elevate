@@ -7,10 +7,11 @@ export const SkillsTabHeader = () => {
   const isMobile = useIsMobile();
   
   return (
-    <div 
+    <TabsList 
       className={cn(
         "w-full flex flex-col gap-6 mb-24 p-4 sticky top-20 z-20",
         "transform hover:scale-[1.01] transition-all duration-300",
+        "bg-transparent border-none",
         !isMobile && "grid grid-cols-2 gap-6"
       )}
     >
@@ -42,6 +43,6 @@ export const SkillsTabHeader = () => {
         <Trophy className="w-5 h-5" />
         <span className="font-medium">Compétences maîtrisées</span>
       </TabsTrigger>
-    </div>
+    </TabsList>
   );
 };
