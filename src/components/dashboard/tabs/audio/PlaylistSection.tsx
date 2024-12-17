@@ -7,7 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 
 export const PlaylistSection = () => {
-  const { data: playlist, refetch: refetchPlaylist } = useQuery({
+  const { data: currentPlaylist, refetch } = useQuery({
     queryKey: ['current-playlist'],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -15,7 +15,14 @@ export const PlaylistSection = () => {
 
       const { data, error } = await supabase
         .from('skill_playlists')
-        .select('*')
+        .select(`
+          *,
+          skills:skills (
+            id,
+            titre,
+            resume
+          )
+        `)
         .eq('user_id', user.id)
         .eq('name', 'Lecture en cours')
         .single();
@@ -25,44 +32,28 @@ export const PlaylistSection = () => {
     },
   });
 
-  const { data: skills = [] } = useQuery({
-    queryKey: ['playlist-skills', playlist?.skills],
-    queryFn: async () => {
-      if (!playlist?.skills?.length) return [];
-
-      const { data, error } = await supabase
-        .from('skills')
-        .select('id, titre, resume')
-        .in('id', playlist.skills);
-
-      if (error) throw error;
-      return data || [];
-    },
-    enabled: !!playlist?.skills?.length,
-  });
-
   const handleRemoveFromPlaylist = async (skillId: string) => {
-    if (!playlist) return;
+    if (!currentPlaylist) return;
 
-    const updatedSkills = playlist.skills.filter((id: string) => id !== skillId);
+    const updatedSkills = currentPlaylist.skills.filter((s: any) => s.id !== skillId);
     const { error } = await supabase
       .from('skill_playlists')
       .update({ 
-        skills: updatedSkills,
+        skills: updatedSkills.map((s: any) => s.id),
         skill_order: Array.from({ length: updatedSkills.length }, (_, i) => i)
       })
-      .eq('id', playlist.id);
+      .eq('id', currentPlaylist.id);
 
     if (error) {
       toast.error("Erreur lors de la suppression de la compétence");
       return;
     }
 
-    refetchPlaylist();
+    refetch();
     toast.success("Compétence retirée de la playlist");
   };
 
-  if (!skills.length) {
+  if (!currentPlaylist?.skills?.length) {
     return (
       <Card className="bg-[#1E3D7B]/20 border-[#1E3D7B]/30 p-4">
         <p className="text-center text-muted-foreground">
@@ -77,7 +68,7 @@ export const PlaylistSection = () => {
       <h4 className="font-semibold mb-4">Playlist en cours</h4>
       <ScrollArea className="h-[200px]">
         <div className="space-y-2">
-          {skills.map((skill: any, index: number) => (
+          {currentPlaylist.skills.map((skill: any, index: number) => (
             <div
               key={skill.id}
               className="flex items-center justify-between p-2 bg-background/50 rounded-lg"

@@ -5,7 +5,6 @@ import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useQuery } from '@tanstack/react-query';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { useToast } from '@/hooks/use-toast';
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
@@ -90,48 +89,28 @@ FriendItem.displayName = 'FriendItem';
 export const FriendsList = ({ userId, variant = 'full' }: FriendsListProps) => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const { toast } = useToast();
   
-  const { data: friends, isLoading, error } = useQuery({
+  const { data: friends, isLoading } = useQuery({
     queryKey: ['friends', userId],
     queryFn: async () => {
-      try {
-        const { data: acceptedFriends, error } = await supabase
-          .from('friendships')
-          .select(`
-            friend:profiles!friendships_friend_id_fkey (
-              id,
-              pseudo,
-              image_profile
-            )
-          `)
-          .eq('user_id', userId)
-          .eq('status', 'accepted');
+      const { data: acceptedFriends, error } = await supabase
+        .from('friendships')
+        .select(`
+          friend:profiles!friendships_friend_id_fkey(
+            id,
+            pseudo,
+            image_profile
+          )
+        `)
+        .eq('user_id', userId)
+        .eq('status', 'accepted');
 
-        if (error) {
-          console.error('Error fetching friends:', error);
-          toast({
-            title: "Erreur",
-            description: "Impossible de charger vos amis. Veuillez réessayer.",
-            variant: "destructive",
-          });
-          return [];
-        }
-        
-        return acceptedFriends
-          .map(f => f.friend)
-          .filter(friend => friend !== null) as Friend[];
-      } catch (err) {
-        console.error('Error in friends query:', err);
-        toast({
-          title: "Erreur",
-          description: "Une erreur est survenue lors du chargement de vos amis.",
-          variant: "destructive",
-        });
-        return [];
-      }
+      if (error) throw error;
+      
+      return acceptedFriends
+        .map(f => f.friend)
+        .filter(friend => friend !== null) as Friend[];
     },
-    retry: 2,
     staleTime: 30000,
   });
 
@@ -141,21 +120,6 @@ export const FriendsList = ({ userId, variant = 'full' }: FriendsListProps) => {
         {[1, 2, 3].map((i) => (
           <div key={i} className="h-16 bg-accent/20 rounded-lg animate-pulse" />
         ))}
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="text-center text-muted-foreground py-8">
-        <p>Une erreur est survenue lors du chargement de vos amis.</p>
-        <Button 
-          variant="outline" 
-          className="mt-4"
-          onClick={() => navigate('/social')}
-        >
-          Réessayer
-        </Button>
       </div>
     );
   }
