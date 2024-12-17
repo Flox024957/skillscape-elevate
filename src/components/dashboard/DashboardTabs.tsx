@@ -4,7 +4,6 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import ProfileSection from "./ProfileSection";
-import { SocialActivity } from "./SocialActivity";
 import { TabsList } from "./tabs/TabsList";
 import { TabsContent } from "./tabs/TabsContent";
 
@@ -38,17 +37,6 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
           <TabsContent user={user} />
         </AnimatePresence>
       </Tabs>
-
-      {isMobile && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.1 }}
-          className="mx-4 mb-24"
-        >
-          <SocialActivity userId={user.id} />
-        </motion.div>
-      )}
     </div>
   );
 };
