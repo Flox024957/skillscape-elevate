@@ -50,7 +50,8 @@ const ProfileSection = memo(({ user, onSignOut }: ProfileSectionProps) => {
       )}>
         <div className="flex items-center gap-4">
           <Avatar className={cn(
-            "border-2 border-primary/20",
+            "ring-2 ring-primary/20 ring-offset-2 ring-offset-background",
+            "transform hover:scale-105 transition-all duration-300",
             isMobile ? "h-14 w-14" : "h-16 w-16"
           )}>
             <AvatarImage src={user.user_metadata.avatar_url} />
@@ -59,6 +60,7 @@ const ProfileSection = memo(({ user, onSignOut }: ProfileSectionProps) => {
           <div>
             <h2 className={cn(
               "font-semibold",
+              "bg-gradient-to-r from-primary via-purple-500 to-blue-500 bg-clip-text text-transparent",
               isMobile ? "text-base" : "text-xl"
             )}>
               {user.user_metadata.full_name || user.email}
@@ -70,10 +72,18 @@ const ProfileSection = memo(({ user, onSignOut }: ProfileSectionProps) => {
         </div>
         {!isMobile && (
           <div className="flex gap-4">
-            <Button variant="outline" onClick={() => navigate("/main")}>
+            <Button 
+              variant="outline" 
+              onClick={() => navigate("/main")}
+              className="hover:scale-105 transition-transform duration-300"
+            >
               Explorer
             </Button>
-            <Button variant="outline" onClick={onSignOut}>
+            <Button 
+              variant="outline" 
+              onClick={onSignOut}
+              className="hover:scale-105 transition-transform duration-300"
+            >
               Déconnexion
             </Button>
           </div>
@@ -84,16 +94,29 @@ const ProfileSection = memo(({ user, onSignOut }: ProfileSectionProps) => {
         <Button
           variant="ghost"
           size={isMobile ? "default" : "default"}
-          className="flex gap-3 flex-1 h-12"
+          className={cn(
+            "flex gap-3 flex-1 h-12",
+            "hover:bg-primary/10 hover:text-primary",
+            "transform hover:scale-[1.02] transition-all duration-300"
+          )}
           onClick={() => navigate("/friends")}
         >
           <Users className={cn("h-4 w-4", isMobile && "h-4 w-4")} />
-          <Badge variant="secondary" className="px-2 py-1">{socialStats?.friends || 0}</Badge>
+          <Badge 
+            variant="secondary" 
+            className="px-2 py-1 hover:bg-primary/20"
+          >
+            {socialStats?.friends || 0}
+          </Badge>
         </Button>
         <Button
           variant="ghost"
           size={isMobile ? "default" : "default"}
-          className="flex gap-3 flex-1 h-12"
+          className={cn(
+            "flex gap-3 flex-1 h-12",
+            "hover:bg-primary/10 hover:text-primary",
+            "transform hover:scale-[1.02] transition-all duration-300"
+          )}
           onClick={() => navigate("/messages")}
         >
           <MessageCircle className={cn("h-4 w-4", isMobile && "h-4 w-4")} />
@@ -103,7 +126,11 @@ const ProfileSection = memo(({ user, onSignOut }: ProfileSectionProps) => {
           <Button
             variant="ghost"
             size="default"
-            className="flex gap-3 flex-1 h-12"
+            className={cn(
+              "flex gap-3 flex-1 h-12",
+              "hover:bg-primary/10 hover:text-primary",
+              "transform hover:scale-[1.02] transition-all duration-300"
+            )}
             onClick={onSignOut}
           >
             Déconnexion

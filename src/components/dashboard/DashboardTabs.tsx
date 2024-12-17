@@ -35,9 +35,10 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.2 }}
+        transition={{ duration: 0.3, type: "spring", stiffness: 100 }}
         className={cn(
-          "bg-card/50 backdrop-blur-sm border border-border rounded-lg overflow-hidden shadow-lg",
+          "glass-panel-pro transform hover:scale-[1.01] transition-all duration-300",
+          "bg-gradient-to-br from-purple-500/10 via-background/80 to-blue-500/10",
           isMobile ? "mx-4" : ""
         )}
       >
@@ -47,13 +48,19 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
       {/* Tabs Principal */}
       <Tabs defaultValue="skills" className="w-full">
         <TabsList className={cn(
-          "w-full flex gap-2 bg-background/50 backdrop-blur-sm border border-border rounded-lg sticky top-0 z-50",
+          "w-full flex gap-2 bg-background/50 backdrop-blur-sm border border-border/50 rounded-lg sticky top-0 z-50",
+          "shadow-lg shadow-purple-500/5",
+          "transform hover:scale-[1.01] transition-all duration-300",
           isMobile ? "p-2 mb-12 mx-4" : "p-1 mb-12"
         )}>
           <TabsTrigger 
             value="skills" 
             className={cn(
-              "flex-1 flex items-center justify-center gap-2 data-[state=active]:bg-primary/10 data-[state=active]:text-primary transition-all py-3",
+              "flex-1 flex items-center justify-center gap-2",
+              "data-[state=active]:bg-primary/10 data-[state=active]:text-primary",
+              "transition-all duration-300 py-3",
+              "hover:bg-primary/5",
+              "transform hover:scale-[1.02]",
               isMobile ? "text-sm" : "text-base"
             )}
           >
@@ -63,7 +70,11 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
           <TabsTrigger 
             value="notes" 
             className={cn(
-              "flex-1 flex items-center justify-center gap-2 data-[state=active]:bg-primary/10 data-[state=active]:text-primary transition-all py-3",
+              "flex-1 flex items-center justify-center gap-2",
+              "data-[state=active]:bg-primary/10 data-[state=active]:text-primary",
+              "transition-all duration-300 py-3",
+              "hover:bg-primary/5",
+              "transform hover:scale-[1.02]",
               isMobile ? "text-sm" : "text-base"
             )}
           >
@@ -73,7 +84,11 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
           <TabsTrigger 
             value="canvas" 
             className={cn(
-              "flex-1 flex items-center justify-center gap-2 data-[state=active]:bg-primary/10 data-[state=active]:text-primary transition-all py-3",
+              "flex-1 flex items-center justify-center gap-2",
+              "data-[state=active]:bg-primary/10 data-[state=active]:text-primary",
+              "transition-all duration-300 py-3",
+              "hover:bg-primary/5",
+              "transform hover:scale-[1.02]",
               isMobile ? "text-sm" : "text-base"
             )}
           >
@@ -127,7 +142,7 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.2, delay: 0.1 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
           className="mx-4 mb-24"
         >
           <SocialActivity userId={user.id} />
