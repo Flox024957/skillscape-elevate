@@ -4,7 +4,7 @@ import { MessageInput } from './MessageInput';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { motion } from "framer-motion";
-import { ArrowLeft, AlertCircle, WifiOff } from "lucide-react";
+import { ArrowLeft, WifiOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -27,6 +27,31 @@ export const ChatContainer = ({
 }: ChatContainerProps) => {
   const isMobile = useIsMobile();
 
+  const renderHeader = () => (
+    <div className="p-3 border-b border-border/50 flex items-center gap-2 sticky top-0 bg-background/80 backdrop-blur-sm z-10">
+      {isMobile && onBack && (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8"
+          onClick={onBack}
+        >
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+      )}
+      <h2 className="font-semibold neon-text">{friendName}</h2>
+    </div>
+  );
+
+  const renderConnectionError = () => (
+    <Alert variant="destructive" className="m-4">
+      <WifiOff className="h-4 w-4" />
+      <AlertDescription>
+        Le serveur est temporairement indisponible. Veuillez patienter ou rafraîchir la page.
+      </AlertDescription>
+    </Alert>
+  );
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
@@ -38,27 +63,8 @@ export const ChatContainer = ({
     >
       {selectedFriend ? (
         <>
-          <div className="p-3 border-b border-border/50 flex items-center gap-2 sticky top-0 bg-background/80 backdrop-blur-sm z-10">
-            {isMobile && onBack && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                onClick={onBack}
-              >
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
-            )}
-            <h2 className="font-semibold neon-text">{friendName}</h2>
-          </div>
-          {messages.length === 0 && (
-            <Alert variant="destructive" className="m-4">
-              <WifiOff className="h-4 w-4" />
-              <AlertDescription>
-                Le serveur est temporairement indisponible. Veuillez patienter ou rafraîchir la page.
-              </AlertDescription>
-            </Alert>
-          )}
+          {renderHeader()}
+          {messages.length === 0 && renderConnectionError()}
           <MessageList messages={messages} currentUserId={currentUserId} />
           <MessageInput onSend={onSendMessage} />
         </>
