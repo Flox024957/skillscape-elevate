@@ -181,6 +181,7 @@ export const LearningSkillsList = ({
                               explanation={skill.skill.description}
                               concreteAction={skill.skill.action_concrete}
                               examples={skill.skill.exemples}
+                              onAdd={() => {}} // We don't need this functionality here
                             />
                           </div>
                         </CollapsibleContent>

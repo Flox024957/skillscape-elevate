@@ -9,9 +9,7 @@ import { Calendar } from "./notes/Calendar";
 import { NoteInput } from "./notes/NoteInput";
 import { NotesList } from "./notes/NotesList";
 import { YearlyCalendar } from "./notes/YearlyCalendar";
-import { LearningSkillsSection } from "./notes/LearningSkillsSection";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator";
 
 interface NotesTabProps {
   userId: string;
@@ -47,11 +45,8 @@ const NotesTab = ({ userId }: NotesTabProps) => {
     },
   });
 
-  const saveNote = async (noteContent?: string, noteTags?: string[]) => {
-    const contentToSave = noteContent || note;
-    const tagsToSave = noteTags || tags;
-
-    if (!contentToSave.trim()) {
+  const saveNote = async () => {
+    if (!note.trim()) {
       toast({
         title: "Erreur",
         description: "Veuillez entrer une note",
@@ -68,9 +63,9 @@ const NotesTab = ({ userId }: NotesTabProps) => {
       .from('user_notes')
       .insert([{
         user_id: userId,
-        content: contentToSave.trim(),
+        content: note.trim(),
         created_at: noteDate.toISOString(),
-        tags: tagsToSave.length > 0 ? tagsToSave : null,
+        tags: tags.length > 0 ? tags : null,
       }]);
 
     if (error) {
@@ -130,21 +125,7 @@ const NotesTab = ({ userId }: NotesTabProps) => {
 
         {view === "daily" ? (
           <div className={`grid grid-cols-1 ${isMobile ? 'gap-4' : 'md:grid-cols-2 gap-6'}`}>
-            <div className="space-y-6">
-              <Calendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
-              
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.1 }}
-              >
-                <LearningSkillsSection 
-                  userId={userId}
-                  selectedDate={selectedDate}
-                  onAddNote={saveNote}
-                />
-              </motion.div>
-            </div>
+            <Calendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
             
             <motion.div 
               className="bg-card rounded-lg border border-border overflow-hidden"
@@ -158,7 +139,7 @@ const NotesTab = ({ userId }: NotesTabProps) => {
                   setNote={setNote}
                   time={time}
                   setTime={setTime}
-                  saveNote={() => saveNote()}
+                  saveNote={saveNote}
                   tags={tags}
                   setTags={setTags}
                 />

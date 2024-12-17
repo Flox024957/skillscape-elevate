@@ -6,25 +6,17 @@ export interface Skill {
   resume: string | null;
   description: string | null;
   action_concrete: string | null;
-  exemples: Json[];
+  exemples: any[] | null;
   category_id: string | null;
   created_at: string;
   updated_at: string;
 }
 
 export interface UserSkill {
-  id: string;
-  user_id: string | null;
   skill_id: string;
   sections_selectionnees: string[] | null;
   skills: Skill;
-  position: number | null;
-  est_maitrisee: boolean | null;
-  created_at: string | null;
-  updated_at: string | null;
-  audio_preferences: Json;
-  maitrisee_le: string | null;
-  notes: string | null;
+  is_mastered?: boolean;
 }
 
 export interface MasteredSkill {
