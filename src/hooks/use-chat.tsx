@@ -20,7 +20,9 @@ export const useChat = (userId: string) => {
   const { sendMessage, isError: isSendError } = useMessageSender();
 
   const handleSendMessage = async (content: string) => {
-    await sendMessage(content, userId, selectedFriend);
+    if (selectedFriend) {
+      await sendMessage(content, userId, selectedFriend);
+    }
   };
 
   const isError = isConversationsError || isMessagesError || isSendError;
