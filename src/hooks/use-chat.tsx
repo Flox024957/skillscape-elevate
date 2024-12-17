@@ -64,12 +64,16 @@ export const useChat = (userId: string) => {
 
     const fetchMessages = async () => {
       try {
-        // Simplified query structure
         const { data, error } = await supabase
           .from('messages')
           .select(`
-            *,
-            profiles:sender_id (
+            id,
+            sender_id,
+            receiver_id,
+            content,
+            read,
+            created_at,
+            profiles!messages_sender_id_fkey (
               pseudo,
               image_profile
             )
