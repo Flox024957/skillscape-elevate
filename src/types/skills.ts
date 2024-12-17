@@ -6,10 +6,14 @@ export interface Skill {
   resume: string | null;
   description: string | null;
   action_concrete: string | null;
-  exemples: any[] | null;
+  exemples: Json[] | null;
   category_id: string | null;
   created_at: string;
   updated_at: string;
+  categories?: {
+    id: string;
+    name: string;
+  };
 }
 
 export interface UserSkill {
@@ -28,6 +32,38 @@ export interface MasteredSkill {
     titre: string;
     resume: string | null;
   };
+}
+
+export interface Friend {
+  id: string;
+  pseudo: string | null;
+  image_profile: string | null;
+}
+
+export interface ChatConversation {
+  friend: {
+    id: string;
+    pseudo: string | null;
+    image_profile: string | null;
+  };
+  unreadCount: number;
+  lastMessage?: {
+    content: string;
+    created_at: string;
+  };
+}
+
+export interface Message {
+  id: string;
+  sender_id: string | null;
+  receiver_id: string | null;
+  content: string;
+  read: boolean | null;
+  created_at: string;
+  profiles?: {
+    pseudo: string | null;
+    image_profile: string | null;
+  } | null;
 }
 
 // Helper function to transform French column names to English for UI

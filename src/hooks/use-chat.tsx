@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from "@/integrations/supabase/client";
-import { Message, ChatConversation } from '@/integrations/supabase/types/messages';
+import { Message, ChatConversation } from '@/types/skills';
 import { useToast } from "@/hooks/use-toast";
 
 export const useChat = (userId: string) => {
@@ -9,7 +9,6 @@ export const useChat = (userId: string) => {
   const [selectedFriend, setSelectedFriend] = useState<string | null>(null);
   const { toast } = useToast();
 
-  // Fetch conversations
   useEffect(() => {
     const fetchConversations = async () => {
       const { data: friendships, error: friendshipsError } = await supabase
@@ -29,22 +28,21 @@ export const useChat = (userId: string) => {
         return;
       }
 
-      const conversations = friendships.map(f => ({
-        friend: f.friend,
+      const conversationsData: ChatConversation[] = friendships.map(f => ({
+        friend: f.friend as ChatConversation['friend'],
         unreadCount: 0,
         lastMessage: undefined
       }));
 
-      setConversations(conversations);
-      if (conversations.length > 0 && !selectedFriend) {
-        setSelectedFriend(conversations[0].friend.id);
+      setConversations(conversationsData);
+      if (conversationsData.length > 0 && !selectedFriend) {
+        setSelectedFriend(conversationsData[0].friend.id);
       }
     };
 
     fetchConversations();
   }, [userId, selectedFriend]);
 
-  // Fetch messages for selected conversation
   useEffect(() => {
     if (!selectedFriend) return;
 
@@ -76,7 +74,6 @@ export const useChat = (userId: string) => {
 
     fetchMessages();
 
-    // Subscribe to new messages
     const channel = supabase
       .channel('messages_channel')
       .on(
