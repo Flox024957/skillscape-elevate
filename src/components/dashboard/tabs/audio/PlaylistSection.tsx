@@ -5,25 +5,38 @@ import { Button } from "@/components/ui/button";
 import { Play, Trash2 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export const PlaylistSection = () => {
-  const { data: playlist, refetch: refetchPlaylist } = useQuery({
-    queryKey: ['current-playlist'],
-    queryFn: async () => {
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Récupérer l'ID de l'utilisateur de manière asynchrone
+    const fetchUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return null;
+      if (user) {
+        setUserId(user.id);
+      }
+    };
+    fetchUser();
+  }, []);
+
+  const { data: playlist, refetch: refetchPlaylist } = useQuery({
+    queryKey: ['current-playlist', userId],
+    queryFn: async () => {
+      if (!userId) return null;
 
       const { data, error } = await supabase
         .from('skill_playlists')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('user_id', userId)
         .eq('name', 'Lecture en cours')
         .single();
 
       if (error && error.code !== 'PGRST116') throw error;
       return data;
     },
+    enabled: !!userId,
   });
 
   const { data: skills = [] } = useQuery({
@@ -44,8 +57,7 @@ export const PlaylistSection = () => {
 
   // Écouter les changements en temps réel sur la playlist
   useEffect(() => {
-    const { data: { user } } = supabase.auth.getUser();
-    if (!user) return;
+    if (!userId) return;
 
     const channel = supabase
       .channel('playlist_changes')
@@ -55,7 +67,7 @@ export const PlaylistSection = () => {
           event: '*',
           schema: 'public',
           table: 'skill_playlists',
-          filter: `user_id=eq.${user.id}`,
+          filter: `user_id=eq.${userId}`,
         },
         () => {
           refetchPlaylist();
@@ -66,7 +78,7 @@ export const PlaylistSection = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [refetchPlaylist]);
+  }, [userId, refetchPlaylist]);
 
   const handleRemoveFromPlaylist = async (skillId: string) => {
     if (!playlist) return;
