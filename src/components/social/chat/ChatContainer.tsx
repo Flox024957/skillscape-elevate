@@ -15,6 +15,7 @@ interface ChatContainerProps {
   friendName?: string | null;
   onSendMessage: (content: string) => void;
   onBack?: () => void;
+  isError?: boolean;
 }
 
 export const ChatContainer = ({
@@ -23,7 +24,8 @@ export const ChatContainer = ({
   currentUserId,
   friendName,
   onSendMessage,
-  onBack
+  onBack,
+  isError
 }: ChatContainerProps) => {
   const isMobile = useIsMobile();
 
@@ -64,9 +66,9 @@ export const ChatContainer = ({
       {selectedFriend ? (
         <>
           {renderHeader()}
-          {messages.length === 0 && renderConnectionError()}
+          {isError && renderConnectionError()}
           <MessageList messages={messages} currentUserId={currentUserId} />
-          <MessageInput onSend={onSendMessage} />
+          <MessageInput onSend={onSendMessage} disabled={isError} />
         </>
       ) : (
         <div className="h-full flex items-center justify-center text-muted-foreground">

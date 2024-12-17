@@ -5,7 +5,7 @@ import { useMessageSender } from './chat/use-message-sender';
 
 export const useChat = (userId: string) => {
   const [selectedFriend, setSelectedFriend] = useState<string | null>(null);
-  const { conversations, setConversations } = useConversations(userId, selectedFriend);
+  const { conversations, setConversations, isError: isConversationsError } = useConversations(userId, selectedFriend);
   
   const updateConversations = (friendId: string) => {
     setConversations(prev => prev.map(conv => {
@@ -16,18 +16,21 @@ export const useChat = (userId: string) => {
     }));
   };
 
-  const messages = useMessages(userId, selectedFriend, updateConversations);
-  const sendMessage = useMessageSender();
+  const { messages, isError: isMessagesError } = useMessages(userId, selectedFriend, updateConversations);
+  const { sendMessage, isError: isSendError } = useMessageSender();
 
   const handleSendMessage = async (content: string) => {
     await sendMessage(content, userId, selectedFriend);
   };
+
+  const isError = isConversationsError || isMessagesError || isSendError;
 
   return {
     messages,
     conversations,
     selectedFriend,
     setSelectedFriend,
-    sendMessage: handleSendMessage
+    sendMessage: handleSendMessage,
+    isError
   };
 };

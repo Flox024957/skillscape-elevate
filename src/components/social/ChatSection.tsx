@@ -14,7 +14,7 @@ const MemoizedConversationList = memo(ConversationList);
 const MemoizedChatContainer = memo(ChatContainer);
 
 export const ChatSection = ({ userId }: ChatSectionProps) => {
-  const { messages, conversations, selectedFriend, setSelectedFriend, sendMessage } = useChat(userId);
+  const { messages, conversations, selectedFriend, setSelectedFriend, sendMessage, isError } = useChat(userId);
   const selectedConversation = conversations.find(c => c.friend.id === selectedFriend);
   const { toast } = useToast();
   const isMobile = useIsMobile();
@@ -75,6 +75,7 @@ export const ChatSection = ({ userId }: ChatSectionProps) => {
           currentUserId={userId}
           friendName={selectedConversation?.friend.pseudo}
           onSendMessage={sendMessage}
+          isError={isError}
         />
       </div>
     );
@@ -96,6 +97,7 @@ export const ChatSection = ({ userId }: ChatSectionProps) => {
           friendName={selectedConversation?.friend.pseudo}
           onSendMessage={sendMessage}
           onBack={handleBack}
+          isError={isError}
         />
       )}
     </div>
