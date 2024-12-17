@@ -20,7 +20,7 @@ export const SkillsTabHeader = () => {
         value="learning" 
         className={cn(
           "flex items-center justify-center gap-3 py-6 rounded-xl transition-all",
-          "bg-card/50 backdrop-blur-sm border border-border/50",
+          "backdrop-blur-sm border border-border/50",
           "data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none",
           "data-[state=active]:border-primary/50",
           "hover:bg-primary/5 transform hover:scale-[1.02] transition-all duration-300",
@@ -34,7 +34,7 @@ export const SkillsTabHeader = () => {
         value="mastered" 
         className={cn(
           "flex items-center justify-center gap-3 py-6 rounded-xl transition-all",
-          "bg-card/50 backdrop-blur-sm border border-border/50",
+          "backdrop-blur-sm border border-border/50",
           "data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none",
           "data-[state=active]:border-primary/50",
           "hover:bg-primary/5 transform hover:scale-[1.02] transition-all duration-300",
