@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
-import { MessageCircle, Users } from "lucide-react";
+import { Users } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -108,19 +108,6 @@ const ProfileSection = memo(({ user, onSignOut }: ProfileSectionProps) => {
           >
             {socialStats?.friends || 0}
           </Badge>
-        </Button>
-        <Button
-          variant="ghost"
-          size={isMobile ? "default" : "default"}
-          className={cn(
-            "flex gap-3 flex-1 h-12",
-            "hover:bg-primary/10 hover:text-primary",
-            "transform hover:scale-[1.02] transition-all duration-300"
-          )}
-          onClick={() => navigate("/messages")}
-        >
-          <MessageCircle className={cn("h-4 w-4", isMobile && "h-4 w-4")} />
-          Messages
         </Button>
         {isMobile && (
           <Button
