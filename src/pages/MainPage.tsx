@@ -3,7 +3,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import HeroSection from "@/components/main/HeroSection";
 import { AnimatedBackground } from "@/components/main/background/AnimatedBackground";
-import { CategoriesSection } from "@/components/main/CategoriesSection";
+import { CategoriesSection } from "@/components/main/categories/CategoriesSection";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { CosmicEffects } from "@/components/main/background/CosmicEffects";
 import { EnergyOrbs } from "@/components/main/background/EnergyOrbs";
@@ -13,12 +13,10 @@ const MainPage = () => {
   
   return (
     <div className="min-h-screen relative overflow-hidden bg-[#0A0118]/90 backdrop-blur-sm">
-      {/* Enhanced Background Effects */}
       <AnimatedBackground />
       <CosmicEffects />
       <EnergyOrbs />
 
-      {/* Main Content */}
       <ScrollArea className="h-[calc(100vh-4rem)] relative">
         <div className={cn(
           "container mx-auto relative z-10",
