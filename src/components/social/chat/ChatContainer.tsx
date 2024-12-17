@@ -4,7 +4,7 @@ import { MessageInput } from './MessageInput';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { motion } from "framer-motion";
-import { ArrowLeft, AlertCircle } from "lucide-react";
+import { ArrowLeft, AlertCircle, WifiOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -53,7 +53,7 @@ export const ChatContainer = ({
           </div>
           {messages.length === 0 && (
             <Alert variant="destructive" className="m-4">
-              <AlertCircle className="h-4 w-4" />
+              <WifiOff className="h-4 w-4" />
               <AlertDescription>
                 Le serveur est temporairement indisponible. Veuillez patienter ou rafraîchir la page.
               </AlertDescription>

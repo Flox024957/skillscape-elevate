@@ -42,15 +42,14 @@ export const useMessages = (
           .order('created_at', { ascending: true });
 
         if (error) {
-          if (error.message.includes('Failed to fetch') || error.message.includes('connection timeout')) {
-            if (retryCount < maxRetries) {
-              retryCount++;
-              retryTimeout = setTimeout(() => {
-                fetchMessages();
-              }, 2000 * retryCount);
-              return;
-            }
+          if (retryCount < maxRetries) {
+            retryCount++;
+            retryTimeout = setTimeout(() => {
+              fetchMessages();
+            }, 2000 * retryCount);
+            return;
           }
+          
           console.error('Error fetching messages:', error);
           toast({
             title: "Problème de connexion",
@@ -63,25 +62,22 @@ export const useMessages = (
         setMessages(data || []);
         retryCount = 0;
 
-        try {
-          await supabase
-            .from('messages')
-            .update({ read: true })
-            .eq('sender_id', selectedFriend)
-            .eq('receiver_id', userId)
-            .eq('read', false);
+        if (data && data.length > 0) {
+          try {
+            await supabase
+              .from('messages')
+              .update({ read: true })
+              .eq('sender_id', selectedFriend)
+              .eq('receiver_id', userId)
+              .eq('read', false);
 
-          updateConversations(selectedFriend);
-        } catch (updateError) {
-          console.error('Error updating message read status:', updateError);
+            updateConversations(selectedFriend);
+          } catch (updateError) {
+            console.error('Error updating message read status:', updateError);
+          }
         }
       } catch (error) {
         console.error('Error in fetchMessages:', error);
-        toast({
-          title: "Erreur de connexion",
-          description: "Impossible de se connecter au serveur. Veuillez vérifier votre connexion.",
-          variant: "destructive",
-        });
       } finally {
         setIsConnecting(false);
       }
@@ -89,7 +85,7 @@ export const useMessages = (
 
     fetchMessages();
 
-    let channel = supabase
+    const channel = supabase
       .channel('messages_channel')
       .on(
         'postgres_changes',
