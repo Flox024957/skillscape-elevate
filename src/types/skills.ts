@@ -6,7 +6,7 @@ export interface Skill {
   resume: string | null;
   description: string | null;
   action_concrete: string | null;
-  exemples: Json | null;
+  exemples: any[] | null;
   category_id: string | null;
   created_at: string;
   updated_at: string;
@@ -37,7 +37,7 @@ export const transformSkill = (skill: Skill) => ({
   summary: skill.resume,
   description: skill.description,
   concrete_action: skill.action_concrete,
-  examples: skill.exemples,
+  examples: Array.isArray(skill.exemples) ? skill.exemples : [],
   category_id: skill.category_id,
   created_at: skill.created_at,
   updated_at: skill.updated_at,

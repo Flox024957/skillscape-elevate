@@ -38,7 +38,14 @@ const SkillsTab = ({ userId }: SkillsTabProps) => {
         return [];
       }
       
-      return data;
+      // Transform the data to ensure exemples is always an array
+      return data.map(item => ({
+        ...item,
+        skill: {
+          ...item.skill,
+          exemples: Array.isArray(item.skill.exemples) ? item.skill.exemples : []
+        }
+      }));
     },
   });
 
