@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { NavContainer } from "./navbar/NavContainer";
 import { NavItem } from "./navbar/NavItem";
-import { Home, BookOpen, Mic2, User2 } from "lucide-react";
+import { Home, BookOpen, Mic2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const Navbar = () => {
@@ -42,15 +42,6 @@ const Navbar = () => {
       isActive: location.pathname === "/audio"
     }
   ];
-
-  if (user) {
-    navigationItems.push({
-      label: "Dashboard",
-      icon: User2,
-      path: "/dashboard",
-      isActive: location.pathname === "/dashboard"
-    });
-  }
 
   return (
     <NavContainer>

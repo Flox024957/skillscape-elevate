@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { Suspense, lazy } from "react";
-import ProtectedRoute from "@/components/ProtectedRoute";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 // Lazy loaded components
 const Auth = lazy(() => import("@/pages/Auth"));
@@ -10,7 +10,6 @@ const CategoryPage = lazy(() => import("@/pages/CategoryPage"));
 const SkillDetailPage = lazy(() => import("@/pages/SkillDetailPage"));
 const AudioPage = lazy(() => import("@/pages/AudioPage"));
 const EditProfile = lazy(() => import("@/pages/EditProfile"));
-const PublicProfile = lazy(() => import("@/pages/PublicProfile"));
 
 interface AppRoutesProps {
   isAuthenticated: boolean;
@@ -42,7 +41,6 @@ export const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
             </ProtectedRoute>
           }
         />
-        <Route path="/profile/:id" element={<PublicProfile />} />
       </Routes>
     </Suspense>
   );
