@@ -101,7 +101,7 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
           <motion.div 
             className={cn(
               "space-y-8",
-              isMobile ? "px-4 mt-20" : "px-4" // Ajout de mt-8 pour créer l'espace de 0.8cm en mobile
+              isMobile ? "px-4 mt-20" : "px-4"
             )}
             variants={tabVariants}
             initial="hidden"
@@ -130,7 +130,7 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
                   <div className="h-32 bg-muted rounded-lg"></div>
                 </div>
               }>
-                <LazyCanvasTab userId={user.id} />
+                <LazyCanvasTab user={user} />
               </Suspense>
             </TabsContent>
           </motion.div>
