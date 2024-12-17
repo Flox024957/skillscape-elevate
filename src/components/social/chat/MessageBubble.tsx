@@ -1,8 +1,6 @@
 import { Message } from "@/integrations/supabase/types/messages";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { fr } from "date-fns/locale";
 
 interface MessageBubbleProps {
   message: Message;
@@ -23,20 +21,15 @@ export const MessageBubble = ({ message, isCurrentUser }: MessageBubbleProps) =>
           </AvatarFallback>
         </Avatar>
       )}
-      <div className="flex flex-col gap-1">
-        <div
-          className={cn(
-            "px-4 py-2 rounded-lg max-w-[70%]",
-            isCurrentUser
-              ? "bg-primary text-primary-foreground"
-              : "bg-muted"
-          )}
-        >
-          {message.content}
-        </div>
-        <span className="text-xs text-muted-foreground">
-          {format(new Date(message.created_at), "HH:mm", { locale: fr })}
-        </span>
+      <div
+        className={cn(
+          "px-4 py-2 rounded-lg max-w-[70%]",
+          isCurrentUser
+            ? "bg-primary text-primary-foreground"
+            : "bg-muted"
+        )}
+      >
+        {message.content}
       </div>
     </div>
   );

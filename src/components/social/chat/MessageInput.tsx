@@ -1,42 +1,54 @@
-import { useState } from 'react';
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { useState } from "react";
 import { Send } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 interface MessageInputProps {
   onSend: (content: string) => void;
-  disabled?: boolean;
 }
 
-export const MessageInput = ({ onSend, disabled }: MessageInputProps) => {
-  const [content, setContent] = useState('');
+export const MessageInput = ({ onSend }: MessageInputProps) => {
+  const [message, setMessage] = useState("");
+  const isMobile = useIsMobile();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (content.trim() && !disabled) {
-      onSend(content);
-      setContent('');
+  const handleSend = () => {
+    if (message.trim()) {
+      onSend(message.trim());
+      setMessage("");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 border-t border-border/50">
+    <div className="p-4 border-t border-border/50 sticky bottom-0 bg-background/80 backdrop-blur-sm">
       <div className="flex gap-2">
-        <Textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
+        <Input
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
           placeholder="Écrivez votre message..."
-          className="min-h-[44px] max-h-[120px]"
-          disabled={disabled}
+          className="flex-1 glass-panel"
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              handleSend();
+            }
+          }}
         />
         <Button 
-          type="submit" 
-          size="icon"
-          disabled={!content.trim() || disabled}
+          onClick={handleSend} 
+          size={isMobile ? "icon" : "default"}
+          className={cn(
+            "futuristic-button",
+            !isMobile && "px-4"
+          )}
         >
-          <Send className="h-4 w-4" />
+          {isMobile ? (
+            <Send className="h-4 w-4" />
+          ) : (
+            "Envoyer"
+          )}
         </Button>
       </div>
-    </form>
+    </div>
   );
 };

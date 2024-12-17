@@ -16,15 +16,6 @@ interface LearningSkillsSectionProps {
   onAddNote: (note: string, tags: string[]) => void;
 }
 
-interface Skill {
-  id: string;
-  titre: string;
-  resume: string;
-  description: string;
-  action_concrete: string;
-  exemples: string[];
-}
-
 export const LearningSkillsSection = ({ userId, selectedDate, onAddNote }: LearningSkillsSectionProps) => {
   const [openSkillId, setOpenSkillId] = useState<string | null>(null);
   const { toast } = useToast();
@@ -88,124 +79,121 @@ export const LearningSkillsSection = ({ userId, selectedDate, onAddNote }: Learn
         Compétences en cours d'apprentissage
       </h3>
       <div className="space-y-2">
-        {learningSkills.map((userSkill) => {
-          const skill = userSkill.skills as Skill;
-          return (
-            <Collapsible
-              key={userSkill.id}
-              open={openSkillId === userSkill.id}
-              onOpenChange={() => setOpenSkillId(openSkillId === userSkill.id ? null : userSkill.id)}
-            >
-              <div className="bg-card hover:bg-card/80 rounded-lg border border-border">
-                <CollapsibleTrigger className="w-full">
-                  <div className="flex items-center justify-between p-4">
-                    <span className="font-medium">{skill.titre}</span>
-                    <ChevronDown className={cn(
-                      "h-4 w-4 transition-transform duration-200",
-                      openSkillId === userSkill.id && "rotate-180"
-                    )} />
-                  </div>
-                </CollapsibleTrigger>
+        {learningSkills.map((userSkill) => (
+          <Collapsible
+            key={userSkill.id}
+            open={openSkillId === userSkill.id}
+            onOpenChange={() => setOpenSkillId(openSkillId === userSkill.id ? null : userSkill.id)}
+          >
+            <div className="bg-card hover:bg-card/80 rounded-lg border border-border">
+              <CollapsibleTrigger className="w-full">
+                <div className="flex items-center justify-between p-4">
+                  <span className="font-medium">{userSkill.skills.titre}</span>
+                  <ChevronDown className={cn(
+                    "h-4 w-4 transition-transform duration-200",
+                    openSkillId === userSkill.id && "rotate-180"
+                  )} />
+                </div>
+              </CollapsibleTrigger>
 
-                <CollapsibleContent>
-                  <motion.div
-                    initial={{ height: 0 }}
-                    animate={{ height: "auto" }}
-                    exit={{ height: 0 }}
-                    className="border-t border-border"
-                  >
-                    <div className="p-4 space-y-4">
-                      {skill.resume && (
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium text-muted-foreground">Résumé</span>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleAddToCalendar(skill.id, skill.resume)}
-                            >
-                              <Plus className="h-4 w-4 mr-1" />
-                              Ajouter au calendrier
-                            </Button>
-                          </div>
-                          <p className="text-sm">{skill.resume}</p>
+              <CollapsibleContent>
+                <motion.div
+                  initial={{ height: 0 }}
+                  animate={{ height: "auto" }}
+                  exit={{ height: 0 }}
+                  className="border-t border-border"
+                >
+                  <div className="p-4 space-y-4">
+                    {userSkill.skills.resume && (
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium text-muted-foreground">Résumé</span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleAddToCalendar(userSkill.skills.id, userSkill.skills.resume || '')}
+                          >
+                            <Plus className="h-4 w-4 mr-1" />
+                            Ajouter au calendrier
+                          </Button>
                         </div>
-                      )}
+                        <p className="text-sm">{userSkill.skills.resume}</p>
+                      </div>
+                    )}
 
-                      {skill.description && (
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium text-muted-foreground">Description</span>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleAddToCalendar(skill.id, skill.description)}
-                            >
-                              <Plus className="h-4 w-4 mr-1" />
-                              Ajouter au calendrier
-                            </Button>
-                          </div>
-                          <p className="text-sm">{skill.description}</p>
+                    {userSkill.skills.description && (
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium text-muted-foreground">Description</span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleAddToCalendar(userSkill.skills.id, userSkill.skills.description || '')}
+                          >
+                            <Plus className="h-4 w-4 mr-1" />
+                            Ajouter au calendrier
+                          </Button>
                         </div>
-                      )}
+                        <p className="text-sm">{userSkill.skills.description}</p>
+                      </div>
+                    )}
 
-                      {skill.action_concrete && (
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium text-muted-foreground">Action concrète</span>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleAddToCalendar(skill.id, skill.action_concrete)}
-                            >
-                              <Plus className="h-4 w-4 mr-1" />
-                              Ajouter au calendrier
-                            </Button>
-                          </div>
-                          <p className="text-sm">{skill.action_concrete}</p>
+                    {userSkill.skills.action_concrete && (
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium text-muted-foreground">Action concrète</span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleAddToCalendar(userSkill.skills.id, userSkill.skills.action_concrete || '')}
+                          >
+                            <Plus className="h-4 w-4 mr-1" />
+                            Ajouter au calendrier
+                          </Button>
                         </div>
-                      )}
+                        <p className="text-sm">{userSkill.skills.action_concrete}</p>
+                      </div>
+                    )}
 
-                      {Array.isArray(skill.exemples) && skill.exemples.length > 0 && (
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium text-muted-foreground">Exemples</span>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleAddToCalendar(
-                                skill.id,
-                                `Exemples:\n${skill.exemples.map((ex: string) => `- ${ex}`).join('\n')}`
-                              )}
-                            >
-                              <Plus className="h-4 w-4 mr-1" />
-                              Ajouter au calendrier
-                            </Button>
-                          </div>
-                          <ul className="list-disc list-inside text-sm space-y-1">
-                            {skill.exemples.map((exemple: string, index: number) => (
-                              <li key={index}>{exemple}</li>
-                            ))}
-                          </ul>
+                    {userSkill.skills.exemples && userSkill.skills.exemples.length > 0 && (
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium text-muted-foreground">Exemples</span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleAddToCalendar(
+                              userSkill.skills.id,
+                              `Exemples:\n${userSkill.skills.exemples.map((ex: string) => `- ${ex}`).join('\n')}`
+                            )}
+                          >
+                            <Plus className="h-4 w-4 mr-1" />
+                            Ajouter au calendrier
+                          </Button>
                         </div>
-                      )}
-
-                      {Array.isArray(userSkill.sections_selectionnees) && userSkill.sections_selectionnees.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-border">
-                          {userSkill.sections_selectionnees.map((section: string) => (
-                            <Badge key={section} variant="secondary">
-                              {section}
-                            </Badge>
+                        <ul className="list-disc list-inside text-sm space-y-1">
+                          {userSkill.skills.exemples.map((exemple: string, index: number) => (
+                            <li key={index}>{exemple}</li>
                           ))}
-                        </div>
-                      )}
-                    </div>
-                  </motion.div>
-                </CollapsibleContent>
-              </div>
-            </Collapsible>
-          );
-        })}
+                        </ul>
+                      </div>
+                    )}
+
+                    {userSkill.sections_selectionnees && (
+                      <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-border">
+                        {userSkill.sections_selectionnees.map((section) => (
+                          <Badge key={section} variant="secondary">
+                            {section}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              </CollapsibleContent>
+            </div>
+          </Collapsible>
+        ))}
       </div>
     </div>
   );
