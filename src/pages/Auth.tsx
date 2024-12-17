@@ -12,7 +12,7 @@ const Auth = () => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        navigate("/main");
+        navigate("/dashboard");
       }
     };
 
@@ -20,7 +20,7 @@ const Auth = () => {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
-        navigate("/main");
+        navigate("/dashboard");
       }
     });
 
@@ -28,10 +28,12 @@ const Auth = () => {
   }, [navigate]);
 
   return (
-    <AuthContainer>
-      <AuthHeader />
-      <AuthForm />
-    </AuthContainer>
+    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-background">
+      <AuthContainer>
+        <AuthHeader />
+        <AuthForm />
+      </AuthContainer>
+    </div>
   );
 };
 
