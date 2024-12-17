@@ -24,7 +24,10 @@ const SkillsTab = ({ userId }: SkillsTabProps) => {
           skill:skills (
             id,
             titre,
-            resume
+            resume,
+            description,
+            action_concrete,
+            exemples
           )
         `)
         .eq('user_id', userId)
@@ -128,7 +131,7 @@ const SkillsTab = ({ userId }: SkillsTabProps) => {
   const handleReorderSkills = async (reorderedSkills: any[]) => {
     const updates = reorderedSkills.map((skill, index) => ({
       id: skill.id,
-      user_id: userId,  // Add this line to ensure user_id is included
+      user_id: userId,
       position: index,
     }));
 
