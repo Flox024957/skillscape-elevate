@@ -1,14 +1,14 @@
 import { User } from "@supabase/supabase-js";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
-import { Badge } from "@/components/ui/badge";
-import { MessageCircle, Users } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { memo } from "react";
+import { ProfileAvatar } from "./profile/ProfileAvatar";
+import { ProfileInfo } from "./profile/ProfileInfo";
+import { ProfileActions } from "./profile/ProfileActions";
+import { SocialStats } from "./profile/SocialStats";
 
 interface ProfileSectionProps {
   user: User;
@@ -16,7 +16,6 @@ interface ProfileSectionProps {
 }
 
 const ProfileSection = memo(({ user, onSignOut }: ProfileSectionProps) => {
-  const navigate = useNavigate();
   const isMobile = useIsMobile();
 
   const { data: socialStats } = useQuery({
@@ -49,94 +48,22 @@ const ProfileSection = memo(({ user, onSignOut }: ProfileSectionProps) => {
         isMobile ? "justify-between" : "gap-4"
       )}>
         <div className="flex items-center gap-4">
-          <Avatar className={cn(
-            "ring-2 ring-primary/20 ring-offset-2 ring-offset-background",
-            "transform hover:scale-105 transition-all duration-300",
-            isMobile ? "h-14 w-14" : "h-16 w-16"
-          )}>
-            <AvatarImage src={user.user_metadata.avatar_url} />
-            <AvatarFallback>{user.email?.charAt(0).toUpperCase()}</AvatarFallback>
-          </Avatar>
-          <div>
-            <h2 className={cn(
-              "font-semibold",
-              "bg-gradient-to-r from-primary via-purple-500 to-blue-500 bg-clip-text text-transparent",
-              isMobile ? "text-base" : "text-xl"
-            )}>
-              {user.user_metadata.full_name || user.email}
-            </h2>
-            <p className="text-sm text-muted-foreground truncate max-w-[200px]">
-              {user.email}
-            </p>
-          </div>
+          <ProfileAvatar 
+            avatarUrl={user.user_metadata.avatar_url} 
+            email={user.email} 
+          />
+          <ProfileInfo 
+            fullName={user.user_metadata.full_name || user.email}
+            email={user.email || ''}
+          />
         </div>
-        {!isMobile && (
-          <div className="flex gap-4">
-            <Button 
-              variant="outline" 
-              onClick={() => navigate("/main")}
-              className="hover:scale-105 transition-transform duration-300"
-            >
-              Explorer
-            </Button>
-            <Button 
-              variant="outline" 
-              onClick={onSignOut}
-              className="hover:scale-105 transition-transform duration-300"
-            >
-              Déconnexion
-            </Button>
-          </div>
-        )}
+        {!isMobile && <ProfileActions onSignOut={onSignOut} />}
       </div>
 
-      <div className="flex gap-4">
-        <Button
-          variant="ghost"
-          size={isMobile ? "default" : "default"}
-          className={cn(
-            "flex gap-3 flex-1 h-12",
-            "hover:bg-primary/10 hover:text-primary",
-            "transform hover:scale-[1.02] transition-all duration-300"
-          )}
-          onClick={() => navigate("/friends")}
-        >
-          <Users className={cn("h-4 w-4", isMobile && "h-4 w-4")} />
-          <Badge 
-            variant="secondary" 
-            className="px-2 py-1 hover:bg-primary/20"
-          >
-            {socialStats?.friends || 0}
-          </Badge>
-        </Button>
-        <Button
-          variant="ghost"
-          size={isMobile ? "default" : "default"}
-          className={cn(
-            "flex gap-3 flex-1 h-12",
-            "hover:bg-primary/10 hover:text-primary",
-            "transform hover:scale-[1.02] transition-all duration-300"
-          )}
-          onClick={() => navigate("/messages")}
-        >
-          <MessageCircle className={cn("h-4 w-4", isMobile && "h-4 w-4")} />
-          Messages
-        </Button>
-        {isMobile && (
-          <Button
-            variant="ghost"
-            size="default"
-            className={cn(
-              "flex gap-3 flex-1 h-12 px-3",
-              "hover:bg-primary/10 hover:text-primary",
-              "transform hover:scale-[1.02] transition-all duration-300"
-            )}
-            onClick={onSignOut}
-          >
-            Déconnexion
-          </Button>
-        )}
-      </div>
+      <SocialStats 
+        friendsCount={socialStats?.friends || 0}
+        onSignOut={onSignOut}
+      />
     </div>
   );
 });
