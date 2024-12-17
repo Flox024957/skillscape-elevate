@@ -83,40 +83,20 @@ const ProfileSection = memo(({ user, onSignOut }: ProfileSectionProps) => {
         )}
       </div>
 
-      <div className="flex gap-4">
+      {isMobile && (
         <Button
           variant="ghost"
-          size={isMobile ? "default" : "default"}
+          size="default"
           className={cn(
-            "flex gap-3 flex-1 h-12",
+            "flex gap-3 flex-1 h-12 px-3",
             "hover:bg-primary/10 hover:text-primary",
             "transform hover:scale-[1.02] transition-all duration-300"
           )}
-          onClick={() => navigate("/friends")}
+          onClick={onSignOut}
         >
-          <Users className={cn("h-4 w-4", isMobile && "h-4 w-4")} />
-          <Badge 
-            variant="secondary" 
-            className="px-2 py-1 hover:bg-primary/20"
-          >
-            {socialStats?.friends || 0}
-          </Badge>
+          Déconnexion
         </Button>
-        {isMobile && (
-          <Button
-            variant="ghost"
-            size="default"
-            className={cn(
-              "flex gap-3 flex-1 h-12 px-3",
-              "hover:bg-primary/10 hover:text-primary",
-              "transform hover:scale-[1.02] transition-all duration-300"
-            )}
-            onClick={onSignOut}
-          >
-            Déconnexion
-          </Button>
-        )}
-      </div>
+      )}
     </div>
   );
 });
