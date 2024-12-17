@@ -66,7 +66,7 @@ export const ActivityQueryProvider = ({ userId, children }: ActivityQueryProvide
           type: 'like',
           created_at: like.created_at,
           profile: like.profiles,
-          postContent: like.posts?.content
+          postContent: like.posts.content
         })),
         ...(comments.data || []).map(comment => ({
           type: 'comment',
@@ -89,5 +89,5 @@ export const ActivityQueryProvider = ({ userId, children }: ActivityQueryProvide
     staleTime: 30000,
   });
 
-  return children({ activities: activities || [], isLoading });
+  return children({ activities, isLoading });
 };

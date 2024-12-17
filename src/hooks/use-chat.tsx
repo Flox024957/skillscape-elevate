@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from "@/integrations/supabase/client";
-import { Message, ChatConversation, Friend } from '@/types/skills';
+import { Message, ChatConversation } from '@/integrations/supabase/types/messages';
 import { useToast } from "@/hooks/use-toast";
 
 export const useChat = (userId: string) => {
@@ -9,9 +9,10 @@ export const useChat = (userId: string) => {
   const [selectedFriend, setSelectedFriend] = useState<string | null>(null);
   const { toast } = useToast();
 
+  // Fetch conversations
   useEffect(() => {
     const fetchConversations = async () => {
-      const { data: friendships, error } = await supabase
+      const { data: friendships, error: friendshipsError } = await supabase
         .from('friendships')
         .select(`
           friend:profiles!friendships_friend_id_fkey (
@@ -23,28 +24,29 @@ export const useChat = (userId: string) => {
         .eq('user_id', userId)
         .eq('status', 'accepted');
 
-      if (error) {
-        console.error('Error fetching conversations:', error);
+      if (friendshipsError) {
+        console.error('Error fetching friendships:', friendshipsError);
         return;
       }
 
-      const conversationsData: ChatConversation[] = friendships.map(f => ({
-        friend: f.friend as Friend,
+      const conversations = friendships.map(f => ({
+        friend: f.friend,
         unreadCount: 0,
         lastMessage: undefined
       }));
 
-      setConversations(conversationsData);
+      setConversations(conversations);
+      if (conversations.length > 0 && !selectedFriend) {
+        setSelectedFriend(conversations[0].friend.id);
+      }
     };
 
     fetchConversations();
-  }, [userId]);
+  }, [userId, selectedFriend]);
 
+  // Fetch messages for selected conversation
   useEffect(() => {
-    if (!selectedFriend) {
-      setMessages([]);
-      return;
-    }
+    if (!selectedFriend) return;
 
     const fetchMessages = async () => {
       const { data, error } = await supabase
@@ -69,31 +71,55 @@ export const useChat = (userId: string) => {
         return;
       }
 
-      const typedMessages = data.map(msg => ({
-        ...msg,
-        profiles: msg.profiles ? {
-          pseudo: msg.profiles.pseudo,
-          image_profile: msg.profiles.image_profile
-        } : null
-      })) as Message[];
-
-      setMessages(typedMessages);
+      setMessages(data as Message[]);
     };
 
     fetchMessages();
+
+    // Subscribe to new messages
+    const channel = supabase
+      .channel('messages_channel')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'messages',
+          filter: `or(and(sender_id.eq.${userId},receiver_id.eq.${selectedFriend}),and(sender_id.eq.${selectedFriend},receiver_id.eq.${userId}))`
+        },
+        async (payload) => {
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('pseudo, image_profile')
+            .eq('id', payload.new.sender_id)
+            .single();
+
+          const newMessage: Message = {
+            ...payload.new as Message,
+            profiles: profileData
+          };
+          
+          setMessages((prev) => [...prev, newMessage]);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [userId, selectedFriend]);
 
   const sendMessage = async (content: string) => {
-    if (!selectedFriend || !content.trim()) return;
+    if (!content.trim() || !selectedFriend) return;
 
     const { error } = await supabase
       .from('messages')
       .insert([
         {
+          content,
           sender_id: userId,
           receiver_id: selectedFriend,
-          content: content.trim(),
-        }
+        },
       ]);
 
     if (error) {
@@ -102,8 +128,6 @@ export const useChat = (userId: string) => {
         description: "Impossible d'envoyer le message",
         variant: "destructive",
       });
-      console.error('Error sending message:', error);
-      return;
     }
   };
 
@@ -112,6 +136,6 @@ export const useChat = (userId: string) => {
     conversations,
     selectedFriend,
     setSelectedFriend,
-    sendMessage,
+    sendMessage
   };
 };

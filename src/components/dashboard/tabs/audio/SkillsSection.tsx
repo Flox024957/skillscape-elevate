@@ -3,7 +3,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { CategorySelect } from "./skills/CategorySelect";
 import { SkillsList } from "./skills/SkillsList";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Skill } from "@/types/skills";
 
 interface SkillsSectionProps {
   onContentSelect: (content: string) => void;
@@ -36,7 +35,7 @@ export const SkillsSection = ({
     },
   });
 
-  const { data: skills = [] } = useQuery<Skill[]>({
+  const { data: skills = [] } = useQuery({
     queryKey: ['skills', filters],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -72,7 +71,7 @@ export const SkillsSection = ({
 
       const { data, error } = await query;
       if (error) throw error;
-      return (data || []) as Skill[];
+      return data || [];
     },
   });
 
