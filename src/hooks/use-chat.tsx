@@ -112,22 +112,26 @@ export const useChat = (userId: string) => {
   const sendMessage = async (content: string) => {
     if (!content.trim() || !selectedFriend) return;
 
-    const { error } = await supabase
-      .from('messages')
-      .insert([
-        {
-          content,
-          sender_id: userId,
-          receiver_id: selectedFriend,
-        },
-      ]);
+    try {
+      const { error } = await supabase
+        .from('messages')
+        .insert([
+          {
+            content,
+            sender_id: userId,
+            receiver_id: selectedFriend,
+          },
+        ]);
 
-    if (error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible d'envoyer le message",
-        variant: "destructive",
-      });
+      if (error) {
+        toast({
+          title: "Erreur",
+          description: "Impossible d'envoyer le message",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
     }
   };
 
