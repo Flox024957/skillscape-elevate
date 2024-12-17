@@ -1,7 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import { Navbar } from "@/components/Navbar";
 
 // Lazy loaded components
 const Auth = lazy(() => import("@/pages/Auth"));
@@ -13,37 +12,38 @@ const AudioPage = lazy(() => import("@/pages/AudioPage"));
 const EditProfile = lazy(() => import("@/pages/EditProfile"));
 const PublicProfile = lazy(() => import("@/pages/PublicProfile"));
 
-export const AppRoutes = () => {
+interface AppRoutesProps {
+  isAuthenticated: boolean;
+}
+
+export const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
   return (
-    <>
-      <Navbar />
-      <Suspense fallback={<div>Loading...</div>}>
-        <Routes>
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/" element={<MainPage />} />
-          <Route path="/category/:id" element={<CategoryPage />} />
-          <Route path="/skills/:id" element={<SkillDetailPage />} />
-          <Route path="/audio" element={<AudioPage />} />
-          
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/profile/edit"
-            element={
-              <ProtectedRoute>
-                <EditProfile />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/profile/:id" element={<PublicProfile />} />
-        </Routes>
-      </Suspense>
-    </>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Routes>
+        <Route path="/auth" element={<Auth />} />
+        <Route path="/" element={<MainPage />} />
+        <Route path="/category/:id" element={<CategoryPage />} />
+        <Route path="/skills/:id" element={<SkillDetailPage />} />
+        <Route path="/audio" element={<AudioPage />} />
+        
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile/edit"
+          element={
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <EditProfile />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/profile/:id" element={<PublicProfile />} />
+      </Routes>
+    </Suspense>
   );
 };

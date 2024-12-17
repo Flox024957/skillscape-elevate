@@ -7,7 +7,7 @@ interface ProtectedRouteProps {
   isAuthenticated: boolean;
 }
 
-export const ProtectedRoute = ({ children, isAuthenticated }: ProtectedRouteProps) => {
+const ProtectedRoute = ({ children, isAuthenticated }: ProtectedRouteProps) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -47,3 +47,5 @@ export const ProtectedRoute = ({ children, isAuthenticated }: ProtectedRouteProp
 
   return <>{children}</>;
 };
+
+export default ProtectedRoute;
