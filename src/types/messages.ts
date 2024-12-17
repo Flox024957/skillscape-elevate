@@ -1,3 +1,5 @@
+import { Friend } from './friends';
+
 export interface Message {
   id: string;
   sender_id: string;
@@ -14,5 +16,5 @@ export interface Message {
 export interface ChatConversation {
   friend: Friend;
   unreadCount: number;
-  lastMessage: Message | null;
+  lastMessage: Message | undefined;
 }

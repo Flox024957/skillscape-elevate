@@ -18,6 +18,7 @@ const MasteredSkillsSection = () => {
       const { data, error } = await supabase
         .from('user_mastered_skills')
         .select(`
+          id,
           skill_id,
           mastered_at,
           notes,
@@ -30,7 +31,13 @@ const MasteredSkillsSection = () => {
         .eq('user_id', user.id);
 
       if (error) throw error;
-      return data || [];
+      return (data || []).map(item => ({
+        id: item.id,
+        skill_id: item.skill_id,
+        mastered_at: item.mastered_at,
+        notes: item.notes,
+        skills: item.skills
+      }));
     },
   });
 
@@ -64,7 +71,7 @@ const MasteredSkillsSection = () => {
     },
   });
 
-  if (!masteredSkills.length) {
+  if (!masteredSkills?.length) {
     return (
       <div className="text-center text-muted-foreground p-4">
         Aucune compétence maîtrisée pour le moment
@@ -83,7 +90,7 @@ const MasteredSkillsSection = () => {
                 <p className="text-sm text-muted-foreground mt-1">{skill.skills.resume}</p>
               )}
               <p className="text-xs text-muted-foreground mt-2">
-                Maîtrisée le {new Date(skill.mastered_at).toLocaleDateString()}
+                Maîtrisée le {new Date(skill.mastered_at || '').toLocaleDateString()}
               </p>
             </div>
             <Button
