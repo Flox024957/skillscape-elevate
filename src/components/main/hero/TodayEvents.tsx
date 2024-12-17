@@ -7,15 +7,23 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Tag } from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { Badge } from "@/components/ui/badge";
+
+interface Note {
+  id: string;
+  content: string;
+  created_at: string;
+  tags?: string[];
+}
 
 export const TodayEvents = () => {
-  const [notes, setNotes] = useState<any[]>([]);
+  const [notes, setNotes] = useState<Note[]>([]);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isOpen, setIsOpen] = useState(true);
   const isMobile = useIsMobile();
@@ -55,8 +63,24 @@ export const TodayEvents = () => {
     };
 
     fetchTodayNotes();
-    const interval = setInterval(fetchTodayNotes, 60000);
-    return () => clearInterval(interval);
+    const channel = supabase
+      .channel('notes-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'user_notes'
+        },
+        () => {
+          fetchTodayNotes();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   return (
@@ -109,7 +133,7 @@ export const TodayEvents = () => {
         <CollapsibleContent>
           <ScrollArea className={cn(
             "rounded-lg",
-            notes.length > 0 ? "h-[200px]" : "h-auto"
+            notes.length > 0 ? "h-[300px]" : "h-auto"
           )}>
             <AnimatePresence>
               <div className="space-y-3 pt-2">
@@ -126,30 +150,30 @@ export const TodayEvents = () => {
                       "transition-all duration-300"
                     )}
                   >
-                    <p className="text-[#E5DEFF] font-medium">
-                      {note.content}
-                    </p>
-                    <p className="text-sm text-[#8B9CC7]">
-                      {format(new Date(note.created_at), 'HH:mm')}
-                    </p>
+                    <div className="flex items-start justify-between gap-4">
+                      <p className="text-[#E5DEFF] font-medium flex-1">
+                        {note.content}
+                      </p>
+                      <p className="text-sm text-[#8B9CC7] whitespace-nowrap">
+                        {format(new Date(note.created_at), 'HH:mm')}
+                      </p>
+                    </div>
                     {note.tags && note.tags.length > 0 && (
                       <motion.div 
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.2 }}
-                        className="flex flex-wrap gap-1 mt-1"
+                        className="flex flex-wrap gap-1 mt-2"
                       >
-                        {note.tags.map((tag: string, index: number) => (
-                          <span 
-                            key={index}
-                            className={cn(
-                              "text-xs px-2 py-0.5 rounded-full",
-                              "bg-[#1E3D7B]/30 text-[#8B9CC7]",
-                              "hover:bg-[#1E3D7B]/50 transition-colors duration-300"
-                            )}
+                        <Tag className="w-3 h-3 text-[#8B9CC7] mr-1" />
+                        {note.tags.map((tag, tagIndex) => (
+                          <Badge
+                            key={tagIndex}
+                            variant="secondary" 
+                            className="bg-[#1E3D7B]/30 hover:bg-[#1E3D7B]/50 text-[#8B9CC7] border-none"
                           >
                             {tag}
-                          </span>
+                          </Badge>
                         ))}
                       </motion.div>
                     )}
