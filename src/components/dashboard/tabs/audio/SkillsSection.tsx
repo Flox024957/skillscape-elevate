@@ -81,7 +81,7 @@ export const SkillsSection = ({
         categories={categories} 
         onSelect={onSkillSelect} 
       />
-      <ScrollArea className="h-[800px] rounded-md border p-4">
+      <ScrollArea className="h-[772px] rounded-md border p-4">
         <SkillsList 
           skills={skills} 
           onContentSelect={onContentSelect}
