@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -23,7 +23,7 @@ export const TodayEvents = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
-    }, 60000); // Update every minute instead of every second
+    }, 60000);
 
     return () => clearInterval(timer);
   }, []);
@@ -55,7 +55,6 @@ export const TodayEvents = () => {
     };
 
     fetchTodayNotes();
-    // Rafraîchir les notes toutes les minutes
     const interval = setInterval(fetchTodayNotes, 60000);
     return () => clearInterval(interval);
   }, []);
@@ -64,8 +63,8 @@ export const TodayEvents = () => {
     <Card className={cn(
       "bg-[#0A1E3D]/80 backdrop-blur-xl border border-[#1E3D7B]/30",
       "shadow-[0_0_15px_rgba(14,165,233,0.1)]",
-      "hover:shadow-[0_0_20px_rgba(14,165,233,0.2)]",
-      "transition-all duration-300",
+      "hover:shadow-[0_0_30px_rgba(14,165,233,0.2)]",
+      "transition-all duration-500 transform hover:scale-[1.02]",
       isMobile ? "p-4" : "p-6"
     )}>
       <Collapsible
@@ -74,22 +73,36 @@ export const TodayEvents = () => {
         className="space-y-2"
       >
         <div className="flex flex-col items-center">
-          <h2 className="text-[#E5DEFF] text-xl font-light mb-1">
+          <motion.h2 
+            initial={{ scale: 0.9 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.5, type: "spring" }}
+            className="text-[#E5DEFF] text-xl font-light mb-1"
+          >
             {format(currentTime, 'HH:mm')}
-          </h2>
-          <p className="text-[#8B9CC7] text-sm mb-2">
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="text-[#8B9CC7] text-sm mb-2"
+          >
             {format(currentTime, 'EEEE d MMMM yyyy', { locale: fr })}
-          </p>
+          </motion.p>
           <CollapsibleTrigger className="w-full">
-            <div className="flex items-center justify-between px-4 py-2 rounded-lg bg-[#1E3D7B]/20 hover:bg-[#1E3D7B]/30 transition-colors">
+            <motion.div 
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="flex items-center justify-between px-4 py-2 rounded-lg bg-[#1E3D7B]/20 hover:bg-[#1E3D7B]/30 transition-colors"
+            >
               <span className="text-[#E5DEFF] font-medium">
                 {notes.length === 0 ? "Aucune note aujourd'hui" : `${notes.length} note${notes.length > 1 ? 's' : ''}`}
               </span>
               <ChevronDown className={cn(
-                "h-4 w-4 text-[#8B9CC7] transition-transform duration-200",
+                "h-4 w-4 text-[#8B9CC7] transition-transform duration-300",
                 isOpen && "transform rotate-180"
               )} />
-            </div>
+            </motion.div>
           </CollapsibleTrigger>
         </div>
 
@@ -98,36 +111,52 @@ export const TodayEvents = () => {
             "rounded-lg",
             notes.length > 0 ? "h-[200px]" : "h-auto"
           )}>
-            <div className="space-y-3 pt-2">
-              {notes.map((note) => (
-                <motion.div
-                  key={note.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="bg-[#1E3D7B]/20 p-3 rounded-lg border border-[#1E3D7B]/30"
-                >
-                  <p className="text-[#E5DEFF] font-medium">
-                    {note.content}
-                  </p>
-                  <p className="text-sm text-[#8B9CC7]">
-                    {format(new Date(note.created_at), 'HH:mm')}
-                  </p>
-                  {note.tags && note.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {note.tags.map((tag: string, index: number) => (
-                        <span 
-                          key={index}
-                          className="text-xs px-2 py-0.5 rounded-full bg-[#1E3D7B]/30 text-[#8B9CC7]"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </motion.div>
-              ))}
-            </div>
+            <AnimatePresence>
+              <div className="space-y-3 pt-2">
+                {notes.map((note, index) => (
+                  <motion.div
+                    key={note.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                    className={cn(
+                      "bg-[#1E3D7B]/20 p-3 rounded-lg border border-[#1E3D7B]/30",
+                      "transform hover:scale-[1.02] hover:bg-[#1E3D7B]/30",
+                      "transition-all duration-300"
+                    )}
+                  >
+                    <p className="text-[#E5DEFF] font-medium">
+                      {note.content}
+                    </p>
+                    <p className="text-sm text-[#8B9CC7]">
+                      {format(new Date(note.created_at), 'HH:mm')}
+                    </p>
+                    {note.tags && note.tags.length > 0 && (
+                      <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.2 }}
+                        className="flex flex-wrap gap-1 mt-1"
+                      >
+                        {note.tags.map((tag: string, index: number) => (
+                          <span 
+                            key={index}
+                            className={cn(
+                              "text-xs px-2 py-0.5 rounded-full",
+                              "bg-[#1E3D7B]/30 text-[#8B9CC7]",
+                              "hover:bg-[#1E3D7B]/50 transition-colors duration-300"
+                            )}
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </motion.div>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+            </AnimatePresence>
           </ScrollArea>
         </CollapsibleContent>
       </Collapsible>
