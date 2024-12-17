@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 interface CanvasTabProps {
   userId: string;
@@ -79,7 +80,11 @@ const CanvasTab = ({ userId }: CanvasTabProps) => {
     <div className="space-y-8">
       {/* Upload Section */}
       <motion.div 
-        className="bg-card/50 backdrop-blur-sm p-8 rounded-lg border border-border neon-frame"
+        className={cn(
+          "bg-card/50 backdrop-blur-sm p-8 rounded-lg border border-border",
+          "hover:bg-card/70 transition-colors duration-300",
+          "neon-frame"
+        )}
         whileHover={{ scale: 1.02 }}
         transition={{ duration: 0.2 }}
       >
@@ -94,10 +99,16 @@ const CanvasTab = ({ userId }: CanvasTabProps) => {
             <motion.div 
               whileHover={{ scale: 1.1, rotate: 180 }}
               transition={{ duration: 0.3 }}
+              className="bg-primary/10 p-4 rounded-full"
             >
               <Upload className="w-16 h-16 text-primary" />
             </motion.div>
-            <span className="text-lg text-muted-foreground futuristic-text">
+            <span className={cn(
+              "text-lg font-medium",
+              "bg-gradient-to-r from-primary/90 via-primary to-primary/90",
+              "bg-clip-text text-transparent",
+              "drop-shadow-[0_0_10px_rgba(0,112,243,0.5)]"
+            )}>
               Click to upload your dreams
             </span>
           </div>
