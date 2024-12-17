@@ -2,13 +2,22 @@ import { useState, useEffect } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { ChatConversation } from '@/integrations/supabase/types/messages';
 import { useToast } from "@/hooks/use-toast";
+import { handleConnectionError } from '@/utils/error-handling';
 
 export const useConversations = (userId: string, selectedFriend: string | null) => {
   const [conversations, setConversations] = useState<ChatConversation[]>([]);
   const { toast } = useToast();
+  const [isConnecting, setIsConnecting] = useState(false);
 
   useEffect(() => {
+    let retryCount = 0;
+    const maxRetries = 3;
+    let retryTimeout: NodeJS.Timeout;
+
     const fetchConversations = async () => {
+      if (isConnecting) return;
+      setIsConnecting(true);
+
       try {
         const { data: friendships, error: friendshipsError } = await supabase
           .from('friendships')
@@ -23,42 +32,66 @@ export const useConversations = (userId: string, selectedFriend: string | null) 
           .eq('status', 'accepted');
 
         if (friendshipsError) {
+          if (friendshipsError.code === '503') {
+            handleConnectionError();
+            return;
+          }
           console.error('Error fetching friendships:', friendshipsError);
           return;
         }
 
         const conversationsWithDetails = await Promise.all(
           friendships.map(async (f) => {
-            const { data: messages } = await supabase
-              .from('messages')
-              .select('*')
-              .or(`and(sender_id.eq.${userId},receiver_id.eq.${f.friend.id}),and(sender_id.eq.${f.friend.id},receiver_id.eq.${userId})`)
-              .order('created_at', { ascending: false })
-              .limit(1);
+            try {
+              const { data: messages } = await supabase
+                .from('messages')
+                .select('*')
+                .or(`and(sender_id.eq.${userId},receiver_id.eq.${f.friend.id}),and(sender_id.eq.${f.friend.id},receiver_id.eq.${userId})`)
+                .order('created_at', { ascending: false })
+                .limit(1);
 
-            const lastMessage = messages && messages.length > 0 ? messages[0] : null;
+              const { count: unreadCount } = await supabase
+                .from('messages')
+                .select('*', { count: 'exact', head: true })
+                .eq('sender_id', f.friend.id)
+                .eq('receiver_id', userId)
+                .eq('read', false);
 
-            const { count: unreadCount } = await supabase
-              .from('messages')
-              .select('*', { count: 'exact', head: true })
-              .eq('sender_id', f.friend.id)
-              .eq('receiver_id', userId)
-              .eq('read', false);
-
-            return {
-              friend: f.friend,
-              lastMessage: lastMessage ? {
-                content: lastMessage.content,
-                created_at: lastMessage.created_at
-              } : null,
-              unreadCount: unreadCount || 0
-            };
+              return {
+                friend: f.friend,
+                lastMessage: messages && messages.length > 0 ? {
+                  content: messages[0].content,
+                  created_at: messages[0].created_at
+                } : null,
+                unreadCount: unreadCount || 0
+              };
+            } catch (error: any) {
+              if (error?.code === '503') {
+                return {
+                  friend: f.friend,
+                  lastMessage: null,
+                  unreadCount: 0
+                };
+              }
+              throw error;
+            }
           })
         );
 
         setConversations(conversationsWithDetails);
-      } catch (error) {
+        retryCount = 0;
+      } catch (error: any) {
         console.error('Error in fetchConversations:', error);
+        if (retryCount < maxRetries) {
+          retryCount++;
+          retryTimeout = setTimeout(() => {
+            fetchConversations();
+          }, 2000 * retryCount);
+        } else {
+          handleConnectionError();
+        }
+      } finally {
+        setIsConnecting(false);
       }
     };
 
@@ -105,9 +138,12 @@ export const useConversations = (userId: string, selectedFriend: string | null) 
       .subscribe();
 
     return () => {
+      if (retryTimeout) {
+        clearTimeout(retryTimeout);
+      }
       supabase.removeChannel(channel);
     };
-  }, [userId, selectedFriend, conversations, toast]);
+  }, [userId, selectedFriend, conversations, toast, isConnecting]);
 
   return { conversations, setConversations };
 };
