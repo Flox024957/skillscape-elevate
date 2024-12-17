@@ -16,7 +16,8 @@ export const fetchUserMessages = async (userId: string, selectedFriend: string) 
         image_profile
       )
     `)
-    .or(`and(sender_id.eq.${userId},receiver_id.eq.${selectedFriend}),and(sender_id.eq.${selectedFriend},receiver_id.eq.${userId})`)
+    .or(`sender_id.eq.${userId},receiver_id.eq.${userId}`)
+    .or(`sender_id.eq.${selectedFriend},receiver_id.eq.${selectedFriend}`)
     .order('created_at', { ascending: true });
 
   if (error) throw error;
@@ -27,9 +28,11 @@ export const markMessagesAsRead = async (userId: string, selectedFriend: string)
   const { error } = await supabase
     .from('messages')
     .update({ read: true })
-    .eq('sender_id', selectedFriend)
-    .eq('receiver_id', userId)
-    .eq('read', false);
+    .match({
+      sender_id: selectedFriend,
+      receiver_id: userId,
+      read: false
+    });
 
   if (error) throw error;
 };

@@ -3,7 +3,6 @@ import { Message } from '@/integrations/supabase/types/messages';
 import { useToast } from "@/hooks/use-toast";
 import { handleConnectionError, handleMessageUpdateError } from '@/utils/error-handling';
 import { fetchUserMessages, markMessagesAsRead, subscribeToMessages } from '@/services/messages';
-import { supabase } from "@/integrations/supabase/client";
 
 export const useMessages = (
   userId: string, 
@@ -21,7 +20,7 @@ export const useMessages = (
     const maxRetries = 3;
     let retryTimeout: NodeJS.Timeout;
 
-    const fetchMessages = async () => {
+    const loadMessages = async () => {
       if (isConnecting) return;
       setIsConnecting(true);
 
@@ -39,21 +38,21 @@ export const useMessages = (
           }
         }
       } catch (error) {
+        console.error('Error fetching messages:', error);
         if (retryCount < maxRetries) {
           retryCount++;
           retryTimeout = setTimeout(() => {
-            fetchMessages();
+            loadMessages();
           }, 2000 * retryCount);
-          return;
+        } else {
+          handleConnectionError();
         }
-        
-        handleConnectionError();
       } finally {
         setIsConnecting(false);
       }
     };
 
-    fetchMessages();
+    loadMessages();
 
     const channel = subscribeToMessages(userId, selectedFriend, (newMessage) => {
       setMessages(prev => [...prev, newMessage]);
@@ -66,12 +65,10 @@ export const useMessages = (
     });
 
     return () => {
-      if (channel) {
-        supabase.removeChannel(channel);
-      }
       if (retryTimeout) {
         clearTimeout(retryTimeout);
       }
+      supabase.removeChannel(channel);
     };
   }, [userId, selectedFriend, updateConversations, toast, isConnecting]);
 

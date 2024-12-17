@@ -10,4 +10,9 @@ export const handleConnectionError = () => {
 
 export const handleMessageUpdateError = (error: any) => {
   console.error('Error updating message status:', error);
+  toast({
+    title: "Erreur",
+    description: "Impossible de mettre à jour le statut du message. Veuillez réessayer.",
+    variant: "destructive",
+  });
 };
