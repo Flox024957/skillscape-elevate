@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/collapsible";
 
 export const TodayEvents = () => {
-  const [events, setEvents] = useState<any[]>([]);
+  const [notes, setNotes] = useState<any[]>([]);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isOpen, setIsOpen] = useState(true);
   const isMobile = useIsMobile();
@@ -23,15 +23,15 @@ export const TodayEvents = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
-    }, 1000);
+    }, 60000); // Update every minute instead of every second
 
     return () => clearInterval(timer);
   }, []);
 
   useEffect(() => {
-    const fetchTodayEvents = async () => {
-      const { data: user } = await supabase.auth.getUser();
-      if (!user.user) return;
+    const fetchTodayNotes = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
 
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -39,22 +39,25 @@ export const TodayEvents = () => {
       tomorrow.setDate(tomorrow.getDate() + 1);
 
       const { data, error } = await supabase
-        .from('user_events')
+        .from('user_notes')
         .select('*')
-        .eq('user_id', user.user.id)
-        .gte('start_time', today.toISOString())
-        .lt('start_time', tomorrow.toISOString())
-        .order('start_time', { ascending: true });
+        .eq('user_id', user.id)
+        .gte('created_at', today.toISOString())
+        .lt('created_at', tomorrow.toISOString())
+        .order('created_at', { ascending: true });
 
       if (error) {
-        console.error('Error fetching events:', error);
+        console.error('Error fetching notes:', error);
         return;
       }
 
-      setEvents(data || []);
+      setNotes(data || []);
     };
 
-    fetchTodayEvents();
+    fetchTodayNotes();
+    // Rafraîchir les notes toutes les minutes
+    const interval = setInterval(fetchTodayNotes, 60000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -72,7 +75,7 @@ export const TodayEvents = () => {
       >
         <div className="flex flex-col items-center">
           <h2 className="text-[#E5DEFF] text-xl font-light mb-1">
-            {format(currentTime, 'HH:mm:ss')}
+            {format(currentTime, 'HH:mm')}
           </h2>
           <p className="text-[#8B9CC7] text-sm mb-2">
             {format(currentTime, 'EEEE d MMMM yyyy', { locale: fr })}
@@ -80,7 +83,7 @@ export const TodayEvents = () => {
           <CollapsibleTrigger className="w-full">
             <div className="flex items-center justify-between px-4 py-2 rounded-lg bg-[#1E3D7B]/20 hover:bg-[#1E3D7B]/30 transition-colors">
               <span className="text-[#E5DEFF] font-medium">
-                {events.length === 0 ? "Aucun événement aujourd'hui" : `${events.length} événement${events.length > 1 ? 's' : ''}`}
+                {notes.length === 0 ? "Aucune note aujourd'hui" : `${notes.length} note${notes.length > 1 ? 's' : ''}`}
               </span>
               <ChevronDown className={cn(
                 "h-4 w-4 text-[#8B9CC7] transition-transform duration-200",
@@ -93,28 +96,34 @@ export const TodayEvents = () => {
         <CollapsibleContent>
           <ScrollArea className={cn(
             "rounded-lg",
-            events.length > 0 ? "h-[200px]" : "h-auto"
+            notes.length > 0 ? "h-[200px]" : "h-auto"
           )}>
             <div className="space-y-3 pt-2">
-              {events.map((event) => (
+              {notes.map((note) => (
                 <motion.div
-                  key={event.id}
+                  key={note.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
                   className="bg-[#1E3D7B]/20 p-3 rounded-lg border border-[#1E3D7B]/30"
                 >
                   <p className="text-[#E5DEFF] font-medium">
-                    {event.title}
+                    {note.content}
                   </p>
                   <p className="text-sm text-[#8B9CC7]">
-                    {format(new Date(event.start_time), 'HH:mm')} - 
-                    {format(new Date(event.end_time), 'HH:mm')}
+                    {format(new Date(note.created_at), 'HH:mm')}
                   </p>
-                  {event.location && (
-                    <p className="text-xs text-[#8B9CC7]/80 italic mt-1">
-                      📍 {event.location}
-                    </p>
+                  {note.tags && note.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {note.tags.map((tag: string, index: number) => (
+                        <span 
+                          key={index}
+                          className="text-xs px-2 py-0.5 rounded-full bg-[#1E3D7B]/30 text-[#8B9CC7]"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
                   )}
                 </motion.div>
               ))}
