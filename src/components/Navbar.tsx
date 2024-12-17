@@ -1,68 +1,80 @@
-import { Home, LayoutGrid, Headphones, Trophy, Users } from "lucide-react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { NavItem } from "./navbar/NavItem";
-import { NavTooltip } from "./navbar/NavTooltip";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
 import { NavContainer } from "./navbar/NavContainer";
+import { NavItem } from "./navbar/NavItem";
+import { Home, BookOpen, Mic2, User2 } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
-const navItems = [
-  { 
-    icon: Home, 
-    label: "Accueil", 
-    path: "/main", 
-    description: "Retour à l'accueil",
-    ariaLabel: "Naviguer vers la page d'accueil"
-  },
-  { 
-    icon: LayoutGrid, 
-    label: "Dashboard", 
-    path: "/dashboard", 
-    description: "Accéder à votre tableau de bord",
-    ariaLabel: "Naviguer vers le tableau de bord"
-  },
-  { 
-    icon: Headphones, 
-    label: "Audio", 
-    path: "/audio", 
-    description: "Gérer vos contenus audio",
-    ariaLabel: "Naviguer vers la section audio"
-  },
-  { 
-    icon: Trophy, 
-    label: "Défis", 
-    path: "/challenges", 
-    description: "Voir vos défis",
-    ariaLabel: "Naviguer vers vos défis"
-  },
-  { 
-    icon: Users, 
-    label: "Social", 
-    path: "/social", 
-    description: "Espace social",
-    ariaLabel: "Naviguer vers l'espace social"
-  }
-];
-
-const Navbar = () => {
-  const navigate = useNavigate();
+export const Navbar = () => {
+  const [user, setUser] = useState<any>(null);
   const location = useLocation();
+  const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
-  const handleNavigation = (path: string) => {
-    navigate(path);
-  };
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+
+    getUser();
+  }, []);
+
+  if (location.pathname === "/auth") return null;
+
+  const navigationItems = [
+    {
+      label: "Accueil",
+      icon: Home,
+      href: "/",
+      isActive: location.pathname === "/"
+    },
+    {
+      label: "Compétences",
+      icon: BookOpen,
+      href: "/skills",
+      isActive: location.pathname.startsWith("/skills")
+    },
+    {
+      label: "Audio",
+      icon: Mic2,
+      href: "/audio",
+      isActive: location.pathname === "/audio"
+    }
+  ];
+
+  if (user) {
+    navigationItems.push({
+      label: "Dashboard",
+      icon: User2,
+      href: "/dashboard",
+      isActive: location.pathname === "/dashboard"
+    });
+  }
 
   return (
     <NavContainer>
-      {navItems.map((item) => (
-        <NavTooltip key={item.path} description={item.description}>
-          <NavItem
-            {...item}
-            isActive={location.pathname === item.path}
-            onClick={() => handleNavigation(item.path)}
-          />
-        </NavTooltip>
+      {navigationItems.map((item) => (
+        <NavItem
+          key={item.href}
+          label={item.label}
+          icon={item.icon}
+          href={item.href}
+          isActive={item.isActive}
+        />
       ))}
+
+      {!user && (
+        <Button
+          variant="default"
+          className="ml-auto"
+          onClick={() => navigate("/auth")}
+        >
+          Se connecter
+        </Button>
+      )}
     </NavContainer>
   );
 };
-
-export default Navbar;
