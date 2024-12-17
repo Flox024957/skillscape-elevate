@@ -9,53 +9,57 @@ export const useConversations = (userId: string, selectedFriend: string | null) 
 
   useEffect(() => {
     const fetchConversations = async () => {
-      const { data: friendships, error: friendshipsError } = await supabase
-        .from('friendships')
-        .select(`
-          friend:profiles!friendships_friend_id_fkey (
-            id,
-            pseudo,
-            image_profile
-          )
-        `)
-        .eq('user_id', userId)
-        .eq('status', 'accepted');
+      try {
+        const { data: friendships, error: friendshipsError } = await supabase
+          .from('friendships')
+          .select(`
+            friend:profiles!friendships_friend_id_fkey (
+              id,
+              pseudo,
+              image_profile
+            )
+          `)
+          .eq('user_id', userId)
+          .eq('status', 'accepted');
 
-      if (friendshipsError) {
-        console.error('Error fetching friendships:', friendshipsError);
-        return;
+        if (friendshipsError) {
+          console.error('Error fetching friendships:', friendshipsError);
+          return;
+        }
+
+        const conversationsWithDetails = await Promise.all(
+          friendships.map(async (f) => {
+            const { data: messages } = await supabase
+              .from('messages')
+              .select('*')
+              .or(`and(sender_id.eq.${userId},receiver_id.eq.${f.friend.id}),and(sender_id.eq.${f.friend.id},receiver_id.eq.${userId})`)
+              .order('created_at', { ascending: false })
+              .limit(1);
+
+            const lastMessage = messages && messages.length > 0 ? messages[0] : null;
+
+            const { count: unreadCount } = await supabase
+              .from('messages')
+              .select('*', { count: 'exact', head: true })
+              .eq('sender_id', f.friend.id)
+              .eq('receiver_id', userId)
+              .eq('read', false);
+
+            return {
+              friend: f.friend,
+              lastMessage: lastMessage ? {
+                content: lastMessage.content,
+                created_at: lastMessage.created_at
+              } : null,
+              unreadCount: unreadCount || 0
+            };
+          })
+        );
+
+        setConversations(conversationsWithDetails);
+      } catch (error) {
+        console.error('Error in fetchConversations:', error);
       }
-
-      const conversationsWithDetails = await Promise.all(
-        friendships.map(async (f) => {
-          const { data: messages } = await supabase
-            .from('messages')
-            .select('*')
-            .or(`and(sender_id.eq.${userId},receiver_id.eq.${f.friend.id}),and(sender_id.eq.${f.friend.id},receiver_id.eq.${userId})`)
-            .order('created_at', { ascending: false })
-            .limit(1);
-
-          const lastMessage = messages && messages.length > 0 ? messages[0] : null;
-
-          const { count: unreadCount } = await supabase
-            .from('messages')
-            .select('*', { count: 'exact', head: true })
-            .eq('sender_id', f.friend.id)
-            .eq('receiver_id', userId)
-            .eq('read', false);
-
-          return {
-            friend: f.friend,
-            lastMessage: lastMessage ? {
-              content: lastMessage.content,
-              created_at: lastMessage.created_at
-            } : null,
-            unreadCount: unreadCount || 0
-          };
-        })
-      );
-
-      setConversations(conversationsWithDetails);
     };
 
     fetchConversations();
