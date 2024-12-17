@@ -74,7 +74,7 @@ const AudioTab = () => {
             <h3 className="text-lg font-semibold text-[#E5DEFF]">Compétences disponibles</h3>
             <ScrollArea className={cn(
               "rounded-md border border-[#1E3D7B]/30 bg-[#1E3D7B]/10 p-4",
-              isMobile ? "h-[300px]" : "h-[400px]"
+              isMobile ? "h-[600px]" : "h-[800px]"
             )}>
               <SkillsSection
                 onContentSelect={handleContentSelect}
