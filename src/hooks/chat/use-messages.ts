@@ -35,7 +35,7 @@ export const useMessages = (
         return;
       }
 
-      setMessages(data as Message[]);
+      setMessages(data || []);
 
       // Mark messages as read
       await supabase
@@ -50,7 +50,6 @@ export const useMessages = (
 
     fetchMessages();
 
-    // Subscribe to new messages in real-time
     const channel = supabase
       .channel('messages_channel')
       .on(
@@ -75,7 +74,6 @@ export const useMessages = (
           
           setMessages(prev => [...prev, newMessage]);
 
-          // Mark message as read if we're in the conversation
           if (payload.new.sender_id === selectedFriend) {
             await supabase
               .from('messages')

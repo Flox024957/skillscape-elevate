@@ -28,13 +28,14 @@ export const useConversations = (userId: string, selectedFriend: string | null) 
 
       const conversationsWithDetails = await Promise.all(
         friendships.map(async (f) => {
-          const { data: lastMessage } = await supabase
+          const { data: messages } = await supabase
             .from('messages')
             .select('*')
             .or(`and(sender_id.eq.${userId},receiver_id.eq.${f.friend.id}),and(sender_id.eq.${f.friend.id},receiver_id.eq.${userId})`)
             .order('created_at', { ascending: false })
-            .limit(1)
-            .single();
+            .limit(1);
+
+          const lastMessage = messages && messages.length > 0 ? messages[0] : null;
 
           const { count: unreadCount } = await supabase
             .from('messages')
@@ -45,7 +46,10 @@ export const useConversations = (userId: string, selectedFriend: string | null) 
 
           return {
             friend: f.friend,
-            lastMessage,
+            lastMessage: lastMessage ? {
+              content: lastMessage.content,
+              created_at: lastMessage.created_at
+            } : null,
             unreadCount: unreadCount || 0
           };
         })
@@ -56,7 +60,6 @@ export const useConversations = (userId: string, selectedFriend: string | null) 
 
     fetchConversations();
 
-    // Subscribe to new messages for real-time updates
     const channel = supabase
       .channel('new_messages')
       .on(
@@ -100,7 +103,7 @@ export const useConversations = (userId: string, selectedFriend: string | null) 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [userId, selectedFriend, toast]);
+  }, [userId, selectedFriend, conversations, toast]);
 
   return { conversations, setConversations };
 };
