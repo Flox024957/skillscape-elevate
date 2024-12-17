@@ -11,7 +11,7 @@ export const useChat = (userId: string) => {
 
   useEffect(() => {
     const fetchConversations = async () => {
-      const { data: friendships, error: friendshipsError } = await supabase
+      const { data: friendships, error } = await supabase
         .from('friendships')
         .select(`
           friend:profiles!friendships_friend_id_fkey (
@@ -23,8 +23,8 @@ export const useChat = (userId: string) => {
         .eq('user_id', userId)
         .eq('status', 'accepted');
 
-      if (friendshipsError) {
-        console.error('Error fetching friendships:', friendshipsError);
+      if (error) {
+        console.error('Error fetching conversations:', error);
         return;
       }
 
@@ -35,16 +35,16 @@ export const useChat = (userId: string) => {
       }));
 
       setConversations(conversationsData);
-      if (conversationsData.length > 0 && !selectedFriend) {
-        setSelectedFriend(conversationsData[0].friend.id);
-      }
     };
 
     fetchConversations();
-  }, [userId, selectedFriend]);
+  }, [userId]);
 
   useEffect(() => {
-    if (!selectedFriend) return;
+    if (!selectedFriend) {
+      setMessages([]);
+      return;
+    }
 
     const fetchMessages = async () => {
       const { data, error } = await supabase
@@ -69,54 +69,31 @@ export const useChat = (userId: string) => {
         return;
       }
 
-      setMessages(data as Message[]);
+      const typedMessages = data.map(msg => ({
+        ...msg,
+        profiles: msg.profiles ? {
+          pseudo: msg.profiles.pseudo,
+          image_profile: msg.profiles.image_profile
+        } : null
+      })) as Message[];
+
+      setMessages(typedMessages);
     };
 
     fetchMessages();
-
-    const channel = supabase
-      .channel('messages_channel')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'messages',
-          filter: `or(and(sender_id.eq.${userId},receiver_id.eq.${selectedFriend}),and(sender_id.eq.${selectedFriend},receiver_id.eq.${userId}))`
-        },
-        async (payload) => {
-          const { data: profileData } = await supabase
-            .from('profiles')
-            .select('pseudo, image_profile')
-            .eq('id', payload.new.sender_id)
-            .single();
-
-          const newMessage: Message = {
-            ...payload.new as Message,
-            profiles: profileData
-          };
-          
-          setMessages((prev) => [...prev, newMessage]);
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
   }, [userId, selectedFriend]);
 
   const sendMessage = async (content: string) => {
-    if (!content.trim() || !selectedFriend) return;
+    if (!selectedFriend || !content.trim()) return;
 
     const { error } = await supabase
       .from('messages')
       .insert([
         {
-          content,
           sender_id: userId,
           receiver_id: selectedFriend,
-        },
+          content: content.trim(),
+        }
       ]);
 
     if (error) {
@@ -125,6 +102,8 @@ export const useChat = (userId: string) => {
         description: "Impossible d'envoyer le message",
         variant: "destructive",
       });
+      console.error('Error sending message:', error);
+      return;
     }
   };
 
@@ -133,6 +112,6 @@ export const useChat = (userId: string) => {
     conversations,
     selectedFriend,
     setSelectedFriend,
-    sendMessage
+    sendMessage,
   };
 };

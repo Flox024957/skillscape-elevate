@@ -10,9 +10,3 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
     detectSessionInUrl: true
   }
 });
-
-// Écouteur des changements d'état d'authentification
-supabase.auth.onAuthStateChange((event, session) => {
-  console.log('Changement d\'état d\'authentification:', event);
-  console.log('Session:', session);
-});
