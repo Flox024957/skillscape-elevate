@@ -30,7 +30,7 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pb-20">
       {/* Profile Section avec Animation */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -47,24 +47,24 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
       {/* Tabs Principal */}
       <Tabs defaultValue="skills" className="w-full">
         <TabsList className={cn(
-          "w-full flex gap-2 bg-background/50 backdrop-blur-sm border border-border rounded-lg sticky top-0 z-30",
-          isMobile ? "p-2 mb-6 mx-4" : "p-1 mb-6"
+          "w-full flex gap-2 bg-background/50 backdrop-blur-sm border border-border rounded-lg sticky top-0 z-50",
+          isMobile ? "p-2 mb-8 mx-4" : "p-1 mb-8"
         )}>
           <TabsTrigger 
             value="skills" 
             className={cn(
               "flex-1 flex items-center justify-center gap-2 data-[state=active]:bg-primary/10 data-[state=active]:text-primary transition-all py-3",
-              isMobile ? "text-sm" : "text-sm"
+              isMobile ? "text-sm" : "text-base"
             )}
           >
             <Book className={cn("w-4 h-4", isMobile && "w-3.5 h-3.5")} />
-            {isMobile ? "Skills" : "Compétences"}
+            {isMobile ? "Compétences" : "Compétences"}
           </TabsTrigger>
           <TabsTrigger 
             value="notes" 
             className={cn(
               "flex-1 flex items-center justify-center gap-2 data-[state=active]:bg-primary/10 data-[state=active]:text-primary transition-all py-3",
-              isMobile ? "text-sm" : "text-sm"
+              isMobile ? "text-sm" : "text-base"
             )}
           >
             <Calendar className={cn("w-4 h-4", isMobile && "w-3.5 h-3.5")} />
@@ -74,7 +74,7 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
             value="canvas" 
             className={cn(
               "flex-1 flex items-center justify-center gap-2 data-[state=active]:bg-primary/10 data-[state=active]:text-primary transition-all py-3",
-              isMobile ? "text-sm" : "text-sm"
+              isMobile ? "text-sm" : "text-base"
             )}
           >
             <PenTool className={cn("w-4 h-4", isMobile && "w-3.5 h-3.5")} />

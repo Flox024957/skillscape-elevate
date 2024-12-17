@@ -52,7 +52,7 @@ export const AuthForm = () => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <SupabaseAuth 
         supabaseClient={supabase}
         appearance={{
