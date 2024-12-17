@@ -6,7 +6,7 @@ export interface Skill {
   resume: string | null;
   description: string | null;
   action_concrete: string | null;
-  exemples: Json[] | null;
+  exemples: Json | null;
   category_id: string | null;
   created_at: string;
   updated_at: string;
