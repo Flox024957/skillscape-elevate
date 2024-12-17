@@ -4,8 +4,15 @@ import { ChatConversation } from '@/integrations/supabase/types/messages';
 import { useToast } from "@/hooks/use-toast";
 import { handleConnectionError } from '@/utils/error-handling';
 
-export const useConversations = (userId: string, selectedFriend: string | null) => {
+interface UseConversationsReturn {
+  conversations: ChatConversation[];
+  setConversations: React.Dispatch<React.SetStateAction<ChatConversation[]>>;
+  isError: boolean;
+}
+
+export const useConversations = (userId: string, selectedFriend: string | null): UseConversationsReturn => {
   const [conversations, setConversations] = useState<ChatConversation[]>([]);
+  const [isError, setIsError] = useState(false);
   const { toast } = useToast();
   const [isConnecting, setIsConnecting] = useState(false);
 
@@ -34,6 +41,7 @@ export const useConversations = (userId: string, selectedFriend: string | null) 
         if (friendshipsError) {
           if (friendshipsError.code === '503') {
             handleConnectionError();
+            setIsError(true);
             return;
           }
           console.error('Error fetching friendships:', friendshipsError);
@@ -79,6 +87,7 @@ export const useConversations = (userId: string, selectedFriend: string | null) 
         );
 
         setConversations(conversationsWithDetails);
+        setIsError(false);
         retryCount = 0;
       } catch (error: any) {
         console.error('Error in fetchConversations:', error);
@@ -89,6 +98,7 @@ export const useConversations = (userId: string, selectedFriend: string | null) 
           }, 2000 * retryCount);
         } else {
           handleConnectionError();
+          setIsError(true);
         }
       } finally {
         setIsConnecting(false);
@@ -145,5 +155,5 @@ export const useConversations = (userId: string, selectedFriend: string | null) 
     };
   }, [userId, selectedFriend, conversations, toast, isConnecting]);
 
-  return { conversations, setConversations };
+  return { conversations, setConversations, isError };
 };

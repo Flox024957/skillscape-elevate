@@ -5,12 +5,18 @@ import { handleConnectionError, handleMessageUpdateError } from '@/utils/error-h
 import { fetchUserMessages, markMessagesAsRead, subscribeToMessages } from '@/services/messages';
 import { supabase } from "@/integrations/supabase/client";
 
+interface UseMessagesReturn {
+  messages: Message[];
+  isError: boolean;
+}
+
 export const useMessages = (
   userId: string, 
   selectedFriend: string | null,
   updateConversations: (friendId: string) => void
-) => {
+): UseMessagesReturn => {
   const [messages, setMessages] = useState<Message[]>([]);
+  const [isError, setIsError] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const { toast } = useToast();
 
@@ -28,6 +34,7 @@ export const useMessages = (
       try {
         const data = await fetchUserMessages(userId, selectedFriend);
         setMessages(data);
+        setIsError(false);
         retryCount = 0;
 
         if (data.length > 0) {
@@ -47,6 +54,7 @@ export const useMessages = (
           }, 2000 * retryCount);
         } else {
           handleConnectionError();
+          setIsError(true);
         }
       } finally {
         setIsConnecting(false);
@@ -73,5 +81,5 @@ export const useMessages = (
     };
   }, [userId, selectedFriend, updateConversations, toast, isConnecting]);
 
-  return messages;
+  return { messages, isError };
 };

@@ -1,8 +1,15 @@
+import { useState } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
-export const useMessageSender = () => {
+interface UseMessageSenderReturn {
+  sendMessage: (content: string, userId: string, selectedFriend: string | null) => Promise<void>;
+  isError: boolean;
+}
+
+export const useMessageSender = (): UseMessageSenderReturn => {
   const { toast } = useToast();
+  const [isError, setIsError] = useState(false);
 
   const sendMessage = async (content: string, userId: string, selectedFriend: string | null) => {
     if (!content.trim() || !selectedFriend) return;
@@ -19,16 +26,20 @@ export const useMessageSender = () => {
         ]);
 
       if (error) {
+        setIsError(true);
         toast({
           title: "Erreur",
           description: "Impossible d'envoyer le message",
           variant: "destructive",
         });
+      } else {
+        setIsError(false);
       }
     } catch (error) {
+      setIsError(true);
       console.error('Error sending message:', error);
     }
   };
 
-  return sendMessage;
+  return { sendMessage, isError };
 };
