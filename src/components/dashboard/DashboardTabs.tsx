@@ -51,7 +51,7 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
           "w-full flex gap-2 bg-background/50 backdrop-blur-sm border border-border/50 rounded-lg sticky top-0 z-50",
           "shadow-lg shadow-purple-500/5",
           "transform hover:scale-[1.01] transition-all duration-300",
-          isMobile ? "p-2 mb-8 mx-4" : "p-1 mb-12"
+          isMobile ? "p-2 mb-20 mx-4" : "p-1 mb-12"
         )}>
           <TabsTrigger 
             value="skills" 
@@ -101,7 +101,7 @@ export const DashboardTabs = ({ user }: DashboardTabsProps) => {
           <motion.div 
             className={cn(
               "space-y-8",
-              isMobile ? "px-4 mt-8" : "px-4" // Ajout de mt-8 pour créer l'espace de 0.8cm en mobile
+              isMobile ? "px-4 mt-20" : "px-4" // Ajout de mt-8 pour créer l'espace de 0.8cm en mobile
             )}
             variants={tabVariants}
             initial="hidden"
