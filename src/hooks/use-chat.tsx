@@ -9,7 +9,7 @@ export const useChat = (userId: string) => {
   const [selectedFriend, setSelectedFriend] = useState<string | null>(null);
   const { toast } = useToast();
 
-  // Fetch conversations
+  // Fetch conversations and subscribe to updates
   useEffect(() => {
     const fetchConversations = async () => {
       const { data: friendships, error: friendshipsError } = await supabase
@@ -29,20 +29,84 @@ export const useChat = (userId: string) => {
         return;
       }
 
-      const conversations = friendships.map(f => ({
-        friend: f.friend,
-        unreadCount: 0,
-        lastMessage: undefined
-      }));
+      // Fetch last message and unread count for each friend
+      const conversationsWithDetails = await Promise.all(
+        friendships.map(async (f) => {
+          const { data: lastMessage } = await supabase
+            .from('messages')
+            .select('*')
+            .or(`and(sender_id.eq.${userId},receiver_id.eq.${f.friend.id}),and(sender_id.eq.${f.friend.id},receiver_id.eq.${userId})`)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .single();
 
-      setConversations(conversations);
-      if (conversations.length > 0 && !selectedFriend) {
-        setSelectedFriend(conversations[0].friend.id);
+          const { count: unreadCount } = await supabase
+            .from('messages')
+            .select('*', { count: 'exact', head: true })
+            .eq('sender_id', f.friend.id)
+            .eq('receiver_id', userId)
+            .eq('read', false);
+
+          return {
+            friend: f.friend,
+            lastMessage,
+            unreadCount: unreadCount || 0
+          };
+        })
+      );
+
+      setConversations(conversationsWithDetails);
+      if (conversationsWithDetails.length > 0 && !selectedFriend) {
+        setSelectedFriend(conversationsWithDetails[0].friend.id);
       }
     };
 
     fetchConversations();
-  }, [userId, selectedFriend]);
+
+    // Subscribe to new messages for conversation updates
+    const channel = supabase
+      .channel('new_messages')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'messages',
+          filter: `receiver_id=eq.${userId}`
+        },
+        async (payload) => {
+          // Update conversations list with new message
+          const senderId = payload.new.sender_id;
+          setConversations(prev => prev.map(conv => {
+            if (conv.friend.id === senderId) {
+              return {
+                ...conv,
+                lastMessage: payload.new,
+                unreadCount: conv.unreadCount + 1
+              };
+            }
+            return conv;
+          }));
+
+          // Show notification if not in the current conversation
+          if (senderId !== selectedFriend) {
+            const sender = conversations.find(c => c.friend.id === senderId)?.friend;
+            if (sender) {
+              toast({
+                title: "Nouveau message",
+                description: `${sender.pseudo} vous a envoyé un message`,
+                duration: 3000,
+              });
+            }
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [userId, selectedFriend, toast]);
 
   // Fetch messages and subscribe to real-time updates
   useEffect(() => {
@@ -72,11 +136,27 @@ export const useChat = (userId: string) => {
       }
 
       setMessages(data as Message[]);
+
+      // Mark messages as read
+      await supabase
+        .from('messages')
+        .update({ read: true })
+        .eq('sender_id', selectedFriend)
+        .eq('receiver_id', userId)
+        .eq('read', false);
+
+      // Update unread count in conversations
+      setConversations(prev => prev.map(conv => {
+        if (conv.friend.id === selectedFriend) {
+          return { ...conv, unreadCount: 0 };
+        }
+        return conv;
+      }));
     };
 
     fetchMessages();
 
-    // Subscribe to new messages
+    // Subscribe to new messages in the current conversation
     const channel = supabase
       .channel('messages_channel')
       .on(
@@ -100,6 +180,14 @@ export const useChat = (userId: string) => {
           };
           
           setMessages(prev => [...prev, newMessage]);
+
+          // Mark message as read if it's in the current conversation
+          if (payload.new.sender_id === selectedFriend) {
+            await supabase
+              .from('messages')
+              .update({ read: true })
+              .eq('id', payload.new.id);
+          }
         }
       )
       .subscribe();
