@@ -1,34 +1,18 @@
 import { createClient } from '@supabase/supabase-js';
-import type { Database } from './types';
 
 const supabaseUrl = 'https://kioxqfgtqpwxcagefvki.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtpb3hxZmd0cXB3eGNhZ2VmdmtpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDY4OTMwNDUsImV4cCI6MjAyMjQ2OTA0NX0.GaFNR-3DKHRw-U_qJBdzV0jF6F26TyNdqtL-yeH-GQA';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtpb3hxZmd0cXB3eGNhZ2VmdmtpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDY4NzIzMzgsImV4cCI6MjAyMjQ0ODMzOH0.GQyJSEXBqgqz3OGrAkfHGCL1P7fGM2lrBTgHJxQkk0c';
 
-export const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
+export const supabase = createClient(supabaseUrl, supabaseKey, {
   auth: {
-    persistSession: true,
     autoRefreshToken: true,
+    persistSession: true,
     detectSessionInUrl: true
-  },
-  global: {
-    fetch: (input: RequestInfo | URL, init?: RequestInit) => {
-      console.log('Supabase Request:', input);
-      return fetch(input, init).then(async (response) => {
-        if (!response.ok) {
-          console.error('Supabase Error Response:', {
-            status: response.status,
-            statusText: response.statusText,
-            url: response.url,
-            body: await response.text()
-          });
-        }
-        return response;
-      });
-    }
   }
 });
 
-// Add a listener for auth state changes
+// Écouteur des changements d'état d'authentification
 supabase.auth.onAuthStateChange((event, session) => {
-  console.log('Auth state changed:', event, session?.user?.id);
+  console.log('Changement d\'état d\'authentification:', event);
+  console.log('Session:', session);
 });
