@@ -50,6 +50,7 @@ export const useMessages = (
 
     fetchMessages();
 
+    // Subscribe to new messages in real-time
     const channel = supabase
       .channel('messages_channel')
       .on(
@@ -74,11 +75,14 @@ export const useMessages = (
           
           setMessages(prev => [...prev, newMessage]);
 
+          // Mark message as read if we're in the conversation
           if (payload.new.sender_id === selectedFriend) {
             await supabase
               .from('messages')
               .update({ read: true })
               .eq('id', payload.new.id);
+
+            updateConversations(selectedFriend);
           }
         }
       )
@@ -87,7 +91,7 @@ export const useMessages = (
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [userId, selectedFriend]);
+  }, [userId, selectedFriend, updateConversations]);
 
   return messages;
 };

@@ -56,6 +56,7 @@ export const useConversations = (userId: string, selectedFriend: string | null) 
 
     fetchConversations();
 
+    // Subscribe to new messages for real-time updates
     const channel = supabase
       .channel('new_messages')
       .on(
@@ -76,7 +77,7 @@ export const useConversations = (userId: string, selectedFriend: string | null) 
                   content: payload.new.content,
                   created_at: payload.new.created_at
                 },
-                unreadCount: conv.unreadCount + 1
+                unreadCount: selectedFriend === senderId ? 0 : conv.unreadCount + 1
               };
             }
             return conv;
