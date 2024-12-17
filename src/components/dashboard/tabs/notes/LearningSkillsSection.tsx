@@ -9,11 +9,19 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
+import { Skill, UserSkill } from "@/types/skills";
 
 interface LearningSkillsSectionProps {
   userId: string;
   selectedDate: Date | undefined;
   onAddNote: (note: string, tags: string[]) => void;
+}
+
+interface UserSkillWithDetails extends UserSkill {
+  sections_selectionnees: string[] | null;
+  skills: Skill & {
+    exemples: string[];
+  };
 }
 
 export const LearningSkillsSection = ({ userId, selectedDate, onAddNote }: LearningSkillsSectionProps) => {
@@ -42,7 +50,15 @@ export const LearningSkillsSection = ({ userId, selectedDate, onAddNote }: Learn
         .eq('est_maitrisee', false);
 
       if (error) throw error;
-      return data;
+      
+      // Ensure exemples is always an array
+      return (data || []).map(skill => ({
+        ...skill,
+        skills: {
+          ...skill.skills,
+          exemples: Array.isArray(skill.skills.exemples) ? skill.skills.exemples : []
+        }
+      })) as UserSkillWithDetails[];
     },
   });
 
@@ -179,7 +195,7 @@ export const LearningSkillsSection = ({ userId, selectedDate, onAddNote }: Learn
                       </div>
                     )}
 
-                    {userSkill.sections_selectionnees && (
+                    {userSkill.sections_selectionnees && userSkill.sections_selectionnees.length > 0 && (
                       <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-border">
                         {userSkill.sections_selectionnees.map((section) => (
                           <Badge key={section} variant="secondary">
