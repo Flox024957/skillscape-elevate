@@ -44,7 +44,7 @@ export const useChat = (userId: string) => {
     fetchConversations();
   }, [userId, selectedFriend]);
 
-  // Fetch messages for selected conversation
+  // Fetch messages and subscribe to real-time updates
   useEffect(() => {
     if (!selectedFriend) return;
 
@@ -99,7 +99,7 @@ export const useChat = (userId: string) => {
             profiles: profileData
           };
           
-          setMessages((prev) => [...prev, newMessage]);
+          setMessages(prev => [...prev, newMessage]);
         }
       )
       .subscribe();

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Play, Trash2 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
+import { useEffect } from "react";
 
 export const PlaylistSection = () => {
   const { data: playlist, refetch: refetchPlaylist } = useQuery({
@@ -41,6 +42,32 @@ export const PlaylistSection = () => {
     enabled: !!playlist?.skills?.length,
   });
 
+  // Écouter les changements en temps réel sur la playlist
+  useEffect(() => {
+    const { data: { user } } = supabase.auth.getUser();
+    if (!user) return;
+
+    const channel = supabase
+      .channel('playlist_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'skill_playlists',
+          filter: `user_id=eq.${user.id}`,
+        },
+        () => {
+          refetchPlaylist();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [refetchPlaylist]);
+
   const handleRemoveFromPlaylist = async (skillId: string) => {
     if (!playlist) return;
 
@@ -58,7 +85,6 @@ export const PlaylistSection = () => {
       return;
     }
 
-    refetchPlaylist();
     toast.success("Compétence retirée de la playlist");
   };
 
