@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { Message } from '@/integrations/supabase/types/messages';
+import { useToast } from "@/hooks/use-toast";
 
 export const useMessages = (
   userId: string, 
@@ -8,6 +9,7 @@ export const useMessages = (
   updateConversations: (friendId: string) => void
 ) => {
   const [messages, setMessages] = useState<Message[]>([]);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (!selectedFriend) return;
@@ -33,27 +35,43 @@ export const useMessages = (
 
         if (error) {
           console.error('Error fetching messages:', error);
+          toast({
+            title: "Erreur",
+            description: "Impossible de charger les messages. Veuillez réessayer.",
+            variant: "destructive",
+          });
           return;
         }
 
         setMessages(data || []);
 
-        await supabase
-          .from('messages')
-          .update({ read: true })
-          .eq('sender_id', selectedFriend)
-          .eq('receiver_id', userId)
-          .eq('read', false);
+        // Mark messages as read
+        try {
+          await supabase
+            .from('messages')
+            .update({ read: true })
+            .eq('sender_id', selectedFriend)
+            .eq('receiver_id', userId)
+            .eq('read', false);
 
-        updateConversations(selectedFriend);
+          updateConversations(selectedFriend);
+        } catch (updateError) {
+          console.error('Error updating message read status:', updateError);
+        }
       } catch (error) {
         console.error('Error in fetchMessages:', error);
+        toast({
+          title: "Erreur de connexion",
+          description: "Impossible de se connecter au serveur. Veuillez vérifier votre connexion.",
+          variant: "destructive",
+        });
       }
     };
 
     fetchMessages();
 
-    const channel = supabase
+    // Set up real-time subscription
+    let channel = supabase
       .channel('messages_channel')
       .on(
         'postgres_changes',
@@ -64,35 +82,50 @@ export const useMessages = (
           filter: `or(and(sender_id.eq.${userId},receiver_id.eq.${selectedFriend}),and(sender_id.eq.${selectedFriend},receiver_id.eq.${userId}))`
         },
         async (payload) => {
-          const { data: profileData } = await supabase
-            .from('profiles')
-            .select('pseudo, image_profile')
-            .eq('id', payload.new.sender_id)
-            .single();
+          try {
+            const { data: profileData, error: profileError } = await supabase
+              .from('profiles')
+              .select('pseudo, image_profile')
+              .eq('id', payload.new.sender_id)
+              .single();
 
-          const newMessage: Message = {
-            ...payload.new as Message,
-            profiles: profileData
-          };
-          
-          setMessages(prev => [...prev, newMessage]);
+            if (profileError) {
+              console.error('Error fetching profile:', profileError);
+              return;
+            }
 
-          if (payload.new.sender_id === selectedFriend) {
-            await supabase
-              .from('messages')
-              .update({ read: true })
-              .eq('id', payload.new.id);
+            const newMessage: Message = {
+              ...payload.new as Message,
+              profiles: profileData
+            };
+            
+            setMessages(prev => [...prev, newMessage]);
 
-            updateConversations(selectedFriend);
+            if (payload.new.sender_id === selectedFriend) {
+              try {
+                await supabase
+                  .from('messages')
+                  .update({ read: true })
+                  .eq('id', payload.new.id);
+
+                updateConversations(selectedFriend);
+              } catch (error) {
+                console.error('Error updating message status:', error);
+              }
+            }
+          } catch (error) {
+            console.error('Error processing new message:', error);
           }
         }
       )
       .subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      if (channel) {
+        supabase.removeChannel(channel);
+      }
     };
-  }, [userId, selectedFriend, updateConversations]);
+  }, [userId, selectedFriend, updateConversations, toast]);
 
   return messages;
 };
