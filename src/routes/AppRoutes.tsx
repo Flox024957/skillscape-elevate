@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
 import Dashboard from "@/pages/Dashboard";
@@ -15,9 +15,28 @@ interface AppRoutesProps {
 export const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
   return (
     <Routes>
-      <Route path="/" element={<Index />} />
-      <Route path="/auth" element={<Auth />} />
-      <Route path="/main" element={<MainPage />} />
+      <Route 
+        path="/" 
+        element={
+          isAuthenticated ? (
+            <Navigate to="/main" replace />
+          ) : (
+            <Navigate to="/auth" replace />
+          )
+        } 
+      />
+      <Route 
+        path="/auth" 
+        element={isAuthenticated ? <Navigate to="/main" replace /> : <Auth />} 
+      />
+      <Route
+        path="/main"
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <MainPage />
+          </ProtectedRoute>
+        }
+      />
       <Route path="/audio" element={<AudioPage />} />
       <Route path="/category/:id" element={<CategoryPage />} />
       <Route path="/skill/:skillId" element={<SkillDetailPage />} />
