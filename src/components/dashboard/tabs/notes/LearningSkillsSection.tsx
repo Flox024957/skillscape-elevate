@@ -32,7 +32,10 @@ export const LearningSkillsSection = ({ userId, selectedDate, onAddNote }: Learn
             resume,
             description,
             action_concrete,
-            exemples
+            exemples,
+            category_id,
+            created_at,
+            updated_at
           )
         `)
         .eq('user_id', userId)

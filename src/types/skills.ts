@@ -22,6 +22,9 @@ export interface UserSkill {
   est_maitrisee: boolean | null;
   created_at: string | null;
   updated_at: string | null;
+  audio_preferences: Json;
+  maitrisee_le: string | null;
+  notes: string | null;
 }
 
 export interface MasteredSkill {
