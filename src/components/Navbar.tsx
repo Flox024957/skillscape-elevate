@@ -1,4 +1,4 @@
-import { Home, LayoutGrid, Headphones, Trophy, Users } from "lucide-react";
+import { Home, LayoutGrid, Headphones } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { NavItem } from "./navbar/NavItem";
 import { NavTooltip } from "./navbar/NavTooltip";
@@ -25,20 +25,6 @@ const navItems = [
     path: "/audio", 
     description: "Gérer vos contenus audio",
     ariaLabel: "Naviguer vers la section audio"
-  },
-  { 
-    icon: Trophy, 
-    label: "Défis", 
-    path: "/challenges", 
-    description: "Voir vos défis",
-    ariaLabel: "Naviguer vers vos défis"
-  },
-  { 
-    icon: Users, 
-    label: "Social", 
-    path: "/social", 
-    description: "Espace social",
-    ariaLabel: "Naviguer vers l'espace social"
   }
 ];
 
