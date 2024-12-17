@@ -89,19 +89,20 @@ export const TodayEvents = () => {
       "shadow-[0_0_15px_rgba(14,165,233,0.1)]",
       "hover:shadow-[0_0_30px_rgba(14,165,233,0.2)]",
       "transition-all duration-500 transform hover:scale-[1.02]",
-      isMobile ? "p-4" : "p-6"
+      "rounded-full aspect-square flex items-center justify-center",
+      isMobile ? "w-[300px] p-4" : "w-[400px] p-6"
     )}>
       <Collapsible
         open={isOpen}
         onOpenChange={setIsOpen}
-        className="space-y-2"
+        className="w-full h-full flex flex-col items-center justify-center"
       >
         <div className="flex flex-col items-center">
           <motion.h2 
             initial={{ scale: 0.9 }}
             animate={{ scale: 1 }}
             transition={{ duration: 0.5, type: "spring" }}
-            className="text-[#E5DEFF] text-xl font-light mb-1"
+            className="text-[#E5DEFF] text-2xl font-light"
           >
             {format(currentTime, 'HH:mm')}
           </motion.h2>
@@ -113,14 +114,14 @@ export const TodayEvents = () => {
           >
             {format(currentTime, 'EEEE d MMMM yyyy', { locale: fr })}
           </motion.p>
-          <CollapsibleTrigger className="w-full">
+          <CollapsibleTrigger className="w-full max-w-[200px]">
             <motion.div 
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="flex items-center justify-between px-4 py-2 rounded-lg bg-[#1E3D7B]/20 hover:bg-[#1E3D7B]/30 transition-colors"
+              className="flex items-center justify-between px-4 py-2 rounded-full bg-[#1E3D7B]/20 hover:bg-[#1E3D7B]/30 transition-colors"
             >
               <span className="text-[#E5DEFF] font-medium">
-                {notes.length === 0 ? "Aucune note aujourd'hui" : `${notes.length} note${notes.length > 1 ? 's' : ''}`}
+                {notes.length === 0 ? "Aucune note" : `${notes.length} note${notes.length > 1 ? 's' : ''}`}
               </span>
               <ChevronDown className={cn(
                 "h-4 w-4 text-[#8B9CC7] transition-transform duration-300",
@@ -132,29 +133,29 @@ export const TodayEvents = () => {
 
         <CollapsibleContent>
           <ScrollArea className={cn(
-            "rounded-lg",
-            notes.length > 0 ? "h-[300px]" : "h-auto"
+            "rounded-lg mt-4 w-full max-w-[250px]",
+            notes.length > 0 ? "h-[200px]" : "h-auto"
           )}>
             <AnimatePresence>
-              <div className="space-y-3 pt-2">
+              <div className="space-y-3">
                 {notes.map((note, index) => (
                   <motion.div
                     key={note.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
                     transition={{ duration: 0.3, delay: index * 0.1 }}
                     className={cn(
-                      "bg-[#1E3D7B]/20 p-3 rounded-lg border border-[#1E3D7B]/30",
+                      "bg-[#1E3D7B]/20 p-3 rounded-full border border-[#1E3D7B]/30",
                       "transform hover:scale-[1.02] hover:bg-[#1E3D7B]/30",
                       "transition-all duration-300"
                     )}
                   >
-                    <div className="flex items-start justify-between gap-4">
-                      <p className="text-[#E5DEFF] font-medium flex-1">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="text-[#E5DEFF] font-medium text-sm flex-1 truncate">
                         {note.content}
                       </p>
-                      <p className="text-sm text-[#8B9CC7] whitespace-nowrap">
+                      <p className="text-xs text-[#8B9CC7] whitespace-nowrap">
                         {format(new Date(note.created_at), 'HH:mm')}
                       </p>
                     </div>
@@ -165,12 +166,12 @@ export const TodayEvents = () => {
                         transition={{ delay: 0.2 }}
                         className="flex flex-wrap gap-1 mt-2"
                       >
-                        <Tag className="w-3 h-3 text-[#8B9CC7] mr-1" />
+                        <Tag className="w-3 h-3 text-[#8B9CC7]" />
                         {note.tags.map((tag, tagIndex) => (
                           <Badge
                             key={tagIndex}
                             variant="secondary" 
-                            className="bg-[#1E3D7B]/30 hover:bg-[#1E3D7B]/50 text-[#8B9CC7] border-none"
+                            className="bg-[#1E3D7B]/30 hover:bg-[#1E3D7B]/50 text-[#8B9CC7] border-none text-xs px-2 py-0.5 rounded-full"
                           >
                             {tag}
                           </Badge>
