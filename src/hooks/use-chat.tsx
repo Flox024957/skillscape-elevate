@@ -64,17 +64,17 @@ export const useChat = (userId: string) => {
 
     const fetchMessages = async () => {
       try {
+        // Simplified query structure
         const { data, error } = await supabase
           .from('messages')
           .select(`
             *,
-            profiles!messages_sender_id_fkey (
+            profiles:sender_id (
               pseudo,
               image_profile
             )
           `)
           .or(`sender_id.eq.${userId},receiver_id.eq.${userId}`)
-          .or(`sender_id.eq.${selectedFriend},receiver_id.eq.${selectedFriend}`)
           .order('created_at', { ascending: true });
 
         if (error) {
@@ -87,7 +87,7 @@ export const useChat = (userId: string) => {
           return;
         }
 
-        // Filter messages to only include those between the current user and selected friend
+        // Filter messages between current user and selected friend
         const filteredMessages = data.filter(msg => 
           (msg.sender_id === userId && msg.receiver_id === selectedFriend) ||
           (msg.sender_id === selectedFriend && msg.receiver_id === userId)
