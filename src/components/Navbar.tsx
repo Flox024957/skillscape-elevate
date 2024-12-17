@@ -6,7 +6,7 @@ import { NavItem } from "./navbar/NavItem";
 import { Home, BookOpen, Mic2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-const Navbar = () => {
+export const Navbar = () => {
   const [user, setUser] = useState<any>(null);
   const location = useLocation();
   const isMobile = useIsMobile();
@@ -54,5 +54,3 @@ const Navbar = () => {
     </NavContainer>
   );
 };
-
-export default Navbar;
