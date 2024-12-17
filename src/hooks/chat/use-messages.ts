@@ -47,21 +47,21 @@ export const useMessages = (
               retryCount++;
               retryTimeout = setTimeout(() => {
                 fetchMessages();
-              }, 2000 * retryCount); // Exponential backoff
+              }, 2000 * retryCount);
               return;
             }
           }
           console.error('Error fetching messages:', error);
           toast({
-            title: "Erreur de connexion",
-            description: "Impossible de se connecter au serveur. Veuillez réessayer plus tard.",
+            title: "Problème de connexion",
+            description: "Le serveur est temporairement indisponible. Veuillez réessayer plus tard.",
             variant: "destructive",
           });
           return;
         }
 
         setMessages(data || []);
-        retryCount = 0; // Reset retry count on success
+        retryCount = 0;
 
         try {
           await supabase

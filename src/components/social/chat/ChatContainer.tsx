@@ -32,7 +32,7 @@ export const ChatContainer = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className={cn(
-        "glass-panel flex flex-col h-full",
+        "glass-panel flex flex-col h-full relative",
         isMobile && "w-full"
       )}
     >
@@ -55,7 +55,7 @@ export const ChatContainer = ({
             <Alert variant="destructive" className="m-4">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
-                Impossible de charger les messages. Problème de connexion au serveur.
+                Le serveur est temporairement indisponible. Veuillez patienter ou rafraîchir la page.
               </AlertDescription>
             </Alert>
           )}
