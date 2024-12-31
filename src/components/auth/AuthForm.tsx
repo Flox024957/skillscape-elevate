@@ -104,16 +104,16 @@ export const AuthForm = () => {
         localization={{
           variables: {
             sign_in: {
-              email_label: 'Adresse email',
-              password_label: 'Mot de passe',
-              button_label: 'Se connecter',
+              email_label: "Adresse email",
+              password_label: "Mot de passe",
+              button_label: "Se connecter"
             },
             sign_up: {
-              email_label: 'Adresse email',
-              password_label: 'Mot de passe',
-              button_label: 'S'inscrire',
-            },
-          },
+              email_label: "Adresse email",
+              password_label: "Mot de passe",
+              button_label: "S\"inscrire"
+            }
+          }
         }}
       />
       <div className="relative">
