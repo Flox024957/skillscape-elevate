@@ -6,23 +6,24 @@ import VolumeControl from "./audio/VolumeControl";
 import ProgressBar from "./audio/ProgressBar";
 import VoiceSelector from "./audio/VoiceSelector";
 import { Slider } from "@/components/ui/slider";
+import { Skill } from "./audio/types";
 
 interface AudioPlayerProps {
   selectedContent: string;
   onContentSelect: (content: string) => void;
   playbackSpeed: number;
-  playlist?: { id: string; titre: string; resume: string }[];
-  currentPlaylistIndex?: number;
-  onPlaylistIndexChange?: (index: number) => void;
+  skills?: Skill[];
+  selectedSkillIndex?: number;
+  onSkillChange?: (index: number) => void;
 }
 
 const AudioPlayer = ({ 
   selectedContent, 
   onContentSelect, 
   playbackSpeed = 1,
-  playlist = [],
-  currentPlaylistIndex = -1,
-  onPlaylistIndexChange
+  skills = [],
+  selectedSkillIndex = -1,
+  onSkillChange
 }: AudioPlayerProps) => {
   const [randomMode, setRandomMode] = useState(false);
   const {
@@ -38,28 +39,28 @@ const AudioPlayer = ({
     formatTime,
     onEnd
   } = useAudioPlayer(selectedContent, playbackSpeed, () => {
-    if (playlist.length > 0 && currentPlaylistIndex < playlist.length - 1 && onPlaylistIndexChange) {
-      onPlaylistIndexChange(currentPlaylistIndex + 1);
+    if (skills.length > 0 && selectedSkillIndex < skills.length - 1 && onSkillChange) {
+      onSkillChange(selectedSkillIndex + 1);
     }
   });
 
   const handleRandomPlay = () => {
     setRandomMode(!randomMode);
-    if (!randomMode && playlist.length > 0 && onPlaylistIndexChange) {
-      const randomIndex = Math.floor(Math.random() * playlist.length);
-      onPlaylistIndexChange(randomIndex);
+    if (!randomMode && skills.length > 0 && onSkillChange) {
+      const randomIndex = Math.floor(Math.random() * skills.length);
+      onSkillChange(randomIndex);
     }
   };
 
   const handlePrevious = () => {
-    if (currentPlaylistIndex > 0 && onPlaylistIndexChange) {
-      onPlaylistIndexChange(currentPlaylistIndex - 1);
+    if (selectedSkillIndex > 0 && onSkillChange) {
+      onSkillChange(selectedSkillIndex - 1);
     }
   };
 
   const handleNext = () => {
-    if (currentPlaylistIndex < playlist.length - 1 && onPlaylistIndexChange) {
-      onPlaylistIndexChange(currentPlaylistIndex + 1);
+    if (selectedSkillIndex < skills.length - 1 && onSkillChange) {
+      onSkillChange(selectedSkillIndex + 1);
     }
   };
 
@@ -92,9 +93,9 @@ const AudioPlayer = ({
             onRandomPlay={handleRandomPlay}
             onPrevious={handlePrevious}
             onNext={handleNext}
-            hasPlaylist={playlist.length > 0}
-            isFirst={currentPlaylistIndex === 0}
-            isLast={currentPlaylistIndex === playlist.length - 1}
+            hasPlaylist={skills.length > 0}
+            isFirst={selectedSkillIndex === 0}
+            isLast={selectedSkillIndex === skills.length - 1}
           />
           <div className="flex items-center gap-2 w-full md:w-auto">
             <span className="text-sm whitespace-nowrap">Vitesse : {playbackSpeed}x</span>

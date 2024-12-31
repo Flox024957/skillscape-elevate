@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RecordingSection } from "@/components/dashboard/audio/RecordingSection";
@@ -10,8 +9,6 @@ import AudioPlayer from "@/components/dashboard/AudioPlayer";
 const AudioTab = () => {
   const [selectedPlaylist, setSelectedPlaylist] = useState<string | null>(null);
   const [selectedSkillIndex, setSelectedSkillIndex] = useState(0);
-  const { toast } = useToast();
-
   const { data: currentPlaylist, isLoading: isPlaylistLoading } = usePlaylist(selectedPlaylist);
 
   const handleSkillChange = (index: number) => {
@@ -24,6 +21,9 @@ const AudioTab = () => {
     setSelectedPlaylist(playlistId);
     setSelectedSkillIndex(0);
   };
+
+  const currentSkill = currentPlaylist?.skills?.[selectedSkillIndex];
+  const selectedContent = currentSkill ? `${currentSkill.titre}. ${currentSkill.resume}` : "";
 
   return (
     <Tabs defaultValue="player" className="w-full space-y-6">
@@ -42,6 +42,9 @@ const AudioTab = () => {
 
             {currentPlaylist && (
               <AudioPlayer
+                selectedContent={selectedContent}
+                onContentSelect={() => {}}
+                playbackSpeed={1}
                 skills={currentPlaylist.skills}
                 selectedSkillIndex={selectedSkillIndex}
                 onSkillChange={handleSkillChange}
