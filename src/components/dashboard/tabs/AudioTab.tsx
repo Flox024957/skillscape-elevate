@@ -33,13 +33,23 @@ const AudioTab = () => {
 
       const { data: playlist, error } = await supabase
         .from('skill_playlists')
-        .select('*, skills:skills(*)')
+        .select(`
+          *,
+          playlist_skills:skills!skill_playlists_skills_fkey (
+            id,
+            titre,
+            resume
+          )
+        `)
         .eq('user_id', user.id)
         .eq('name', 'Lecture en cours')
         .single();
 
       if (error && error.code !== 'PGRST116') throw error;
-      return playlist;
+      return playlist ? {
+        ...playlist,
+        skills: playlist.playlist_skills || []
+      } : null;
     },
   });
 
