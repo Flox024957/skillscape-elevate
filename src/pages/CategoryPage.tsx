@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, PlusCircle } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { CategoryHeader } from "./components/CategoryHeader";
 import { CategorySkillsList } from "./components/CategorySkillsList";
 
@@ -15,8 +15,6 @@ const CategoryPage = () => {
   const { data: category, isLoading, error } = useQuery({
     queryKey: ['category', id],
     queryFn: async () => {
-      console.log('Fetching category with ID:', id);
-      
       if (!id) {
         throw new Error('Category ID is undefined');
       }
@@ -49,9 +47,9 @@ const CategoryPage = () => {
         throw new Error('Category not found');
       }
 
-      console.log('Category data:', categoryData);
       return categoryData;
     },
+    enabled: Boolean(id),
   });
 
   if (isLoading) {
@@ -82,7 +80,6 @@ const CategoryPage = () => {
 
   return (
     <div className="min-h-screen bg-background/50 backdrop-blur-sm relative overflow-hidden">
-      {/* Background Effects */}
       <div className="absolute inset-0 bg-gradient-to-br from-background via-background/50 to-background" />
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
       
@@ -100,7 +97,7 @@ const CategoryPage = () => {
           />
           
           <CategorySkillsList 
-            skills={category.skills} 
+            skills={category.skills || []} 
             onSkillClick={(skillId) => navigate(`/skill/${skillId}`)}
           />
         </motion.div>

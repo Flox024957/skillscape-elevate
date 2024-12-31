@@ -11,6 +11,14 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Skill } from "@/types/skills";
+
+interface CurrentPlaylist {
+  id: string;
+  name: string;
+  skills: Skill[];
+  skill_order: number[];
+}
 
 const AudioTab = () => {
   const [selectedContent, setSelectedContent] = useState("");
@@ -24,7 +32,7 @@ const AudioTab = () => {
   });
   const isMobile = useIsMobile();
 
-  const { data: currentPlaylist } = useQuery({
+  const { data: currentPlaylist } = useQuery<CurrentPlaylist | null>({
     queryKey: ['current-playlist'],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
