@@ -19,14 +19,14 @@ export const AuthForm = () => {
       if (error) {
         if (error.message.includes('Invalid login credentials')) {
           toast({
-            title: "Demo Account Not Available",
-            description: "Please ask your administrator to set up the demo account.",
+            title: "Compte de démonstration non disponible",
+            description: "Veuillez contacter l'administrateur pour configurer le compte de démonstration.",
             variant: "destructive",
           });
         } else {
           toast({
-            title: "Error",
-            description: "Could not access demo account. Please try again later.",
+            title: "Erreur",
+            description: "Impossible d'accéder au compte de démonstration. Veuillez réessayer plus tard.",
             variant: "destructive",
           });
         }
@@ -36,16 +36,16 @@ export const AuthForm = () => {
       
       if (session) {
         toast({
-          title: "Success",
-          description: "Welcome to the demo account!",
+          title: "Succès",
+          description: "Bienvenue sur le compte de démonstration !",
         });
         navigate('/main');
       }
     } catch (error) {
       console.error('Demo login error:', error);
       toast({
-        title: "Error",
-        description: "An unexpected error occurred. Please try again.",
+        title: "Erreur",
+        description: "Une erreur inattendue s'est produite. Veuillez réessayer.",
         variant: "destructive",
       });
     }
@@ -100,6 +100,21 @@ export const AuthForm = () => {
             loader: 'auth-loader border-t-2 border-white',
           },
         }}
+        providers={[]}
+        localization={{
+          variables: {
+            sign_in: {
+              email_label: 'Adresse email',
+              password_label: 'Mot de passe',
+              button_label: 'Se connecter',
+            },
+            sign_up: {
+              email_label: 'Adresse email',
+              password_label: 'Mot de passe',
+              button_label: 'S'inscrire',
+            },
+          },
+        }}
       />
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
@@ -107,7 +122,7 @@ export const AuthForm = () => {
         </div>
         <div className="relative flex justify-center text-xs uppercase">
           <span className="bg-background px-2 text-muted-foreground">
-            Try the demo account
+            Essayer le compte de démonstration
           </span>
         </div>
       </div>
@@ -115,7 +130,7 @@ export const AuthForm = () => {
         onClick={handleDemoLogin}
         className="w-full bg-gradient-to-r from-violet-500 to-violet-600 hover:from-violet-600 hover:to-violet-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
       >
-        Access Demo Account
+        Accéder au Compte de Démonstration
       </Button>
     </div>
   );
