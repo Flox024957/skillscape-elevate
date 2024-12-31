@@ -30,25 +30,36 @@ const AudioTab = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return null;
 
-      const { data: playlist, error } = await supabase
+      // First get the playlist
+      const { data: playlist, error: playlistError } = await supabase
         .from('skill_playlists')
-        .select(`
-          *,
-          playlist_skills:skills!skill_playlists_skills_fkey (
-            id,
-            titre,
-            resume
-          )
-        `)
+        .select('*')
         .eq('user_id', user.id)
         .eq('name', 'Lecture en cours')
         .single();
 
-      if (error && error.code !== 'PGRST116') throw error;
-      return playlist ? {
+      if (playlistError && playlistError.code !== 'PGRST116') throw playlistError;
+      if (!playlist) return null;
+
+      // Then get the skills if there are any in the playlist
+      if (playlist.skills && playlist.skills.length > 0) {
+        const { data: skills, error: skillsError } = await supabase
+          .from('skills')
+          .select('id, titre, resume')
+          .in('id', playlist.skills);
+
+        if (skillsError) throw skillsError;
+
+        return {
+          ...playlist,
+          skills: skills || []
+        };
+      }
+
+      return {
         ...playlist,
-        skills: playlist.playlist_skills || []
-      } : null;
+        skills: []
+      };
     },
   });
 
@@ -121,7 +132,7 @@ const AudioTab = () => {
                     selectedContent={selectedContent}
                     onContentSelect={handleContentSelect}
                     playbackSpeed={filters.playbackSpeed}
-                    playlist={currentPlaylist?.skills}
+                    playlist={currentPlaylist?.skills || []}
                     currentPlaylistIndex={currentPlaylistIndex}
                     onPlaylistIndexChange={handlePlaylistIndexChange}
                   />
