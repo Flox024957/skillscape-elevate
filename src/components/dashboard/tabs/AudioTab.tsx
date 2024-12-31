@@ -18,6 +18,9 @@ interface CurrentPlaylist {
   name: string;
   skills: Skill[];
   skill_order: number[];
+  created_at: string;
+  updated_at: string;
+  user_id: string | null;
 }
 
 const AudioTab = () => {
@@ -53,7 +56,7 @@ const AudioTab = () => {
       if (playlist.skills && playlist.skills.length > 0) {
         const { data: skills, error: skillsError } = await supabase
           .from('skills')
-          .select('id, titre, resume')
+          .select('id, titre, resume, description, exemples, action_concrete, category_id, created_at, updated_at')
           .in('id', playlist.skills);
 
         if (skillsError) throw skillsError;
@@ -61,13 +64,13 @@ const AudioTab = () => {
         return {
           ...playlist,
           skills: skills || []
-        };
+        } as CurrentPlaylist;
       }
 
       return {
         ...playlist,
         skills: []
-      };
+      } as CurrentPlaylist;
     },
   });
 
