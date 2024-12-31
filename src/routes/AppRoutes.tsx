@@ -1,12 +1,10 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import Index from "@/pages/Index";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
+import MainPage from "@/pages/MainPage";
 import Auth from "@/pages/Auth";
 import Dashboard from "@/pages/Dashboard";
-import CategoryPage from "@/pages/CategoryPage";
-import SkillDetailPage from "@/pages/SkillDetailPage";
 import AudioPage from "@/pages/AudioPage";
-import MainPage from "@/pages/MainPage";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
+import CategoryPage from "@/pages/CategoryPage";
 
 interface AppRoutesProps {
   isAuthenticated: boolean;
@@ -15,30 +13,41 @@ interface AppRoutesProps {
 export const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
   return (
     <Routes>
-      <Route path="/" element={<Index />} />
-      <Route 
-        path="/auth" 
-        element={isAuthenticated ? <Navigate to="/main" replace /> : <Auth />} 
-      />
-      <Route
-        path="/main"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <MainPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route path="/audio" element={<AudioPage />} />
-      <Route path="/category/:id" element={<CategoryPage />} />
-      <Route path="/skill/:skillId" element={<SkillDetailPage />} />
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <Dashboard />
-          </ProtectedRoute>
-        }
-      />
+      {/* Redirection de la racine vers /main */}
+      <Route path="/" element={<Navigate to="/main" replace />} />
+      
+      {/* Route d'authentification */}
+      <Route path="/auth" element={
+        isAuthenticated ? <Navigate to="/main" replace /> : <Auth />
+      } />
+
+      {/* Routes protégées */}
+      <Route path="/main" element={
+        <ProtectedRoute isAuthenticated={isAuthenticated}>
+          <MainPage />
+        </ProtectedRoute>
+      } />
+      
+      <Route path="/dashboard" element={
+        <ProtectedRoute isAuthenticated={isAuthenticated}>
+          <Dashboard />
+        </ProtectedRoute>
+      } />
+      
+      <Route path="/audio" element={
+        <ProtectedRoute isAuthenticated={isAuthenticated}>
+          <AudioPage />
+        </ProtectedRoute>
+      } />
+      
+      <Route path="/category/:id" element={
+        <ProtectedRoute isAuthenticated={isAuthenticated}>
+          <CategoryPage />
+        </ProtectedRoute>
+      } />
+
+      {/* Fallback pour les routes non trouvées */}
+      <Route path="*" element={<Navigate to="/main" replace />} />
     </Routes>
   );
 };
