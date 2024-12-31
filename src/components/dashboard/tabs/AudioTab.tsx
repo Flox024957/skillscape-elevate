@@ -1,21 +1,20 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Mic, Play } from "lucide-react";
 import AudioPlayer from "@/components/dashboard/AudioPlayer";
 import { SkillsSection } from "./audio/SkillsSection";
 import { FiltersSection } from "./audio/FiltersSection";
 import { PlaylistSection } from "./audio/PlaylistSection";
+import { RecordingSection } from "../audio/RecordingSection";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const AudioTab = () => {
   const [selectedContent, setSelectedContent] = useState("");
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
-  const [isRecording, setIsRecording] = useState(false);
   const [currentPlaylistIndex, setCurrentPlaylistIndex] = useState(-1);
   const [filters, setFilters] = useState({
     userSkillsOnly: false,
@@ -80,70 +79,70 @@ const AudioTab = () => {
     }
   };
 
-  const toggleRecording = () => {
-    setIsRecording(!isRecording);
-  };
-
   return (
     <Card className="bg-[#0A1E3D]/40 border-[#1E3D7B]/30 backdrop-blur-xl">
       <CardHeader>
-        <CardTitle className="flex items-center justify-between text-[#E5DEFF]">
-          <span>Lecteur Audio</span>
-          <Button 
-            variant={isRecording ? "destructive" : "outline"}
-            size="sm"
-            onClick={toggleRecording}
-            className="bg-[#1E3D7B]/20 border-[#1E3D7B]/30 hover:bg-[#1E3D7B]/40"
-          >
-            <Mic className="w-4 h-4 mr-2" />
-            {isRecording ? "Arrêter" : "Enregistrer"}
-          </Button>
-        </CardTitle>
+        <CardTitle className="text-[#E5DEFF]">Lecteur Audio</CardTitle>
       </CardHeader>
       <CardContent className={cn(
         "space-y-6",
         isMobile && "px-2"
       )}>
-        <div className={cn(
-          "grid gap-6",
-          isMobile ? "grid-cols-1" : "grid-cols-2"
-        )}>
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-[#E5DEFF]">Compétences disponibles</h3>
-            <ScrollArea className={cn(
-              "rounded-md border border-[#1E3D7B]/30 bg-[#1E3D7B]/10 p-4",
-              isMobile ? "h-[600px]" : "h-full min-h-[800px]"
+        <Tabs defaultValue="skills" className="space-y-6">
+          <TabsList>
+            <TabsTrigger value="skills">Compétences</TabsTrigger>
+            <TabsTrigger value="recordings">Enregistrements</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="skills">
+            <div className={cn(
+              "grid gap-6",
+              isMobile ? "grid-cols-1" : "grid-cols-2"
             )}>
-              <SkillsSection
-                onContentSelect={handleContentSelect}
-                onSkillSelect={handleSkillSelect}
-                selectedSkills={selectedSkills}
-                filters={filters}
-              />
-            </ScrollArea>
-          </div>
-          
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-[#E5DEFF]">Lecture</h3>
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-[#E5DEFF]">Compétences disponibles</h3>
+                <ScrollArea className={cn(
+                  "rounded-md border border-[#1E3D7B]/30 bg-[#1E3D7B]/10 p-4",
+                  isMobile ? "h-[600px]" : "h-full min-h-[800px]"
+                )}>
+                  <SkillsSection
+                    onContentSelect={handleContentSelect}
+                    onSkillSelect={handleSkillSelect}
+                    selectedSkills={selectedSkills}
+                    filters={filters}
+                  />
+                </ScrollArea>
+              </div>
+              
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-[#E5DEFF]">Lecture</h3>
+                <Card className="bg-[#1E3D7B]/20 border-[#1E3D7B]/30 p-4">
+                  <AudioPlayer 
+                    selectedContent={selectedContent}
+                    onContentSelect={handleContentSelect}
+                    playbackSpeed={filters.playbackSpeed}
+                    playlist={currentPlaylist?.skills}
+                    currentPlaylistIndex={currentPlaylistIndex}
+                    onPlaylistIndexChange={handlePlaylistIndexChange}
+                  />
+                </Card>
+
+                <PlaylistSection />
+
+                <FiltersSection
+                  filters={filters}
+                  onFilterChange={handleFilterChange}
+                />
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="recordings">
             <Card className="bg-[#1E3D7B]/20 border-[#1E3D7B]/30 p-4">
-              <AudioPlayer 
-                selectedContent={selectedContent}
-                onContentSelect={handleContentSelect}
-                playbackSpeed={filters.playbackSpeed}
-                playlist={currentPlaylist?.skills}
-                currentPlaylistIndex={currentPlaylistIndex}
-                onPlaylistIndexChange={handlePlaylistIndexChange}
-              />
+              <RecordingSection />
             </Card>
-
-            <PlaylistSection />
-
-            <FiltersSection
-              filters={filters}
-              onFilterChange={handleFilterChange}
-            />
-          </div>
-        </div>
+          </TabsContent>
+        </Tabs>
       </CardContent>
     </Card>
   );
