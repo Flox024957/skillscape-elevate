@@ -6,13 +6,23 @@ interface PlaybackControlsProps {
   selectedContent: string;
   onPlay: () => void;
   onRandomPlay: () => void;
+  onPrevious: () => void;
+  onNext: () => void;
+  hasPlaylist: boolean;
+  isFirst: boolean;
+  isLast: boolean;
 }
 
 const PlaybackControls = ({ 
   isPlaying, 
   selectedContent, 
   onPlay, 
-  onRandomPlay 
+  onRandomPlay,
+  onPrevious,
+  onNext,
+  hasPlaylist,
+  isFirst,
+  isLast
 }: PlaybackControlsProps) => {
   return (
     <div className="flex justify-center gap-2">
@@ -21,6 +31,7 @@ const PlaybackControls = ({
         variant="outline"
         onClick={onRandomPlay}
         className="w-10 h-10 bg-[#1E3D7B]/20 border-[#1E3D7B]/30 hover:bg-[#1E3D7B]/40"
+        disabled={!hasPlaylist}
       >
         <Shuffle className="w-4 h-4 text-[#E5DEFF]" />
       </Button>
@@ -28,7 +39,8 @@ const PlaybackControls = ({
         size="icon"
         variant="outline"
         className="w-10 h-10 bg-[#1E3D7B]/20 border-[#1E3D7B]/30 hover:bg-[#1E3D7B]/40"
-        disabled={!selectedContent}
+        disabled={!hasPlaylist || isFirst}
+        onClick={onPrevious}
       >
         <SkipBack className="w-4 h-4 text-[#E5DEFF]" />
       </Button>
@@ -44,7 +56,8 @@ const PlaybackControls = ({
         size="icon"
         variant="outline"
         className="w-10 h-10 bg-[#1E3D7B]/20 border-[#1E3D7B]/30 hover:bg-[#1E3D7B]/40"
-        disabled={!selectedContent}
+        disabled={!hasPlaylist || isLast}
+        onClick={onNext}
       >
         <SkipForward className="w-4 h-4 text-[#E5DEFF]" />
       </Button>

@@ -11,9 +11,19 @@ interface AudioPlayerProps {
   selectedContent: string;
   onContentSelect: (content: string) => void;
   playbackSpeed: number;
+  playlist?: { id: string; titre: string; resume: string }[];
+  currentPlaylistIndex?: number;
+  onPlaylistIndexChange?: (index: number) => void;
 }
 
-const AudioPlayer = ({ selectedContent, onContentSelect, playbackSpeed = 1 }: AudioPlayerProps) => {
+const AudioPlayer = ({ 
+  selectedContent, 
+  onContentSelect, 
+  playbackSpeed = 1,
+  playlist = [],
+  currentPlaylistIndex = -1,
+  onPlaylistIndexChange
+}: AudioPlayerProps) => {
   const [randomMode, setRandomMode] = useState(false);
   const {
     isPlaying,
@@ -26,11 +36,31 @@ const AudioPlayer = ({ selectedContent, onContentSelect, playbackSpeed = 1 }: Au
     handlePlay,
     handleVolumeChange,
     formatTime,
-  } = useAudioPlayer(selectedContent, playbackSpeed);
+    onEnd
+  } = useAudioPlayer(selectedContent, playbackSpeed, () => {
+    if (playlist.length > 0 && currentPlaylistIndex < playlist.length - 1 && onPlaylistIndexChange) {
+      onPlaylistIndexChange(currentPlaylistIndex + 1);
+    }
+  });
 
   const handleRandomPlay = () => {
     setRandomMode(!randomMode);
-    // Implement random play logic here
+    if (!randomMode && playlist.length > 0 && onPlaylistIndexChange) {
+      const randomIndex = Math.floor(Math.random() * playlist.length);
+      onPlaylistIndexChange(randomIndex);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentPlaylistIndex > 0 && onPlaylistIndexChange) {
+      onPlaylistIndexChange(currentPlaylistIndex - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentPlaylistIndex < playlist.length - 1 && onPlaylistIndexChange) {
+      onPlaylistIndexChange(currentPlaylistIndex + 1);
+    }
   };
 
   return (
@@ -60,6 +90,11 @@ const AudioPlayer = ({ selectedContent, onContentSelect, playbackSpeed = 1 }: Au
             selectedContent={selectedContent}
             onPlay={handlePlay}
             onRandomPlay={handleRandomPlay}
+            onPrevious={handlePrevious}
+            onNext={handleNext}
+            hasPlaylist={playlist.length > 0}
+            isFirst={currentPlaylistIndex === 0}
+            isLast={currentPlaylistIndex === playlist.length - 1}
           />
           <div className="flex items-center gap-2 w-full md:w-auto">
             <span className="text-sm whitespace-nowrap">Vitesse : {playbackSpeed}x</span>

@@ -9,11 +9,14 @@ import { PlaylistSection } from "./audio/PlaylistSection";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const AudioTab = () => {
   const [selectedContent, setSelectedContent] = useState("");
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [isRecording, setIsRecording] = useState(false);
+  const [currentPlaylistIndex, setCurrentPlaylistIndex] = useState(-1);
   const [filters, setFilters] = useState({
     userSkillsOnly: false,
     includeMastered: false,
@@ -21,6 +24,24 @@ const AudioTab = () => {
     categoryId: undefined as string | undefined,
   });
   const isMobile = useIsMobile();
+
+  const { data: currentPlaylist } = useQuery({
+    queryKey: ['current-playlist'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+
+      const { data: playlist, error } = await supabase
+        .from('skill_playlists')
+        .select('*, skills:skills(*)')
+        .eq('user_id', user.id)
+        .eq('name', 'Lecture en cours')
+        .single();
+
+      if (error && error.code !== 'PGRST116') throw error;
+      return playlist;
+    },
+  });
 
   const handleContentSelect = (content: string) => {
     setSelectedContent(content);
@@ -40,6 +61,13 @@ const AudioTab = () => {
       ...prev,
       [key]: value,
     }));
+  };
+
+  const handlePlaylistIndexChange = (index: number) => {
+    setCurrentPlaylistIndex(index);
+    if (currentPlaylist?.skills?.[index]) {
+      setSelectedContent(currentPlaylist.skills[index].resume);
+    }
   };
 
   const toggleRecording = () => {
@@ -92,6 +120,9 @@ const AudioTab = () => {
                 selectedContent={selectedContent}
                 onContentSelect={handleContentSelect}
                 playbackSpeed={filters.playbackSpeed}
+                playlist={currentPlaylist?.skills}
+                currentPlaylistIndex={currentPlaylistIndex}
+                onPlaylistIndexChange={handlePlaylistIndexChange}
               />
             </Card>
 

@@ -1,7 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
 
-export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 1) => {
+export const useAudioPlayer = (
+  selectedContent: string, 
+  playbackSpeed: number = 1,
+  onEnd?: () => void
+) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedVoice, setSelectedVoice] = useState("");
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
@@ -82,6 +86,9 @@ export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 
       if (progressInterval.current) {
         clearInterval(progressInterval.current);
       }
+      if (onEnd) {
+        onEnd();
+      }
     };
 
     utterance.onerror = (event) => {
@@ -125,5 +132,6 @@ export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 
     handlePlay,
     handleVolumeChange,
     formatTime,
+    onEnd
   };
 };
