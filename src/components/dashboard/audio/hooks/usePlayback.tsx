@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useSkillPlayback } from '@/hooks/useSkillPlayback';
 
 export const usePlayback = (
