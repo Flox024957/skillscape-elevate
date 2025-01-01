@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import PlaylistSelector from "../PlaylistSelector";
-import AudioPlayer from "../AudioPlayer";
+import AudioPlayer from "../../AudioPlayer";
 import { usePlaylist } from "../usePlaylist";
 import { useState } from "react";
 import { toast } from "sonner";
