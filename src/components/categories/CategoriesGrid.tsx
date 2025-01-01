@@ -3,7 +3,7 @@ import { CategoryCard } from "./CategoryCard";
 import { getCategoryImage, getImagePosition } from "@/utils/categoryUtils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
-import { Category, Skill } from "@/components/dashboard/audio/types";
+import { Category } from "@/components/dashboard/audio/types";
 
 interface CategoriesGridProps {
   categories: Category[];
