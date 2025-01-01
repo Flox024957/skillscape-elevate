@@ -18,13 +18,20 @@ const VoiceSelector = ({ selectedVoice, voices, onVoiceChange }: VoiceSelectorPr
       value={selectedVoice}
       onValueChange={onVoiceChange}
     >
-      <SelectTrigger className="w-[200px]">
+      <SelectTrigger className="w-[280px]">
         <SelectValue placeholder="Sélectionner une voix" />
       </SelectTrigger>
       <SelectContent>
         {voices.map((voice) => (
-          <SelectItem key={voice.name} value={voice.name}>
-            {voice.name} ({voice.lang})
+          <SelectItem 
+            key={voice.name} 
+            value={voice.name}
+            className="flex items-center space-x-2"
+          >
+            <span>
+              {voice.name} ({voice.lang})
+              {voice.localService && " - Local"}
+            </span>
           </SelectItem>
         ))}
       </SelectContent>
