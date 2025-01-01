@@ -35,7 +35,6 @@ const PlaylistSelector = ({ currentPlaylist, onPlaylistSelect }: PlaylistSelecto
           <SelectValue placeholder="Sélectionner une playlist" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="current">Lecture en cours</SelectItem>
           {playlists?.map((playlist) => (
             <SelectItem key={playlist.id} value={playlist.id}>
               {playlist.name}

@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 1) => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -9,12 +11,38 @@ export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [currentPlaylist, setCurrentPlaylist] = useState<string | null>(null);
-  const [currentPlaylistContent, setCurrentPlaylistContent] = useState<string[]>([]);
-  const [currentContentIndex, setCurrentContentIndex] = useState(0);
   const { toast } = useToast();
   const speechSynthesis = window.speechSynthesis;
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const progressInterval = useRef<number>();
+
+  // Fetch playlist content when currentPlaylist changes
+  const { data: playlistContent } = useQuery({
+    queryKey: ['playlist-content', currentPlaylist],
+    queryFn: async () => {
+      if (!currentPlaylist) return [];
+
+      const { data: playlist, error } = await supabase
+        .from('skill_playlists')
+        .select('skills')
+        .eq('id', currentPlaylist)
+        .single();
+
+      if (error) throw error;
+
+      if (!playlist?.skills?.length) return [];
+
+      const { data: skills, error: skillsError } = await supabase
+        .from('skills')
+        .select('titre')
+        .in('id', playlist.skills);
+
+      if (skillsError) throw skillsError;
+
+      return skills.map(skill => skill.titre);
+    },
+    enabled: !!currentPlaylist,
+  });
 
   useEffect(() => {
     const loadVoices = () => {
@@ -44,13 +72,6 @@ export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 
       utteranceRef.current.rate = playbackSpeed;
     }
   }, [playbackSpeed]);
-
-  const playNextContent = () => {
-    if (currentContentIndex < currentPlaylistContent.length - 1) {
-      setCurrentContentIndex(prev => prev + 1);
-      handlePlay(currentPlaylistContent[currentContentIndex + 1]);
-    }
-  };
 
   const handlePlay = (content?: string) => {
     const textToSpeak = content || selectedContent;
@@ -94,7 +115,14 @@ export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 
       if (progressInterval.current) {
         clearInterval(progressInterval.current);
       }
-      playNextContent();
+
+      // Play next content in playlist if available
+      if (currentPlaylist && playlistContent && playlistContent.length > 0) {
+        const currentIndex = playlistContent.indexOf(textToSpeak);
+        if (currentIndex < playlistContent.length - 1) {
+          handlePlay(playlistContent[currentIndex + 1]);
+        }
+      }
     };
 
     utterance.onerror = (event) => {
