@@ -1,32 +1,100 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { SkillLibrary } from "@/components/dashboard/audio/library/SkillLibrary";
+import { CategoryList } from "@/components/dashboard/audio/categories/CategoryList";
 import { PlaylistManager } from "@/components/dashboard/audio/playlist/PlaylistManager";
-import AudioPlayer from "@/components/dashboard/AudioPlayer";
-import { usePlaylist } from "@/components/dashboard/audio/usePlaylist";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const AudioPage = () => {
-  const [selectedPlaylist, setSelectedPlaylist] = useState<string | null>(null);
-  const [selectedSkillIndex, setSelectedSkillIndex] = useState(0);
-  const { data: currentPlaylist, isLoading } = usePlaylist(selectedPlaylist);
+  const handleAddSkillToCurrentPlaylist = async (skillId: string) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast.error("Vous devez être connecté pour ajouter à la playlist");
+      return;
+    }
 
-  const handleSkillChange = (index: number) => {
-    if (currentPlaylist?.skills && index < currentPlaylist.skills.length) {
-      setSelectedSkillIndex(index);
+    const { data: currentPlaylist } = await supabase
+      .from('skill_playlists')
+      .select()
+      .eq('user_id', user.id)
+      .eq('name', 'Lecture en cours')
+      .single();
+
+    if (currentPlaylist) {
+      const updatedSkills = [...(currentPlaylist.skills || []), skillId];
+      const { error } = await supabase
+        .from('skill_playlists')
+        .update({
+          skills: updatedSkills,
+          skill_order: [...(currentPlaylist.skill_order || []), updatedSkills.length - 1]
+        })
+        .eq('id', currentPlaylist.id);
+
+      if (error) {
+        toast.error("Erreur lors de l'ajout à la playlist");
+        return;
+      }
+    } else {
+      const { error } = await supabase
+        .from('skill_playlists')
+        .insert([{
+          user_id: user.id,
+          name: 'Lecture en cours',
+          skills: [skillId],
+          skill_order: [0]
+        }]);
+
+      if (error) {
+        toast.error("Erreur lors de la création de la playlist");
+        return;
+      }
     }
   };
 
-  const handlePlaylistChange = (playlistId: string) => {
-    setSelectedPlaylist(playlistId);
-    setSelectedSkillIndex(0);
-    toast.success("Playlist sélectionnée");
-  };
+  const handleAddCategoryToCurrentPlaylist = async (skillIds: string[]) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast.error("Vous devez être connecté pour ajouter à la playlist");
+      return;
+    }
 
-  const currentSkill = currentPlaylist?.skills?.[selectedSkillIndex];
-  const selectedContent = currentSkill ? `${currentSkill.titre}. ${currentSkill.resume}` : "";
+    const { data: currentPlaylist } = await supabase
+      .from('skill_playlists')
+      .select()
+      .eq('user_id', user.id)
+      .eq('name', 'Lecture en cours')
+      .single();
+
+    if (currentPlaylist) {
+      const updatedSkills = [...(currentPlaylist.skills || []), ...skillIds];
+      const { error } = await supabase
+        .from('skill_playlists')
+        .update({
+          skills: updatedSkills,
+          skill_order: Array.from({ length: updatedSkills.length }, (_, i) => i)
+        })
+        .eq('id', currentPlaylist.id);
+
+      if (error) {
+        toast.error("Erreur lors de l'ajout à la playlist");
+        return;
+      }
+    } else {
+      const { error } = await supabase
+        .from('skill_playlists')
+        .insert([{
+          user_id: user.id,
+          name: 'Lecture en cours',
+          skills: skillIds,
+          skill_order: Array.from({ length: skillIds.length }, (_, i) => i)
+        }]);
+
+      if (error) {
+        toast.error("Erreur lors de la création de la playlist");
+        return;
+      }
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-background">
@@ -43,46 +111,14 @@ const AudioPage = () => {
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card className="p-6">
-              <Tabs defaultValue="skills" className="w-full space-y-6">
-                <TabsList>
-                  <TabsTrigger value="skills">Bibliothèque</TabsTrigger>
-                  <TabsTrigger value="playlist">Playlist</TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="skills" className="space-y-4">
-                  <SkillLibrary 
-                    onContentSelect={() => {}}
-                    onSkillSelect={() => {}}
-                    selectedSkills={currentPlaylist?.skills?.map(s => s.id) || []}
-                  />
-                </TabsContent>
-
-                <TabsContent value="playlist" className="space-y-4">
-                  <PlaylistManager />
-                </TabsContent>
-              </Tabs>
+              <h2 className="text-xl font-semibold mb-4">Bibliothèque</h2>
+              <CategoryList
+                onSkillSelect={handleAddSkillToCurrentPlaylist}
+                onCategorySelect={handleAddCategoryToCurrentPlaylist}
+              />
             </Card>
 
-            <Card className="p-6">
-              {isLoading ? (
-                <div className="text-center py-4 text-muted-foreground">
-                  Chargement de la playlist...
-                </div>
-              ) : currentPlaylist ? (
-                <AudioPlayer
-                  selectedContent={selectedContent}
-                  onContentSelect={() => {}}
-                  playbackSpeed={1}
-                  skills={currentPlaylist.skills}
-                  selectedSkillIndex={selectedSkillIndex}
-                  onSkillChange={handleSkillChange}
-                />
-              ) : (
-                <div className="text-center py-4 text-muted-foreground">
-                  Sélectionnez une playlist pour commencer
-                </div>
-              )}
-            </Card>
+            <PlaylistManager />
           </div>
         </motion.div>
       </div>
