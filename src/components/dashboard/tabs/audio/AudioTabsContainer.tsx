@@ -41,7 +41,7 @@ const AudioTabsContainer = () => {
           )}
         >
           <User className="h-4 w-4" />
-          <span className="text-xs">Compétences</span>
+          <span className={cn("text-xs", isMobile && "sr-only")}>Compétences</span>
         </TabsTrigger>
         <TabsTrigger
           value="playback"
@@ -52,7 +52,7 @@ const AudioTabsContainer = () => {
           )}
         >
           <Headphones className="h-4 w-4" />
-          <span className="text-xs">Lecture</span>
+          <span className={cn("text-xs", isMobile && "sr-only")}>Lecture</span>
         </TabsTrigger>
         <TabsTrigger
           value="playlists"
@@ -63,7 +63,7 @@ const AudioTabsContainer = () => {
           )}
         >
           <Music className="h-4 w-4" />
-          <span className="text-xs">Playlists</span>
+          <span className={cn("text-xs", isMobile && "sr-only")}>Playlists</span>
         </TabsTrigger>
         <TabsTrigger
           value="filters"
@@ -74,7 +74,7 @@ const AudioTabsContainer = () => {
           )}
         >
           <Settings className="h-4 w-4" />
-          <span className="text-xs">Paramètres</span>
+          <span className={cn("text-xs", isMobile && "sr-only")}>Paramètres</span>
         </TabsTrigger>
         <TabsTrigger
           value="recordings"
@@ -85,7 +85,7 @@ const AudioTabsContainer = () => {
           )}
         >
           <List className="h-4 w-4" />
-          <span className="text-xs">Enregistrements</span>
+          <span className={cn("text-xs", isMobile && "sr-only")}>Enregistrements</span>
         </TabsTrigger>
       </TabsList>
 
