@@ -14,6 +14,8 @@ const CategoryPage = () => {
   const { data: category, isLoading } = useQuery({
     queryKey: ['category', id],
     queryFn: async () => {
+      if (!id) throw new Error('Category ID is required');
+      
       const { data, error } = await supabase
         .from('categories')
         .select(`
@@ -28,11 +30,16 @@ const CategoryPage = () => {
           )
         `)
         .eq('id', id)
-        .single();
+        .maybeSingle();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching category:', error);
+        throw error;
+      }
+      
       return data;
     },
+    enabled: !!id,
   });
 
   if (isLoading) {
