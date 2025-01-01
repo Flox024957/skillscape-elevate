@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAudioPlayer } from "./audio/useAudioPlayer";
 import PlaybackControls from "./audio/PlaybackControls";
@@ -7,6 +7,8 @@ import ProgressBar from "./audio/ProgressBar";
 import VoiceSelector from "./audio/VoiceSelector";
 import { Slider } from "@/components/ui/slider";
 import PlaylistSelector from "./audio/playlist/PlaylistSelector";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 interface AudioPlayerProps {
   selectedContent: string;
@@ -16,6 +18,26 @@ interface AudioPlayerProps {
 
 const AudioPlayer = ({ selectedContent, onContentSelect, playbackSpeed = 1 }: AudioPlayerProps) => {
   const [randomMode, setRandomMode] = useState(false);
+  
+  // Récupérer la playlist "lecture en cours"
+  const { data: currentPlaylistId } = useQuery({
+    queryKey: ['default-playlist'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+
+      const { data: playlists, error } = await supabase
+        .from('skill_playlists')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('name', 'Lecture en cours')
+        .single();
+
+      if (error) throw error;
+      return playlists?.id;
+    },
+  });
+
   const {
     isPlaying,
     selectedVoice,
@@ -30,6 +52,13 @@ const AudioPlayer = ({ selectedContent, onContentSelect, playbackSpeed = 1 }: Au
     currentPlaylist,
     setCurrentPlaylist,
   } = useAudioPlayer(selectedContent, playbackSpeed);
+
+  // Sélectionner automatiquement la playlist "lecture en cours"
+  useEffect(() => {
+    if (currentPlaylistId && !currentPlaylist) {
+      setCurrentPlaylist(currentPlaylistId);
+    }
+  }, [currentPlaylistId, currentPlaylist, setCurrentPlaylist]);
 
   const handleRandomPlay = () => {
     setRandomMode(!randomMode);

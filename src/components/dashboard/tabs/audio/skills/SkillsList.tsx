@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Play, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
@@ -25,7 +25,7 @@ interface SkillsListProps {
   onContentSelect: (content: string) => void;
 }
 
-export const SkillsList = ({ skills, onContentSelect }: SkillsListProps) => {
+export const SkillsList = ({ skills }: SkillsListProps) => {
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -110,14 +110,6 @@ export const SkillsList = ({ skills, onContentSelect }: SkillsListProps) => {
               className="hover:bg-primary/10"
             >
               <Plus className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => onContentSelect(skill.resume || skill.titre)}
-              className="hover:bg-primary/10"
-            >
-              <Play className="h-4 w-4" />
             </Button>
           </div>
         </div>

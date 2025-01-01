@@ -9,6 +9,7 @@ export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [currentPlaylist, setCurrentPlaylist] = useState<string | null>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const progressInterval = useRef<number>();
 
   const { selectedVoice, voices, setSelectedVoice } = useVoices();
@@ -21,23 +22,27 @@ export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 
   );
 
   const handlePlay = (content?: string) => {
-    const textToSpeak = content || selectedContent;
-    
-    if (!textToSpeak) {
-      toast({
-        title: "Aucun contenu sélectionné",
-        description: "Veuillez sélectionner du contenu à lire",
-        variant: "destructive",
-      });
-      return;
-    }
-
     if (isPlaying) {
       speechSynthesis.pause();
       setIsPlaying(false);
       if (progressInterval.current) {
         clearInterval(progressInterval.current);
       }
+      return;
+    }
+
+    let textToSpeak = content;
+
+    if (!textToSpeak && playlistContent && playlistContent.length > 0) {
+      textToSpeak = playlistContent[currentIndex];
+    }
+    
+    if (!textToSpeak) {
+      toast({
+        title: "Aucun contenu sélectionné",
+        description: "Veuillez sélectionner du contenu à lire ou une playlist",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -57,11 +62,12 @@ export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 
         clearInterval(progressInterval.current);
       }
 
-      if (currentPlaylist && playlistContent && playlistContent.length > 0) {
-        const currentIndex = playlistContent.indexOf(textToSpeak);
-        if (currentIndex < playlistContent.length - 1) {
-          handlePlay(playlistContent[currentIndex + 1]);
-        }
+      // Passer au contenu suivant de la playlist
+      if (playlistContent && currentIndex < playlistContent.length - 1) {
+        setCurrentIndex(currentIndex + 1);
+        handlePlay(playlistContent[currentIndex + 1]);
+      } else {
+        setCurrentIndex(0);
       }
     };
 
