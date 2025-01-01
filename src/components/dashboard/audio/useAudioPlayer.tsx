@@ -12,7 +12,7 @@ export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 
     duration,
     handlePlay,
     utteranceRef,
-  } = usePlayback(playbackSpeed, volume, selectedVoice, voices);
+  } = usePlayback(playbackSpeed, volume, selectedVoice, voices, selectedContent);
 
   const handleVolumeChange = (value: number[]) => {
     const newVolume = value[0];

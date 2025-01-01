@@ -13,11 +13,50 @@ export const usePlayback = (
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentSection, setCurrentSection] = useState(0);
   const progressInterval = useRef<number>();
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const { toast } = useToast();
   const speechSynthesis = window.speechSynthesis;
   const { data: playlistContent = [] } = usePlaylistContent(currentPlaylist);
+
+  const getSectionContent = (skill: any, section: number) => {
+    switch (section) {
+      case 0:
+        return `Résumé : ${skill.resume}`;
+      case 1:
+        return `Description : ${skill.description}`;
+      case 2:
+        return `Action concrète : ${skill.action_concrete}`;
+      case 3:
+        if (skill.exemples && skill.exemples.length > 0) {
+          return `Exemples : ${skill.exemples.join('. ')}`;
+        }
+        return null;
+      default:
+        return null;
+    }
+  };
+
+  const playNext = () => {
+    const currentSkill = playlistContent[currentIndex];
+    const nextSection = getSectionContent(currentSkill, currentSection + 1);
+
+    if (nextSection) {
+      setCurrentSection(prev => prev + 1);
+      handlePlay(nextSection);
+    } else if (currentIndex < playlistContent.length - 1) {
+      setCurrentIndex(prev => prev + 1);
+      setCurrentSection(0);
+      const nextSkill = playlistContent[currentIndex + 1];
+      handlePlay(getSectionContent(nextSkill, 0));
+    } else {
+      setIsPlaying(false);
+      setCurrentIndex(0);
+      setCurrentSection(0);
+      setCurrentTime(0);
+    }
+  };
 
   const createUtterance = (text: string) => {
     const utterance = new SpeechSynthesisUtterance(text);
@@ -28,17 +67,6 @@ export const usePlayback = (
     utterance.volume = volume;
     utterance.rate = playbackSpeed;
     return utterance;
-  };
-
-  const playNext = () => {
-    if (currentIndex < playlistContent.length - 1) {
-      setCurrentIndex(prev => prev + 1);
-      handlePlay(playlistContent[currentIndex + 1]);
-    } else {
-      setIsPlaying(false);
-      setCurrentIndex(0);
-      setCurrentTime(0);
-    }
   };
 
   const handlePlay = (content?: string) => {
@@ -53,7 +81,8 @@ export const usePlayback = (
 
     let textToSpeak = content;
     if (!textToSpeak && playlistContent.length > 0) {
-      textToSpeak = playlistContent[currentIndex];
+      const currentSkill = playlistContent[currentIndex];
+      textToSpeak = getSectionContent(currentSkill, currentSection);
     }
 
     if (!textToSpeak) {
