@@ -51,7 +51,6 @@ export const usePlaylist = (playlistId: string | null) => {
   useEffect(() => {
     if (!playlistId) return;
 
-    // S'abonner aux changements de la playlist
     const channel = supabase
       .channel('playlist_changes')
       .on(
