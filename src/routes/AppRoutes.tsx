@@ -6,24 +6,17 @@ import CategoryPage from "@/pages/CategoryPage";
 import SkillDetailPage from "@/pages/SkillDetailPage";
 import AudioPage from "@/pages/AudioPage";
 import MainPage from "@/pages/MainPage";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
-interface AppRoutesProps {
-  isAuthenticated: boolean;
-}
-
-export const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
+export const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Index />} />
-      <Route 
-        path="/auth" 
-        element={isAuthenticated ? <Navigate to="/main" replace /> : <Auth />} 
-      />
+      <Route path="/auth" element={<Auth />} />
       <Route
         path="/main"
         element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
+          <ProtectedRoute>
             <MainPage />
           </ProtectedRoute>
         }
@@ -34,7 +27,7 @@ export const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
       <Route
         path="/dashboard"
         element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
+          <ProtectedRoute>
             <Dashboard />
           </ProtectedRoute>
         }
