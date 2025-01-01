@@ -3,20 +3,20 @@
 }
 
 .auth-button {
-  @apply bg-violet-500 text-white font-medium py-4 px-6 rounded-xl w-full;
-  background: linear-gradient(to right, rgb(139, 92, 246), rgb(124, 58, 237));
+  @apply bg-sky-500 text-white font-medium py-4 px-6 rounded-xl w-full;
+  background: linear-gradient(to right, rgb(14, 165, 233), rgb(2, 132, 199));
   border: none;
   box-shadow: 
-    0 0 20px rgba(139, 92, 246, 0.2),
-    0 0 40px rgba(139, 92, 246, 0.1);
+    0 0 20px rgba(14, 165, 233, 0.2),
+    0 0 40px rgba(14, 165, 233, 0.1);
   transition: all 0.3s ease;
 }
 
 .auth-button:hover {
-  background: linear-gradient(to right, rgb(124, 58, 237), rgb(109, 40, 217));
+  background: linear-gradient(to right, rgb(2, 132, 199), rgb(3, 105, 161));
   box-shadow: 
-    0 0 30px rgba(139, 92, 246, 0.3),
-    0 0 60px rgba(139, 92, 246, 0.2);
+    0 0 30px rgba(14, 165, 233, 0.3),
+    0 0 60px rgba(14, 165, 233, 0.2);
   transform: translateY(-1px);
 }
 
@@ -28,17 +28,17 @@
 
 .auth-input {
   @apply bg-card/50 backdrop-blur-xl text-white rounded-xl px-6 py-4 w-full transition-all duration-300;
-  border: 2px solid rgba(139, 92, 246, 0.3);
+  border: 2px solid rgba(14, 165, 233, 0.3);
   box-shadow: 
-    0 0 20px rgba(139, 92, 246, 0.1),
-    inset 0 0 20px rgba(139, 92, 246, 0.05);
+    0 0 20px rgba(14, 165, 233, 0.1),
+    inset 0 0 20px rgba(14, 165, 233, 0.05);
 }
 
 .auth-input:focus {
-  border-color: rgba(139, 92, 246, 0.8);
+  border-color: rgba(14, 165, 233, 0.8);
   box-shadow: 
-    0 0 30px rgba(139, 92, 246, 0.2),
-    inset 0 0 30px rgba(139, 92, 246, 0.1);
+    0 0 30px rgba(14, 165, 233, 0.2),
+    inset 0 0 30px rgba(14, 165, 233, 0.1);
   outline: none;
 }
 
@@ -53,19 +53,19 @@
 }
 
 .auth-loader {
-  border-top-color: rgb(139, 92, 246);
+  border-top-color: rgb(14, 165, 233);
 }
 
 @keyframes glow {
   0%, 100% {
     text-shadow: 
-      0 0 20px rgba(139, 92, 246, 0.5),
-      0 0 40px rgba(139, 92, 246, 0.3);
+      0 0 20px rgba(14, 165, 233, 0.5),
+      0 0 40px rgba(14, 165, 233, 0.3);
   }
   50% {
     text-shadow: 
-      0 0 30px rgba(139, 92, 246, 0.7),
-      0 0 60px rgba(139, 92, 246, 0.4);
+      0 0 30px rgba(14, 165, 233, 0.7),
+      0 0 60px rgba(14, 165, 233, 0.4);
   }
 }
 

@@ -19,14 +19,14 @@ export const AuthForm = () => {
       if (error) {
         if (error.message.includes('Invalid login credentials')) {
           toast({
-            title: "Demo Account Not Available",
-            description: "Please ask your administrator to set up the demo account.",
+            title: "Compte de démonstration non disponible",
+            description: "Veuillez contacter l'administrateur pour configurer le compte de démonstration.",
             variant: "destructive",
           });
         } else {
           toast({
-            title: "Error",
-            description: "Could not access demo account. Please try again later.",
+            title: "Erreur",
+            description: "Impossible d'accéder au compte de démonstration. Veuillez réessayer plus tard.",
             variant: "destructive",
           });
         }
@@ -36,16 +36,16 @@ export const AuthForm = () => {
       
       if (session) {
         toast({
-          title: "Success",
-          description: "Welcome to the demo account!",
+          title: "Succès",
+          description: "Bienvenue sur le compte de démonstration !",
         });
         navigate('/main');
       }
     } catch (error) {
       console.error('Demo login error:', error);
       toast({
-        title: "Error",
-        description: "An unexpected error occurred. Please try again.",
+        title: "Erreur",
+        description: "Une erreur inattendue s'est produite. Veuillez réessayer.",
         variant: "destructive",
       });
     }
@@ -60,35 +60,17 @@ export const AuthForm = () => {
           variables: {
             default: {
               colors: {
-                brand: '#8B5CF6',
-                brandAccent: '#7C3AED',
+                brand: '#0EA5E9',
+                brandAccent: '#0284C7',
                 inputBackground: '#1A1F35',
                 inputText: '#FFFFFF',
-                inputBorder: '#8B5CF680',
-                inputBorderFocus: '#8B5CF6',
-                inputBorderHover: '#8B5CF6',
-                defaultButtonBackground: '#8B5CF6',
-                defaultButtonBackgroundHover: '#7C3AED',
+                inputBorder: '#0EA5E980',
+                inputBorderFocus: '#0EA5E9',
+                inputBorderHover: '#0EA5E9',
+                defaultButtonBackground: '#0EA5E9',
+                defaultButtonBackgroundHover: '#0284C7',
                 defaultButtonBorder: 'transparent',
                 defaultButtonText: '#FFFFFF',
-              },
-              space: {
-                inputPadding: '16px',
-                buttonPadding: '16px',
-              },
-              borderWidths: {
-                buttonBorderWidth: '1px',
-                inputBorderWidth: '2px',
-              },
-              radii: {
-                borderRadiusButton: '12px',
-                buttonBorderRadius: '12px',
-                inputBorderRadius: '12px',
-              },
-              fonts: {
-                bodyFontFamily: `ui-rounded, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif`,
-                buttonFontFamily: `ui-rounded, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif`,
-                inputFontFamily: `ui-rounded, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif`,
               },
             },
           },
@@ -100,6 +82,7 @@ export const AuthForm = () => {
             loader: 'auth-loader border-t-2 border-white',
           },
         }}
+        providers={[]}
       />
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
@@ -107,15 +90,15 @@ export const AuthForm = () => {
         </div>
         <div className="relative flex justify-center text-xs uppercase">
           <span className="bg-background px-2 text-muted-foreground">
-            Try the demo account
+            Essayer le compte de démonstration
           </span>
         </div>
       </div>
       <Button 
         onClick={handleDemoLogin}
-        className="w-full bg-gradient-to-r from-violet-500 to-violet-600 hover:from-violet-600 hover:to-violet-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+        className="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
       >
-        Access Demo Account
+        Accéder au compte de démonstration
       </Button>
     </div>
   );

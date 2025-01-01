@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
@@ -9,25 +9,53 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useQuery } from "@tanstack/react-query";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown } from "lucide-react";
-
-interface Skill {
-  id: string;
-  titre: string;
-  resume: string;
-  description: string;
-  action_concrete: string;
-  exemples: any[];
-  categories?: {
-    name: string;
-  };
-}
+import { Skill } from "@/types/skill";
+import { motion } from "framer-motion";
 
 interface SkillsListProps {
   skills: Skill[];
 }
+
+const SkillContent = ({ skill }: { skill: Skill }) => {
+  return (
+    <CollapsibleContent className="mt-4 space-y-4">
+      {skill.resume && (
+        <div className="space-y-2">
+          <h5 className="text-sm font-medium">Résumé</h5>
+          <p className="text-sm text-muted-foreground">{skill.resume}</p>
+        </div>
+      )}
+      
+      {skill.description && (
+        <div className="space-y-2">
+          <h5 className="text-sm font-medium">Description</h5>
+          <p className="text-sm text-muted-foreground">{skill.description}</p>
+        </div>
+      )}
+      
+      {skill.action_concrete && (
+        <div className="space-y-2">
+          <h5 className="text-sm font-medium">Action Concrète</h5>
+          <p className="text-sm text-muted-foreground">{skill.action_concrete}</p>
+        </div>
+      )}
+      
+      {skill.exemples && skill.exemples.length > 0 && (
+        <div className="space-y-2">
+          <h5 className="text-sm font-medium">Exemples</h5>
+          <ul className="list-disc list-inside space-y-1">
+            {skill.exemples.map((exemple, index) => (
+              <li key={index} className="text-sm text-muted-foreground">
+                {String(exemple)}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </CollapsibleContent>
+  );
+};
 
 export const SkillsList = ({ skills }: SkillsListProps) => {
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
@@ -77,72 +105,45 @@ export const SkillsList = ({ skills }: SkillsListProps) => {
   return (
     <div className="space-y-4">
       {skills.map((skill, index) => (
-        <Collapsible key={skill.id}>
-          <div className="flex items-start justify-between p-4 bg-card hover:bg-card/80 rounded-lg border border-border group">
-            <div className="flex-1">
-              <CollapsibleTrigger className="flex items-center gap-2 w-full text-left">
-                <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
-                <div>
-                  <h4 className="text-base font-medium group-hover:text-primary transition-colors">
-                    {skill.titre}
-                  </h4>
-                  {skill.categories?.name && (
-                    <span className="text-sm text-muted-foreground">
-                      {skill.categories.name}
-                    </span>
-                  )}
-                </div>
-              </CollapsibleTrigger>
-              
-              <CollapsibleContent className="mt-4 space-y-4">
-                {skill.resume && (
-                  <div className="space-y-2">
-                    <h5 className="text-sm font-medium">Résumé</h5>
-                    <p className="text-sm text-muted-foreground">{skill.resume}</p>
+        <motion.div
+          key={skill.id}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: index * 0.1 }}
+        >
+          <Collapsible>
+            <div className="flex items-start justify-between p-4 bg-card hover:bg-card/80 rounded-lg border border-border group">
+              <div className="flex-1">
+                <CollapsibleTrigger className="flex items-center gap-2 w-full text-left">
+                  <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
+                  <div>
+                    <h4 className="text-base font-medium group-hover:text-primary transition-colors">
+                      {skill.titre}
+                    </h4>
+                    {skill.categories?.name && (
+                      <span className="text-sm text-muted-foreground">
+                        {skill.categories.name}
+                      </span>
+                    )}
                   </div>
-                )}
+                </CollapsibleTrigger>
                 
-                {skill.description && (
-                  <div className="space-y-2">
-                    <h5 className="text-sm font-medium">Description</h5>
-                    <p className="text-sm text-muted-foreground">{skill.description}</p>
-                  </div>
-                )}
-                
-                {skill.action_concrete && (
-                  <div className="space-y-2">
-                    <h5 className="text-sm font-medium">Action Concrète</h5>
-                    <p className="text-sm text-muted-foreground">{skill.action_concrete}</p>
-                  </div>
-                )}
-                
-                {skill.exemples && skill.exemples.length > 0 && (
-                  <div className="space-y-2">
-                    <h5 className="text-sm font-medium">Exemples</h5>
-                    <ul className="list-disc list-inside space-y-1">
-                      {skill.exemples.map((exemple, index) => (
-                        <li key={index} className="text-sm text-muted-foreground">
-                          {String(exemple)}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </CollapsibleContent>
+                <SkillContent skill={skill} />
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  setSelectedSkill(skill);
+                  setIsDialogOpen(true);
+                }}
+                className="hover:bg-primary/10"
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => {
-                setSelectedSkill(skill);
-                setIsDialogOpen(true);
-              }}
-              className="hover:bg-primary/10"
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
-          </div>
-        </Collapsible>
+          </Collapsible>
+        </motion.div>
       ))}
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
