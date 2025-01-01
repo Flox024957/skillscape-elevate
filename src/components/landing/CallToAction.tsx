@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
-const CallToAction = () => {
+export const CallToAction = () => {
   const navigate = useNavigate();
 
   return (
@@ -37,5 +37,3 @@ const CallToAction = () => {
     </motion.div>
   );
 };
-
-export default CallToAction;
