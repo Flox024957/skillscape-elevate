@@ -1,4 +1,5 @@
 import AudioPlayerContainer from "./audio/player/AudioPlayerContainer";
+import { useAudio } from "@/contexts/AudioContext";
 
 interface AudioPlayerProps {
   selectedContent: string;
@@ -7,11 +8,14 @@ interface AudioPlayerProps {
 }
 
 const AudioPlayer = ({ selectedContent, onContentSelect, playbackSpeed }: AudioPlayerProps) => {
+  const audioContext = useAudio();
+
   return (
     <AudioPlayerContainer
       selectedContent={selectedContent}
       onContentSelect={onContentSelect}
       playbackSpeed={playbackSpeed}
+      audioContext={audioContext}
     />
   );
 };

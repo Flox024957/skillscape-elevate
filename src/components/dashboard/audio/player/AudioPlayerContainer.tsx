@@ -1,5 +1,4 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { useAudioPlayer } from "../useAudioPlayer";
 import PlaybackControls from "../PlaybackControls";
 import VolumeControl from "../VolumeControl";
 import ProgressBar from "../ProgressBar";
@@ -9,21 +8,23 @@ import { usePlaylist } from "../hooks/usePlaylist";
 import { Skill } from "@/types/skill";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
 import SpeedControl from "./SpeedControl";
 import ContentDisplay from "./ContentDisplay";
 import { useEffect } from "react";
+import { AudioContextType } from "@/contexts/AudioContext";
 
 interface AudioPlayerContainerProps {
   selectedContent: string;
   onContentSelect: (content: string) => void;
   playbackSpeed: number;
+  audioContext: AudioContextType;
 }
 
 const AudioPlayerContainer = ({ 
   selectedContent, 
   onContentSelect, 
-  playbackSpeed = 1 
+  playbackSpeed = 1,
+  audioContext
 }: AudioPlayerContainerProps) => {
   const isMobile = useIsMobile();
 
@@ -73,13 +74,9 @@ const AudioPlayerContainer = ({
     handleVolumeChange,
     formatTime,
     handleSeek,
-  } = useAudioPlayer(getContentFromTrack(getCurrentTrack()), playbackSpeed, handlePlaybackComplete);
+  } = audioContext;
 
   const handlePlayContent = (content: string) => {
-    if (!selectedVoice) {
-      toast.error("Veuillez sélectionner une voix avant de démarrer la lecture");
-      return;
-    }
     handlePlay(content);
     onContentSelect(content);
   };
@@ -93,19 +90,6 @@ const AudioPlayerContainer = ({
     const previousContent = getContentFromTrack(previousTrack());
     handlePlayContent(previousContent);
   };
-
-  // Gérer les erreurs de synthèse vocale
-  useEffect(() => {
-    const handleVoiceError = () => {
-      toast.error("Erreur de synthèse vocale. Veuillez réessayer.");
-    };
-
-    window.speechSynthesis.addEventListener('error', handleVoiceError);
-
-    return () => {
-      window.speechSynthesis.removeEventListener('error', handleVoiceError);
-    };
-  }, []);
 
   return (
     <Card>
