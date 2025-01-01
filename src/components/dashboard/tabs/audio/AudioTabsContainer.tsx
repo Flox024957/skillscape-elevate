@@ -1,6 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Headphones, List, Music, Settings, User } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 import { SkillsSection } from "./skills/SkillsSection";
 import { PlaybackSection } from "./playback/PlaybackSection";
 import { PlaylistSection } from "./PlaylistSection";
@@ -8,6 +9,19 @@ import { FiltersSection } from "./FiltersSection";
 import VoiceRecordingsSection from "./recordings/VoiceRecordingsSection";
 
 const AudioTabsContainer = () => {
+  const [filters, setFilters] = useState({
+    userSkillsOnly: false,
+    includeMastered: true,
+    playbackSpeed: 1,
+  });
+
+  const handleFilterChange = (key: string, value: any) => {
+    setFilters(prev => ({
+      ...prev,
+      [key]: value
+    }));
+  };
+
   return (
     <Tabs defaultValue="skills" className="w-full">
       <TabsList className="grid grid-cols-5 h-auto gap-4 bg-background p-1">
@@ -77,7 +91,10 @@ const AudioTabsContainer = () => {
         </TabsContent>
 
         <TabsContent value="filters" className="m-0">
-          <FiltersSection />
+          <FiltersSection 
+            filters={filters}
+            onFilterChange={handleFilterChange}
+          />
         </TabsContent>
 
         <TabsContent value="recordings" className="m-0">
