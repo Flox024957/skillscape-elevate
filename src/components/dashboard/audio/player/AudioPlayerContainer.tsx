@@ -1,17 +1,12 @@
 import { Card, CardContent } from "@/components/ui/card";
-import PlaybackControls from "../PlaybackControls";
-import VolumeControl from "../VolumeControl";
-import ProgressBar from "../ProgressBar";
-import VoiceSelector from "../VoiceSelector";
-import PlaylistSelector from "../playlist/PlaylistSelector";
 import { usePlaylist } from "../hooks/usePlaylist";
 import { Skill } from "@/types/skill";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
-import SpeedControl from "./SpeedControl";
 import ContentDisplay from "./ContentDisplay";
-import { useEffect } from "react";
 import { AudioContextType } from "@/contexts/AudioContext";
+import PlaylistSection from "./PlaylistSection";
+import AudioControls from "./AudioControls";
 
 interface AudioPlayerContainerProps {
   selectedContent: string;
@@ -31,7 +26,6 @@ const AudioPlayerContainer = ({
   const {
     currentPlaylist,
     setCurrentPlaylist,
-    playlistContent,
     randomMode,
     nextTrack,
     previousTrack,
@@ -52,13 +46,6 @@ const AudioPlayerContainer = ({
       
       Exemples : ${Array.isArray(track.exemples) ? track.exemples.join(', ') : ''}
     `.trim();
-  };
-
-  const handlePlaybackComplete = () => {
-    const nextContent = getContentFromTrack(nextTrack());
-    if (nextContent) {
-      handlePlayContent(nextContent);
-    }
   };
 
   const {
@@ -97,49 +84,31 @@ const AudioPlayerContainer = ({
         "space-y-4",
         isMobile ? "p-2" : "p-6"
       )}>
-        <PlaylistSelector 
-          currentPlaylist={currentPlaylist} 
+        <PlaylistSection
+          currentPlaylist={currentPlaylist}
           onPlaylistSelect={setCurrentPlaylist}
         />
 
-        <div className={cn(
-          "flex justify-between gap-4",
-          isMobile ? "flex-col" : "flex-row"
-        )}>
-          <VoiceSelector
-            selectedVoice={selectedVoice}
-            voices={voices}
-            onVoiceChange={setSelectedVoice}
-          />
-          <VolumeControl
-            volume={volume}
-            onVolumeChange={handleVolumeChange}
-          />
-        </div>
-
-        <ProgressBar
+        <AudioControls
+          selectedVoice={selectedVoice}
+          voices={voices}
+          volume={volume}
           currentTime={currentTime}
           duration={duration}
-          formatTime={formatTime}
+          isPlaying={isPlaying}
+          isPaused={isPaused}
+          playbackSpeed={playbackSpeed}
+          selectedContent={getContentFromTrack(getCurrentTrack())}
+          onVoiceChange={setSelectedVoice}
+          onVolumeChange={handleVolumeChange}
           onSeek={handleSeek}
+          onPlay={() => handlePlayContent(getContentFromTrack(getCurrentTrack()))}
+          onRandomPlay={toggleRandomMode}
+          onPrevious={handlePrevious}
+          onNext={handleNext}
+          randomMode={randomMode}
+          formatTime={formatTime}
         />
-
-        <div className={cn(
-          "flex items-center justify-between gap-4",
-          isMobile ? "flex-col" : "flex-row"
-        )}>
-          <PlaybackControls
-            isPlaying={isPlaying}
-            isPaused={isPaused}
-            selectedContent={getContentFromTrack(getCurrentTrack())}
-            onPlay={() => handlePlayContent(getContentFromTrack(getCurrentTrack()))}
-            onRandomPlay={toggleRandomMode}
-            onPrevious={handlePrevious}
-            onNext={handleNext}
-            randomMode={randomMode}
-          />
-          <SpeedControl playbackSpeed={playbackSpeed} />
-        </div>
 
         <ContentDisplay content={selectedContent} isMobile={isMobile} />
       </CardContent>

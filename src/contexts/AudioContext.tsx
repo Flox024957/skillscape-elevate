@@ -3,7 +3,7 @@ import { useVoices } from '@/components/dashboard/audio/hooks/useVoices';
 import { usePlayback } from '@/components/dashboard/audio/hooks/usePlayback';
 import { toast } from "sonner";
 
-interface AudioContextType {
+export interface AudioContextType {
   isPlaying: boolean;
   isPaused: boolean;
   selectedVoice: string;
