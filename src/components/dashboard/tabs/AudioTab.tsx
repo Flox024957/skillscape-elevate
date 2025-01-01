@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Mic } from "lucide-react";
 import AudioPlayer from "@/components/dashboard/AudioPlayer";
 import { SkillsSection } from "./audio/SkillsSection";
 import { FiltersSection } from "./audio/FiltersSection";
@@ -14,7 +12,6 @@ import VoiceRecordingsSection from "./audio/recordings/VoiceRecordingsSection";
 const AudioTab = () => {
   const [selectedContent, setSelectedContent] = useState("");
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
-  const [isRecording, setIsRecording] = useState(false);
   const [filters, setFilters] = useState({
     userSkillsOnly: false,
     includeMastered: false,
@@ -43,24 +40,11 @@ const AudioTab = () => {
     }));
   };
 
-  const toggleRecording = () => {
-    setIsRecording(!isRecording);
-  };
-
   return (
     <Card className="bg-[#0A1E3D]/40 border-[#1E3D7B]/30 backdrop-blur-xl">
       <CardHeader>
-        <CardTitle className="flex items-center justify-between text-[#E5DEFF]">
-          <span>Lecteur Audio</span>
-          <Button 
-            variant={isRecording ? "destructive" : "outline"}
-            size="sm"
-            onClick={toggleRecording}
-            className="bg-[#1E3D7B]/20 border-[#1E3D7B]/30 hover:bg-[#1E3D7B]/40"
-          >
-            <Mic className="w-4 h-4 mr-2" />
-            {isRecording ? "Arrêter" : "Enregistrer"}
-          </Button>
+        <CardTitle className="text-[#E5DEFF]">
+          Lecteur Audio
         </CardTitle>
       </CardHeader>
       <CardContent className={cn(
