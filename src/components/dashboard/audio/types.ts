@@ -19,3 +19,11 @@ export interface CurrentPlaylist {
   updated_at: string;
   user_id: string | null;
 }
+
+export interface Category {
+  id: string;
+  name: string;
+  description: string | null;
+  created_at: string;
+  skills: Skill[];
+}

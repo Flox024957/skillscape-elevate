@@ -11,7 +11,7 @@ import { PlaylistItem } from "./PlaylistItem";
 export const PlaylistManager = () => {
   const [selectedPlaylist, setSelectedPlaylist] = useState<string | null>(null);
   const [selectedSkillIndex, setSelectedSkillIndex] = useState(0);
-  const { data: currentPlaylist, isLoading } = usePlaylist(selectedPlaylist);
+  const { data: currentPlaylist, error, isLoading } = usePlaylist(selectedPlaylist);
 
   const handleSkillChange = (index: number) => {
     if (currentPlaylist?.skills && index < currentPlaylist.skills.length) {

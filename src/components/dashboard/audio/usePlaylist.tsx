@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { useEffect } from "react";
 
 export const usePlaylist = (playlistId: string | null) => {
-  const { data: playlist, error, refetch } = useQuery({
+  const { data: playlist, error, isLoading, refetch } = useQuery({
     queryKey: ['playlist', playlistId],
     enabled: !!playlistId,
     queryFn: async () => {
@@ -73,5 +73,5 @@ export const usePlaylist = (playlistId: string | null) => {
     };
   }, [playlistId, refetch]);
 
-  return { data: playlist, error };
+  return { data: playlist, error, isLoading };
 };
