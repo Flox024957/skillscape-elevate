@@ -65,6 +65,9 @@ export const useAudioPlayer = (
       return;
     }
 
+    // Cancel any existing speech
+    speechSynthesis.cancel();
+
     const utterance = new SpeechSynthesisUtterance(selectedContent);
     const selectedVoiceObj = voices.find(voice => voice.name === selectedVoice);
     if (selectedVoiceObj) {

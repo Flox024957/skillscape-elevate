@@ -64,6 +64,11 @@ const AudioPlayer = ({
     }
   };
 
+  const handlePlayClick = () => {
+    if (!selectedContent) return;
+    handlePlay();
+  };
+
   return (
     <Card>
       <CardContent className="space-y-6 p-6">
@@ -89,7 +94,7 @@ const AudioPlayer = ({
           <PlaybackControls
             isPlaying={isPlaying}
             selectedContent={selectedContent}
-            onPlay={handlePlay}
+            onPlay={handlePlayClick}
             onRandomPlay={handleRandomPlay}
             onPrevious={handlePrevious}
             onNext={handleNext}
