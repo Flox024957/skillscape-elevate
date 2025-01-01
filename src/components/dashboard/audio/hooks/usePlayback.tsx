@@ -1,19 +1,23 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
+import { usePlaylistContent } from './usePlaylistContent';
 
 export const usePlayback = (
   playbackSpeed: number,
   volume: number,
   selectedVoice: string,
   voices: SpeechSynthesisVoice[],
+  currentPlaylist: string | null
 ) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const progressInterval = useRef<number>();
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const { toast } = useToast();
   const speechSynthesis = window.speechSynthesis;
+  const { data: playlistContent = [] } = usePlaylistContent(currentPlaylist);
 
   const createUtterance = (text: string) => {
     const utterance = new SpeechSynthesisUtterance(text);
@@ -26,6 +30,17 @@ export const usePlayback = (
     return utterance;
   };
 
+  const playNext = () => {
+    if (currentIndex < playlistContent.length - 1) {
+      setCurrentIndex(prev => prev + 1);
+      handlePlay(playlistContent[currentIndex + 1]);
+    } else {
+      setIsPlaying(false);
+      setCurrentIndex(0);
+      setCurrentTime(0);
+    }
+  };
+
   const handlePlay = (content?: string) => {
     if (isPlaying) {
       speechSynthesis.pause();
@@ -36,7 +51,12 @@ export const usePlayback = (
       return;
     }
 
-    if (!content) {
+    let textToSpeak = content;
+    if (!textToSpeak && playlistContent.length > 0) {
+      textToSpeak = playlistContent[currentIndex];
+    }
+
+    if (!textToSpeak) {
       toast({
         title: "Aucun contenu sélectionné",
         description: "Veuillez sélectionner du contenu à lire",
@@ -45,7 +65,7 @@ export const usePlayback = (
       return;
     }
 
-    const utterance = createUtterance(content);
+    const utterance = createUtterance(textToSpeak);
 
     utterance.onstart = () => {
       setDuration(utterance.text.length * 50);
@@ -55,11 +75,11 @@ export const usePlayback = (
     };
 
     utterance.onend = () => {
-      setIsPlaying(false);
-      setCurrentTime(0);
       if (progressInterval.current) {
         clearInterval(progressInterval.current);
       }
+      setCurrentTime(0);
+      playNext();
     };
 
     utterance.onerror = (event) => {
@@ -70,6 +90,9 @@ export const usePlayback = (
         variant: "destructive",
       });
       setIsPlaying(false);
+      if (progressInterval.current) {
+        clearInterval(progressInterval.current);
+      }
     };
 
     utteranceRef.current = utterance;
@@ -77,10 +100,20 @@ export const usePlayback = (
     setIsPlaying(true);
   };
 
+  useEffect(() => {
+    return () => {
+      if (progressInterval.current) {
+        clearInterval(progressInterval.current);
+      }
+      speechSynthesis.cancel();
+    };
+  }, []);
+
   return {
     isPlaying,
     currentTime,
     duration,
+    currentIndex,
     handlePlay,
     utteranceRef,
     speechSynthesis,

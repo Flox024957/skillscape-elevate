@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Mic, Play } from "lucide-react";
+import { Mic } from "lucide-react";
 import AudioPlayer from "@/components/dashboard/AudioPlayer";
 import { SkillsSection } from "./audio/SkillsSection";
 import { FiltersSection } from "./audio/FiltersSection";
@@ -77,7 +77,6 @@ const AudioTab = () => {
               isMobile ? "h-[600px]" : "h-full min-h-[800px]"
             )}>
               <SkillsSection
-                onContentSelect={handleContentSelect}
                 onSkillSelect={handleSkillSelect}
                 selectedSkills={selectedSkills}
                 filters={filters}
