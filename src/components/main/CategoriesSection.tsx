@@ -4,12 +4,11 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
-import { Category } from "@/components/dashboard/audio/types";
 
 export const CategoriesSection = () => {
   const isMobile = useIsMobile();
   
-  const { data: categories } = useQuery({
+  const { data: categories, isLoading } = useQuery({
     queryKey: ['categories'],
     queryFn: async () => {
       const { data: categoriesData, error: categoriesError } = await supabase
@@ -19,12 +18,7 @@ export const CategoriesSection = () => {
           skills (
             id,
             titre,
-            resume,
-            description,
-            exemples,
-            action_concrete,
-            created_at,
-            updated_at
+            resume
           )
         `)
         .order('name')
@@ -32,16 +26,14 @@ export const CategoriesSection = () => {
       
       if (categoriesError) throw categoriesError;
       
-      return (categoriesData || []).map(category => ({
+      return categoriesData?.map(category => ({
         ...category,
-        skills: (category.skills || []).map(skill => ({
-          ...skill,
-          description: skill.description || skill.resume,
-          exemples: skill.exemples || [],
-          action_concrete: skill.action_concrete || "",
-          category_id: category.id,
+        skills: category.skills?.map(skill => ({
+          id: skill.id,
+          title: skill.titre,
+          summary: skill.resume
         }))
-      })) as Category[];
+      }));
     },
   });
 

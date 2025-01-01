@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { useAudioPlayer } from "./audio/hooks/useAudioPlayer";
+import { useAudioPlayer } from "./audio/useAudioPlayer";
 import PlaybackControls from "./audio/PlaybackControls";
 import VolumeControl from "./audio/VolumeControl";
 import ProgressBar from "./audio/ProgressBar";
@@ -37,15 +37,10 @@ const AudioPlayer = ({
     handlePlay,
     handleVolumeChange,
     formatTime,
+    onEnd
   } = useAudioPlayer(selectedContent, playbackSpeed, () => {
-    // Callback exécuté à la fin de la lecture
     if (skills.length > 0 && selectedSkillIndex < skills.length - 1 && onSkillChange) {
-      if (randomMode) {
-        const randomIndex = Math.floor(Math.random() * skills.length);
-        onSkillChange(randomIndex);
-      } else {
-        onSkillChange(selectedSkillIndex + 1);
-      }
+      onSkillChange(selectedSkillIndex + 1);
     }
   });
 
@@ -67,11 +62,6 @@ const AudioPlayer = ({
     if (selectedSkillIndex < skills.length - 1 && onSkillChange) {
       onSkillChange(selectedSkillIndex + 1);
     }
-  };
-
-  const handlePlayClick = () => {
-    if (!selectedContent) return;
-    handlePlay();
   };
 
   return (
@@ -99,7 +89,7 @@ const AudioPlayer = ({
           <PlaybackControls
             isPlaying={isPlaying}
             selectedContent={selectedContent}
-            onPlay={handlePlayClick}
+            onPlay={handlePlay}
             onRandomPlay={handleRandomPlay}
             onPrevious={handlePrevious}
             onNext={handleNext}

@@ -3,7 +3,19 @@ import { CategoryCard } from "./CategoryCard";
 import { getCategoryImage, getImagePosition } from "@/utils/categoryUtils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
-import { Category } from "@/components/dashboard/audio/types";
+
+interface Skill {
+  id: string;
+  title: string;
+  summary?: string;
+}
+
+interface Category {
+  id: string;
+  name: string;
+  description: string;
+  skills: Skill[];
+}
 
 interface CategoriesGridProps {
   categories: Category[];
@@ -30,7 +42,7 @@ export const CategoriesGrid = ({ categories }: CategoriesGridProps) => {
           key={category.id}
           id={category.id}
           name={category.name}
-          description={category.description || ""}
+          description={category.description}
           imageUrl={getCategoryImage(category.name)}
           imagePosition={getImagePosition(category.name)}
           index={index}

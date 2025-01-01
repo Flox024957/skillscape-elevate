@@ -8,7 +8,7 @@ interface PlaylistSelectorProps {
 }
 
 const PlaylistSelector = ({ selectedPlaylist, onPlaylistChange }: PlaylistSelectorProps) => {
-  const { data: playlists, isLoading } = useQuery({
+  const { data: playlists } = useQuery({
     queryKey: ['playlists'],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -19,36 +19,19 @@ const PlaylistSelector = ({ selectedPlaylist, onPlaylistChange }: PlaylistSelect
         .select('*')
         .eq('user_id', user.id);
 
-      if (error) {
-        console.error('Error fetching playlists:', error);
-        return [];
-      }
+      if (error) throw error;
       return data || [];
     },
   });
 
-  if (isLoading) {
-    return (
-      <Select disabled>
-        <SelectTrigger className="w-[200px] bg-[#1E3D7B]/20 border-[#1E3D7B]/30">
-          <SelectValue placeholder="Chargement..." />
-        </SelectTrigger>
-      </Select>
-    );
-  }
-
   return (
     <Select value={selectedPlaylist || undefined} onValueChange={onPlaylistChange}>
-      <SelectTrigger className="w-[200px] bg-[#1E3D7B]/20 border-[#1E3D7B]/30">
+      <SelectTrigger className="w-[200px]">
         <SelectValue placeholder="Sélectionner une playlist" />
       </SelectTrigger>
       <SelectContent>
         {playlists?.map((playlist) => (
-          <SelectItem 
-            key={playlist.id} 
-            value={playlist.id}
-            className="cursor-pointer hover:bg-[#0EA5E9]/20"
-          >
+          <SelectItem key={playlist.id} value={playlist.id}>
             {playlist.name}
           </SelectItem>
         ))}
