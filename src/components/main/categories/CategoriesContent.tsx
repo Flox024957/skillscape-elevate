@@ -1,6 +1,6 @@
 import { CategoriesGrid } from "@/components/categories/CategoriesGrid";
 import { useCategories } from "@/hooks/useCategories";
-import { Category } from "@/components/dashboard/audio/types";
+import { Category, Skill } from "@/components/dashboard/audio/types";
 
 export const CategoriesContent = () => {
   const { categories } = useCategories();
@@ -15,7 +15,7 @@ export const CategoriesContent = () => {
       id: skill.id,
       titre: skill.titre,
       resume: skill.resume,
-      description: skill.description || "",
+      description: "",
       exemples: [],
       action_concrete: "",
       category_id: cat.id,
