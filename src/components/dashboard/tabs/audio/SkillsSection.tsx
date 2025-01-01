@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { CategorySelect } from "./skills/CategorySelect";
 import { SkillsList } from "./skills/SkillsList";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Skill } from "@/types/skill";
 
 interface SkillsSectionProps {
   onSkillSelect: (skillId: string) => void;
@@ -45,6 +46,9 @@ export const SkillsSection = ({
           id,
           titre,
           resume,
+          description,
+          action_concrete,
+          exemples,
           category_id,
           categories (
             id,
@@ -69,7 +73,7 @@ export const SkillsSection = ({
 
       const { data, error } = await query;
       if (error) throw error;
-      return data || [];
+      return (data || []) as Skill[];
     },
   });
 

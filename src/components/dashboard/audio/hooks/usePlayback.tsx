@@ -19,38 +19,33 @@ export const usePlayback = (
     currentTime,
     duration,
     handlePlay,
+    utteranceRef,
   } = useSkillPlayback(playbackSpeed, volume, selectedVoice, voices);
 
-  const getSectionContent = (skill: Skill, section: number) => {
-    switch (section) {
-      case 0:
-        return `Résumé : ${skill.resume}`;
-      case 1:
-        return `Description : ${skill.description}`;
-      case 2:
-        return `Action concrète : ${skill.action_concrete}`;
-      case 3:
-        if (skill.exemples && skill.exemples.length > 0) {
-          return `Exemples : ${skill.exemples.join('. ')}`;
-        }
-        return null;
-      default:
-        return null;
-    }
+  const getSectionContent = (skill: Skill) => {
+    const sections = [
+      `Résumé : ${skill.resume}`,
+      `Description : ${skill.description}`,
+      `Action concrète : ${skill.action_concrete}`,
+      skill.exemples && skill.exemples.length > 0 ? `Exemples : ${skill.exemples.join('. ')}` : null
+    ].filter(Boolean);
+
+    return sections[currentSection] || null;
   };
 
   const playNext = () => {
     const currentSkill = playlistContent[currentIndex];
-    const nextSection = getSectionContent(currentSkill, currentSection + 1);
+    const nextSectionContent = getSectionContent(currentSkill);
 
-    if (nextSection) {
+    if (nextSectionContent) {
       setCurrentSection(prev => prev + 1);
-      handlePlay(nextSection);
+      handlePlay(nextSectionContent);
     } else if (currentIndex < playlistContent.length - 1) {
       setCurrentIndex(prev => prev + 1);
       setCurrentSection(0);
       const nextSkill = playlistContent[currentIndex + 1];
-      handlePlay(getSectionContent(nextSkill, 0));
+      const firstSection = getSectionContent(nextSkill);
+      if (firstSection) handlePlay(firstSection);
     } else {
       setCurrentIndex(0);
       setCurrentSection(0);
@@ -64,5 +59,6 @@ export const usePlayback = (
     currentIndex,
     handlePlay,
     playNext,
+    utteranceRef,
   };
 };

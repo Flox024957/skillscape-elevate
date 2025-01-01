@@ -19,10 +19,10 @@ const CallToAction = () => {
     >
       <div className="absolute inset-0 bg-gradient-to-r from-[#0EA5E9]/5 via-[#8B5CF6]/5 to-[#F97316]/5"></div>
       <h2 className="text-3xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#0EA5E9] via-[#8B5CF6] to-[#F97316]">
-        Prêt à Transformer Votre Carrière ?
+        Prêt à Transformer Votre Vie ?
       </h2>
       <p className="text-lg text-[#9CA3AF] mb-8 max-w-2xl mx-auto">
-        Rejoignez une communauté de professionnels motivés et commencez votre voyage vers l'excellence dès aujourd'hui.
+        Rejoignez une communauté de personnes motivées et commencez votre voyage vers l'excellence personnelle dès aujourd'hui.
       </p>
       <Button
         onClick={() => navigate("/auth")}

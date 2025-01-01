@@ -59,7 +59,7 @@ const HeroSection = () => {
           Commencer Votre Voyage
         </Button>
         <Button
-          onClick={() => navigate("/dashboard")}
+          onClick={() => navigate("/auth")}
           variant="outline"
           className="w-full sm:w-auto px-8 py-6 text-lg rounded-xl
                    bg-background/30 backdrop-blur-sm
