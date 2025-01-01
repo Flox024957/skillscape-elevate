@@ -70,9 +70,12 @@ export const PlaylistManager = () => {
   });
 
   const handleMoveSkill = async (skillId: string, direction: 'up' | 'down') => {
-    if (!currentPlaylist) return;
+    if (!currentPlaylist?.skills) return;
 
-    const currentIndex = currentPlaylist.skills.findIndex(s => s.id === skillId);
+    const currentIndex = currentPlaylist.skills.findIndex(skill => 
+      typeof skill === 'object' ? skill.id === skillId : skill === skillId
+    );
+    
     if (currentIndex === -1) return;
 
     const newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
@@ -84,7 +87,7 @@ export const PlaylistManager = () => {
     const { error } = await supabase
       .from('skill_playlists')
       .update({
-        skills: newSkills.map(s => s.id),
+        skills: newSkills.map(skill => typeof skill === 'object' ? skill.id : skill),
         skill_order: newSkills.map((_, i) => i)
       })
       .eq('id', currentPlaylist.id);
@@ -98,14 +101,16 @@ export const PlaylistManager = () => {
   };
 
   const handleRemoveSkill = async (skillId: string) => {
-    if (!currentPlaylist) return;
+    if (!currentPlaylist?.skills) return;
 
-    const updatedSkills = currentPlaylist.skills.filter(s => s.id !== skillId);
+    const updatedSkills = currentPlaylist.skills.filter(skill => 
+      typeof skill === 'object' ? skill.id !== skillId : skill !== skillId
+    );
     
     const { error } = await supabase
       .from('skill_playlists')
       .update({
-        skills: updatedSkills.map(s => s.id),
+        skills: updatedSkills.map(skill => typeof skill === 'object' ? skill.id : skill),
         skill_order: updatedSkills.map((_, i) => i)
       })
       .eq('id', currentPlaylist.id);
@@ -156,42 +161,45 @@ export const PlaylistManager = () => {
         </div>
 
         <ScrollArea className="h-[500px]">
-          {currentPlaylist?.skills?.map((skill, index) => (
-            <div
-              key={skill.id}
-              className="flex items-center justify-between p-4 bg-card/50 hover:bg-card/80 rounded-lg border border-border/50 mb-2"
-            >
-              <div>
-                <h4 className="font-medium">{skill.titre}</h4>
-                <p className="text-sm text-muted-foreground">{skill.resume}</p>
+          {currentPlaylist?.skills?.map((skill, index) => {
+            const skillData = typeof skill === 'object' ? skill : { id: skill, titre: '', resume: '' };
+            return (
+              <div
+                key={skillData.id}
+                className="flex items-center justify-between p-4 bg-card/50 hover:bg-card/80 rounded-lg border border-border/50 mb-2"
+              >
+                <div>
+                  <h4 className="font-medium">{skillData.titre}</h4>
+                  <p className="text-sm text-muted-foreground">{skillData.resume}</p>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleMoveSkill(skillData.id, 'up')}
+                    disabled={index === 0}
+                  >
+                    <ArrowUp className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleMoveSkill(skillData.id, 'down')}
+                    disabled={index === currentPlaylist.skills.length - 1}
+                  >
+                    <ArrowDown className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleRemoveSkill(skillData.id)}
+                  >
+                    <Minus className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
-              <div className="flex gap-2">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => handleMoveSkill(skill.id, 'up')}
-                  disabled={index === 0}
-                >
-                  <ArrowUp className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => handleMoveSkill(skill.id, 'down')}
-                  disabled={index === currentPlaylist.skills.length - 1}
-                >
-                  <ArrowDown className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => handleRemoveSkill(skill.id)}
-                >
-                  <Minus className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </ScrollArea>
       </div>
     </Card>
