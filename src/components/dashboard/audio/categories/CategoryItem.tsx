@@ -1,54 +1,42 @@
+import { Category, Skill } from "../types";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 
-interface CategoryItemProps {
-  name: string;
-  skills: { id: string; titre: string; resume: string }[];
-  onAddCategory: () => void;
-  onAddSkill: (skillId: string, title: string) => void;
+export interface CategoryItemProps {
+  category: Category;
+  onSkillSelect: (skillId: string) => void;
+  onCategorySelect: () => void;
 }
 
-export const CategoryItem = ({ 
-  name, 
-  skills, 
-  onAddCategory, 
-  onAddSkill 
-}: CategoryItemProps) => {
+export const CategoryItem = ({ category, onSkillSelect, onCategorySelect }: CategoryItemProps) => {
   return (
     <div className="space-y-2">
-      <div className="flex items-center justify-between p-4 bg-card hover:bg-card/80 rounded-lg border border-border">
-        <h3 className="text-lg font-medium">{name}</h3>
-        <Button
-          variant="ghost"
+      <div className="flex items-center justify-between">
+        <h3 className="text-lg font-semibold">{category.name}</h3>
+        <Button 
+          variant="outline" 
           size="sm"
-          onClick={onAddCategory}
+          onClick={onCategorySelect}
         >
-          <Plus className="h-4 w-4 mr-2" />
+          <PlusCircle className="h-4 w-4 mr-2" />
           Tout ajouter
         </Button>
       </div>
-
-      <div className="ml-8 space-y-2">
-        {skills.map((skill) => (
+      
+      <div className="space-y-2">
+        {category.skills?.map((skill: Skill) => (
           <div
             key={skill.id}
-            className="p-4 bg-card/50 hover:bg-card/80 rounded-lg border border-border/50"
+            className="flex items-center justify-between p-2 rounded-lg border hover:bg-accent cursor-pointer"
+            onClick={() => onSkillSelect(skill.id)}
           >
-            <div className="flex items-start justify-between">
-              <div>
-                <h4 className="font-medium">{skill.titre}</h4>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {skill.resume}
-                </p>
-              </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => onAddSkill(skill.id, skill.titre)}
-              >
-                <Plus className="h-4 w-4" />
-              </Button>
+            <div>
+              <p className="font-medium">{skill.titre}</p>
+              <p className="text-sm text-muted-foreground">{skill.resume}</p>
             </div>
+            <Button variant="ghost" size="sm">
+              <PlusCircle className="h-4 w-4" />
+            </Button>
           </div>
         ))}
       </div>

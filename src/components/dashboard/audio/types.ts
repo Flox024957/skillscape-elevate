@@ -2,7 +2,7 @@ export interface Skill {
   id: string;
   titre: string;
   resume: string;
-  description?: string;
+  description: string;
   exemples: any[];
   action_concrete: string;
   category_id: string;

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { CategoryItem } from "./CategoryItem";
-import { Category, Skill } from "@/components/dashboard/audio/types";
+import { Category, Skill } from "../types";
 
 interface CategoryListProps {
   onSkillSelect: (skillId: string) => void;
@@ -26,6 +26,7 @@ export const CategoryList = ({ onSkillSelect, onCategorySelect }: CategoryListPr
             description,
             exemples,
             action_concrete,
+            category_id,
             created_at,
             updated_at
           )

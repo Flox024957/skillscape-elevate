@@ -27,6 +27,7 @@ const CategoryPage = () => {
             description,
             exemples,
             action_concrete,
+            category_id,
             created_at,
             updated_at
           )
@@ -38,6 +39,11 @@ const CategoryPage = () => {
         console.error('Error fetching category:', error);
         throw error;
       }
+
+      if (!data) {
+        throw new Error('Category not found');
+      }
+
       return data;
     },
     enabled: !!id,
