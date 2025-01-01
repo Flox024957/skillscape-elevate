@@ -57,7 +57,7 @@ const VoiceRecordingsSection = () => {
         .insert({
           title: recordingTitle,
           audio_url: publicUrl.publicUrl,
-          duration: Math.round(blob.size / 16000),
+          duration: Math.round(blob.size / 16000), // Estimation approximative
         });
 
       if (dbError) throw dbError;

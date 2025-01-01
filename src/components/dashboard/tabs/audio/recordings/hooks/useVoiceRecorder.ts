@@ -9,7 +9,14 @@ export const useVoiceRecorder = () => {
 
   const startRecording = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true
+        }
+      });
+      
       const recorder = new MediaRecorder(stream, {
         mimeType: 'audio/webm;codecs=opus'
       });
@@ -21,7 +28,7 @@ export const useVoiceRecorder = () => {
         }
       };
 
-      recorder.start(1000); // Capture data every second
+      recorder.start(1000);
       setMediaRecorder(recorder);
       setIsRecording(true);
 

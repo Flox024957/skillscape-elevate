@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Mic, MicOff } from "lucide-react";
+import { Mic, MicOff, Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface RecordingControlsProps {
   isRecording: boolean;
@@ -23,25 +24,29 @@ const RecordingControls = ({
         placeholder="Titre de l'enregistrement"
         value={recordingTitle}
         onChange={(e) => onTitleChange(e.target.value)}
-        className="max-w-[300px] bg-[#1E3D7B]/20 border-[#1E3D7B]/30"
+        className="max-w-[300px] bg-[#1E3D7B]/20 border-[#1E3D7B]/30 text-[#E5DEFF]"
+        disabled={isRecording}
       />
       <Button
         variant={isRecording ? "destructive" : "outline"}
         size="sm"
         onClick={isRecording ? onStopRecording : onStartRecording}
-        className={isRecording 
-          ? "bg-red-500/20 hover:bg-red-500/30" 
-          : "bg-[#1E3D7B]/20 border-[#1E3D7B]/30 hover:bg-[#1E3D7B]/40"}
+        className={cn(
+          "relative",
+          isRecording 
+            ? "bg-red-500/20 hover:bg-red-500/30 text-red-500" 
+            : "bg-[#1E3D7B]/20 border-[#1E3D7B]/30 hover:bg-[#1E3D7B]/40 text-[#E5DEFF]"
+        )}
       >
         {isRecording ? (
           <>
-            <MicOff className="w-4 h-4 mr-2" />
-            Arrêter
+            <MicOff className="w-4 h-4 mr-2 animate-pulse" />
+            Arrêter l'enregistrement
           </>
         ) : (
           <>
             <Mic className="w-4 h-4 mr-2" />
-            Enregistrer
+            Commencer l'enregistrement
           </>
         )}
       </Button>
