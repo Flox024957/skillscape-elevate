@@ -8,6 +8,8 @@ import { Slider } from "@/components/ui/slider";
 import PlaylistSelector from "./audio/playlist/PlaylistSelector";
 import { usePlaylist } from "./audio/hooks/usePlaylist";
 import { Skill } from "@/types/skill";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 interface AudioPlayerProps {
   selectedContent: string;
@@ -16,6 +18,8 @@ interface AudioPlayerProps {
 }
 
 const AudioPlayer = ({ selectedContent, onContentSelect, playbackSpeed = 1 }: AudioPlayerProps) => {
+  const isMobile = useIsMobile();
+
   const {
     currentPlaylist,
     setCurrentPlaylist,
@@ -62,13 +66,19 @@ const AudioPlayer = ({ selectedContent, onContentSelect, playbackSpeed = 1 }: Au
 
   return (
     <Card>
-      <CardContent className="space-y-6 p-6">
+      <CardContent className={cn(
+        "space-y-4",
+        isMobile ? "p-2" : "p-6"
+      )}>
         <PlaylistSelector 
           currentPlaylist={currentPlaylist} 
           onPlaylistSelect={setCurrentPlaylist}
         />
 
-        <div className="flex flex-col md:flex-row justify-between gap-4">
+        <div className={cn(
+          "flex justify-between gap-4",
+          isMobile ? "flex-col" : "flex-row"
+        )}>
           <VoiceSelector
             selectedVoice={selectedVoice}
             voices={voices}
@@ -86,7 +96,10 @@ const AudioPlayer = ({ selectedContent, onContentSelect, playbackSpeed = 1 }: Au
           formatTime={formatTime}
         />
 
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className={cn(
+          "flex items-center justify-between gap-4",
+          isMobile ? "flex-col" : "flex-row"
+        )}>
           <PlaybackControls
             isPlaying={isPlaying}
             selectedContent={getContentFromTrack(getCurrentTrack())}
@@ -103,14 +116,17 @@ const AudioPlayer = ({ selectedContent, onContentSelect, playbackSpeed = 1 }: Au
               min={0.5}
               max={2}
               step={0.1}
-              className="w-32"
+              className={cn("w-32", isMobile && "flex-1")}
               disabled
             />
           </div>
         </div>
 
         {selectedContent && (
-          <div className="mt-4 p-4 bg-muted/50 rounded-lg">
+          <div className={cn(
+            "mt-4 p-4 bg-muted/50 rounded-lg",
+            isMobile && "text-sm"
+          )}>
             <p className="text-sm text-muted-foreground whitespace-pre-line">{selectedContent}</p>
           </div>
         )}
