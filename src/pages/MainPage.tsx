@@ -10,6 +10,9 @@ import { EnergyOrbs } from "@/components/main/background/EnergyOrbs";
 import { Button } from "@/components/ui/button";
 import { ArrowUp, Menu } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import {
   Sheet,
   SheetContent,
@@ -18,7 +21,39 @@ import {
 
 const MainPage = () => {
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error("Session check error:", error);
+          toast.error("Erreur de session");
+          navigate("/auth", { replace: true });
+          return;
+        }
+
+        if (!session) {
+          console.log("No session found in MainPage");
+          navigate("/auth", { replace: true });
+          return;
+        }
+
+        console.log("Session valid in MainPage:", session.user.id);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("MainPage session check error:", error);
+        toast.error("Erreur lors de la vérification de la session");
+        navigate("/auth", { replace: true });
+      }
+    };
+
+    checkSession();
+  }, [navigate]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,6 +68,14 @@ const MainPage = () => {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
   
   return (
     <div className="min-h-screen relative overflow-hidden bg-[#0A0118]/90 backdrop-blur-sm">
@@ -53,13 +96,13 @@ const MainPage = () => {
           </SheetTrigger>
           <SheetContent side="right" className="w-[300px] bg-background/95 backdrop-blur-md">
             <nav className="flex flex-col gap-4 mt-8">
-              <Button variant="ghost" className="justify-start" onClick={() => window.location.href = '/dashboard'}>
+              <Button variant="ghost" className="justify-start" onClick={() => navigate('/dashboard')}>
                 Dashboard
               </Button>
-              <Button variant="ghost" className="justify-start" onClick={() => window.location.href = '/profile'}>
+              <Button variant="ghost" className="justify-start" onClick={() => navigate('/profile')}>
                 Profil
               </Button>
-              <Button variant="ghost" className="justify-start" onClick={() => window.location.href = '/settings'}>
+              <Button variant="ghost" className="justify-start" onClick={() => navigate('/settings')}>
                 Paramètres
               </Button>
             </nav>
