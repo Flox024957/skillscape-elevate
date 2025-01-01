@@ -20,10 +20,17 @@ export const useAudioPlayer = (
   useEffect(() => {
     const loadVoices = () => {
       const availableVoices = speechSynthesis.getVoices();
+      console.log('Voix disponibles:', availableVoices);
       setVoices(availableVoices);
       if (availableVoices.length > 0) {
         const frenchVoice = availableVoices.find(voice => voice.lang.startsWith('fr'));
-        setSelectedVoice(frenchVoice?.name || availableVoices[0].name);
+        if (frenchVoice) {
+          console.log('Voix française trouvée:', frenchVoice.name);
+          setSelectedVoice(frenchVoice.name);
+        } else {
+          console.log('Aucune voix française trouvée, utilisation de la première voix disponible');
+          setSelectedVoice(availableVoices[0].name);
+        }
       }
     };
 
@@ -47,6 +54,8 @@ export const useAudioPlayer = (
   }, [playbackSpeed]);
 
   const handlePlay = () => {
+    console.log('handlePlay appelé avec le contenu:', selectedContent);
+    
     if (!selectedContent) {
       toast({
         title: "Aucun contenu sélectionné",
@@ -57,6 +66,7 @@ export const useAudioPlayer = (
     }
 
     if (isPlaying) {
+      console.log('Pause de la lecture');
       speechSynthesis.pause();
       setIsPlaying(false);
       if (progressInterval.current) {
@@ -65,18 +75,25 @@ export const useAudioPlayer = (
       return;
     }
 
-    // Cancel any existing speech
+    // Annuler toute lecture en cours
     speechSynthesis.cancel();
 
     const utterance = new SpeechSynthesisUtterance(selectedContent);
     const selectedVoiceObj = voices.find(voice => voice.name === selectedVoice);
+    
     if (selectedVoiceObj) {
+      console.log('Utilisation de la voix:', selectedVoiceObj.name);
       utterance.voice = selectedVoiceObj;
+    } else {
+      console.log('Voix sélectionnée non trouvée');
     }
+
     utterance.volume = volume;
     utterance.rate = playbackSpeed;
+    utterance.lang = 'fr-FR'; // Forcer la langue française
 
     utterance.onstart = () => {
+      console.log('Début de la lecture');
       setDuration(utterance.text.length * 50);
       progressInterval.current = window.setInterval(() => {
         setCurrentTime(prev => Math.min(prev + 50, utterance.text.length * 50));
@@ -84,6 +101,7 @@ export const useAudioPlayer = (
     };
 
     utterance.onend = () => {
+      console.log('Fin de la lecture');
       setIsPlaying(false);
       setCurrentTime(0);
       if (progressInterval.current) {
@@ -95,18 +113,31 @@ export const useAudioPlayer = (
     };
 
     utterance.onerror = (event) => {
-      console.error('Speech synthesis error:', event);
+      console.error('Erreur de synthèse vocale:', event);
       toast({
         title: "Erreur",
         description: "Une erreur est survenue lors de la lecture",
         variant: "destructive",
       });
       setIsPlaying(false);
+      if (progressInterval.current) {
+        clearInterval(progressInterval.current);
+      }
     };
 
     utteranceRef.current = utterance;
-    speechSynthesis.speak(utterance);
-    setIsPlaying(true);
+    try {
+      console.log('Démarrage de la lecture');
+      speechSynthesis.speak(utterance);
+      setIsPlaying(true);
+    } catch (error) {
+      console.error('Erreur lors du démarrage de la lecture:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de démarrer la lecture audio",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleVolumeChange = (value: number[]) => {
