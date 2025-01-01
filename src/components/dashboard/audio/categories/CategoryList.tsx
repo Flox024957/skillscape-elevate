@@ -1,24 +1,11 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown, ChevronUp, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { AddToPlaylistDialog } from "../playlist/AddToPlaylistDialog";
-
-interface Skill {
-  id: string;
-  titre: string;
-  resume: string;
-}
-
-interface Category {
-  id: string;
-  name: string;
-  skills: Skill[];
-}
+import { useCategories } from "@/hooks/useCategories";
 
 interface CategoryListProps {
   onSkillSelect: (skillId: string) => void;
@@ -30,106 +17,7 @@ export const CategoryList = ({ onSkillSelect, onCategorySelect }: CategoryListPr
   const [selectedCategory, setSelectedCategory] = useState<{ skills: string[]; name: string } | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAddingCategory, setIsAddingCategory] = useState(false);
-
-  const { data: categories = [] } = useQuery({
-    queryKey: ['categories-with-skills'],
-    queryFn: async () => {
-      const { data: categoriesData, error: categoriesError } = await supabase
-        .from('categories')
-        .select('*')
-        .order('name');
-      
-      if (categoriesError) throw categoriesError;
-
-      const categoriesWithSkills = await Promise.all(
-        categoriesData.map(async (category) => {
-          const { data: skills, error: skillsError } = await supabase
-            .from('skills')
-            .select('id, titre, resume')
-            .eq('category_id', category.id);
-
-          if (skillsError) throw skillsError;
-
-          return {
-            ...category,
-            skills: skills || []
-          };
-        })
-      );
-
-      return categoriesWithSkills;
-    },
-  });
-
-  const handleAddToPlaylist = async (playlistId: string) => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast.error("Vous devez être connecté");
-        return;
-      }
-
-      if (playlistId === "current") {
-        const { data: currentPlaylist } = await supabase
-          .from('skill_playlists')
-          .select()
-          .eq('user_id', user.id)
-          .eq('name', 'Lecture en cours')
-          .single();
-
-        if (currentPlaylist) {
-          const skillsToAdd = isAddingCategory ? selectedCategory?.skills : [selectedSkill?.id];
-          const updatedSkills = [...(currentPlaylist.skills || []), ...(skillsToAdd || [])];
-          
-          await supabase
-            .from('skill_playlists')
-            .update({ 
-              skills: updatedSkills,
-              skill_order: Array.from({ length: updatedSkills.length }, (_, i) => i)
-            })
-            .eq('id', currentPlaylist.id);
-        } else {
-          const skillsToAdd = isAddingCategory ? selectedCategory?.skills : [selectedSkill?.id];
-          await supabase
-            .from('skill_playlists')
-            .insert([{
-              user_id: user.id,
-              name: 'Lecture en cours',
-              skills: skillsToAdd,
-              skill_order: Array.from({ length: skillsToAdd?.length || 0 }, (_, i) => i)
-            }]);
-        }
-      } else {
-        const { data: playlist } = await supabase
-          .from('skill_playlists')
-          .select()
-          .eq('id', playlistId)
-          .single();
-
-        if (playlist) {
-          const skillsToAdd = isAddingCategory ? selectedCategory?.skills : [selectedSkill?.id];
-          const updatedSkills = [...(playlist.skills || []), ...(skillsToAdd || [])];
-          
-          await supabase
-            .from('skill_playlists')
-            .update({ 
-              skills: updatedSkills,
-              skill_order: Array.from({ length: updatedSkills.length }, (_, i) => i)
-            })
-            .eq('id', playlistId);
-        }
-      }
-
-      if (isAddingCategory) {
-        onCategorySelect(selectedCategory?.skills || []);
-      } else {
-        onSkillSelect(selectedSkill?.id || '');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      toast.error("Une erreur est survenue");
-    }
-  };
+  const { categories } = useCategories();
 
   return (
     <ScrollArea className="h-[600px] pr-4">
@@ -205,7 +93,75 @@ export const CategoryList = ({ onSkillSelect, onCategorySelect }: CategoryListPr
           setSelectedCategory(null);
           setIsAddingCategory(false);
         }}
-        onAdd={handleAddToPlaylist}
+        onAdd={async (playlistId) => {
+          try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+              toast.error("Vous devez être connecté");
+              return;
+            }
+
+            if (playlistId === "current") {
+              const { data: currentPlaylist } = await supabase
+                .from('skill_playlists')
+                .select()
+                .eq('user_id', user.id)
+                .eq('name', 'Lecture en cours')
+                .single();
+
+              if (currentPlaylist) {
+                const skillsToAdd = isAddingCategory ? selectedCategory?.skills : [selectedSkill?.id];
+                const updatedSkills = [...(currentPlaylist.skills || []), ...(skillsToAdd || [])];
+                
+                await supabase
+                  .from('skill_playlists')
+                  .update({ 
+                    skills: updatedSkills,
+                    skill_order: Array.from({ length: updatedSkills.length }, (_, i) => i)
+                  })
+                  .eq('id', currentPlaylist.id);
+              } else {
+                const skillsToAdd = isAddingCategory ? selectedCategory?.skills : [selectedSkill?.id];
+                await supabase
+                  .from('skill_playlists')
+                  .insert([{
+                    user_id: user.id,
+                    name: 'Lecture en cours',
+                    skills: skillsToAdd,
+                    skill_order: Array.from({ length: skillsToAdd?.length || 0 }, (_, i) => i)
+                  }]);
+              }
+            } else {
+              const { data: playlist } = await supabase
+                .from('skill_playlists')
+                .select()
+                .eq('id', playlistId)
+                .single();
+
+              if (playlist) {
+                const skillsToAdd = isAddingCategory ? selectedCategory?.skills : [selectedSkill?.id];
+                const updatedSkills = [...(playlist.skills || []), ...(skillsToAdd || [])];
+                
+                await supabase
+                  .from('skill_playlists')
+                  .update({ 
+                    skills: updatedSkills,
+                    skill_order: Array.from({ length: updatedSkills.length }, (_, i) => i)
+                  })
+                  .eq('id', playlistId);
+              }
+            }
+
+            if (isAddingCategory) {
+              onCategorySelect(selectedCategory?.skills || []);
+            } else {
+              onSkillSelect(selectedSkill?.id || '');
+            }
+          } catch (error) {
+            console.error('Error:', error);
+            toast.error("Une erreur est survenue");
+          }
+        }}
         title={isAddingCategory 
           ? `Catégorie : ${selectedCategory?.name}`
           : `Compétence : ${selectedSkill?.title}`
