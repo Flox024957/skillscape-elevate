@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { usePlaylistContent } from './usePlaylistContent';
+import { Skill } from '@/types/skill';
 
 export const usePlaylist = () => {
   const [currentPlaylist, setCurrentPlaylist] = useState<string | null>(null);
@@ -36,7 +37,8 @@ export const usePlaylist = () => {
     }
   }, [defaultPlaylist, currentPlaylist]);
 
-  const nextTrack = () => {
+  const nextTrack = (): Skill | null => {
+    if (!playlistContent.length) return null;
     if (randomMode) {
       const randomIndex = Math.floor(Math.random() * playlistContent.length);
       setCurrentIndex(randomIndex);
@@ -48,7 +50,8 @@ export const usePlaylist = () => {
     }
   };
 
-  const previousTrack = () => {
+  const previousTrack = (): Skill | null => {
+    if (!playlistContent.length) return null;
     if (randomMode) {
       const randomIndex = Math.floor(Math.random() * playlistContent.length);
       setCurrentIndex(randomIndex);
@@ -60,7 +63,8 @@ export const usePlaylist = () => {
     }
   };
 
-  const getCurrentTrack = () => playlistContent[currentIndex];
+  const getCurrentTrack = (): Skill | null => 
+    playlistContent.length > 0 ? playlistContent[currentIndex] : null;
 
   const toggleRandomMode = () => setRandomMode(!randomMode);
 

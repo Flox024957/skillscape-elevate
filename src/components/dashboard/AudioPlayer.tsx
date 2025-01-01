@@ -7,6 +7,7 @@ import VoiceSelector from "./audio/VoiceSelector";
 import { Slider } from "@/components/ui/slider";
 import PlaylistSelector from "./audio/playlist/PlaylistSelector";
 import { usePlaylist } from "./audio/hooks/usePlaylist";
+import { Skill } from "@/types/skill";
 
 interface AudioPlayerProps {
   selectedContent: string;
@@ -26,6 +27,11 @@ const AudioPlayer = ({ selectedContent, onContentSelect, playbackSpeed = 1 }: Au
     toggleRandomMode,
   } = usePlaylist();
 
+  const getContentFromTrack = (track: Skill | null): string => {
+    if (!track) return selectedContent;
+    return `${track.titre}\n${track.resume}`;
+  };
+
   const {
     isPlaying,
     selectedVoice,
@@ -37,7 +43,7 @@ const AudioPlayer = ({ selectedContent, onContentSelect, playbackSpeed = 1 }: Au
     handlePlay,
     handleVolumeChange,
     formatTime,
-  } = useAudioPlayer(getCurrentTrack() || selectedContent, playbackSpeed);
+  } = useAudioPlayer(getContentFromTrack(getCurrentTrack()), playbackSpeed);
 
   return (
     <Card>
@@ -68,11 +74,11 @@ const AudioPlayer = ({ selectedContent, onContentSelect, playbackSpeed = 1 }: Au
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <PlaybackControls
             isPlaying={isPlaying}
-            selectedContent={getCurrentTrack() || selectedContent}
-            onPlay={() => handlePlay(getCurrentTrack() || selectedContent)}
+            selectedContent={getContentFromTrack(getCurrentTrack())}
+            onPlay={() => handlePlay(getContentFromTrack(getCurrentTrack()))}
             onRandomPlay={toggleRandomMode}
-            onPrevious={() => handlePlay(previousTrack())}
-            onNext={() => handlePlay(nextTrack())}
+            onPrevious={() => handlePlay(getContentFromTrack(previousTrack()))}
+            onNext={() => handlePlay(getContentFromTrack(nextTrack()))}
             randomMode={randomMode}
           />
           <div className="flex items-center gap-2 w-full md:w-auto">
