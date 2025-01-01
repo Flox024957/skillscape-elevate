@@ -1,6 +1,7 @@
 import { AnimatedBackground } from "@/components/main/background/AnimatedBackground";
-import HeroSection from "@/components/main/HeroSection";
+import { HeroSection } from "@/components/main/hero/HeroSection";
 import { MarketingSection } from "@/components/main/marketing/MarketingSection";
+import { CallToAction } from "@/components/landing/CallToAction";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -33,11 +34,14 @@ const Index = () => {
       <AnimatedBackground />
       
       <main className={cn(
-        "relative z-10",
-        isMobile && "px-2"
+        "relative z-10 container mx-auto",
+        isMobile ? "px-4 py-8" : "px-8 py-16"
       )}>
-        <HeroSection />
-        <MarketingSection />
+        <div className="space-y-16 md:space-y-24">
+          <HeroSection />
+          <MarketingSection />
+          <CallToAction />
+        </div>
       </main>
 
       <AnimatePresence>
