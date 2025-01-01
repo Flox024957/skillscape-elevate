@@ -29,7 +29,17 @@ const AudioPlayer = ({ selectedContent, onContentSelect, playbackSpeed = 1 }: Au
 
   const getContentFromTrack = (track: Skill | null): string => {
     if (!track) return selectedContent;
-    return `${track.titre}\n${track.resume}`;
+    return `
+      Titre : ${track.titre}
+      
+      Résumé : ${track.resume}
+      
+      Description : ${track.description}
+      
+      Action concrète : ${track.action_concrete}
+      
+      Exemples : ${Array.isArray(track.exemples) ? track.exemples.join(', ') : ''}
+    `.trim();
   };
 
   const {
@@ -101,7 +111,7 @@ const AudioPlayer = ({ selectedContent, onContentSelect, playbackSpeed = 1 }: Au
 
         {selectedContent && (
           <div className="mt-4 p-4 bg-muted/50 rounded-lg">
-            <p className="text-sm text-muted-foreground">{selectedContent}</p>
+            <p className="text-sm text-muted-foreground whitespace-pre-line">{selectedContent}</p>
           </div>
         )}
       </CardContent>
