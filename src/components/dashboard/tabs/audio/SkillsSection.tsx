@@ -5,7 +5,6 @@ import { SkillsList } from "./skills/SkillsList";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface SkillsSectionProps {
-  onContentSelect: (content: string) => void;
   onSkillSelect: (skillId: string) => void;
   selectedSkills: string[];
   filters: {
@@ -17,7 +16,6 @@ interface SkillsSectionProps {
 }
 
 export const SkillsSection = ({ 
-  onContentSelect, 
   onSkillSelect,
   selectedSkills,
   filters 
@@ -82,10 +80,7 @@ export const SkillsSection = ({
         onSelect={onSkillSelect} 
       />
       <ScrollArea className="h-[772px] rounded-md border p-4">
-        <SkillsList 
-          skills={skills} 
-          onContentSelect={onContentSelect}
-        />
+        <SkillsList skills={skills} />
       </ScrollArea>
     </div>
   );
