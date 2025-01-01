@@ -70,4 +70,9 @@
     @apply shadow-lg;
     filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.3));
   }
+
+  /* Ajustement pour la navbar mobile */
+  .h-[calc(100vh-4rem)] {
+    height: calc(100vh - 7rem) !important;
+  }
 }
