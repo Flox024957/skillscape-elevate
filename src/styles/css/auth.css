@@ -3,7 +3,7 @@
 }
 
 .auth-button {
-  @apply bg-sky-500 text-white font-medium py-4 px-6 rounded-xl w-full;
+  @apply bg-sky-500 text-white font-medium py-3 sm:py-4 px-4 sm:px-6 rounded-xl w-full text-sm sm:text-base;
   background: linear-gradient(to right, rgb(14, 165, 233), rgb(2, 132, 199));
   border: none;
   box-shadow: 
@@ -27,7 +27,7 @@
 }
 
 .auth-input {
-  @apply bg-card/50 backdrop-blur-xl text-white rounded-xl px-6 py-4 w-full transition-all duration-300;
+  @apply bg-card/50 backdrop-blur-xl text-white rounded-xl px-4 sm:px-6 py-3 w-full text-sm sm:text-base transition-all duration-300;
   border: 2px solid rgba(14, 165, 233, 0.3);
   box-shadow: 
     0 0 20px rgba(14, 165, 233, 0.1),
@@ -47,9 +47,7 @@
 }
 
 .auth-label {
-  color: rgba(255, 255, 255, 0.9);
-  font-weight: 500;
-  margin-bottom: 0.5rem;
+  @apply text-xs sm:text-sm font-medium text-white/90 mb-1.5;
 }
 
 .auth-loader {
@@ -71,4 +69,34 @@
 
 .welcome, .flap {
   animation: glow 3s ease-in-out infinite;
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .auth-container {
+    @apply space-y-4;
+  }
+
+  .auth-button, .auth-input {
+    @apply text-sm py-3;
+  }
+
+  .auth-label {
+    @apply text-xs;
+  }
+
+  /* Improve touch targets */
+  .auth-button, .auth-input {
+    @apply min-h-[44px];
+  }
+
+  /* Optimize for mobile keyboards */
+  .auth-input {
+    @apply px-4;
+  }
+
+  /* Better visual hierarchy */
+  .auth-label {
+    @apply mb-1;
+  }
 }

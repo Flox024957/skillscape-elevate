@@ -4,9 +4,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { AuthContainer } from "@/components/auth/AuthContainer";
 import { AuthHeader } from "@/components/auth/AuthHeader";
 import { AuthForm } from "@/components/auth/AuthForm";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Auth = () => {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -28,7 +30,10 @@ const Auth = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-background relative overflow-hidden">
+    <div className={cn(
+      "min-h-screen bg-gradient-to-br from-background via-background/95 to-background relative overflow-hidden",
+      isMobile && "pb-16"
+    )}>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-violet-500/10 via-background to-background" />
       <AuthContainer>
         <AuthHeader />
