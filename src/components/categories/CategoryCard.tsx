@@ -39,17 +39,6 @@ export const CategoryCard = ({
     }
   };
 
-  const handleSkillClick = (skillId: string, event: React.MouseEvent) => {
-    event.stopPropagation(); // Prevent category navigation when clicking on a skill
-    try {
-      console.log('Navigating to skill:', skillId);
-      navigate(`/skill/${skillId}`);
-    } catch (error) {
-      console.error('Skill navigation error:', error);
-      toast.error("Erreur lors de la navigation vers la compétence");
-    }
-  };
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -80,8 +69,6 @@ export const CategoryCard = ({
         description={description}
         skillsCount={skills?.length || 0}
         isMobile={isMobile}
-        skills={skills}
-        onSkillClick={handleSkillClick}
       />
     </motion.div>
   );

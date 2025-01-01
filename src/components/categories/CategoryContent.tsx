@@ -1,24 +1,14 @@
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { Skill } from "@/components/dashboard/audio/types";
 
 interface CategoryContentProps {
   name: string;
   description: string;
   skillsCount: number;
   isMobile: boolean;
-  skills?: Skill[];
-  onSkillClick?: (skillId: string, event: React.MouseEvent) => void;
 }
 
-export const CategoryContent = ({ 
-  name, 
-  description, 
-  skillsCount, 
-  isMobile,
-  skills,
-  onSkillClick 
-}: CategoryContentProps) => {
+export const CategoryContent = ({ name, description, skillsCount, isMobile }: CategoryContentProps) => {
   return (
     <motion.div 
       className={cn(
@@ -48,24 +38,6 @@ export const CategoryContent = ({
       >
         {name}
       </motion.h3>
-
-      {skills && skills.length > 0 && (
-        <div className="mt-2 space-y-1">
-          {skills.slice(0, 3).map((skill) => (
-            <motion.button
-              key={skill.id}
-              onClick={(e) => onSkillClick?.(skill.id, e)}
-              className={cn(
-                "text-xs px-2 py-1 rounded-full",
-                "bg-white/10 hover:bg-primary/20",
-                "transition-colors duration-200"
-              )}
-            >
-              {skill.titre}
-            </motion.button>
-          ))}
-        </div>
-      )}
     </motion.div>
   );
 };
