@@ -2,6 +2,14 @@ import { Button } from "@/components/ui/button";
 import { Play, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useQuery } from "@tanstack/react-query";
 
 interface Skill {
   id: string;
@@ -18,51 +26,48 @@ interface SkillsListProps {
 }
 
 export const SkillsList = ({ skills, onContentSelect }: SkillsListProps) => {
-  const handleAddToPlaylist = async (skillId: string, title: string) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      toast.error("Vous devez être connecté pour ajouter à la playlist");
+  const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const { data: playlists } = useQuery({
+    queryKey: ['playlists'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return [];
+
+      const { data, error } = await supabase
+        .from('skill_playlists')
+        .select('*')
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+      return data || [];
+    },
+  });
+
+  const handleAddToPlaylist = async (playlistId: string) => {
+    if (!selectedSkill) return;
+
+    const playlist = playlists?.find(p => p.id === playlistId);
+    if (!playlist) return;
+
+    const updatedSkills = [...(playlist.skills || []), selectedSkill.id];
+    const { error } = await supabase
+      .from('skill_playlists')
+      .update({ 
+        skills: updatedSkills,
+        skill_order: [...(playlist.skill_order || []), updatedSkills.length - 1]
+      })
+      .eq('id', playlistId);
+
+    if (error) {
+      toast.error("Erreur lors de l'ajout à la playlist");
       return;
     }
 
-    const { data: existingPlaylist } = await supabase
-      .from('skill_playlists')
-      .select()
-      .eq('user_id', user.id)
-      .eq('name', 'Lecture en cours')
-      .single();
-
-    if (existingPlaylist) {
-      const updatedSkills = [...(existingPlaylist.skills || []), skillId];
-      const { error } = await supabase
-        .from('skill_playlists')
-        .update({ 
-          skills: updatedSkills,
-          skill_order: [...(existingPlaylist.skill_order || []), updatedSkills.length - 1]
-        })
-        .eq('id', existingPlaylist.id);
-
-      if (error) {
-        toast.error("Erreur lors de l'ajout à la playlist");
-        return;
-      }
-    } else {
-      const { error } = await supabase
-        .from('skill_playlists')
-        .insert([{
-          user_id: user.id,
-          name: 'Lecture en cours',
-          skills: [skillId],
-          skill_order: [0]
-        }]);
-
-      if (error) {
-        toast.error("Erreur lors de la création de la playlist");
-        return;
-      }
-    }
-
-    toast.success(`${title} ajouté à la playlist de lecture`);
+    toast.success(`${selectedSkill.titre} ajouté à la playlist`);
+    setIsDialogOpen(false);
+    setSelectedSkill(null);
   };
 
   return (
@@ -98,7 +103,10 @@ export const SkillsList = ({ skills, onContentSelect }: SkillsListProps) => {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => handleAddToPlaylist(skill.id, skill.titre)}
+              onClick={() => {
+                setSelectedSkill(skill);
+                setIsDialogOpen(true);
+              }}
               className="hover:bg-primary/10"
             >
               <Plus className="h-4 w-4" />
@@ -114,6 +122,26 @@ export const SkillsList = ({ skills, onContentSelect }: SkillsListProps) => {
           </div>
         </div>
       ))}
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Ajouter à une playlist</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            {playlists?.map((playlist) => (
+              <Button
+                key={playlist.id}
+                variant="outline"
+                className="w-full justify-start"
+                onClick={() => handleAddToPlaylist(playlist.id)}
+              >
+                {playlist.name}
+              </Button>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
