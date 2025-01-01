@@ -34,7 +34,10 @@ export const MarketingSection = () => {
   const isMobile = useIsMobile();
   
   return (
-    <section className="py-16 px-4 max-w-7xl mx-auto">
+    <section className={cn(
+      "py-16 px-4 max-w-7xl mx-auto",
+      isMobile && "py-8"
+    )}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -51,7 +54,7 @@ export const MarketingSection = () => {
         </h2>
         <p className={cn(
           "text-gray-300 max-w-2xl mx-auto",
-          isMobile ? "text-sm" : "text-lg"
+          isMobile ? "text-sm px-2" : "text-lg"
         )}>
           FLAP vous accompagne dans votre développement personnel avec des outils innovants 
           et une approche centrée sur vos objectifs individuels.

@@ -33,7 +33,7 @@ const HeroSection = () => {
       animate="visible"
       className={cn(
         "text-center",
-        isMobile ? "mb-8" : "mb-20",
+        isMobile ? "mb-8 pt-4" : "mb-20",
         "perspective-1000"
       )}
     >
