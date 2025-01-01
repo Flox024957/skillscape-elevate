@@ -2,10 +2,11 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown, ChevronUp, Plus } from "lucide-react";
+import { ChevronDown, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { AddToPlaylistDialog } from "../playlist/AddToPlaylistDialog";
 import { useCategories } from "@/hooks/useCategories";
+import { supabase } from "@/integrations/supabase/client";
 
 interface CategoryListProps {
   onSkillSelect: (skillId: string) => void;
@@ -120,6 +121,8 @@ export const CategoryList = ({ onSkillSelect, onCategorySelect }: CategoryListPr
                     skill_order: Array.from({ length: updatedSkills.length }, (_, i) => i)
                   })
                   .eq('id', currentPlaylist.id);
+
+                toast.success(isAddingCategory ? "Catégorie ajoutée à la playlist" : "Compétence ajoutée à la playlist");
               } else {
                 const skillsToAdd = isAddingCategory ? selectedCategory?.skills : [selectedSkill?.id];
                 await supabase
@@ -130,6 +133,8 @@ export const CategoryList = ({ onSkillSelect, onCategorySelect }: CategoryListPr
                     skills: skillsToAdd,
                     skill_order: Array.from({ length: skillsToAdd?.length || 0 }, (_, i) => i)
                   }]);
+
+                toast.success(isAddingCategory ? "Catégorie ajoutée à la playlist" : "Compétence ajoutée à la playlist");
               }
             } else {
               const { data: playlist } = await supabase
@@ -149,6 +154,8 @@ export const CategoryList = ({ onSkillSelect, onCategorySelect }: CategoryListPr
                     skill_order: Array.from({ length: updatedSkills.length }, (_, i) => i)
                   })
                   .eq('id', playlistId);
+
+                toast.success(isAddingCategory ? "Catégorie ajoutée à la playlist" : "Compétence ajoutée à la playlist");
               }
             }
 

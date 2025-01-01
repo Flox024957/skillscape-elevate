@@ -2,9 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { CurrentPlaylist } from "./types";
 import { toast } from "sonner";
+import { useEffect } from "react";
 
 export const usePlaylist = (playlistId: string | null) => {
-  return useQuery({
+  const { data: playlist, error, refetch } = useQuery({
     queryKey: ['playlist', playlistId],
     enabled: !!playlistId,
     queryFn: async () => {
@@ -46,4 +47,32 @@ export const usePlaylist = (playlistId: string | null) => {
       } as CurrentPlaylist;
     },
   });
+
+  useEffect(() => {
+    if (!playlistId) return;
+
+    // S'abonner aux changements de la playlist
+    const channel = supabase
+      .channel('playlist_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'skill_playlists',
+          filter: `id=eq.${playlistId}`
+        },
+        () => {
+          console.log('Playlist updated, refetching...');
+          refetch();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [playlistId, refetch]);
+
+  return { data: playlist, error };
 };
