@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { useAudioPlayer } from "./audio/useAudioPlayer";
+import { useAudioPlayer } from "./audio/hooks/useAudioPlayer";
 import PlaybackControls from "./audio/PlaybackControls";
 import VolumeControl from "./audio/VolumeControl";
 import ProgressBar from "./audio/ProgressBar";
