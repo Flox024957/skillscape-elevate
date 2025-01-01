@@ -8,6 +8,8 @@ export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 
   const [volume, setVolume] = useState(1);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [currentPlaylist, setCurrentPlaylist] = useState<string[]>([]);
+  const [currentPlaylistIndex, setCurrentPlaylistIndex] = useState(0);
   const { toast } = useToast();
   const speechSynthesis = window.speechSynthesis;
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
@@ -42,8 +44,17 @@ export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 
     }
   }, [playbackSpeed]);
 
-  const handlePlay = () => {
-    if (!selectedContent) {
+  const playNextInPlaylist = () => {
+    if (currentPlaylist.length > 0 && currentPlaylistIndex < currentPlaylist.length - 1) {
+      setCurrentPlaylistIndex(prev => prev + 1);
+      handlePlay(currentPlaylist[currentPlaylistIndex + 1]);
+    }
+  };
+
+  const handlePlay = (content?: string) => {
+    const textToSpeak = content || selectedContent;
+    
+    if (!textToSpeak) {
       toast({
         title: "Aucun contenu sélectionné",
         description: "Veuillez sélectionner du contenu à lire",
@@ -61,7 +72,7 @@ export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 
       return;
     }
 
-    const utterance = new SpeechSynthesisUtterance(selectedContent);
+    const utterance = new SpeechSynthesisUtterance(textToSpeak);
     const selectedVoiceObj = voices.find(voice => voice.name === selectedVoice);
     if (selectedVoiceObj) {
       utterance.voice = selectedVoiceObj;
@@ -82,6 +93,7 @@ export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 
       if (progressInterval.current) {
         clearInterval(progressInterval.current);
       }
+      playNextInPlaylist();
     };
 
     utterance.onerror = (event) => {
@@ -114,6 +126,11 @@ export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
+  const setPlaylist = (playlist: string[]) => {
+    setCurrentPlaylist(playlist);
+    setCurrentPlaylistIndex(0);
+  };
+
   return {
     isPlaying,
     selectedVoice,
@@ -125,5 +142,6 @@ export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 
     handlePlay,
     handleVolumeChange,
     formatTime,
+    setPlaylist,
   };
 };
