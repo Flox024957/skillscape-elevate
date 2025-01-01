@@ -1,16 +1,18 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useVoices } from './hooks/useVoices';
 import { usePlayback } from './hooks/usePlayback';
 
 export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 1) => {
   const [volume, setVolume] = useState(1);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
 
   const { selectedVoice, voices, setSelectedVoice } = useVoices();
   const {
     isPlaying,
-    currentTime,
-    duration,
     handlePlay,
+    handlePause,
+    handleSeek,
     utteranceRef,
   } = usePlayback(playbackSpeed, volume, selectedVoice, voices, selectedContent);
 
@@ -29,6 +31,27 @@ export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
+  useEffect(() => {
+    let interval: number;
+    if (isPlaying) {
+      interval = window.setInterval(() => {
+        setCurrentTime(prev => Math.min(prev + 50, duration));
+      }, 50);
+    }
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [isPlaying, duration]);
+
+  useEffect(() => {
+    if (selectedContent) {
+      // Estimation approximative de la durée basée sur le nombre de caractères
+      setDuration(selectedContent.length * 50);
+    }
+  }, [selectedContent]);
+
   return {
     isPlaying,
     selectedVoice,
@@ -40,5 +63,6 @@ export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 
     handlePlay,
     handleVolumeChange,
     formatTime,
+    handleSeek,
   };
 };

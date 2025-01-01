@@ -10,6 +10,7 @@ import { usePlaylist } from "./audio/hooks/usePlaylist";
 import { Skill } from "@/types/skill";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 interface AudioPlayerProps {
   selectedContent: string;
@@ -57,11 +58,26 @@ const AudioPlayer = ({ selectedContent, onContentSelect, playbackSpeed = 1 }: Au
     handlePlay,
     handleVolumeChange,
     formatTime,
+    handleSeek,
   } = useAudioPlayer(getContentFromTrack(getCurrentTrack()), playbackSpeed);
 
   const handlePlayContent = (content: string) => {
+    if (!selectedVoice) {
+      toast.error("Veuillez sélectionner une voix avant de démarrer la lecture");
+      return;
+    }
     handlePlay(content);
     onContentSelect(content);
+  };
+
+  const handleNext = () => {
+    const nextContent = getContentFromTrack(nextTrack());
+    handlePlayContent(nextContent);
+  };
+
+  const handlePrevious = () => {
+    const previousContent = getContentFromTrack(previousTrack());
+    handlePlayContent(previousContent);
   };
 
   return (
@@ -94,6 +110,7 @@ const AudioPlayer = ({ selectedContent, onContentSelect, playbackSpeed = 1 }: Au
           currentTime={currentTime}
           duration={duration}
           formatTime={formatTime}
+          onSeek={handleSeek}
         />
 
         <div className={cn(
@@ -105,8 +122,8 @@ const AudioPlayer = ({ selectedContent, onContentSelect, playbackSpeed = 1 }: Au
             selectedContent={getContentFromTrack(getCurrentTrack())}
             onPlay={() => handlePlayContent(getContentFromTrack(getCurrentTrack()))}
             onRandomPlay={toggleRandomMode}
-            onPrevious={() => handlePlayContent(getContentFromTrack(previousTrack()))}
-            onNext={() => handlePlayContent(getContentFromTrack(nextTrack()))}
+            onPrevious={handlePrevious}
+            onNext={handleNext}
             randomMode={randomMode}
           />
           <div className="flex items-center gap-2 w-full md:w-auto">

@@ -4,9 +4,16 @@ interface ProgressBarProps {
   currentTime: number;
   duration: number;
   formatTime: (ms: number) => string;
+  onSeek?: (value: number) => void;
 }
 
-const ProgressBar = ({ currentTime, duration, formatTime }: ProgressBarProps) => {
+const ProgressBar = ({ currentTime, duration, formatTime, onSeek }: ProgressBarProps) => {
+  const handleSeek = (value: number[]) => {
+    if (onSeek) {
+      onSeek(value[0]);
+    }
+  };
+
   return (
     <div className="space-y-2">
       <div className="flex justify-between text-sm">
@@ -18,7 +25,7 @@ const ProgressBar = ({ currentTime, duration, formatTime }: ProgressBarProps) =>
         max={duration}
         step={50}
         className="w-full"
-        disabled
+        onValueChange={handleSeek}
       />
     </div>
   );
