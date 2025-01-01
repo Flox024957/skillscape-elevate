@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
+import Navbar from "@/components/Navbar";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -38,17 +39,20 @@ const Dashboard = () => {
   }
 
   return (
-    <div className={cn(
-      "min-h-screen bg-background/50 backdrop-blur-sm",
-      isMobile ? "pb-20 pt-2" : "py-4"
-    )}>
+    <>
       <div className={cn(
-        "mx-auto",
-        isMobile ? "max-w-full" : "max-w-7xl px-4"
+        "min-h-screen bg-background/50 backdrop-blur-sm",
+        isMobile ? "pb-20 pt-2" : "py-4"
       )}>
-        <DashboardTabs user={user} />
+        <div className={cn(
+          "mx-auto",
+          isMobile ? "max-w-full" : "max-w-7xl px-4"
+        )}>
+          <DashboardTabs user={user} />
+        </div>
       </div>
-    </div>
+      <Navbar />
+    </>
   );
 };
 
