@@ -9,6 +9,7 @@ import { Slider } from "@/components/ui/slider";
 import PlaylistSelector from "./audio/playlist/PlaylistSelector";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { usePlaylistContent } from "./audio/hooks/usePlaylistContent";
 
 interface AudioPlayerProps {
   selectedContent: string;
@@ -53,6 +54,8 @@ const AudioPlayer = ({ selectedContent, onContentSelect, playbackSpeed = 1 }: Au
     setCurrentPlaylist,
   } = useAudioPlayer(selectedContent, playbackSpeed);
 
+  const { data: playlistContent = [] } = usePlaylistContent(currentPlaylist);
+
   // Sélectionner automatiquement la playlist "lecture en cours"
   useEffect(() => {
     if (currentPlaylistId && !currentPlaylist) {
@@ -93,8 +96,8 @@ const AudioPlayer = ({ selectedContent, onContentSelect, playbackSpeed = 1 }: Au
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <PlaybackControls
             isPlaying={isPlaying}
-            selectedContent={selectedContent}
-            onPlay={handlePlay}
+            selectedContent={playlistContent[0] || selectedContent}
+            onPlay={() => handlePlay(playlistContent[0] || selectedContent)}
             onRandomPlay={handleRandomPlay}
           />
           <div className="flex items-center gap-2 w-full md:w-auto">
