@@ -1,25 +1,20 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { CategoryHeader } from "./components/CategoryHeader";
-import { CategorySkillsList } from "./components/CategorySkillsList";
+import { toast } from "sonner";
+import { Skill } from "@/types/skills";
 
 const CategoryPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const { data: category, isLoading, error } = useQuery({
+  const { data: category, isLoading } = useQuery({
     queryKey: ['category', id],
     queryFn: async () => {
-      if (!id) {
-        throw new Error('Category ID is undefined');
-      }
-
-      const { data: categoryData, error: categoryError } = await supabase
+      const { data, error } = await supabase
         .from('categories')
         .select(`
           *,
@@ -35,42 +30,30 @@ const CategoryPage = () => {
         .eq('id', id)
         .single();
 
-      if (categoryError) {
-        console.error('Error fetching category:', categoryError);
-        toast.error("La catégorie n'a pas pu être chargée");
-        throw categoryError;
-      }
-
-      if (!categoryData) {
-        console.error('No category found with ID:', id);
-        toast.error("La catégorie n'existe pas");
-        throw new Error('Category not found');
-      }
-
-      return categoryData;
+      if (error) throw error;
+      return data;
     },
-    enabled: Boolean(id),
   });
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background/50 backdrop-blur-sm flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary"></div>
       </div>
     );
   }
 
-  if (error || !category) {
+  if (!category) {
     return (
-      <div className="min-h-screen bg-background/50 backdrop-blur-sm">
+      <div className="min-h-screen bg-background">
         <div className="container px-4 py-8">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-red-500 mb-4">
+          <div className="max-w-2xl mx-auto text-center space-y-6">
+            <h1 className="text-3xl font-bold text-red-500">
               La catégorie que vous recherchez n'existe pas ou a été supprimée.
             </h1>
-            <Button onClick={() => navigate('/main')} variant="outline">
+            <Button onClick={() => navigate('/main')} variant="outline" size="lg">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Retour à l'accueil
+              Retour
             </Button>
           </div>
         </div>
@@ -78,29 +61,53 @@ const CategoryPage = () => {
     );
   }
 
+  const handleSkillClick = (skill: Skill) => {
+    try {
+      navigate(`/skill/${skill.id}`);
+    } catch (error) {
+      console.error('Navigation error:', error);
+      toast.error("Erreur lors de la navigation");
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-background/50 backdrop-blur-sm relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-background via-background/50 to-background" />
-      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
-      
-      <div className="container relative z-10 px-4 py-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="max-w-7xl mx-auto space-y-8"
-        >
-          <CategoryHeader 
-            name={category.name} 
-            description={category.description}
-            onBack={() => navigate('/main')}
-          />
-          
-          <CategorySkillsList 
-            skills={category.skills || []} 
-            onSkillClick={(skillId) => navigate(`/skill/${skillId}`)}
-          />
-        </motion.div>
+    <div className="min-h-screen bg-background">
+      <div className="container px-4 py-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="mb-8 flex items-center justify-between">
+            <Button onClick={() => navigate('/main')} variant="outline">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Retour
+            </Button>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-6"
+          >
+            <h1 className="text-4xl font-bold">{category.name}</h1>
+            {category.description && (
+              <p className="text-lg text-muted-foreground">{category.description}</p>
+            )}
+
+            <div className="grid gap-4 mt-8">
+              {category.skills?.map((skill: Skill) => (
+                <motion.div
+                  key={skill.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  whileHover={{ scale: 1.01 }}
+                  className="p-6 rounded-lg border bg-card hover:border-primary cursor-pointer transition-all"
+                  onClick={() => handleSkillClick(skill)}
+                >
+                  <h3 className="text-xl font-semibold mb-2">{skill.titre}</h3>
+                  <p className="text-muted-foreground">{skill.resume}</p>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
       </div>
     </div>
   );
