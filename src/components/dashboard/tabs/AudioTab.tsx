@@ -9,6 +9,7 @@ import { PlaylistSection } from "./audio/PlaylistSection";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
+import VoiceRecordingsSection from "./audio/recordings/VoiceRecordingsSection";
 
 const AudioTab = () => {
   const [selectedContent, setSelectedContent] = useState("");
@@ -100,6 +101,8 @@ const AudioTab = () => {
               filters={filters}
               onFilterChange={handleFilterChange}
             />
+
+            <VoiceRecordingsSection />
           </div>
         </div>
       </CardContent>
