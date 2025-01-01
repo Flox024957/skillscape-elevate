@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
 import { Trophy, Book, Rocket, Shield } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 interface SkillContentProps {
   resume: string;
@@ -10,6 +12,8 @@ interface SkillContentProps {
 }
 
 export const SkillContent = ({ resume, description, actionConcrete, examples }: SkillContentProps) => {
+  const isMobile = useIsMobile();
+  
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -24,18 +28,27 @@ export const SkillContent = ({ resume, description, actionConcrete, examples }: 
   };
 
   return (
-    <div className="grid gap-8 md:grid-cols-2">
+    <div className={cn(
+      "grid gap-8",
+      isMobile ? "grid-cols-1" : "md:grid-cols-2"
+    )}>
       {/* Left Column - Main Info */}
-      <div className="space-y-6">
+      <div className="space-y-4">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="glass-panel p-8 relative rounded-xl backdrop-blur-sm 
-                   border border-white/10 bg-black/50 shadow-xl"
+          className={cn(
+            "glass-panel relative rounded-xl backdrop-blur-sm",
+            "border border-white/10 bg-black/50 shadow-xl",
+            isMobile ? "p-4" : "p-8"
+          )}
         >
           <Trophy className="absolute top-4 right-4 w-6 h-6 text-primary/40" />
-          <h2 className="text-2xl font-semibold mb-4 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+          <h2 className={cn(
+            "font-semibold mb-4 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent",
+            isMobile ? "text-xl" : "text-2xl"
+          )}>
             Résumé
           </h2>
           <p className="text-muted-foreground">{resume}</p>
@@ -45,11 +58,17 @@ export const SkillContent = ({ resume, description, actionConcrete, examples }: 
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="glass-panel p-8 relative rounded-xl backdrop-blur-sm 
-                   border border-white/10 bg-black/50 shadow-xl"
+          className={cn(
+            "glass-panel relative rounded-xl backdrop-blur-sm",
+            "border border-white/10 bg-black/50 shadow-xl",
+            isMobile ? "p-4" : "p-8"
+          )}
         >
           <Book className="absolute top-4 right-4 w-6 h-6 text-primary/40" />
-          <h2 className="text-2xl font-semibold mb-4 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+          <h2 className={cn(
+            "font-semibold mb-4 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent",
+            isMobile ? "text-xl" : "text-2xl"
+          )}>
             Description
           </h2>
           <p className="text-muted-foreground">{description}</p>
@@ -57,16 +76,22 @@ export const SkillContent = ({ resume, description, actionConcrete, examples }: 
       </div>
 
       {/* Right Column - Action & Examples */}
-      <div className="space-y-6">
+      <div className="space-y-4">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="glass-panel p-8 relative rounded-xl backdrop-blur-sm 
-                   border border-white/10 bg-black/50 shadow-xl"
+          className={cn(
+            "glass-panel relative rounded-xl backdrop-blur-sm",
+            "border border-white/10 bg-black/50 shadow-xl",
+            isMobile ? "p-4" : "p-8"
+          )}
         >
           <Rocket className="absolute top-4 right-4 w-6 h-6 text-primary/40" />
-          <h2 className="text-2xl font-semibold mb-4 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+          <h2 className={cn(
+            "font-semibold mb-4 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent",
+            isMobile ? "text-xl" : "text-2xl"
+          )}>
             Action Concrète
           </h2>
           <p className="text-muted-foreground">{actionConcrete}</p>
@@ -77,11 +102,17 @@ export const SkillContent = ({ resume, description, actionConcrete, examples }: 
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="glass-panel p-8 relative rounded-xl backdrop-blur-sm 
-                     border border-white/10 bg-black/50 shadow-xl"
+            className={cn(
+              "glass-panel relative rounded-xl backdrop-blur-sm",
+              "border border-white/10 bg-black/50 shadow-xl",
+              isMobile ? "p-4" : "p-8"
+            )}
           >
             <Shield className="absolute top-4 right-4 w-6 h-6 text-primary/40" />
-            <h2 className="text-2xl font-semibold mb-4 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+            <h2 className={cn(
+              "font-semibold mb-4 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent",
+              isMobile ? "text-xl" : "text-2xl"
+            )}>
               Exemples
             </h2>
             <div className="grid gap-4">

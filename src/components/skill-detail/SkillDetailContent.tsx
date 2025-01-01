@@ -3,6 +3,8 @@ import { Skill } from "@/types/skills";
 import { SkillHeader } from "./SkillHeader";
 import { SkillContent } from "./SkillContent";
 import { getSkillIllustration } from "@/utils/skillIllustrations";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 type SkillDetailContentProps = {
   skill: Skill;
@@ -17,9 +19,13 @@ export const SkillDetailContent = ({
 }: SkillDetailContentProps) => {
   const examples = Array.isArray(skill.exemples) ? skill.exemples : [];
   const illustrationUrl = getSkillIllustration(skill.category_id);
+  const isMobile = useIsMobile();
 
   return (
-    <div className="container max-w-6xl px-4 py-8 relative overflow-hidden">
+    <div className={cn(
+      "container max-w-6xl relative overflow-hidden",
+      isMobile ? "px-4 py-4" : "px-4 py-8"
+    )}>
       {/* Background Illustration */}
       <motion.div
         initial={{ opacity: 0 }}
@@ -37,7 +43,10 @@ export const SkillDetailContent = ({
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="space-y-8 relative"
+        className={cn(
+          "space-y-8 relative",
+          isMobile && "pb-20"
+        )}
       >
         <SkillHeader 
           title={skill.titre}
