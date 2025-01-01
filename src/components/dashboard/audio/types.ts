@@ -10,6 +10,14 @@ export interface Skill {
   updated_at: string;
 }
 
+export interface Category {
+  id: string;
+  name: string;
+  description: string | null;
+  created_at: string;
+  skills: Skill[];
+}
+
 export interface CurrentPlaylist {
   id: string;
   name: string;
@@ -18,12 +26,4 @@ export interface CurrentPlaylist {
   created_at: string;
   updated_at: string;
   user_id: string | null;
-}
-
-export interface Category {
-  id: string;
-  name: string;
-  description: string | null;
-  created_at: string;
-  skills: Skill[];
 }
