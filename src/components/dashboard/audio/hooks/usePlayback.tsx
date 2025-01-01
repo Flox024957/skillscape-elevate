@@ -22,7 +22,7 @@ export const usePlayback = (
     utteranceRef,
   } = useSkillPlayback(playbackSpeed, volume, selectedVoice, voices);
 
-  const getSectionContent = (skill: Skill) => {
+  const getSkillContent = (skill: Skill) => {
     const sections = [
       `Résumé : ${skill.resume}`,
       `Description : ${skill.description}`,
@@ -34,8 +34,12 @@ export const usePlayback = (
   };
 
   const playNext = () => {
+    if (!playlistContent.length) return;
+
     const currentSkill = playlistContent[currentIndex];
-    const nextSectionContent = getSectionContent(currentSkill);
+    if (!currentSkill) return;
+
+    const nextSectionContent = getSkillContent(currentSkill);
 
     if (nextSectionContent) {
       setCurrentSection(prev => prev + 1);
@@ -44,7 +48,7 @@ export const usePlayback = (
       setCurrentIndex(prev => prev + 1);
       setCurrentSection(0);
       const nextSkill = playlistContent[currentIndex + 1];
-      const firstSection = getSectionContent(nextSkill);
+      const firstSection = getSkillContent(nextSkill);
       if (firstSection) handlePlay(firstSection);
     } else {
       setCurrentIndex(0);
