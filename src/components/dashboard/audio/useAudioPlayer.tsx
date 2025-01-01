@@ -8,8 +8,9 @@ export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 
   const [volume, setVolume] = useState(1);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [currentPlaylist, setCurrentPlaylist] = useState<string[]>([]);
-  const [currentPlaylistIndex, setCurrentPlaylistIndex] = useState(0);
+  const [currentPlaylist, setCurrentPlaylist] = useState<string | null>(null);
+  const [currentPlaylistContent, setCurrentPlaylistContent] = useState<string[]>([]);
+  const [currentContentIndex, setCurrentContentIndex] = useState(0);
   const { toast } = useToast();
   const speechSynthesis = window.speechSynthesis;
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
@@ -44,10 +45,10 @@ export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 
     }
   }, [playbackSpeed]);
 
-  const playNextInPlaylist = () => {
-    if (currentPlaylist.length > 0 && currentPlaylistIndex < currentPlaylist.length - 1) {
-      setCurrentPlaylistIndex(prev => prev + 1);
-      handlePlay(currentPlaylist[currentPlaylistIndex + 1]);
+  const playNextContent = () => {
+    if (currentContentIndex < currentPlaylistContent.length - 1) {
+      setCurrentContentIndex(prev => prev + 1);
+      handlePlay(currentPlaylistContent[currentContentIndex + 1]);
     }
   };
 
@@ -93,7 +94,7 @@ export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 
       if (progressInterval.current) {
         clearInterval(progressInterval.current);
       }
-      playNextInPlaylist();
+      playNextContent();
     };
 
     utterance.onerror = (event) => {
@@ -126,11 +127,6 @@ export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
-  const setPlaylist = (playlist: string[]) => {
-    setCurrentPlaylist(playlist);
-    setCurrentPlaylistIndex(0);
-  };
-
   return {
     isPlaying,
     selectedVoice,
@@ -138,10 +134,11 @@ export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 
     volume,
     currentTime,
     duration,
+    currentPlaylist,
     setSelectedVoice,
     handlePlay,
     handleVolumeChange,
     formatTime,
-    setPlaylist,
+    setCurrentPlaylist,
   };
 };

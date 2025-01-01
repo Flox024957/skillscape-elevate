@@ -6,6 +6,7 @@ import VolumeControl from "./audio/VolumeControl";
 import ProgressBar from "./audio/ProgressBar";
 import VoiceSelector from "./audio/VoiceSelector";
 import { Slider } from "@/components/ui/slider";
+import PlaylistSelector from "./audio/playlist/PlaylistSelector";
 
 interface AudioPlayerProps {
   selectedContent: string;
@@ -26,16 +27,22 @@ const AudioPlayer = ({ selectedContent, onContentSelect, playbackSpeed = 1 }: Au
     handlePlay,
     handleVolumeChange,
     formatTime,
+    currentPlaylist,
+    setCurrentPlaylist,
   } = useAudioPlayer(selectedContent, playbackSpeed);
 
   const handleRandomPlay = () => {
     setRandomMode(!randomMode);
-    // Implement random play logic here
   };
 
   return (
     <Card>
       <CardContent className="space-y-6 p-6">
+        <PlaylistSelector 
+          currentPlaylist={currentPlaylist} 
+          onPlaylistSelect={setCurrentPlaylist}
+        />
+
         <div className="flex flex-col md:flex-row justify-between gap-4">
           <VoiceSelector
             selectedVoice={selectedVoice}
