@@ -1,77 +1,24 @@
-import { useState, useRef, useEffect } from 'react';
-import { useToast } from "@/hooks/use-toast";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { useState, useRef } from 'react';
+import { useVoices } from './hooks/useVoices';
+import { usePlaylistContent } from './hooks/usePlaylistContent';
+import { useSpeechSynthesis } from './hooks/useSpeechSynthesis';
 
 export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 1) => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [selectedVoice, setSelectedVoice] = useState("");
-  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [volume, setVolume] = useState(1);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [currentPlaylist, setCurrentPlaylist] = useState<string | null>(null);
-  const { toast } = useToast();
-  const speechSynthesis = window.speechSynthesis;
-  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const progressInterval = useRef<number>();
 
-  // Fetch playlist content when currentPlaylist changes
-  const { data: playlistContent } = useQuery({
-    queryKey: ['playlist-content', currentPlaylist],
-    queryFn: async () => {
-      if (!currentPlaylist) return [];
-
-      const { data: playlist, error } = await supabase
-        .from('skill_playlists')
-        .select('skills')
-        .eq('id', currentPlaylist)
-        .single();
-
-      if (error) throw error;
-
-      if (!playlist?.skills?.length) return [];
-
-      const { data: skills, error: skillsError } = await supabase
-        .from('skills')
-        .select('titre')
-        .in('id', playlist.skills);
-
-      if (skillsError) throw skillsError;
-
-      return skills.map(skill => skill.titre);
-    },
-    enabled: !!currentPlaylist,
-  });
-
-  useEffect(() => {
-    const loadVoices = () => {
-      const availableVoices = speechSynthesis.getVoices();
-      setVoices(availableVoices);
-      if (availableVoices.length > 0) {
-        const frenchVoice = availableVoices.find(voice => voice.lang.startsWith('fr'));
-        setSelectedVoice(frenchVoice?.name || availableVoices[0].name);
-      }
-    };
-
-    loadVoices();
-    speechSynthesis.onvoiceschanged = loadVoices;
-
-    return () => {
-      if (utteranceRef.current) {
-        speechSynthesis.cancel();
-      }
-      if (progressInterval.current) {
-        clearInterval(progressInterval.current);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (utteranceRef.current) {
-      utteranceRef.current.rate = playbackSpeed;
-    }
-  }, [playbackSpeed]);
+  const { selectedVoice, voices, setSelectedVoice } = useVoices();
+  const { data: playlistContent } = usePlaylistContent(currentPlaylist);
+  const { createUtterance, speechSynthesis, utteranceRef, toast } = useSpeechSynthesis(
+    playbackSpeed,
+    volume,
+    selectedVoice,
+    voices
+  );
 
   const handlePlay = (content?: string) => {
     const textToSpeak = content || selectedContent;
@@ -94,13 +41,7 @@ export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 
       return;
     }
 
-    const utterance = new SpeechSynthesisUtterance(textToSpeak);
-    const selectedVoiceObj = voices.find(voice => voice.name === selectedVoice);
-    if (selectedVoiceObj) {
-      utterance.voice = selectedVoiceObj;
-    }
-    utterance.volume = volume;
-    utterance.rate = playbackSpeed;
+    const utterance = createUtterance(textToSpeak);
 
     utterance.onstart = () => {
       setDuration(utterance.text.length * 50);
@@ -116,7 +57,6 @@ export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 
         clearInterval(progressInterval.current);
       }
 
-      // Play next content in playlist if available
       if (currentPlaylist && playlistContent && playlistContent.length > 0) {
         const currentIndex = playlistContent.indexOf(textToSpeak);
         if (currentIndex < playlistContent.length - 1) {
