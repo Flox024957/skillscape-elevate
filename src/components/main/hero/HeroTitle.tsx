@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
+import { ChevronDown } from "lucide-react";
 
 export const HeroTitle = () => {
   const isMobile = useIsMobile();
@@ -14,6 +15,13 @@ export const HeroTitle = () => {
         duration: 0.8,
         ease: "easeOut"
       }
+    }
+  };
+
+  const scrollToContent = () => {
+    const contentElement = document.querySelector('#main-content');
+    if (contentElement) {
+      contentElement.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -65,6 +73,22 @@ export const HeroTitle = () => {
         Développez vos compétences, fixez des objectifs ambitieux et suivez votre progression 
         vers l'excellence
       </motion.p>
+
+      {isMobile && (
+        <motion.button
+          onClick={scrollToContent}
+          initial={{ y: 0 }}
+          animate={{ y: [0, 10, 0] }}
+          transition={{ 
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          className="text-primary/80 hover:text-primary transition-colors duration-300"
+        >
+          <ChevronDown className="w-8 h-8" />
+        </motion.button>
+      )}
     </>
   );
 };

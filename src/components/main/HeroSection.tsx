@@ -1,8 +1,12 @@
 import { motion } from "framer-motion";
 import { HeroTitle } from "./hero/HeroTitle";
 import { TodayEvents } from "./hero/TodayEvents";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 const HeroSection = () => {
+  const isMobile = useIsMobile();
+  
   const frameVariants = {
     hidden: { opacity: 0, scale: 0.8 },
     visible: { 
@@ -27,14 +31,21 @@ const HeroSection = () => {
     <motion.div 
       initial="hidden"
       animate="visible"
-      className="text-center mb-20 perspective-1000"
+      className={cn(
+        "text-center",
+        isMobile ? "mb-8" : "mb-20",
+        "perspective-1000"
+      )}
     >
       <HeroTitle />
 
       <motion.div 
         variants={frameVariants}
         whileHover="hover"
-        className="w-full max-w-md mx-auto"
+        className={cn(
+          "w-full max-w-md mx-auto",
+          isMobile && "px-2"
+        )}
       >
         <TodayEvents />
       </motion.div>

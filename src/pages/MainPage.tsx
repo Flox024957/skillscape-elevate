@@ -8,8 +8,13 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { CosmicEffects } from "@/components/main/background/CosmicEffects";
 import { EnergyOrbs } from "@/components/main/background/EnergyOrbs";
 import { Button } from "@/components/ui/button";
-import { ArrowUp } from "lucide-react";
+import { ArrowUp, Menu } from "lucide-react";
 import { useState, useEffect } from "react";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 const MainPage = () => {
   const isMobile = useIsMobile();
@@ -35,6 +40,33 @@ const MainPage = () => {
       <CosmicEffects />
       <EnergyOrbs />
 
+      {isMobile && (
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button 
+              variant="ghost" 
+              size="icon"
+              className="fixed top-4 right-4 z-50 bg-primary/20 hover:bg-primary/30 backdrop-blur-sm"
+            >
+              <Menu className="h-5 w-5" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="right" className="w-[300px] bg-background/95 backdrop-blur-md">
+            <nav className="flex flex-col gap-4 mt-8">
+              <Button variant="ghost" className="justify-start" onClick={() => window.location.href = '/dashboard'}>
+                Dashboard
+              </Button>
+              <Button variant="ghost" className="justify-start" onClick={() => window.location.href = '/profile'}>
+                Profil
+              </Button>
+              <Button variant="ghost" className="justify-start" onClick={() => window.location.href = '/settings'}>
+                Paramètres
+              </Button>
+            </nav>
+          </SheetContent>
+        </Sheet>
+      )}
+
       <ScrollArea className="h-[calc(100vh-4rem)] relative">
         <div className={cn(
           "container mx-auto relative z-10",
@@ -55,6 +87,7 @@ const MainPage = () => {
           </motion.div>
 
           <motion.div
+            id="main-content"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.8 }}
@@ -70,7 +103,6 @@ const MainPage = () => {
         </div>
       </ScrollArea>
 
-      {/* Bouton de retour en haut pour mobile */}
       {showScrollTop && isMobile && (
         <motion.div
           initial={{ opacity: 0, scale: 0.5 }}
