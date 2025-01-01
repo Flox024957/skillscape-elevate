@@ -17,13 +17,3 @@ export interface Category {
   created_at: string;
   skills: Skill[];
 }
-
-export interface CurrentPlaylist {
-  id: string;
-  name: string;
-  skills: Skill[];
-  skill_order: number[];
-  created_at: string;
-  updated_at: string;
-  user_id: string | null;
-}

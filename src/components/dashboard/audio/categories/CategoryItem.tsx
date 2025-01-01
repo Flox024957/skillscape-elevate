@@ -1,45 +1,71 @@
-import { Category, Skill } from "../types";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { PlusCircle } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Skill } from "../types";
 
-export interface CategoryItemProps {
-  category: Category;
+interface CategoryItemProps {
+  id: string;
+  name: string;
+  description: string;
+  skills: Skill[];
   onSkillSelect: (skillId: string) => void;
-  onCategorySelect: () => void;
+  onCategorySelect: (categoryId: string) => void;
+  selectedSkills: string[];
 }
 
-export const CategoryItem = ({ category, onSkillSelect, onCategorySelect }: CategoryItemProps) => {
+export const CategoryItem = ({
+  id,
+  name,
+  description,
+  skills,
+  onSkillSelect,
+  onCategorySelect,
+  selectedSkills,
+}: CategoryItemProps) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   return (
-    <div className="space-y-2">
+    <div className="border rounded-lg p-4 space-y-2 bg-card">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">{category.name}</h3>
-        <Button 
-          variant="outline" 
-          size="sm"
-          onClick={onCategorySelect}
+        <button
+          onClick={() => {
+            setIsExpanded(!isExpanded);
+            onCategorySelect(id);
+          }}
+          className="flex items-center gap-2 text-left"
         >
-          <PlusCircle className="h-4 w-4 mr-2" />
-          Tout ajouter
-        </Button>
+          <h3 className="text-lg font-medium">{name}</h3>
+          {isExpanded ? (
+            <ChevronUp className="h-4 w-4" />
+          ) : (
+            <ChevronDown className="h-4 w-4" />
+          )}
+        </button>
       </div>
-      
-      <div className="space-y-2">
-        {category.skills?.map((skill: Skill) => (
-          <div
-            key={skill.id}
-            className="flex items-center justify-between p-2 rounded-lg border hover:bg-accent cursor-pointer"
-            onClick={() => onSkillSelect(skill.id)}
-          >
-            <div>
-              <p className="font-medium">{skill.titre}</p>
-              <p className="text-sm text-muted-foreground">{skill.resume}</p>
-            </div>
-            <Button variant="ghost" size="sm">
-              <PlusCircle className="h-4 w-4" />
+
+      {description && (
+        <p className="text-sm text-muted-foreground">{description}</p>
+      )}
+
+      {isExpanded && skills && skills.length > 0 && (
+        <div className="space-y-2 pt-2">
+          {skills.map((skill) => (
+            <Button
+              key={skill.id}
+              variant="ghost"
+              className={cn(
+                "w-full justify-start text-left",
+                selectedSkills.includes(skill.id) &&
+                  "bg-primary/10 text-primary hover:bg-primary/20"
+              )}
+              onClick={() => onSkillSelect(skill.id)}
+            >
+              {skill.titre}
             </Button>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

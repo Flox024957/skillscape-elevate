@@ -4,14 +4,46 @@ import { getCategoryImage, getImagePosition } from "@/utils/categoryUtils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { Category } from "@/components/dashboard/audio/types";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
-interface CategoriesGridProps {
-  categories: Category[];
-}
-
-export const CategoriesGrid = ({ categories }: CategoriesGridProps) => {
-  const displayedCategories = categories?.slice(0, 9);
+export const CategoriesGrid = () => {
   const isMobile = useIsMobile();
+
+  const { data: categories = [] } = useQuery({
+    queryKey: ['categories'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('categories')
+        .select(`
+          id,
+          name,
+          description,
+          created_at,
+          skills (
+            id,
+            titre,
+            resume,
+            description,
+            exemples,
+            action_concrete,
+            category_id,
+            created_at,
+            updated_at
+          )
+        `)
+        .order('name');
+
+      if (error) {
+        console.error('Error fetching categories:', error);
+        throw error;
+      }
+
+      return data || [];
+    },
+  });
+
+  const displayedCategories = categories?.slice(0, 9);
 
   return (
     <motion.div 

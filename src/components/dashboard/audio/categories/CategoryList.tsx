@@ -1,15 +1,20 @@
+import { CategoryItem } from "./CategoryItem";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { CategoryItem } from "./CategoryItem";
 import { Category, Skill } from "../types";
 
 interface CategoryListProps {
   onSkillSelect: (skillId: string) => void;
-  onCategorySelect: (skillIds: string[]) => void;
+  onCategorySelect: (categoryId: string) => void;
+  selectedSkills: string[];
 }
 
-export const CategoryList = ({ onSkillSelect, onCategorySelect }: CategoryListProps) => {
-  const { data: categories, isLoading } = useQuery({
+export const CategoryList = ({ 
+  onSkillSelect, 
+  onCategorySelect,
+  selectedSkills 
+}: CategoryListProps) => {
+  const { data: categories = [], isLoading } = useQuery({
     queryKey: ['categories'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -43,24 +48,21 @@ export const CategoryList = ({ onSkillSelect, onCategorySelect }: CategoryListPr
   });
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-48">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <div>Chargement des catégories...</div>;
   }
 
   return (
     <div className="space-y-4">
-      {categories?.map((category) => (
+      {categories.map((category) => (
         <CategoryItem
           key={category.id}
-          category={category}
+          id={category.id}
+          name={category.name}
+          description={category.description || ""}
+          skills={category.skills}
           onSkillSelect={onSkillSelect}
-          onCategorySelect={() => {
-            const skillIds = category.skills?.map((skill: Skill) => skill.id) || [];
-            onCategorySelect(skillIds);
-          }}
+          onCategorySelect={onCategorySelect}
+          selectedSkills={selectedSkills}
         />
       ))}
     </div>
