@@ -1,32 +1,40 @@
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { CategoriesGrid } from "@/components/categories/CategoriesGrid";
-import { useCategories } from "@/hooks/useCategories";
-import { Category } from "@/components/dashboard/audio/types";
 
 export const CategoriesContent = () => {
-  const { categories } = useCategories();
-  
-  // Transform the categories to match the expected type
-  const transformedCategories: Category[] = categories?.map(cat => ({
-    id: cat.id,
-    name: cat.name,
-    description: cat.description,
-    created_at: cat.created_at,
-    skills: cat.skills?.map(skill => ({
-      id: skill.id,
-      titre: skill.titre,
-      resume: skill.resume,
-      description: skill.resume, // Using resume as description if not provided
-      exemples: [],
-      action_concrete: "",
-      category_id: cat.id,
-      created_at: cat.created_at,
-      updated_at: cat.created_at
-    })) || []
-  })) || [];
+  const { data: categories } = useQuery({
+    queryKey: ['categories'],
+    queryFn: async () => {
+      const { data: categoriesData, error: categoriesError } = await supabase
+        .from('categories')
+        .select(`
+          *,
+          skills (
+            id,
+            titre,
+            resume
+          )
+        `)
+        .order('name')
+        .limit(9);
+      
+      if (categoriesError) throw categoriesError;
+      
+      return categoriesData?.map(category => ({
+        ...category,
+        skills: category.skills?.map(skill => ({
+          id: skill.id,
+          title: skill.titre,
+          summary: skill.resume
+        }))
+      }));
+    },
+  });
 
   return (
     <div className="max-h-fit overflow-hidden">
-      <CategoriesGrid categories={transformedCategories} />
+      <CategoriesGrid categories={categories || []} />
     </div>
   );
 };

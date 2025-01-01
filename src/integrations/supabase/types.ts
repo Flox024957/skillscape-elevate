@@ -1414,44 +1414,6 @@ export type Database = {
           },
         ]
       }
-      user_recordings: {
-        Row: {
-          audio_url: string
-          created_at: string
-          duration: number | null
-          id: string
-          title: string
-          updated_at: string
-          user_id: string | null
-        }
-        Insert: {
-          audio_url: string
-          created_at?: string
-          duration?: number | null
-          id?: string
-          title: string
-          updated_at?: string
-          user_id?: string | null
-        }
-        Update: {
-          audio_url?: string
-          created_at?: string
-          duration?: number | null
-          id?: string
-          title?: string
-          updated_at?: string
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_recordings_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       user_skills: {
         Row: {
           audio_preferences: Json | null

@@ -9,7 +9,7 @@ export const AuthHeader = () => {
       className="text-4xl font-semibold text-center mb-12"
     >
       <span className="welcome bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-violet-500">
-        Bienvenue sur{" "}
+        Welcome to{" "}
       </span>
       <motion.span 
         className="flap text-violet-400 font-bold"

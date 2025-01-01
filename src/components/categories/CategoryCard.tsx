@@ -5,7 +5,12 @@ import { cn } from "@/lib/utils";
 import { CategoryImage } from "./CategoryImage";
 import { CategoryContent } from "./CategoryContent";
 import { toast } from "sonner";
-import { Skill } from "@/components/dashboard/audio/types";
+
+interface Skill {
+  id: string;
+  title: string;
+  summary?: string;
+}
 
 interface CategoryCardProps {
   id: string;

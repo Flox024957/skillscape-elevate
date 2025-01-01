@@ -1,30 +1,19 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { useAudioPlayer } from "./audio/hooks/useAudioPlayer";
+import { useAudioPlayer } from "./audio/useAudioPlayer";
 import PlaybackControls from "./audio/PlaybackControls";
 import VolumeControl from "./audio/VolumeControl";
 import ProgressBar from "./audio/ProgressBar";
 import VoiceSelector from "./audio/VoiceSelector";
 import { Slider } from "@/components/ui/slider";
-import { Skill } from "./audio/types";
 
 interface AudioPlayerProps {
   selectedContent: string;
   onContentSelect: (content: string) => void;
   playbackSpeed: number;
-  skills?: Skill[];
-  selectedSkillIndex?: number;
-  onSkillChange?: (index: number) => void;
 }
 
-const AudioPlayer = ({ 
-  selectedContent, 
-  onContentSelect, 
-  playbackSpeed = 1,
-  skills = [],
-  selectedSkillIndex = -1,
-  onSkillChange
-}: AudioPlayerProps) => {
+const AudioPlayer = ({ selectedContent, onContentSelect, playbackSpeed = 1 }: AudioPlayerProps) => {
   const [randomMode, setRandomMode] = useState(false);
   const {
     isPlaying,
@@ -37,41 +26,11 @@ const AudioPlayer = ({
     handlePlay,
     handleVolumeChange,
     formatTime,
-  } = useAudioPlayer(selectedContent, playbackSpeed, () => {
-    // Callback exécuté à la fin de la lecture
-    if (skills.length > 0 && selectedSkillIndex < skills.length - 1 && onSkillChange) {
-      if (randomMode) {
-        const randomIndex = Math.floor(Math.random() * skills.length);
-        onSkillChange(randomIndex);
-      } else {
-        onSkillChange(selectedSkillIndex + 1);
-      }
-    }
-  });
+  } = useAudioPlayer(selectedContent, playbackSpeed);
 
   const handleRandomPlay = () => {
     setRandomMode(!randomMode);
-    if (!randomMode && skills.length > 0 && onSkillChange) {
-      const randomIndex = Math.floor(Math.random() * skills.length);
-      onSkillChange(randomIndex);
-    }
-  };
-
-  const handlePrevious = () => {
-    if (selectedSkillIndex > 0 && onSkillChange) {
-      onSkillChange(selectedSkillIndex - 1);
-    }
-  };
-
-  const handleNext = () => {
-    if (selectedSkillIndex < skills.length - 1 && onSkillChange) {
-      onSkillChange(selectedSkillIndex + 1);
-    }
-  };
-
-  const handlePlayClick = () => {
-    if (!selectedContent) return;
-    handlePlay();
+    // Implement random play logic here
   };
 
   return (
@@ -99,13 +58,8 @@ const AudioPlayer = ({
           <PlaybackControls
             isPlaying={isPlaying}
             selectedContent={selectedContent}
-            onPlay={handlePlayClick}
+            onPlay={handlePlay}
             onRandomPlay={handleRandomPlay}
-            onPrevious={handlePrevious}
-            onNext={handleNext}
-            hasPlaylist={skills.length > 0}
-            isFirst={selectedSkillIndex === 0}
-            isLast={selectedSkillIndex === skills.length - 1}
           />
           <div className="flex items-center gap-2 w-full md:w-auto">
             <span className="text-sm whitespace-nowrap">Vitesse : {playbackSpeed}x</span>

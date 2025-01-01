@@ -3,8 +3,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { CategorySelect } from "./skills/CategorySelect";
 import { SkillsList } from "./skills/SkillsList";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Card } from "@/components/ui/card";
-import { useState } from "react";
 
 interface SkillsSectionProps {
   onContentSelect: (content: string) => void;
@@ -24,8 +22,6 @@ export const SkillsSection = ({
   selectedSkills,
   filters 
 }: SkillsSectionProps) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
-
   const { data: categories = [] } = useQuery({
     queryKey: ['categories'],
     queryFn: async () => {
@@ -40,8 +36,11 @@ export const SkillsSection = ({
   });
 
   const { data: skills = [] } = useQuery({
-    queryKey: ['skills', selectedCategory],
+    queryKey: ['skills', filters],
     queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return [];
+
       let query = supabase
         .from('skills')
         .select(`
@@ -55,8 +54,19 @@ export const SkillsSection = ({
           )
         `);
 
-      if (selectedCategory) {
-        query = query.eq('category_id', selectedCategory);
+      if (filters.categoryId) {
+        query = query.eq('category_id', filters.categoryId);
+      }
+
+      if (filters.userSkillsOnly) {
+        const { data: userSkills } = await supabase
+          .from('user_skills')
+          .select('skill_id')
+          .eq('user_id', user.id);
+        
+        if (userSkills) {
+          query = query.in('id', userSkills.map(s => s.skill_id));
+        }
       }
 
       const { data, error } = await query;
@@ -69,18 +79,14 @@ export const SkillsSection = ({
     <div className="space-y-4">
       <CategorySelect 
         categories={categories} 
-        onSelect={setSelectedCategory}
+        onSelect={onSkillSelect} 
       />
-      <Card className="p-4">
-        <ScrollArea className="h-[600px]">
-          <SkillsList 
-            skills={skills} 
-            onContentSelect={onContentSelect}
-            onSkillSelect={onSkillSelect}
-            selectedSkills={selectedSkills}
-          />
-        </ScrollArea>
-      </Card>
+      <ScrollArea className="h-[772px] rounded-md border p-4">
+        <SkillsList 
+          skills={skills} 
+          onContentSelect={onContentSelect}
+        />
+      </ScrollArea>
     </div>
   );
 };

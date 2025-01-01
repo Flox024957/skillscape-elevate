@@ -5,7 +5,6 @@ import Auth from "@/pages/Auth";
 import Dashboard from "@/pages/Dashboard";
 import AudioPage from "@/pages/AudioPage";
 import CategoryPage from "@/pages/CategoryPage";
-import Index from "@/pages/Index";
 
 interface AppRoutesProps {
   isAuthenticated: boolean;
@@ -14,8 +13,8 @@ interface AppRoutesProps {
 export const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
   return (
     <Routes>
-      {/* Page d'accueil */}
-      <Route path="/" element={<Index />} />
+      {/* Redirection de la racine vers /main */}
+      <Route path="/" element={<Navigate to="/main" replace />} />
       
       {/* Route d'authentification */}
       <Route path="/auth" element={
@@ -48,7 +47,7 @@ export const AppRoutes = ({ isAuthenticated }: AppRoutesProps) => {
       } />
 
       {/* Fallback pour les routes non trouvées */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<Navigate to="/main" replace />} />
     </Routes>
   );
 };

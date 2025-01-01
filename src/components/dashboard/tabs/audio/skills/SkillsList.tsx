@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Play, Plus, Minus } from "lucide-react";
+import { Play, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -15,16 +15,9 @@ interface Skill {
 interface SkillsListProps {
   skills: Skill[];
   onContentSelect: (content: string) => void;
-  onSkillSelect: (skillId: string) => void;
-  selectedSkills: string[];
 }
 
-export const SkillsList = ({ 
-  skills, 
-  onContentSelect,
-  onSkillSelect,
-  selectedSkills 
-}: SkillsListProps) => {
+export const SkillsList = ({ skills, onContentSelect }: SkillsListProps) => {
   const handleAddToPlaylist = async (skillId: string, title: string) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
@@ -69,42 +62,7 @@ export const SkillsList = ({
       }
     }
 
-    onSkillSelect(skillId);
     toast.success(`${title} ajouté à la playlist de lecture`);
-  };
-
-  const handleRemoveFromPlaylist = async (skillId: string, title: string) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      toast.error("Vous devez être connecté pour modifier la playlist");
-      return;
-    }
-
-    const { data: existingPlaylist } = await supabase
-      .from('skill_playlists')
-      .select()
-      .eq('user_id', user.id)
-      .eq('name', 'Lecture en cours')
-      .single();
-
-    if (existingPlaylist) {
-      const updatedSkills = existingPlaylist.skills.filter(id => id !== skillId);
-      const { error } = await supabase
-        .from('skill_playlists')
-        .update({ 
-          skills: updatedSkills,
-          skill_order: Array.from({ length: updatedSkills.length }, (_, i) => i)
-        })
-        .eq('id', existingPlaylist.id);
-
-      if (error) {
-        toast.error("Erreur lors de la suppression de la compétence");
-        return;
-      }
-
-      onSkillSelect(skillId);
-      toast.success(`${title} retiré de la playlist`);
-    }
   };
 
   return (
@@ -137,25 +95,14 @@ export const SkillsList = ({
             )}
           </div>
           <div className="flex gap-2">
-            {selectedSkills.includes(skill.id) ? (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => handleRemoveFromPlaylist(skill.id, skill.titre)}
-                className="hover:bg-destructive/10"
-              >
-                <Minus className="h-4 w-4" />
-              </Button>
-            ) : (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => handleAddToPlaylist(skill.id, skill.titre)}
-                className="hover:bg-primary/10"
-              >
-                <Plus className="h-4 w-4" />
-              </Button>
-            )}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => handleAddToPlaylist(skill.id, skill.titre)}
+              className="hover:bg-primary/10"
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
             <Button
               variant="ghost"
               size="icon"
