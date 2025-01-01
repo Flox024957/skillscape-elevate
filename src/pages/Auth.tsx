@@ -5,6 +5,7 @@ import { AuthContainer } from "@/components/auth/AuthContainer";
 import { AuthHeader } from "@/components/auth/AuthHeader";
 import { AuthForm } from "@/components/auth/AuthForm";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 const Auth = () => {
   const navigate = useNavigate();
