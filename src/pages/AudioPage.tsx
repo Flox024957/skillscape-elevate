@@ -2,11 +2,10 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import PlaylistSelector from "@/components/dashboard/audio/PlaylistSelector";
-import { usePlaylist } from "@/components/dashboard/audio/usePlaylist";
+import { SkillLibrary } from "@/components/dashboard/audio/library/SkillLibrary";
+import { PlaylistManager } from "@/components/dashboard/audio/playlist/PlaylistManager";
 import AudioPlayer from "@/components/dashboard/AudioPlayer";
-import { SkillsSection } from "@/components/dashboard/tabs/audio/SkillsSection";
-import { PlaylistSection } from "@/components/dashboard/tabs/audio/PlaylistSection";
+import { usePlaylist } from "@/components/dashboard/audio/usePlaylist";
 import { toast } from "sonner";
 
 const AudioPage = () => {
@@ -46,55 +45,43 @@ const AudioPage = () => {
             <Card className="p-6">
               <Tabs defaultValue="skills" className="w-full space-y-6">
                 <TabsList>
-                  <TabsTrigger value="skills">Compétences</TabsTrigger>
+                  <TabsTrigger value="skills">Bibliothèque</TabsTrigger>
                   <TabsTrigger value="playlist">Playlist</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="skills" className="space-y-4">
-                  <SkillsSection 
+                  <SkillLibrary 
                     onContentSelect={() => {}}
                     onSkillSelect={() => {}}
                     selectedSkills={currentPlaylist?.skills?.map(s => s.id) || []}
-                    filters={{
-                      userSkillsOnly: false,
-                      includeMastered: true,
-                      playbackSpeed: 1
-                    }}
                   />
                 </TabsContent>
 
                 <TabsContent value="playlist" className="space-y-4">
-                  <PlaylistSection />
+                  <PlaylistManager />
                 </TabsContent>
               </Tabs>
             </Card>
 
             <Card className="p-6">
-              <div className="space-y-4">
-                <PlaylistSelector 
-                  selectedPlaylist={selectedPlaylist}
-                  onPlaylistChange={handlePlaylistChange}
+              {isLoading ? (
+                <div className="text-center py-4 text-muted-foreground">
+                  Chargement de la playlist...
+                </div>
+              ) : currentPlaylist ? (
+                <AudioPlayer
+                  selectedContent={selectedContent}
+                  onContentSelect={() => {}}
+                  playbackSpeed={1}
+                  skills={currentPlaylist.skills}
+                  selectedSkillIndex={selectedSkillIndex}
+                  onSkillChange={handleSkillChange}
                 />
-
-                {isLoading ? (
-                  <div className="text-center py-4 text-muted-foreground">
-                    Chargement de la playlist...
-                  </div>
-                ) : currentPlaylist ? (
-                  <AudioPlayer
-                    selectedContent={selectedContent}
-                    onContentSelect={() => {}}
-                    playbackSpeed={1}
-                    skills={currentPlaylist.skills}
-                    selectedSkillIndex={selectedSkillIndex}
-                    onSkillChange={handleSkillChange}
-                  />
-                ) : (
-                  <div className="text-center py-4 text-muted-foreground">
-                    Sélectionnez une playlist pour commencer
-                  </div>
-                )}
-              </div>
+              ) : (
+                <div className="text-center py-4 text-muted-foreground">
+                  Sélectionnez une playlist pour commencer
+                </div>
+              )}
             </Card>
           </div>
         </motion.div>
