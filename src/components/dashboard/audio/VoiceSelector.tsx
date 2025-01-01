@@ -23,21 +23,25 @@ const VoiceSelector = ({ selectedVoice, voices, onVoiceChange }: VoiceSelectorPr
       onValueChange={onVoiceChange}
     >
       <SelectTrigger className={cn(
-        isMobile ? "w-full text-sm" : "w-[280px]"
+        isMobile ? "w-full text-sm h-9" : "w-[280px]",
+        "bg-[#1E3D7B]/20 border-[#1E3D7B]/30"
       )}>
         <SelectValue placeholder="Sélectionner une voix" />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className={cn(
+        "bg-[#0A1E3D]/95 border-[#1E3D7B]/30 backdrop-blur-sm",
+        isMobile && "w-[calc(100vw-2rem)]"
+      )}>
         {voices.map((voice) => (
           <SelectItem 
             key={voice.name} 
             value={voice.name}
             className={cn(
               "flex items-center space-x-2",
-              isMobile && "text-sm"
+              isMobile && "text-sm py-1.5"
             )}
           >
-            <span>
+            <span className="truncate">
               {voice.name} ({voice.lang})
               {voice.localService && " - Local"}
             </span>
