@@ -45,6 +45,11 @@ const AudioPlayer = ({ selectedContent, onContentSelect, playbackSpeed = 1 }: Au
     formatTime,
   } = useAudioPlayer(getContentFromTrack(getCurrentTrack()), playbackSpeed);
 
+  const handlePlayContent = (content: string) => {
+    handlePlay(content);
+    onContentSelect(content);
+  };
+
   return (
     <Card>
       <CardContent className="space-y-6 p-6">
@@ -75,10 +80,10 @@ const AudioPlayer = ({ selectedContent, onContentSelect, playbackSpeed = 1 }: Au
           <PlaybackControls
             isPlaying={isPlaying}
             selectedContent={getContentFromTrack(getCurrentTrack())}
-            onPlay={() => handlePlay(getContentFromTrack(getCurrentTrack()))}
+            onPlay={() => handlePlayContent(getContentFromTrack(getCurrentTrack()))}
             onRandomPlay={toggleRandomMode}
-            onPrevious={() => handlePlay(getContentFromTrack(previousTrack()))}
-            onNext={() => handlePlay(getContentFromTrack(nextTrack()))}
+            onPrevious={() => handlePlayContent(getContentFromTrack(previousTrack()))}
+            onNext={() => handlePlayContent(getContentFromTrack(nextTrack()))}
             randomMode={randomMode}
           />
           <div className="flex items-center gap-2 w-full md:w-auto">

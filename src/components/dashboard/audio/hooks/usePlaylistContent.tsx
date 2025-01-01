@@ -8,6 +8,7 @@ export const usePlaylistContent = (currentPlaylist: string | null) => {
     queryFn: async () => {
       if (!currentPlaylist) return [];
 
+      // First get the playlist to get the skill IDs
       const { data: playlist, error } = await supabase
         .from('skill_playlists')
         .select('skills')
@@ -15,9 +16,10 @@ export const usePlaylistContent = (currentPlaylist: string | null) => {
         .single();
 
       if (error) throw error;
-
+      
       if (!playlist?.skills?.length) return [];
 
+      // Then get the actual skills data
       const { data: skills, error: skillsError } = await supabase
         .from('skills')
         .select('*')
