@@ -15,7 +15,6 @@ export const CategoriesContent = () => {
       id: skill.id,
       titre: skill.titre,
       resume: skill.resume,
-      description: "",
       exemples: [],
       action_concrete: "",
       category_id: cat.id,
