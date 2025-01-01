@@ -8,6 +8,7 @@ import { PlaylistSection } from "./PlaylistSection";
 import { FiltersSection } from "./FiltersSection";
 import VoiceRecordingsSection from "./recordings/VoiceRecordingsSection";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { motion } from "framer-motion";
 
 const AudioTabsContainer = () => {
   const [filters, setFilters] = useState({
@@ -88,7 +89,12 @@ const AudioTabsContainer = () => {
         </TabsTrigger>
       </TabsList>
 
-      <div className={cn("mt-6", isMobile && "px-2")}>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className={cn("mt-4", isMobile && "px-2")}
+      >
         <TabsContent value="skills" className="m-0">
           <SkillsSection />
         </TabsContent>
@@ -111,7 +117,7 @@ const AudioTabsContainer = () => {
         <TabsContent value="recordings" className="m-0">
           <VoiceRecordingsSection />
         </TabsContent>
-      </div>
+      </motion.div>
     </Tabs>
   );
 };

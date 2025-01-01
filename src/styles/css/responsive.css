@@ -42,6 +42,19 @@
     @apply rounded-lg p-2;
   }
 
+  /* Audio Player Mobile Optimizations */
+  .audio-controls {
+    @apply flex-col gap-3;
+  }
+
+  .audio-slider {
+    @apply w-full;
+  }
+
+  .audio-buttons {
+    @apply grid grid-cols-3 gap-2;
+  }
+
   /* Optimisations de performance */
   * {
     -webkit-tap-highlight-color: transparent;
