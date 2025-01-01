@@ -22,7 +22,6 @@ interface Skill {
 
 interface SkillsListProps {
   skills: Skill[];
-  onContentSelect: (content: string) => void;
 }
 
 export const SkillsList = ({ skills }: SkillsListProps) => {
@@ -99,19 +98,17 @@ export const SkillsList = ({ skills }: SkillsListProps) => {
               </p>
             )}
           </div>
-          <div className="flex gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => {
-                setSelectedSkill(skill);
-                setIsDialogOpen(true);
-              }}
-              className="hover:bg-primary/10"
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
-          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => {
+              setSelectedSkill(skill);
+              setIsDialogOpen(true);
+            }}
+            className="hover:bg-primary/10"
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
         </div>
       ))}
 
