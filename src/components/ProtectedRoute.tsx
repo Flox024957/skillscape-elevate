@@ -1,68 +1,74 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { Navigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  isAuthenticated: boolean;
 }
 
-export const ProtectedRoute = ({ children, isAuthenticated }: ProtectedRouteProps) => {
-  const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(true);
+const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const location = useLocation();
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        if (!isAuthenticated) {
-          console.log('Not authenticated, redirecting to auth page');
-          navigate('/auth', { replace: true });
-          return;
-        }
-
         const { data: { session }, error } = await supabase.auth.getSession();
         
         if (error) {
-          console.error('Error checking session:', error);
-          toast.error("Erreur lors de la vérification de la session");
-          navigate('/auth', { replace: true });
+          console.error("Auth check error:", error);
+          setIsAuthenticated(false);
+          toast.error("Erreur d'authentification");
           return;
         }
 
         if (!session) {
-          console.log('No session found, redirecting to auth page');
-          navigate('/auth', { replace: true });
+          console.log("No session found, redirecting to auth");
+          setIsAuthenticated(false);
           return;
         }
 
-        console.log('Session found:', session.user.id);
-        setIsLoading(false);
+        console.log("Session found:", session.user.id);
+        setIsAuthenticated(true);
       } catch (error) {
-        console.error('Error in checkAuth:', error);
+        console.error("Protected route error:", error);
+        setIsAuthenticated(false);
         toast.error("Erreur lors de la vérification de l'authentification");
-        navigate('/auth', { replace: true });
       }
     };
 
+    // Initial check
     checkAuth();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log('Auth state changed:', _event, session?.user?.id);
-      if (!session) {
-        navigate('/auth', { replace: true });
-      }
+    // Subscribe to auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("Auth state changed:", event, session?.user?.id);
+      setIsAuthenticated(!!session);
     });
 
     return () => {
-      console.log('Cleaning up auth subscription');
       subscription.unsubscribe();
     };
-  }, [navigate, isAuthenticated]);
+  }, []);
 
-  if (isLoading) {
-    return null;
+  // Show nothing while checking authentication
+  if (isAuthenticated === null) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    );
   }
 
+  // Redirect to auth if not authenticated
+  if (!isAuthenticated) {
+    console.log("Not authenticated, redirecting from:", location.pathname);
+    return <Navigate to="/auth" state={{ from: location.pathname }} replace />;
+  }
+
+  // Render children if authenticated
   return <>{children}</>;
 };
+
+export default ProtectedRoute;

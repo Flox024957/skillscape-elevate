@@ -1,36 +1,27 @@
 import { BrowserRouter } from "react-router-dom";
-import { AppRoutes } from "./routes/AppRoutes";
-import { useEffect, useState } from "react";
-import { supabase } from "./integrations/supabase/client";
-import { Toaster } from "@/components/ui/sonner";
-import { AudioProvider } from "@/contexts/AudioContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "sonner";
+import AppRoutes from "./routes/AppRoutes";
+import { AudioProvider } from "./contexts/AudioContext";
+import "./App.css";
 
 // Create a client
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 60 * 1000, // 1 minute
       retry: 1,
+      refetchOnWindowFocus: false,
     },
   },
 });
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    supabase.auth.onAuthStateChange((event, session) => {
-      setIsAuthenticated(!!session);
-    });
-  }, []);
-
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <AudioProvider>
-          <AppRoutes isAuthenticated={isAuthenticated} />
-          <Toaster />
+          <AppRoutes />
+          <Toaster richColors position="top-center" />
         </AudioProvider>
       </BrowserRouter>
     </QueryClientProvider>
