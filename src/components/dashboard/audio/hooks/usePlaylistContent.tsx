@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { Skill } from "@/types/skill";
 
 export const usePlaylistContent = (currentPlaylist: string | null) => {
   return useQuery({
@@ -19,12 +20,12 @@ export const usePlaylistContent = (currentPlaylist: string | null) => {
 
       const { data: skills, error: skillsError } = await supabase
         .from('skills')
-        .select('titre')
+        .select('*')
         .in('id', playlist.skills);
 
       if (skillsError) throw skillsError;
 
-      return skills.map(skill => skill.titre);
+      return skills as Skill[];
     },
     enabled: !!currentPlaylist,
   });

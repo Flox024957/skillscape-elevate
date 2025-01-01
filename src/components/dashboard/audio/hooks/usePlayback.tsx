@@ -22,7 +22,7 @@ export const usePlayback = (
     utteranceRef,
   } = useSkillPlayback(playbackSpeed, volume, selectedVoice, voices);
 
-  const getSkillContent = (skill: Skill) => {
+  const getSkillContent = (skill: Skill): string | null => {
     const sections = [
       `Résumé : ${skill.resume}`,
       `Description : ${skill.description}`,
