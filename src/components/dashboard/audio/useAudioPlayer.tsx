@@ -2,10 +2,15 @@ import { useState, useEffect } from 'react';
 import { useVoices } from './hooks/useVoices';
 import { usePlayback } from './hooks/usePlayback';
 
-export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 1) => {
+export const useAudioPlayer = (
+  selectedContent: string, 
+  playbackSpeed: number = 1,
+  onPlaybackComplete?: () => void
+) => {
   const [volume, setVolume] = useState(1);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
   const { selectedVoice, voices, setSelectedVoice } = useVoices();
   const {
@@ -14,7 +19,14 @@ export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 
     handlePause,
     handleSeek,
     utteranceRef,
-  } = usePlayback(playbackSpeed, volume, selectedVoice, voices, selectedContent);
+  } = usePlayback(
+    playbackSpeed, 
+    volume, 
+    selectedVoice, 
+    voices, 
+    selectedContent,
+    onPlaybackComplete
+  );
 
   const handleVolumeChange = (value: number[]) => {
     const newVolume = value[0];
@@ -33,7 +45,7 @@ export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 
 
   useEffect(() => {
     let interval: number;
-    if (isPlaying) {
+    if (isPlaying && !isPaused) {
       interval = window.setInterval(() => {
         setCurrentTime(prev => Math.min(prev + 50, duration));
       }, 50);
@@ -43,17 +55,19 @@ export const useAudioPlayer = (selectedContent: string, playbackSpeed: number = 
         clearInterval(interval);
       }
     };
-  }, [isPlaying, duration]);
+  }, [isPlaying, isPaused, duration]);
 
   useEffect(() => {
     if (selectedContent) {
-      // Estimation approximative de la durée basée sur le nombre de caractères
-      setDuration(selectedContent.length * 50);
+      // Estimation plus précise de la durée basée sur le nombre de caractères et la vitesse de lecture
+      const durationPerChar = 50 / playbackSpeed;
+      setDuration(selectedContent.length * durationPerChar);
     }
-  }, [selectedContent]);
+  }, [selectedContent, playbackSpeed]);
 
   return {
     isPlaying,
+    isPaused,
     selectedVoice,
     voices,
     volume,

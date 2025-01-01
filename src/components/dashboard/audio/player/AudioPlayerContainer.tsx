@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import SpeedControl from "./SpeedControl";
 import ContentDisplay from "./ContentDisplay";
+import { useEffect } from "react";
 
 interface AudioPlayerContainerProps {
   selectedContent: string;
@@ -52,8 +53,16 @@ const AudioPlayerContainer = ({
     `.trim();
   };
 
+  const handlePlaybackComplete = () => {
+    const nextContent = getContentFromTrack(nextTrack());
+    if (nextContent) {
+      handlePlayContent(nextContent);
+    }
+  };
+
   const {
     isPlaying,
+    isPaused,
     selectedVoice,
     voices,
     volume,
@@ -64,7 +73,7 @@ const AudioPlayerContainer = ({
     handleVolumeChange,
     formatTime,
     handleSeek,
-  } = useAudioPlayer(getContentFromTrack(getCurrentTrack()), playbackSpeed);
+  } = useAudioPlayer(getContentFromTrack(getCurrentTrack()), playbackSpeed, handlePlaybackComplete);
 
   const handlePlayContent = (content: string) => {
     if (!selectedVoice) {
@@ -84,6 +93,19 @@ const AudioPlayerContainer = ({
     const previousContent = getContentFromTrack(previousTrack());
     handlePlayContent(previousContent);
   };
+
+  // Gérer les erreurs de synthèse vocale
+  useEffect(() => {
+    const handleVoiceError = () => {
+      toast.error("Erreur de synthèse vocale. Veuillez réessayer.");
+    };
+
+    window.speechSynthesis.addEventListener('error', handleVoiceError);
+
+    return () => {
+      window.speechSynthesis.removeEventListener('error', handleVoiceError);
+    };
+  }, []);
 
   return (
     <Card>
@@ -124,6 +146,7 @@ const AudioPlayerContainer = ({
         )}>
           <PlaybackControls
             isPlaying={isPlaying}
+            isPaused={isPaused}
             selectedContent={getContentFromTrack(getCurrentTrack())}
             onPlay={() => handlePlayContent(getContentFromTrack(getCurrentTrack()))}
             onRandomPlay={toggleRandomMode}

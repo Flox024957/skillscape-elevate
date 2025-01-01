@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 
 interface PlaybackControlsProps {
   isPlaying: boolean;
+  isPaused: boolean;
   selectedContent: string;
   onPlay: () => void;
   onRandomPlay: () => void;
@@ -14,6 +15,7 @@ interface PlaybackControlsProps {
 
 const PlaybackControls = ({ 
   isPlaying, 
+  isPaused,
   selectedContent, 
   onPlay, 
   onRandomPlay,
@@ -47,7 +49,7 @@ const PlaybackControls = ({
         onClick={onPlay}
         className="w-10 h-10 bg-[#0EA5E9] hover:bg-[#0EA5E9]/80"
       >
-        {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+        {isPlaying && !isPaused ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
       </Button>
       <Button
         size="icon"
