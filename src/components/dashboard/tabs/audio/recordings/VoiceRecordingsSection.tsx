@@ -15,6 +15,9 @@ const VoiceRecordingsSection = () => {
   const { data: recordings, refetch } = useQuery({
     queryKey: ['voice-recordings'],
     queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
       const { data, error } = await supabase
         .from('user_voice_recordings')
         .select('*')
@@ -39,6 +42,9 @@ const VoiceRecordingsSection = () => {
 
   const handleStopRecording = async () => {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
       const blob = await stopRecording();
       const filename = `${crypto.randomUUID()}.webm`;
       
@@ -58,6 +64,7 @@ const VoiceRecordingsSection = () => {
           title: recordingTitle,
           audio_url: publicUrl.publicUrl,
           duration: Math.round(blob.size / 16000), // Estimation approximative
+          user_id: user.id // Explicitly set the user_id
         });
 
       if (dbError) throw dbError;
