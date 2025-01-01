@@ -12,9 +12,7 @@ interface CategorySelectProps {
 
 export const CategorySelect = ({ categories, onSelect }: CategorySelectProps) => {
   return (
-    <Select
-      onValueChange={(value) => onSelect(value === "all" ? "" : value)}
-    >
+    <Select onValueChange={(value) => onSelect(value === "all" ? "" : value)}>
       <SelectTrigger className="w-full sm:w-[200px]">
         <SelectValue placeholder="Filtrer par catégorie" />
       </SelectTrigger>
