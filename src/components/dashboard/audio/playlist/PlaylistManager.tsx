@@ -1,14 +1,12 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
-import { ArrowUp, ArrowDown, Minus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePlaylist } from "../usePlaylist";
 import { toast } from "sonner";
-import { PlaylistCreator } from "./PlaylistCreator";
-import { PlaylistSelector } from "./PlaylistSelector";
 import AudioPlayer from "@/components/dashboard/AudioPlayer";
+import { PlaylistControls } from "./PlaylistControls";
+import { PlaylistItem } from "./PlaylistItem";
 
 export const PlaylistManager = () => {
   const [selectedPlaylist, setSelectedPlaylist] = useState<string | null>(null);
@@ -91,13 +89,10 @@ export const PlaylistManager = () => {
   return (
     <Card className="p-6">
       <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <PlaylistSelector
-            selectedPlaylist={selectedPlaylist}
-            onPlaylistChange={handlePlaylistChange}
-          />
-          <PlaylistCreator />
-        </div>
+        <PlaylistControls
+          selectedPlaylist={selectedPlaylist}
+          onPlaylistChange={handlePlaylistChange}
+        />
 
         {isLoading ? (
           <div className="text-center py-4 text-muted-foreground">
@@ -116,42 +111,25 @@ export const PlaylistManager = () => {
 
             <ScrollArea className="h-[500px]">
               {currentPlaylist?.skills?.map((skill, index) => {
-                const skillData = typeof skill === 'object' ? skill : { id: skill, titre: '', resume: '' };
+                const skillData = typeof skill === 'object' ? skill : {
+                  id: skill,
+                  titre: '',
+                  resume: ''
+                };
+
                 return (
-                  <div
+                  <PlaylistItem
                     key={skillData.id}
-                    className="flex items-center justify-between p-4 bg-card/50 hover:bg-card/80 rounded-lg border border-border/50 mb-2"
-                  >
-                    <div>
-                      <h4 className="font-medium">{skillData.titre}</h4>
-                      <p className="text-sm text-muted-foreground">{skillData.resume}</p>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleMoveSkill(skillData.id, 'up')}
-                        disabled={index === 0}
-                      >
-                        <ArrowUp className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleMoveSkill(skillData.id, 'down')}
-                        disabled={index === currentPlaylist.skills.length - 1}
-                      >
-                        <ArrowDown className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleRemoveSkill(skillData.id)}
-                      >
-                        <Minus className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
+                    id={skillData.id}
+                    titre={skillData.titre}
+                    resume={skillData.resume}
+                    index={index}
+                    isFirst={index === 0}
+                    isLast={index === currentPlaylist.skills.length - 1}
+                    onMoveUp={(id) => handleMoveSkill(id, 'up')}
+                    onMoveDown={(id) => handleMoveSkill(id, 'down')}
+                    onRemove={handleRemoveSkill}
+                  />
                 );
               })}
             </ScrollArea>
