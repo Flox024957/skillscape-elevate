@@ -15,7 +15,10 @@ export const CategoriesSection = () => {
       const { data: categoriesData, error: categoriesError } = await supabase
         .from('categories')
         .select(`
-          *,
+          id,
+          name,
+          description,
+          created_at,
           skills (
             id,
             titre,
@@ -27,10 +30,12 @@ export const CategoriesSection = () => {
             updated_at
           )
         `)
-        .order('name')
-        .limit(9);
+        .order('name');
       
-      if (categoriesError) throw categoriesError;
+      if (categoriesError) {
+        console.error('Error fetching categories:', categoriesError);
+        throw categoriesError;
+      }
       
       return (categoriesData || []).map(category => ({
         ...category,
