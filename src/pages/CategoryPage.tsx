@@ -33,7 +33,7 @@ const CategoryPage = () => {
           )
         `)
         .eq('id', id)
-        .single();
+        .maybeSingle();
 
       if (categoryError) {
         console.error('Error fetching category:', categoryError);
