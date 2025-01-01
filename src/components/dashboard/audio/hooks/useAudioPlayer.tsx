@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
+import { useVoiceSelection } from './useVoiceSelection';
+import { usePlaybackProgress } from './usePlaybackProgress';
 
 export const useAudioPlayer = (
   selectedContent: string, 
@@ -7,45 +9,20 @@ export const useAudioPlayer = (
   onEnd?: () => void
 ) => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [selectedVoice, setSelectedVoice] = useState("");
-  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [volume, setVolume] = useState(1);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
   const { toast } = useToast();
   const speechSynthesis = window.speechSynthesis;
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
-  const progressInterval = useRef<number>();
-
-  useEffect(() => {
-    const loadVoices = () => {
-      const availableVoices = speechSynthesis.getVoices();
-      console.log('Voix disponibles:', availableVoices);
-      setVoices(availableVoices);
-      if (availableVoices.length > 0) {
-        const frenchVoice = availableVoices.find(voice => voice.lang.startsWith('fr'));
-        if (frenchVoice) {
-          console.log('Voix française trouvée:', frenchVoice.name);
-          setSelectedVoice(frenchVoice.name);
-        } else {
-          console.log('Aucune voix française trouvée, utilisation de la première voix disponible');
-          setSelectedVoice(availableVoices[0].name);
-        }
-      }
-    };
-
-    loadVoices();
-    speechSynthesis.onvoiceschanged = loadVoices;
-
-    return () => {
-      if (utteranceRef.current) {
-        speechSynthesis.cancel();
-      }
-      if (progressInterval.current) {
-        clearInterval(progressInterval.current);
-      }
-    };
-  }, []);
+  
+  const { selectedVoice, setSelectedVoice, voices } = useVoiceSelection();
+  const { 
+    currentTime, 
+    duration, 
+    startProgress, 
+    stopProgress, 
+    formatTime,
+    progressInterval 
+  } = usePlaybackProgress();
 
   useEffect(() => {
     if (utteranceRef.current) {
@@ -75,7 +52,6 @@ export const useAudioPlayer = (
       return;
     }
 
-    // Annuler toute lecture en cours
     speechSynthesis.cancel();
 
     const utterance = new SpeechSynthesisUtterance(selectedContent);
@@ -90,23 +66,17 @@ export const useAudioPlayer = (
 
     utterance.volume = volume;
     utterance.rate = playbackSpeed;
-    utterance.lang = 'fr-FR'; // Forcer la langue française
+    utterance.lang = 'fr-FR';
 
     utterance.onstart = () => {
       console.log('Début de la lecture');
-      setDuration(utterance.text.length * 50);
-      progressInterval.current = window.setInterval(() => {
-        setCurrentTime(prev => Math.min(prev + 50, utterance.text.length * 50));
-      }, 50);
+      startProgress(utterance.text.length);
     };
 
     utterance.onend = () => {
       console.log('Fin de la lecture');
       setIsPlaying(false);
-      setCurrentTime(0);
-      if (progressInterval.current) {
-        clearInterval(progressInterval.current);
-      }
+      stopProgress();
       if (onEnd) {
         onEnd();
       }
@@ -120,9 +90,7 @@ export const useAudioPlayer = (
         variant: "destructive",
       });
       setIsPlaying(false);
-      if (progressInterval.current) {
-        clearInterval(progressInterval.current);
-      }
+      stopProgress();
     };
 
     utteranceRef.current = utterance;
@@ -146,13 +114,6 @@ export const useAudioPlayer = (
     if (utteranceRef.current) {
       utteranceRef.current.volume = newVolume;
     }
-  };
-
-  const formatTime = (ms: number) => {
-    const seconds = Math.floor(ms / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
   return {

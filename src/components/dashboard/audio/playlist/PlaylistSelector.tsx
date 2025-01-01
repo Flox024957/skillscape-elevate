@@ -7,7 +7,7 @@ interface PlaylistSelectorProps {
   onPlaylistChange: (value: string) => void;
 }
 
-const PlaylistSelector = ({ selectedPlaylist, onPlaylistChange }: PlaylistSelectorProps) => {
+export const PlaylistSelector = ({ selectedPlaylist, onPlaylistChange }: PlaylistSelectorProps) => {
   const { data: playlists, isLoading } = useQuery({
     queryKey: ['playlists'],
     queryFn: async () => {
@@ -56,5 +56,3 @@ const PlaylistSelector = ({ selectedPlaylist, onPlaylistChange }: PlaylistSelect
     </Select>
   );
 };
-
-export default PlaylistSelector;

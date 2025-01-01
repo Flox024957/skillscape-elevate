@@ -60,15 +60,15 @@ export const AuthForm = () => {
           variables: {
             default: {
               colors: {
-                brand: '#8B5CF6',
-                brandAccent: '#7C3AED',
+                brand: '#0EA5E9',
+                brandAccent: '#0284C7',
                 inputBackground: '#1A1F35',
                 inputText: '#FFFFFF',
-                inputBorder: '#8B5CF680',
-                inputBorderFocus: '#8B5CF6',
-                inputBorderHover: '#8B5CF6',
-                defaultButtonBackground: '#8B5CF6',
-                defaultButtonBackgroundHover: '#7C3AED',
+                inputBorder: '#0EA5E980',
+                inputBorderFocus: '#0EA5E9',
+                inputBorderHover: '#0EA5E9',
+                defaultButtonBackground: '#0EA5E9',
+                defaultButtonBackgroundHover: '#0284C7',
                 defaultButtonBorder: 'transparent',
                 defaultButtonText: '#FFFFFF',
               },
@@ -128,7 +128,7 @@ export const AuthForm = () => {
       </div>
       <Button 
         onClick={handleDemoLogin}
-        className="w-full bg-gradient-to-r from-violet-500 to-violet-600 hover:from-violet-600 hover:to-violet-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+        className="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
       >
         Accéder au Compte de Démonstration
       </Button>

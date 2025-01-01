@@ -1,23 +1,18 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-interface Category {
-  id: string;
-  name: string;
-}
-
 interface CategorySelectProps {
-  categories: Category[];
+  categories: { id: string; name: string }[];
   onSelect: (value: string) => void;
 }
 
 export const CategorySelect = ({ categories, onSelect }: CategorySelectProps) => {
   return (
-    <Select onValueChange={(value) => onSelect(value === "all" ? "" : value)}>
-      <SelectTrigger className="w-full sm:w-[200px]">
+    <Select onValueChange={onSelect}>
+      <SelectTrigger className="w-full bg-[#1E3D7B]/20 border-[#1E3D7B]/30">
         <SelectValue placeholder="Filtrer par catégorie" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="all">Toutes les catégories</SelectItem>
+        <SelectItem value="">Toutes les catégories</SelectItem>
         {categories.map((category) => (
           <SelectItem key={category.id} value={category.id}>
             {category.name}
