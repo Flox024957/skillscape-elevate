@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAudioPlayer } from "./audio/useAudioPlayer";
 import PlaybackControls from "./audio/PlaybackControls";
@@ -7,9 +6,7 @@ import ProgressBar from "./audio/ProgressBar";
 import VoiceSelector from "./audio/VoiceSelector";
 import { Slider } from "@/components/ui/slider";
 import PlaylistSelector from "./audio/playlist/PlaylistSelector";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { usePlaylistContent } from "./audio/hooks/usePlaylistContent";
+import { usePlaylist } from "./audio/hooks/usePlaylist";
 
 interface AudioPlayerProps {
   selectedContent: string;
@@ -18,26 +15,16 @@ interface AudioPlayerProps {
 }
 
 const AudioPlayer = ({ selectedContent, onContentSelect, playbackSpeed = 1 }: AudioPlayerProps) => {
-  const [randomMode, setRandomMode] = useState(false);
-  
-  // Récupérer la playlist "lecture en cours"
-  const { data: currentPlaylistId } = useQuery({
-    queryKey: ['default-playlist'],
-    queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return null;
-
-      const { data: playlists, error } = await supabase
-        .from('skill_playlists')
-        .select('id')
-        .eq('user_id', user.id)
-        .eq('name', 'Lecture en cours')
-        .single();
-
-      if (error) throw error;
-      return playlists?.id;
-    },
-  });
+  const {
+    currentPlaylist,
+    setCurrentPlaylist,
+    playlistContent,
+    randomMode,
+    nextTrack,
+    previousTrack,
+    getCurrentTrack,
+    toggleRandomMode,
+  } = usePlaylist();
 
   const {
     isPlaying,
@@ -50,22 +37,7 @@ const AudioPlayer = ({ selectedContent, onContentSelect, playbackSpeed = 1 }: Au
     handlePlay,
     handleVolumeChange,
     formatTime,
-    currentPlaylist,
-    setCurrentPlaylist,
-  } = useAudioPlayer(selectedContent, playbackSpeed);
-
-  const { data: playlistContent = [] } = usePlaylistContent(currentPlaylist);
-
-  // Sélectionner automatiquement la playlist "lecture en cours"
-  useEffect(() => {
-    if (currentPlaylistId && !currentPlaylist) {
-      setCurrentPlaylist(currentPlaylistId);
-    }
-  }, [currentPlaylistId, currentPlaylist, setCurrentPlaylist]);
-
-  const handleRandomPlay = () => {
-    setRandomMode(!randomMode);
-  };
+  } = useAudioPlayer(getCurrentTrack() || selectedContent, playbackSpeed);
 
   return (
     <Card>
@@ -96,9 +68,12 @@ const AudioPlayer = ({ selectedContent, onContentSelect, playbackSpeed = 1 }: Au
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <PlaybackControls
             isPlaying={isPlaying}
-            selectedContent={playlistContent[0] || selectedContent}
-            onPlay={() => handlePlay(playlistContent[0] || selectedContent)}
-            onRandomPlay={handleRandomPlay}
+            selectedContent={getCurrentTrack() || selectedContent}
+            onPlay={() => handlePlay(getCurrentTrack() || selectedContent)}
+            onRandomPlay={toggleRandomMode}
+            onPrevious={() => handlePlay(previousTrack())}
+            onNext={() => handlePlay(nextTrack())}
+            randomMode={randomMode}
           />
           <div className="flex items-center gap-2 w-full md:w-auto">
             <span className="text-sm whitespace-nowrap">Vitesse : {playbackSpeed}x</span>
