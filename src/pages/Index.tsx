@@ -1,6 +1,6 @@
 import { AnimatedBackground } from "@/components/main/background/AnimatedBackground";
 import HeroSection from "@/components/landing/HeroSection";
-import { CategoriesSection } from "@/components/main/CategoriesSection";
+import { MarketingSection } from "@/components/main/marketing/MarketingSection";
 
 const Index = () => {
   return (
@@ -9,7 +9,7 @@ const Index = () => {
       
       <main className="relative z-10">
         <HeroSection />
-        <CategoriesSection />
+        <MarketingSection />
       </main>
     </div>
   );

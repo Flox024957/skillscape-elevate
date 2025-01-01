@@ -41,11 +41,12 @@ const HeroSection = () => {
                    drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]"
         whileHover={{ scale: 1.02 }}
       >
-        Élevez Votre Potentiel Professionnel
+        Révélez Votre Plein Potentiel
       </motion.p>
       <p className="text-xl text-[#9CA3AF] max-w-2xl mx-auto mb-8 leading-relaxed
                     drop-shadow-[0_0_5px_rgba(255,255,255,0.3)]">
-        Développez vos compétences, fixez des objectifs ambitieux et suivez votre progression vers l'excellence professionnelle
+        Développez vos compétences, fixez des objectifs inspirants et suivez votre progression 
+        vers l'accomplissement personnel
       </p>
       <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
         <Button
@@ -55,7 +56,7 @@ const HeroSection = () => {
                    transform hover:-translate-y-1 transition-all duration-300
                    border border-[#0070F3]/50"
         >
-          Commencer Gratuitement
+          Commencer Votre Voyage
         </Button>
         <Button
           onClick={() => navigate("/dashboard")}
@@ -66,7 +67,7 @@ const HeroSection = () => {
                    shadow-[0_0_25px_rgba(249,115,22,0.4)] hover:shadow-[0_0_35px_rgba(249,115,22,0.6)]
                    transform hover:-translate-y-1 transition-all duration-300"
         >
-          Découvrir la Plateforme
+          Explorer la Plateforme
         </Button>
       </div>
     </motion.div>
