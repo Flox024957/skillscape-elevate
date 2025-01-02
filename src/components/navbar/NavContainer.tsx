@@ -13,7 +13,7 @@ export const NavContainer = ({ children }: NavContainerProps) => {
       initial={{ y: isMobile ? 100 : -100 }}
       animate={{ y: 0 }}
       transition={{ type: "spring", stiffness: 100 }}
-      className="fixed z-50 w-full bg-background/95 backdrop-blur-md border-border md:top-0 bottom-0 md:bottom-auto"
+      className="fixed z-50 w-full bg-background/95 backdrop-blur-md border-t md:border-b border-border bottom-0 md:top-0 md:bottom-auto"
       role="navigation"
       aria-label="Navigation principale"
     >

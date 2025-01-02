@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { NavItem } from "./navbar/NavItem";
 import { NavTooltip } from "./navbar/NavTooltip";
 import { NavContainer } from "./navbar/NavContainer";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const navItems = [
   { 
@@ -31,6 +32,7 @@ const navItems = [
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const isMobile = useIsMobile();
 
   const handleNavigation = (path: string) => {
     navigate(path);

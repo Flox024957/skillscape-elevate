@@ -29,13 +29,15 @@ export const NavItem = ({
     <Button
       variant={isActive ? "default" : "ghost"}
       className={cn(
-        "relative flex items-center gap-2 transition-all duration-300",
+        "relative flex items-center transition-all duration-300",
         isActive 
           ? "bg-primary text-primary-foreground shadow-lg" 
           : "hover:text-primary hover:bg-primary/10",
         "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
         "disabled:pointer-events-none disabled:opacity-50",
-        isMobile ? "w-full flex-col text-[10px]" : "w-auto flex-row text-sm"
+        isMobile 
+          ? "w-full flex-col gap-1 py-2" 
+          : "w-auto flex-row gap-2 px-4"
       )}
       onClick={onClick}
       aria-label={ariaLabel}
@@ -46,16 +48,13 @@ export const NavItem = ({
         whileTap={{ scale: 0.95 }}
       >
         <Icon className={cn(
-          "w-5 h-5",
-          isMobile && "w-4 h-4",
+          isMobile ? "h-4 w-4" : "h-5 w-5",
           isActive && "animate-pulse"
         )} />
       </motion.div>
       <span className={cn(
-        "font-medium",
-        isMobile ? "text-[10px]" : "text-sm",
-        "truncate",
-        isMobile ? "max-w-[80px]" : "max-w-none"
+        "font-medium truncate",
+        isMobile ? "text-[10px] max-w-[80px]" : "text-sm max-w-none"
       )}>
         {label}
       </span>
