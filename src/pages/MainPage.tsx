@@ -84,7 +84,7 @@ const MainPage = () => {
       <CosmicEffects />
       <EnergyOrbs />
 
-      {isMobile && <Navbar />}
+      <Navbar />
 
       {isMobile && (
         <Sheet>
@@ -113,7 +113,11 @@ const MainPage = () => {
         </Sheet>
       )}
 
-      <ScrollArea className="h-[calc(100vh-4rem)] relative">
+      <ScrollArea className={cn(
+        "h-[calc(100vh-4rem)]",
+        "relative",
+        isMobile ? "mt-0" : "mt-16"
+      )}>
         <div className={cn(
           "container mx-auto relative z-10",
           isMobile ? "py-6 px-4" : "py-12 px-6"
